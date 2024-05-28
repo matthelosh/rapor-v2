@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus'
-const props = defineProps({open: Boolean})
+const props = defineProps({open: Boolean, selectedSekolah: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
 const loading = ref(false)
@@ -10,17 +10,17 @@ const logoUrl = ref('/img/tutwuri.png')
 const fileLogo = ref(null)
 const sekolah = ref({
     npsn: null,
-    nama: null,
-    alamat: null,
-    desa: null,
+    nama: 'SD Negeri',
+    alamat: 'Jl. Kaki',
+    desa: 'Sukamakmur',
     kecamatan: 'Wagir',
     kabupaten: 'Malang',
     kode_pos: '65158',
     telp: null,
     email: null,
     website: null,
-    nama_ks: null,
-    nip_ks: null
+    nama_ks: 'Nurul HUda, S.PdSD',
+    nip_ks: '-'
 
 })
 
@@ -30,17 +30,25 @@ const simpan = async() => {
     if (fileLogo.value !== null) {
         fd.append('file', fileLogo.value)
     }
-    fd.append('sekolah',sekolah.value)
-    router.post(route('sekolah.store'), sekolah.value, {
+    Object.keys(sekolah.value).forEach(k => {
+        fd.append(k, sekolah.value[k])
+    })
+    let url = sekolah.value.id ? 'dashboard.sekolah.update' : 'dashboard.sekolah.store'
+    // let httpMethod = sekolah.value.id ? 'put' : 'post'
+    if (sekolah.value.id) {
+        fd.append("_method", "PUT")
+    }
+    router.post(route(url), fd, {
         onSuccess: (page) => {
-            console.log(res)
+            // console.log(res)
             ElNotification({title: 'Info', message: 'Data Sekolah disimpan', type: 'success'})
             loading.value = false
+            emit('close')
         },
         onError: (err) => {
             console.log(err)
-            Object.keys(err.response.data.errors).forEach(k => {
-                ElNotification({title: 'Error', message: err.response.data.errors[k], type: 'error'})
+            Object.keys(err).forEach(k => {
+                ElNotification({title: 'Error', message: err[k], type: 'error'})
             })
             loading.value = false
         }
@@ -54,11 +62,22 @@ const onLogoPicked = (e) => {
     logoUrl.value = url
     // console.log(e)
 }
+
+const closeMe = () => {
+    loading.value = false
+    emit('close')
+}
+
+onBeforeMount(() => {
+    if (props.selectedSekolah !== null) {
+        sekolah.value = props.selectedSekolah
+    }
+})
 </script>
 
 <template>
     <!-- <h1>Form Sekolah {{ props.open }}</h1> -->
-    <el-dialog v-model="show" width="800" title="Formulir Data Sekolah" @close="emit('close')" draggable>
+    <el-dialog v-model="show" width="800" title="Formulir Data Sekolah" @close="closeMe" draggable>
         <el-form label-position="top" size="small">
             <el-row :gutter="6">
                 <el-col :span="4">

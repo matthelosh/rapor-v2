@@ -1,0 +1,59 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { read, utils } from 'xlsx'
+import { router } from '@inertiajs/vue3'
+import { ElNotification } from 'element-plus';
+const props = defineProps({open: Boolean, fields: Array})
+const emit = defineEmits(['close'])
+const show = computed(() => props.open)
+const datas = ref([])
+const onFilePicked = async(e) => {
+    const file = e.target.files[0]
+    const ab = await file.arrayBuffer();
+
+    const wb = read(ab);
+
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    datas.value = utils.sheet_to_json(ws)
+}
+
+const kirim = async() => {
+    await router.post(route('dashboard.sekolah.impor'), {datas: datas.value}, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: 'Data Sekolah diimpor', type: 'success'})
+        },
+        onError: err => {
+            Object.keys(err).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({ title: 'Error', message: err[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
+const closeMe = () => {
+    datas.value = []
+    emit('close')
+}
+</script>
+
+<template>
+    <!-- <h1>Form Sekolah {{ props.open }}</h1> -->
+    <el-dialog v-model="show"  title="Formulir Impor Data Sekolah" @close="closeMe" :fullscreen="true">
+        <template #header>
+            <div class="toolbar flex items-center justify-between">
+                <h3 class="title">Impor Data Sekolah</h3>
+                <div class="toolbar-items flex items-center">
+                    <input type="file" @change="onFilePicked" accept=".xlsx, xls, ods, csv" />
+                    <el-button type="primary" @click="kirim" v-if="datas.length > 0">Simpan</el-button>
+                </div>
+            </div>
+        </template>
+        <div class="body">
+            <el-table :data="datas" v-if="datas.length > 0" height="500px" size="small">
+                <el-table-column v-for="(field, f) in props.fields" :key="f" :prop="field" :label="field.toUpperCase()" />
+            </el-table>
+        </div>
+    </el-dialog>
+</template>

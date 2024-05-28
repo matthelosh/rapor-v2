@@ -16,15 +16,21 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::prefix('sekolah')->group(function() {
-        Route::post('/', [SekolahController::class, 'store'])->name('sekolah.store');
+    
+    Route::prefix('dashboard')->group(function() {
+        Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+        Route::prefix('sekolah')->group(function() {
+            Route::get("/", [SekolahController::class, 'index'])->name('dashboard.sekolah');
+            Route::post('/', [SekolahController::class, 'store'])->name('dashboard.sekolah.store');
+            Route::put('/', [SekolahController::class, 'update'])->name('dashboard.sekolah.update');
+            Route::post('/impor', [SekolahController::class, 'impor'])->name('dashboard.sekolah.impor');
+            Route::delete('/{id}', [SekolahController::class, 'destroy'])->name('dashboard.sekolah.destroy');
+        });
     });
 });
 
