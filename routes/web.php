@@ -31,6 +31,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/impor', [SekolahController::class, 'impor'])->name('dashboard.sekolah.impor');
             Route::delete('/{id}', [SekolahController::class, 'destroy'])->name('dashboard.sekolah.destroy');
         });
+
+        Route::prefix("guru")->group(function() {
+            Route::get("/", [GuruController::class, 'index'])->name('dashboard.guru');
+            Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store');
+            Route::put('/', [GuruController::class, 'update'])->name('dashboard.guru.update');
+            Route::post('/impor', [GuruController::class, 'impor'])->name('dashboard.guru.impor');
+            Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy');
+        });
     });
 });
 

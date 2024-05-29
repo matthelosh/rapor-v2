@@ -23,7 +23,7 @@ const items = ref([
             {
                 label: 'Data Guru',
                 icon: 'account-tie',
-                url: '#',
+                url: '/dashboard/guru',
             },
             {
                 label: 'Data Rombel',

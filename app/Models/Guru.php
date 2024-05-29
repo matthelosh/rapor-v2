@@ -11,15 +11,17 @@ class Guru extends Model
 
     protected $fillable = [
         'nip',
+        'gelar_depan',
         'nama',
+        'gelar_belakang',
         'jk',
-        'tempat_lahir',
-        'tanggal_lahir',
         'alamat',
         'hp',
-        'email',
         'status',
+        'email',
         'foto',
-
+        'agama',
+        'pangkat',
+        'jabatan'
     ];
 }

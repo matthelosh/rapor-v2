@@ -10,6 +10,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request) {
         $user = $request->user();
+        $sekolahs = [];
         if ($user->hasRole('admin')) {
             $sekolahs = Sekolah::all();
         }

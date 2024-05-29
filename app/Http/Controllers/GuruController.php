@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GuruRequest;
 use App\Models\Guru;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class GuruController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $gurus = Guru::all();
+        return Inertia::render('Dash/Guru', [
+            'gurus' => $gurus,
+        ]);
     }
 
     /**
@@ -26,9 +31,9 @@ class GuruController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(GuruRequest $request)
     {
-        //
+        
     }
 
     /**
