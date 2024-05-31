@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('gurus', function (Blueprint $table) {
             $table->id();
-            $table->string('nip', 20);
+            $table->string('nip', 20)->unique();
+            $table->string('nuptk', 20)->nullable();
             $table->string('gelar_depan', 10)->nullable();
             $table->string('nama', 150);
-            $table->string('gelar_belakang', 10)->nullable();
-            $table->enum('jk', ['Lak-laki','Perempuan']);
+            $table->string('gelar_belakang', 30)->nullable();
+            $table->enum('jk', ['Laki-laki','Perempuan']);
             $table->string('alamat', 191)->default('-');
             $table->string('hp', 16);
             $table->enum('status', ['pns','p3k','gtt']);

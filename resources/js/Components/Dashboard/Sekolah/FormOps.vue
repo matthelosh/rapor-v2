@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus'
-const props = defineProps({open: Boolean, selectedGuru: Object})
+const props = defineProps({open: Boolean, selectedOps: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
 const loading = ref(false)
@@ -16,12 +16,12 @@ const guru = ref({
     jk: 'Laki-laki',
     alamat: 'Malang',
     hp: '-',
-    status: 'PNS',
+    status: 'p3k',
     email: 'bejo@rmail.com',
     foto: null,
     agama: 'Islam',
-    pangkat: 'III/B',
-    jabatan: 'guru_kelas'
+    pangkat: 'XI',
+    jabatan: 'ops'
 
 })
 
@@ -70,8 +70,8 @@ const closeMe = () => {
 }
 
 onBeforeMount(() => {
-    if (props.selectedGuru !== null) {
-        guru.value = props.selectedGuru
+    if (props.selectedOps !== null) {
+        guru.value = props.selectedOps
     }
 })
 </script>
@@ -157,6 +157,7 @@ onBeforeMount(() => {
                         <el-col :span="6">
                             <el-form-item label="Pangkat">
                                 <el-select  v-model="guru.pangkat" placeholder="Pangkat">
+                                    <el-option value="XI" label="XI" />
                                     <el-option value="IIIa" label="III/A" />
                                     <el-option value="IIIb" label="III/B" />
                                     <el-option value="IIIc" label="III/C" />
@@ -176,6 +177,7 @@ onBeforeMount(() => {
                                     <el-option value="guru_agama" label="Guru Agama" />
                                     <el-option value="guru_pjok" label="Guru PJOK" />
                                     <el-option value="guru_inggris" label="Guru B. Inggris" />
+                                    <el-option value="ops" label="Operator" />
                                 </el-select>
                             </el-form-item>
                         </el-col>

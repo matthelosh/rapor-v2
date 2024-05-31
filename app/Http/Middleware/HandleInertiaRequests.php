@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -32,8 +33,16 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ?? null,
+                'roles' => $request->user() ? $request->user()->getRoleNames() : null,
+                'can' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : null,
+                
             ],
         ];
+    }
+
+    private function user($user) {
+        $account = User::where('id', $user->id)->with('roles.permissions','userable')->first();
+        return $account;
     }
 }

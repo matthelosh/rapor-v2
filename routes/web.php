@@ -24,12 +24,16 @@ Route::middleware('auth')->group(function () {
     
     Route::prefix('dashboard')->group(function() {
         Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+        Route::prefix('operator')->group(function() {
+            Route::get("/", [DashboardController::class, 'operator'])->name('dashboard.operator');
+        });
         Route::prefix('sekolah')->group(function() {
             Route::get("/", [SekolahController::class, 'index'])->name('dashboard.sekolah');
             Route::post('/', [SekolahController::class, 'store'])->name('dashboard.sekolah.store');
             Route::put('/', [SekolahController::class, 'update'])->name('dashboard.sekolah.update');
             Route::post('/impor', [SekolahController::class, 'impor'])->name('dashboard.sekolah.impor');
             Route::delete('/{id}', [SekolahController::class, 'destroy'])->name('dashboard.sekolah.destroy');
+            Route::post('/{id}/operator', [SekolahController::class, 'addOps'])->name('dashboard.sekolah.ops.add');
         });
 
         Route::prefix("guru")->group(function() {
@@ -37,6 +41,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store');
             Route::put('/', [GuruController::class, 'update'])->name('dashboard.guru.update');
             Route::post('/impor', [GuruController::class, 'impor'])->name('dashboard.guru.impor');
+            Route::post('/account/add', [GuruController::class, 'addAccount'])->name('dashboard.guru.account.add');
             Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy');
         });
     });

@@ -11,8 +11,8 @@ use App\Services\SekolahService;
 
 class SekolahController extends Controller
 {
-    public function index(Request $request) {
-        $sekolahs = Sekolah::all();
+    public function index(Request $request, SekolahService $sekolahService) {
+        $sekolahs = $sekolahService->index($request);
         // dd($sekolahs);
         return Inertia::render('Dash/Sekolah', [
             'sekolahs' => $sekolahs,
@@ -31,6 +31,17 @@ class SekolahController extends Controller
     public function update(Request $request, SekolahService $sekolahService) {
         $sekolahService->store($request);
         return back()->with('status', 'Data sekolah diperbarui');
+    }
+
+    public function addOps(Request $request, SekolahService $sekolahService, $id) {
+        // dd($id);
+        try {
+            $sekolahService->addOps($id);
+            return back()->with('status', 'Data OPS ditambahkan');
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     public function destroy(Request $request,  SekolahService $sekolahService, $id) {

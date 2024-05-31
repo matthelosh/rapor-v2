@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\GuruRequest;
 use App\Models\Guru;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Services\GuruService;
+use App\Http\Requests\GuruRequest;
+use Illuminate\Support\Facades\Storage;
 
 class GuruController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, GuruService $guruService)
     {
-        $gurus = Guru::all();
+        $gurus = $guruService->index($request);
         return Inertia::render('Dash/Guru', [
             'gurus' => $gurus,
         ]);
@@ -23,48 +25,62 @@ class GuruController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function addAccount(Request $request, GuruService $guruService)
     {
-        //
+        try {
+            $account = $guruService->addAccount($request->id);
+            return back()->with('data', $account);
+        } catch (\Throwable $th) {
+            return back()->withErrors(['errors' => $th->getMessage()]);
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(GuruRequest $request)
+    public function store(GuruRequest $request, GuruService $guruService)
     {
-        
+        try {
+            $store = $guruService->store($request);
+
+            return back()->with('data', $store);
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Guru $guru)
-    {
-        //
+    public function impor(Request $request, GuruService $guruService) {
+        try {
+            $guruService->impor($request->datas);
+            return back()->with('status', 'Data Guru diimpor');
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Guru $guru)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Guru $guru)
-    {
-        //
-    }
+        public function update(Request $request, GuruService $guruService) 
+        {
+            $guruService->store($request);
+            return back()->with('status', 'Data sekolah diperbarui');
+        }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Guru $guru)
+    public function destroy(GuruService $guruService, $id)
     {
-        //
+        try {
+            $guruService->destroy($id);
+            return back()->with('success', true);
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 }

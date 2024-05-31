@@ -16,6 +16,11 @@ const items = ref([
         url: '#',
         children: [
             {
+                label: 'Data Operator',
+                icon: 'laptop-account',
+                url: '/dashboard/operator',
+            },
+            {
                 label: 'Data Sekolah',
                 icon: 'city-variant',
                 url: '/dashboard/sekolah',
@@ -130,6 +135,7 @@ const goto = (url) => {
     line-height: 20px!important;
 }
 a.active {
-    color: #786799;
+    color: #2881b1;
+    font-weight: 800;
 }
 </style>

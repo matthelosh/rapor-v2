@@ -4,6 +4,7 @@ import DashLayout from '@/Layouts/DashLayout.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 import { ElCard } from 'element-plus'
 import { Icon } from '@iconify/vue'
+import { capitalize } from '@/helpers/String.js'
 
 const page = usePage()
 
@@ -29,7 +30,7 @@ const sekolahs = page.props.sekolahs
                             </div>
                         </template>
                         <div class="card-body">
-                            <el-table :data="sekolahs" max-height="250">
+                            <el-table :data="sekolahs" max-height="250" size="small">
                                 <el-table-column prop="npsn" label="NPSN" />
                                 <el-table-column prop="nama" label="Nama" />
                                 <el-table-column prop="alamat" label="Alamat" />
@@ -39,10 +40,16 @@ const sekolahs = page.props.sekolahs
                     </el-card>
                 </el-col>
                 <el-col :span="6">
-                    <el-card class="max-h-[300px] h-[300px]"></el-card>
+                    <el-card class="max-h-[300px] h-[300px]">
+                        <el-scrollbar height="300px">
+                            {{ page.props.auth.can }}
+                        </el-scrollbar>
+                    </el-card>
                 </el-col>
                 <el-col :span="6">
-                    <el-card class="max-h-[300px] h-[300px]"></el-card>
+                    <el-card class="max-h-[300px] h-[300px]">
+                        {{capitalize('sdEsf dsf WEEER')}}
+                    </el-card>
                 </el-col>
             </el-row>
             <el-row :gutter="8" class="mb-2">

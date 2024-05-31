@@ -32,4 +32,8 @@ class Sekolah extends Model
             get: fn ($logo) => url('/storage/sekolah/' . $logo),
         );
     }
+
+    function guru() {
+        return $this->belongsToMany(Guru::class, 'guru_sekolah');
+    }
 }

@@ -61,6 +61,22 @@ const hapus = async(id) => {
         }
     })
 }
+
+const addOps = async(id) => {
+    // alert(id)
+    await router.post(route('dashboard.sekolah.ops.add', {id: id}),null, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: 'Data Operator dibuat', type: 'success'})
+        },
+        onError: err => {
+            Object.keys(err).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({ title: 'Error', message: err[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
 </script>
 <template>
     <Head title="Data Sekolah" />
@@ -85,11 +101,11 @@ const hapus = async(id) => {
                                 </template>
                             </el-input>
                             <el-button-group class="flex-grow w-[300px]">
-                                <el-button type="primary" @click="formSekolah = true">
+                                <el-button type="primary" @click="formSekolah = true" :disabled="!page.props.auth.can.includes('add school')">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true">
+                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add school')">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -116,13 +132,20 @@ const hapus = async(id) => {
                     <el-table-column prop="nama_ks" label="Kepala Sekolah" />
                     <el-table-column label="Opsi">
                         <template #default="scope">
+                            <span class="flex items-center gap-1">
+                                        <el-button circle type="primary" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add guru')">
+                                            <Icon icon="mdi:laptop-account" />
+                                        </el-button>
                             <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
                                 <template #reference>
-                                    <el-button circle type="danger" size="small">
-                                        <Icon icon="mdi:delete" />
-                                    </el-button>
+                                    
+                                        <el-button circle type="danger" size="small" :disabled="!page.props.auth.can.includes('delete school')">
+                                            <Icon icon="mdi:delete" />
+                                        </el-button>
+                                    
                                 </template>
                             </el-popconfirm>
+                        </span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -131,6 +154,6 @@ const hapus = async(id) => {
             <!-- p>lorem*10 -->
         </div>
         <FormSekolah :open="formSekolah" @close="closeForm" :selectedSekolah="selectedSekolah" v-if="formSekolah" />
-        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" />
+        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" title="Sekolah" url="dashboard.sekolah.impor" />
     </DashLayout>
 </template>

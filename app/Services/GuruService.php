@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\Sekolah;
+use App\Models\Guru;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 // use App\Http\Resources\SekolahResource;
 
-class SekolahService
+class GuruService
 {
 
     /**
@@ -18,8 +20,18 @@ class SekolahService
         //
     }
 
-    public function index() {
-        return Sekolah::paginate(5);
+    public function index($request) {
+        $user = $request->user();
+        if ($user->hasRole('admin')) {
+            $gurus = Guru::all();
+        } else {
+            $gurus = Guru::whereHas('sekolahs', function($q) use($user) {
+                $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);
+            })->get();
+        }
+
+
+        return $gurus;
     }
 
     public function store($request) {
@@ -27,31 +39,49 @@ class SekolahService
         $data = $request->all();
         // return response()->json(['cek' => $request->file('file')]);
         if ($request->file('file') !== null) {
-            $logo = $request->file('file');
-            $logo_name = $request->npsn.'.'.$logo->extension();
-            $store = $logo->storeAs('public/sekolah/', $logo_name);
-            $logo = $store ? $logo_name /** Storage::url($store) **/ : null;
+            $foto_file = $request->file('file');
+            $foto_name = $request->nip.'.'.$foto_file->extension();
+            $store = $foto_file->storeAs('public/sekolah/guru/', $foto_name);
+            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
         }
-            $sekolah = Sekolah::updateOrCreate([
+            $guru = Guru::updateOrCreate(
+                [
                 'id' => $data['id'] ?? null,
             ],[
-                'npsn' => $data['npsn'],
+                'nip' => $data['nip'],
+                'nuptk' => $data['nuptk'] ?? null,
+                'gelar_depan' => $data['gelar_depan'] ?? null,
                 'nama' => $data['nama'],
-                'logo' => $logo ?? null,
-                'alamat' => $data['alamat'],
-                'desa' => $data['desa'],
-                'kecamatan' => $data['kecamatan'] ?? 'Wagir',
-                'kabupaten' => $data['kabupaten'] ?? 'Malang',
-                'kode_pos' => $data['kode_pos'] ?? '65158',
-                'telp' => $data['telp'] ?? null,
-                'email' => $data['email'] ?? null,
-                'website' => $data['website'] ?? null,
-                'nama_ks' => $data['nama_ks'],
-                'nip_ks' => $data['nip_ks'] ?? '-'
-            ]);
+                'gelar_belakang' => $data['gelar_belakang'] ?? null,
+                'jk' => $data['jk'],
+                'alamat' => $data['alamat'] ?? null,
+                'hp' => $data['hp'] ?? '-',
+                'status' => $data['status'],
+                'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
+                'foto' => $foto ?? null,
+                'agama' => $data['agama'],
+                'pangkat' => $data['pangkat'] ?? null,
+                'jabatan' => $data['jabatan'] ?? null,
+            ]
+        );
 
 
-            return ['success' => true, 'message' => 'Data Sekolah disimpan', 'data' => $sekolah];
+            return ['success' => true, 'message' => 'Data Guru disimpan', 'data' => $guru];
+    }
+
+    public function addAccount($id) {
+        $guru = Guru::findOrFail($id);
+        $user = User::create([
+            'name' => $guru->nip,
+            'email' => $guru->email ?? $guru->nip.'@raporsd.web.id',
+            'password' => Hash::make($guru->nip),
+            'userable_id' => $guru->id,
+            'userable_type' => 'App\Models\Guru'
+        ]);
+
+        // $guru->user()->attach($user->id);
+
+        return ['success' => true, 'message' => 'Akun dibuat', 'data' => $user ];
     }
 
     public function impor($datas)
@@ -59,22 +89,23 @@ class SekolahService
         try {
             foreach($datas as $data)
             {
-                Sekolah::updateOrCreate(
+                Guru::updateOrCreate(
                     [
-                        'npsn' => $data['npsn'],
-                    ],
-                    [
+                        'id' => $data['id'] ?? null,
+                        'nip' => $data['nip'],
+                    ],[
+                        'nuptk' => $data['nuptk'] ?? null,
+                        'gelar_depan' => $data['gelar_depan'] ?? null,
                         'nama' => $data['nama'],
-                        'alamat' => $data['alamat'],
-                        'desa' => $data['desa'],
-                        'kecamatan' => $data['kecamatan'],
-                        'kabupaten' => $data['kabupaten'],
-                        'kode_pos' => $data['kode_pos'],
-                        'telp' => $data['telp'],
-                        'email' => $data['email'],
-                        'website' => $data['website'],
-                        'nama_ks' => $data['nama_ks'],
-                        'nip_ks' => $data['nip_ks']
+                        'gelar_belakang' => $data['gelar_belakang'] ?? null,
+                        'jk' => $data['jk'],
+                        'alamat' => $data['alamat'] ?? '-',
+                        'hp' => $data['hp'] ?? '-',
+                        'status' => $data['status'],
+                        'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
+                        'agama' => $data['agama'],
+                        'pangkat' => $data['pangkat'] ?? null,
+                        'jabatan' => $data['jabatan'] ?? null,
                     ]
                 );
             }
@@ -82,17 +113,19 @@ class SekolahService
             return ['success' => true, 'message' => 'Data Sekolah diimpor', 'data' => null ];
         }catch(\Exception $e)
         {
+            dd($e);
             return ['success' => false, 'message' => $e->getMessage(), 'data' => 'Error'];
         }
     }
 
     public function destroy($id) {
         try {
-            $sekolah = Sekolah::findOrFail($id);
-            $split = explode("/", $sekolah->logo);
-            Storage::delete("public/sekolah/".$split[(count($split) - 1)]);
-            $destroy = $sekolah->delete();
-            return ['success' => true, 'message' => 'Data Sekolah diimpor', 'data' => $destroy ];
+            $guru = Guru::findOrFail($id);
+            $split = explode("/", $guru->foto);
+            // dd($split);
+            Storage::delete("public/sekolah/guru/".$split[(count($split) - 1)]);
+            $delete = $guru->delete();
+            return ['success' => true, 'message' => 'Data Guru dihapus', 'data' => $delete ];
         }catch(\Exception $e)
         {
             return ['success' => false, 'message' => $e->getMessage(), 'data' => 'Error'];

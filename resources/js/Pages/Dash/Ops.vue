@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, defineAsyncComponent } from 'vue'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { Head, usePage, router } from '@inertiajs/vue3';
 import { ElCard, ElNotification } from 'element-plus'
@@ -10,22 +9,23 @@ const page = usePage()
 
 const formImpor = ref(false)
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
-const formGuru = ref(false)
-const FormGuru = defineAsyncComponent(() => import('@/Components/Dashboard/Guru/FormGuru.vue'))
+const formOps = ref(false)
+const FormOps = defineAsyncComponent(() => import('@/Components/Dashboard/Sekolah/FormOps.vue'))
 const search = ref('')
-const gurus = computed(() => {
-    return page.props.gurus.filter(sekolah => sekolah.nama.toLowerCase().includes(search.value.toLowerCase()))
+const opss = computed(() => {
+    // return page.props.ops.filter(ops => ops.nama.toLowerCase().includes(search.value.toLowerCase()))
+    return page.props.ops
 })
 
 const closeForm = () => {
-    formGuru.value = false
-    selectedGuru.value = null
-    router.reload({only: ['gurus']})
+    formOps.value = false
+    selectedOps.value = null
+    router.reload({only: ['ops']})
 }
 
 const closeImpor = () => {
     formImpor.value = false
-    router.reload({only: ['gurus']})
+    router.reload({only: ['ops']})
 }
 const fields = ref([ 
     'nip',
@@ -41,16 +41,16 @@ const fields = ref([
     'agama',
     'jabatan'])
 
-const selectedGuru = ref(null)
+const selectedOps = ref(null)
 const edit = (item) => {
-    selectedGuru.value = item
-    formGuru.value = true
+    selectedOps.value = item
+    formOps.value = true
 }
 
 const hapus = async(id) => {
-    await router.delete(route('dashboard.guru.destroy', {id: id}), {
+    await router.delete(route('dashboard.ops.destroy', {id: id}), {
         onSuccess: (page) => {
-            ElNotification({title: 'Info', message: 'Data Guru dihapus', type: 'success'})
+            ElNotification({title: 'Info', message: 'Data Ops dihapus', type: 'success'})
         },
         onError: err => {
             Object.keys(err).forEach(k => {
@@ -63,7 +63,7 @@ const hapus = async(id) => {
 }
 
 const createAccount = async(id) => {
-    router.post(route('dashboard.guru.account.add'), {id: id}, {
+    router.post(route('dashboard.ops.account.add'), {id: id}, {
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: 'Akun Berhasil dibuat', type: 'success'})
         },
@@ -78,33 +78,32 @@ const createAccount = async(id) => {
 }
 </script>
 <template>
-    <Head title="Data Guru" />
+    <Head title="Data Operator" />
 
     <DashLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Data Guru</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Data Operator</h2>
         </template>
-
         <div class="page">
             <el-card>
                 <template #header>
                     <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center ">
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
-                            <span>Data Guru</span>
+                            <span>Data Operator</span>
                         </div>
                         <div class="card-toolbar--items flex items-center gap-1 ">
-                            <el-input v-model="search" placeholder="Cari Guru" clearable>
+                            <el-input v-model="search" placeholder="Cari Ops" clearable>
                                 <template #suffix>
                                     <Icon icon=mdi:magnify />
                                 </template>
                             </el-input>
-                            <el-button-group class="flex-grow w-[300px]">
-                                <el-button type="primary" @click="formGuru = true">
+                            <el-button-group class="flex-grow w-[300px]" >
+                                <el-button type="primary" @click="formOps = true" :disabled="!page.props.auth.can.includes('add guru')">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true">
+                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add guru')">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -112,7 +111,7 @@ const createAccount = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="gurus" height="420px" size="small">
+                <el-table :data="opss" height="420px" size="small">
                     <el-table-column label="Foto">
                         <template #default="scope">
                             <img :src="scope.row.foto" class="w-10" />
@@ -125,7 +124,7 @@ const createAccount = async(id) => {
                             <el-button type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.nip }}</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Nama Guru">
+                    <el-table-column label="Nama Ops">
                         <template #default="scope">
                             <p>{{ scope.row.gelar_depan }} {{ scope.row.nama }}, {{ scope.row.gelar_belakang }}</p>
                         </template>
@@ -151,15 +150,15 @@ const createAccount = async(id) => {
                                     </el-popconfirm>
                                     <el-popconfirm v-else size="small" :title="`Reset Password ${scope.row.nama}?`" @confirm="createAccount(scope.row.id)">
                                         <template #reference>
-                                            <el-button circle type="warning" size="small">
+                                            <el-button circle type="warning" size="small" :disabled="!page.props.auth.can.includes('update guru')">
                                                 <Icon icon="mdi:account-reactivate" />
                                             </el-button>
                                         </template>
                                     </el-popconfirm>
                                 </span>
-                                <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
+                                <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)" >
                                     <template #reference>
-                                        <el-button circle type="danger" size="small">
+                                        <el-button circle type="danger" size="small" :disabled="!page.props.auth.can.includes('delete guru')">
                                             <Icon icon="mdi:delete" />
                                         </el-button>
                                     </template>
@@ -172,7 +171,7 @@ const createAccount = async(id) => {
 
             <!-- p>lorem*10 -->
         </div>
-        <FormGuru :open="formGuru" @close="closeForm" :selectedGuru="selectedGuru" v-if="formGuru" />
-        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.guru.impor" title="Guru" />
+        <FormOps :open="formOps" @close="closeForm" :selectedOps="selectedOps" v-if="formOps" />
+        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.ops.impor" title="Ops" />
     </DashLayout>
 </template>

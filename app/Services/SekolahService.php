@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Guru;
+use App\Models\User;
 use App\Models\Sekolah;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 // use App\Http\Resources\SekolahResource;
@@ -18,8 +21,15 @@ class SekolahService
         //
     }
 
-    public function index() {
-        return Sekolah::paginate(5);
+    public function index($request) {
+        $user = $request->user();
+        if ($user->hasRole('admin')) {
+            $sekolahs = Sekolah::all();
+        } else {
+            $sekolahs = $user->userable->sekolahs;
+        }
+
+        return $sekolahs;
     }
 
     public function store($request) {
@@ -27,9 +37,9 @@ class SekolahService
         $data = $request->all();
         // return response()->json(['cek' => $request->file('file')]);
         if ($request->file('file') !== null) {
-            $logo = $request->file('file');
-            $logo_name = $request->npsn.'.'.$logo->extension();
-            $store = $logo->storeAs('public/sekolah/', $logo_name);
+            $logo_file = $request->file('file');
+            $logo_name = $request->npsn.'.'.$logo_file->extension();
+            $store = $logo_file->storeAs('public/sekolah/', $logo_name);
             $logo = $store ? $logo_name /** Storage::url($store) **/ : null;
         }
             $sekolah = Sekolah::updateOrCreate([
@@ -83,6 +93,42 @@ class SekolahService
         }catch(\Exception $e)
         {
             return ['success' => false, 'message' => $e->getMessage(), 'data' => 'Error'];
+        }
+    }
+
+    public function addOps($id) {
+        try {
+            // dd($id);
+            $sekolah = Sekolah::findOrFail($id);
+            // dd($sekolah);
+            $ops = Guru::create([
+                'nip' => $sekolah->npsn,
+                'nama' => 'OPS '.$sekolah->nama,
+                'jk' => 'Laki-laki',
+                'alamat' => $sekolah->alamat,
+                'hp' => '-',
+                'status' => 'p3k',
+                'email' => $sekolah->npsn.'@ops.net',
+                'agama' => 'Islam',
+                'jabatan' => 'ops'
+            ]);
+
+            $ops->sekolahs()->attach($sekolah->id);
+            // dd($ops);
+
+            $user = User::create([
+                'name' => $sekolah->npsn,
+                'email' => $ops->email,
+                'password' => Hash::make($sekolah->npsn),
+                'userable_id' => $ops->id,
+                'userable_type' => 'App\Models\Guru'
+            ]);
+
+            $user->assignRole('ops');
+            return ['success' => true, 'message' => 'Data Operator dibuat' ];
+        } catch (\Throwable $th) {
+            // dd($th);
+            throw $th;
         }
     }
 
