@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\Guru;
+use App\Models\Sekolah;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -34,21 +36,21 @@ class GuruService
         return $gurus;
     }
 
-    public function store($request) {
+    public function store($data, $file) {
 
-        $data = $request->all();
+        // $data = $request->all();
         // return response()->json(['cek' => $request->file('file')]);
-        if ($request->file('file') !== null) {
-            $foto_file = $request->file('file');
-            $foto_name = $request->nip.'.'.$foto_file->extension();
+        if ($file !== null) {
+            $foto_file = $file;
+            $foto_name = $data['nip'].'.'.$foto_file->extension();
             $store = $foto_file->storeAs('public/sekolah/guru/', $foto_name);
             $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
         }
             $guru = Guru::updateOrCreate(
                 [
                 'id' => $data['id'] ?? null,
-            ],[
                 'nip' => $data['nip'],
+            ],[
                 'nuptk' => $data['nuptk'] ?? null,
                 'gelar_depan' => $data['gelar_depan'] ?? null,
                 'nama' => $data['nama'],
@@ -65,8 +67,10 @@ class GuruService
             ]
         );
 
+        $guru->sekolahs()->attach($data['sekolahs']);
 
-            return ['success' => true, 'message' => 'Data Guru disimpan', 'data' => $guru];
+
+        return $guru;
     }
 
     public function addAccount($id) {
@@ -84,37 +88,50 @@ class GuruService
         return ['success' => true, 'message' => 'Akun dibuat', 'data' => $user ];
     }
 
-    public function impor($datas)
+    public function impor($request)
     {
         try {
+            $datas = $request->datas;
             foreach($datas as $data)
             {
-                Guru::updateOrCreate(
-                    [
-                        'id' => $data['id'] ?? null,
-                        'nip' => $data['nip'],
-                    ],[
-                        'nuptk' => $data['nuptk'] ?? null,
-                        'gelar_depan' => $data['gelar_depan'] ?? null,
-                        'nama' => $data['nama'],
-                        'gelar_belakang' => $data['gelar_belakang'] ?? null,
-                        'jk' => $data['jk'],
-                        'alamat' => $data['alamat'] ?? '-',
-                        'hp' => $data['hp'] ?? '-',
-                        'status' => $data['status'],
-                        'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
-                        'agama' => $data['agama'],
-                        'pangkat' => $data['pangkat'] ?? null,
-                        'jabatan' => $data['jabatan'] ?? null,
-                    ]
-                );
+                if ($request->user()->hasRole('admin')) {
+                    if (isset($data['sekolah'])) {
+                        $sekolah = Sekolah::where('npsn', $data['sekolah'])->first();
+                        $data['sekolahs'] = $sekolah->id;
+                        $guru = $this->store($data, null);
+                    } else {
+                        throw new \Exception("Kolom npsn sekolah kosong");
+                    }
+                } else {
+                    $data['sekolahs'] = $request->sekolah;
+                    $guru = $this->store($data, null);
+                }
+                // $guru = Guru::updateOrCreate(
+                //     [
+                //         'id' => $data['id'] ?? null,
+                //         'nip' => $data['nip'],
+                //     ],[
+                //         'nuptk' => $data['nuptk'] ?? null,
+                //         'gelar_depan' => $data['gelar_depan'] ?? null,
+                //         'nama' => $data['nama'],
+                //         'gelar_belakang' => $data['gelar_belakang'] ?? null,
+                //         'jk' => $data['jk'],
+                //         'alamat' => $data['alamat'] ?? '-',
+                //         'hp' => $data['hp'] ?? '-',
+                //         'status' => $data['status'],
+                //         'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
+                //         'agama' => $data['agama'],
+                //         'pangkat' => $data['pangkat'] ?? null,
+                //         'jabatan' => $data['jabatan'] ?? null,
+                //     ]
+                // );
             }
 
-            return ['success' => true, 'message' => 'Data Sekolah diimpor', 'data' => null ];
+            return ['success' => true, 'message' => 'Data Guru diimpor', 'data' => null ];
         }catch(\Exception $e)
         {
-            dd($e);
-            return ['success' => false, 'message' => $e->getMessage(), 'data' => 'Error'];
+            // dd($e->getMessage());
+            return back()->withErrors($e->getMessage());
         }
     }
 
@@ -124,6 +141,7 @@ class GuruService
             $split = explode("/", $guru->foto);
             // dd($split);
             Storage::delete("public/sekolah/guru/".$split[(count($split) - 1)]);
+            $guru->sekolahs()->detach();
             $delete = $guru->delete();
             return ['success' => true, 'message' => 'Data Guru dihapus', 'data' => $delete ];
         }catch(\Exception $e)

@@ -41,18 +41,19 @@ class GuruController extends Controller
     public function store(GuruRequest $request, GuruService $guruService)
     {
         try {
-            $store = $guruService->store($request);
+            
+            $store = $guruService->store($request->all(), $request->file('file') ?? null);
 
             return back()->with('data', $store);
         } catch(\Exception $e)
         {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            return back()->withErrors("errors", $e->getMessage());
         }
     }
 
     public function impor(Request $request, GuruService $guruService) {
         try {
-            $guruService->impor($request->datas);
+            $guruService->impor($request);
             return back()->with('status', 'Data Guru diimpor');
         } catch(\Exception $e)
         {
@@ -66,7 +67,7 @@ class GuruController extends Controller
      */
         public function update(Request $request, GuruService $guruService) 
         {
-            $guruService->store($request);
+            $guruService->store($request, null);
             return back()->with('status', 'Data sekolah diperbarui');
         }
 

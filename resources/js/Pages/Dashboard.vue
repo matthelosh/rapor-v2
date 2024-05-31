@@ -42,7 +42,7 @@ const sekolahs = page.props.sekolahs
                 <el-col :span="6">
                     <el-card class="max-h-[300px] h-[300px]">
                         <el-scrollbar height="300px">
-                            {{ page.props.auth.can }}
+                            {{ page.props.sekolahs }}
                         </el-scrollbar>
                     </el-card>
                 </el-col>

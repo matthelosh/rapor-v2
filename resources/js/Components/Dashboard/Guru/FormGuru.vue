@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, onBeforeMount } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus'
+
+const page = usePage()
 const props = defineProps({open: Boolean, selectedGuru: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
@@ -21,8 +23,8 @@ const guru = ref({
     foto: null,
     agama: 'Islam',
     pangkat: 'III/B',
-    jabatan: 'guru_kelas'
-
+    jabatan: 'guru_kelas',
+    // sekolahs: [22]
 })
 
 const simpan = async() => {
@@ -72,6 +74,9 @@ const closeMe = () => {
 onBeforeMount(() => {
     if (props.selectedGuru !== null) {
         guru.value = props.selectedGuru
+    }
+    if (page.props.auth.roles.includes('ops')) {
+        guru.value.sekolahs = page.props.sekolahs.map(s => s.id)
     }
 })
 </script>
@@ -157,6 +162,7 @@ onBeforeMount(() => {
                         <el-col :span="6">
                             <el-form-item label="Pangkat">
                                 <el-select  v-model="guru.pangkat" placeholder="Pangkat">
+                                    <el-option value="-" label="-" />
                                     <el-option value="IIIa" label="III/A" />
                                     <el-option value="IIIb" label="III/B" />
                                     <el-option value="IIIc" label="III/C" />
@@ -182,6 +188,13 @@ onBeforeMount(() => {
                         <el-col :span="14">
                             <el-form-item label="Email">
                                 <el-input  v-model="guru.email" placeholder="Email" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item label="Lembaga">
+                                <el-select v-model="guru.sekolahs" placeholder="Lembaga" multiple collapse-tags>
+                                    <el-option v-for="(sekolah, s) in page.props.sekolahs" :key="s" :value="sekolah.id" :label="sekolah.nama" />
+                                </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>

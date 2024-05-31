@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Sekolah;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -30,7 +31,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
+        $datas = [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user() ?? null,
@@ -39,6 +40,19 @@ class HandleInertiaRequests extends Middleware
                 
             ],
         ];
+        if ($request->user()) {{
+            $datas['sekolahs'] = $this->sekolahs($request->user());
+        }}
+
+        return $datas;
+    }
+
+    private function sekolahs($user) {
+        if ($user->hasRole('admin')) {
+            return Sekolah::all();
+        } else {
+            return $user->userable->sekolahs;
+        }
     }
 
     private function user($user) {

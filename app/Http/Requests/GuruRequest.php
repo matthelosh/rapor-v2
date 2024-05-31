@@ -24,7 +24,8 @@ class GuruRequest extends FormRequest
         return [
             'nip' => 'required|numeric|unique:gurus',
             'nama' => 'required',
-            'email' => 'required|email'
+            'email' => 'required|email',
+            'sekolahs' => 'required'
         ];
     }
 }

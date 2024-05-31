@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { read, utils } from 'xlsx'
-import { router } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus';
+
+const page = usePage()
 const props = defineProps({open: Boolean, fields: Array, title: String, url: String})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
@@ -18,9 +20,11 @@ const onFilePicked = async(e) => {
 }
 
 const kirim = async() => {
-    await router.post(route(props.url), {datas: datas.value}, {
+    await router.post(route(props.url), {sekolah: page.props.auth.roles[0] === 'admin' ? null: page.props.sekolahs[0].id, datas: datas.value}, {
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: 'Data Sekolah diimpor', type: 'success'})
+            datas.value = []
+            emit('close')
         },
         onError: err => {
             Object.keys(err).forEach(k => {
