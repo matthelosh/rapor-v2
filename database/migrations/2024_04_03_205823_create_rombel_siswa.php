@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('rombel_siswa', function (Blueprint $table) {
             $table->id();
+            $table->integer('rombel_id');
+            $table->integer('siswa_id');
             $table->timestamps();
         });
     }

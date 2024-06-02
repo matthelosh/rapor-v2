@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Models\Sekolah;
+use App\Models\Semester;
+use App\Models\Tapel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -37,8 +39,10 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user() ?? null,
                 'roles' => $request->user() ? $request->user()->getRoleNames() : null,
                 'can' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : null,
+
                 
             ],
+            'periode' => $this->periode(),
         ];
         if ($request->user()) {{
             $datas['sekolahs'] = $this->sekolahs($request->user());
@@ -51,12 +55,22 @@ class HandleInertiaRequests extends Middleware
         if ($user->hasRole('admin')) {
             return Sekolah::all();
         } else {
-            return $user->userable->sekolahs;
+            return $user->userable->sekolahs ?? null;
         }
     }
 
     private function user($user) {
         $account = User::where('id', $user->id)->with('roles.permissions','userable')->first();
         return $account;
+    }
+
+    private function periode() {
+        $tapel = Tapel::whereIsActive(true)->first();
+        $semester = Semester::whereisActive(true)->first();
+        $periode = [
+            "tapel" => $tapel,
+            "semester" => $semester
+        ];
+        return $tapel !== null ? $periode : null;
     }
 }

@@ -29,6 +29,7 @@ const guru = ref({
 
 const simpan = async() => {
     loading.value = true
+
     let fd = new FormData()
     if (fileFoto.value !== null) {
         fd.append('file', fileFoto.value)
@@ -41,6 +42,7 @@ const simpan = async() => {
     if (guru.value.id) {
         fd.append("_method", "PUT")
     }
+    console.log(fd)
     router.post(route(url), fd, {
         onSuccess: (page) => {
             // console.log(res)
@@ -74,6 +76,7 @@ const closeMe = () => {
 onBeforeMount(() => {
     if (props.selectedGuru !== null) {
         guru.value = props.selectedGuru
+        guru.value.sekolahs = props.selectedGuru.sekolahs.map(s => s.id)
     }
     if (page.props.auth.roles.includes('ops')) {
         guru.value.sekolahs = page.props.sekolahs.map(s => s.id)

@@ -42,7 +42,7 @@ const sekolahs = page.props.sekolahs
                 <el-col :span="6">
                     <el-card class="max-h-[300px] h-[300px]">
                         <el-scrollbar height="300px">
-                            {{ page.props.sekolahs }}
+                            {{ page.props.auth.can }}
                         </el-scrollbar>
                     </el-card>
                 </el-col>
@@ -54,7 +54,9 @@ const sekolahs = page.props.sekolahs
             </el-row>
             <el-row :gutter="8" class="mb-2">
                 <el-col :span="6">
-                    <el-card class="max-h-[300px] h-[300px]"></el-card>
+                    <el-card class="max-h-[300px] h-[300px]">
+                        {{ page.props.auth.roles }}
+                    </el-card>
                 </el-col>
                 <el-col :span="6">
                     <el-card class="max-h-[300px] h-[300px]"></el-card>

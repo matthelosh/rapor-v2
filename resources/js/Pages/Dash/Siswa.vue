@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, defineAsyncComponent } from 'vue'
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { Head, usePage, router } from '@inertiajs/vue3';
 import { ElCard, ElNotification } from 'element-plus'
@@ -11,50 +10,50 @@ const page = usePage()
 
 const formImpor = ref(false)
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
-const formGuru = ref(false)
-const FormGuru = defineAsyncComponent(() => import('@/Components/Dashboard/Guru/FormGuru.vue'))
+const formSiswa = ref(false)
+const FormSiswa = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa/FormSiswa.vue'))
 const search = ref('')
-const gurus = computed(() => {
-    // let datas = groupBy(page.props.gurus, 'sekolas')
-    return page.props.gurus.filter(guru => {
-        return guru.nama.toLowerCase().includes(search.value.toLowerCase())
+const siswas = computed(() => {
+    // let datas = groupBy(page.props.siswas, 'sekolas')
+    return page.props.siswas.filter(siswa => {
+        return siswa.nama.toLowerCase().includes(search.value.toLowerCase())
     })
 })
 
 const closeForm = () => {
-    formGuru.value = false
-    selectedGuru.value = null
-    router.reload({only: ['gurus']})
+    formSiswa.value = false
+    selectedSiswa.value = null
+    router.reload({only: ['siswas']})
 }
 
 const closeImpor = () => {
     formImpor.value = false
-    router.reload({only: ['gurus']})
+    router.reload({only: ['siswas']})
 }
 const fields = ref([ 
-    'nip',
-    'gelar_depan',
+'nisn',
+    'nis',
+    'nik',
     'nama',
-    'gelar_belakang',
     'jk',
     'alamat',
     'hp',
-    'status',
-    'pangkat',
     'email',
+    'foto',
     'agama',
-    'jabatan'])
+    'angkatan',
+    'sekolah_id'])
 
-const selectedGuru = ref(null)
+const selectedSiswa = ref(null)
 const edit = (item) => {
-    selectedGuru.value = item
-    formGuru.value = true
+    selectedSiswa.value = item
+    formSiswa.value = true
 }
 
 const hapus = async(id) => {
-    await router.delete(route('dashboard.guru.destroy', {id: id}), {
+    await router.delete(route('dashboard.siswa.destroy', {id: id}), {
         onSuccess: (page) => {
-            ElNotification({title: 'Info', message: 'Data Guru dihapus', type: 'success'})
+            ElNotification({title: 'Info', message: 'Data Siswa dihapus', type: 'success'})
         },
         onError: err => {
             Object.keys(err).forEach(k => {
@@ -67,7 +66,7 @@ const hapus = async(id) => {
 }
 
 const createAccount = async(id) => {
-    router.post(route('dashboard.guru.account.add'), {id: id}, {
+    router.post(route('dashboard.siswa.account.add'), {id: id}, {
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: 'Akun Berhasil dibuat', type: 'success'})
         },
@@ -82,7 +81,7 @@ const createAccount = async(id) => {
 }
 </script>
 <template>
-    <Head title="Data Guru" />
+    <Head title="Data Siswa" />
 
     <DashLayout>
         <template #header>
@@ -95,16 +94,16 @@ const createAccount = async(id) => {
                     <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center ">
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
-                            <span class="uppercase">Data Guru {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
+                            <span class="uppercase">Data Siswa {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
                         <div class="card-toolbar--items flex items-center gap-1 ">
-                            <el-input v-model="search" placeholder="Cari Guru Berdasarkan Nama" clearable>
+                            <el-input v-model="search" placeholder="Cari Siswa Berdasarkan Nama" clearable>
                                 <template #suffix>
                                     <Icon icon=mdi:magnify />
                                 </template>
                             </el-input>
                             <el-button-group class="flex-grow w-[300px]">
-                                <el-button type="primary" @click="formGuru = true">
+                                <el-button type="primary" @click="formSiswa = true">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
@@ -116,7 +115,7 @@ const createAccount = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="gurus" height="420px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                <el-table :data="siswas" height="420px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                     <el-table-column label="Foto">
                         <template #default="scope">
                             <img :src="scope.row.foto" class="w-10" />
@@ -125,31 +124,30 @@ const createAccount = async(id) => {
                     <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">
                         <template #default="scope">
                             <div>
-                                <ul class="list-decimal">
-                                    <li v-for="(sekolah, s) in scope.row.sekolahs.map(sk => sk.nama)" :key="s">{{ sekolah }}</li>
-
-                                </ul>
+                                {{ scope.row.sekolah.nama }}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column  label="NIP" >
+                    <el-table-column  label="NIS/NISN" >
                         <template #default="scope">
-                            <el-button type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.nip }}</el-button>
+                            <el-button type="primary" text size="small" @click="edit(scope.row)">
+                                {{ scope.row.nis ?? '-' }} / {{ scope.row.nisn }}    
+                            </el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Nama Guru">
+                    <el-table-column label="Nama Siswa">
                         <template #default="scope">
                             <p>{{ scope.row.gelar_depan }} {{ scope.row.nama }}, {{ scope.row.gelar_belakang }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="Status" />
-                    <el-table-column prop="alamat" label="Alamat" />
-                    <!-- <el-table-column label="Akun" >
+                    <el-table-column prop="jk" label="J. Kelamin" />
+                    <el-table-column prop="agama" label="Agama" />
+                    <el-table-column prop="rombel.label" label="Kelas" />
+                    <el-table-column label="Akun" >
                         <template #default="scope">
-                            {{ scope.row.user }}
+                            {{ scope.row.user?.name }}
                         </template>
-                    </el-table-column> -->
-                    <el-table-column prop="hp" label="Nomor HP" />
+                    </el-table-column>
                     <el-table-column label="Opsi">
                         <template #default="scope">
                             <div class="flex items-center gap-1">
@@ -184,7 +182,7 @@ const createAccount = async(id) => {
 
             <!-- p>lorem*10 -->
         </div>
-        <FormGuru :open="formGuru" @close="closeForm" :selectedGuru="selectedGuru" v-if="formGuru" />
-        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.guru.impor" title="Guru" />
+        <FormSiswa :open="formSiswa" @close="closeForm" :selectedSiswa="selectedSiswa" v-if="formSiswa" />
+        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.siswa.impor" title="Siswa" />
     </DashLayout>
 </template>

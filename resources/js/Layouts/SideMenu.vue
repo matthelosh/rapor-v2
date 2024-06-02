@@ -54,15 +54,15 @@ const items = ref([
                 roles: ['admin', 'ops']
             },
             {
-                label: 'Data Rombel',
-                icon: 'google-classroom',
-                url: '#',
+                label: 'Data Siswa',
+                icon: 'human-child',
+                url: '/dashboard/siswa',
                 roles: ['admin', 'ops']
             },
             {
-                label: 'Data Siswa',
-                icon: 'human-child',
-                url: '#',
+                label: 'Data Rombel',
+                icon: 'google-classroom',
+                url: '/dashboard/rombel',
                 roles: ['admin', 'ops']
             },
         ]

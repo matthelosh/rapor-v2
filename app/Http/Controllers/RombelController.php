@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Rombel;
 use Illuminate\Http\Request;
+use App\Services\RombelService;
+use App\Http\Requests\RombelRequest;
 
 class RombelController extends Controller
 {
+    public function home(Request $request, RombelService $rombelService) {
+        $datas = $rombelService->home($request);
+        return Inertia::render('Dash/Rombel', 
+            $datas
+        ); 
+    }
+    
     /**
      * Display a listing of the resource.
      */
@@ -15,20 +25,13 @@ class RombelController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RombelRequest $request, RombelService $rombelService)
     {
-        //
+        $rombelService->store($request);
     }
 
     /**
@@ -42,24 +45,27 @@ class RombelController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Rombel $rombel)
+    public function update(Request $request, RombelService $rombelService)
     {
-        //
+        $rombelService->store($request);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Rombel $rombel)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rombel $rombel)
+    public function destroy(Rombel $rombel, $id)
     {
-        //
+        try {
+            $rombel = $rombel->findOrFail($id);
+            // dd($rombel);
+            $rombel->siswas()->detach();
+            $delete = $rombel->delete();
+
+            return back()->with("success", true);
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(["errors" => $e->getMessage()]);
+        }
     }
 }

@@ -83,7 +83,7 @@ const addOps = async(id) => {
 
     <DashLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Data Sekolah</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">{{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Admin' }}</h2>
         </template>
 
         <div class="page">
@@ -123,19 +123,39 @@ const addOps = async(id) => {
                     </el-table-column>
                     <el-table-column  label="NPSN" >
                         <template #default="scope">
-                            <el-button type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.npsn }}</el-button>
+                            <el-button :disabled="!page.props.auth.can.includes('update school')" type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.npsn }}</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column prop="nama" label="Nama Sekolah" />
                     <el-table-column prop="alamat" label="Alamat" />
                     <el-table-column prop="desa" label="Desa" />
-                    <el-table-column prop="nama_ks" label="Kepala Sekolah" />
+                    <el-table-column label="Jumlah Guru">
+                        <template #default="scope">
+                            <div>
+                                {{ scope.row.gurus?.length }}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Kepala Sekolah">
+                        <template #default="scope">
+                            <div>
+                                {{ scope.row.ks?.nama }}
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="OPS">
+                        <template #default="scope">
+                            <div>
+                                {{ scope.row.ops?.nama }}
+                            </div>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Opsi">
                         <template #default="scope">
                             <span class="flex items-center gap-1">
-                                        <el-button circle type="primary" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add guru')">
-                                            <Icon icon="mdi:laptop-account" />
-                                        </el-button>
+                                <el-button  circle :type="scope.row.ops ? 'warning' : 'primary'" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add guru') || scope.row.ops !== 'undefined'">
+                                    <Icon icon="mdi:laptop-account" />
+                                </el-button>
                             <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
                                 <template #reference>
                                     

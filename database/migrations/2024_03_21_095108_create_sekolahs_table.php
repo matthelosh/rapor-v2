@@ -24,8 +24,9 @@ return new class extends Migration
             $table->string('telp')->nullable();
             $table->string('email')->nullable();
             $table->string('website')->nullable();
-            $table->string('nama_ks')->default('-');
-            $table->string('nip_ks')->default('-');
+            // $table->string('nama_ks')->default('-');
+            // $table->string('nip_ks')->default('-');
+            $table->integer('ks_id',)->nullable();
             $table->timestamps();
         });
     }

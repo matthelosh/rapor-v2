@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('rombels', function (Blueprint $table) {
             $table->id();
+            $table->string('tapel', 4);
+            $table->string('pararel', 2)->default('0');
+            $table->string('kode', 100)->unique();
+            $table->string('label', 150);
+            $table->string('fase', 1);
+            $table->string('tingkat', 2);
+            $table->integer('sekolah_id');
+            $table->integer('guru_id');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

@@ -39,10 +39,25 @@ Route::middleware('auth')->group(function () {
         Route::prefix("guru")->group(function() {
             Route::get("/", [GuruController::class, 'index'])->name('dashboard.guru');
             Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store');
+            Route::post('/get', [GuruController::class, 'show'])->name('dashboard.guru.show');
             Route::put('/', [GuruController::class, 'update'])->name('dashboard.guru.update');
             Route::post('/impor', [GuruController::class, 'impor'])->name('dashboard.guru.impor');
             Route::post('/account/add', [GuruController::class, 'addAccount'])->name('dashboard.guru.account.add');
             Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy');
+        });
+
+        Route::prefix("siswa")->group(function() {
+            Route::get("/", [SiswaController::class, 'home'])->name('dashboard.siswa');
+            Route::post("/", [SiswaController::class, 'store'])->name('dashboard.siswa.store');
+            Route::put("/", [SiswaController::class, 'update'])->name('dashboard.siswa.update');
+            Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
+        });
+        
+        Route::prefix("rombel")->group(function() {
+            Route::get("/", [RombelController::class, 'home'])->name('dashboard.rombel');
+            Route::post("/", [RombelController::class, 'store'])->name('dashboard.rombel.store');
+            Route::put("/", [RombelController::class, 'update'])->name('dashboard.rombel.update');
+            Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });
     });
 });

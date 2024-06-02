@@ -24,9 +24,14 @@ class SekolahService
     public function index($request) {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $sekolahs = Sekolah::all();
+            $sekolahs = Sekolah::with('ks', 'ops')->with('gurus', function($q) {
+                $q->where('gurus.jabatan','!=', 'ops');
+            })->get();
         } else {
-            $sekolahs = $user->userable->sekolahs;
+            $sekolahs = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
+                ->with('ks', 'ops')->with('gurus', function($q) {
+                $q->where('gurus.jabatan','!=', 'ops');
+            })->get();
         }
 
         return $sekolahs;
@@ -56,8 +61,7 @@ class SekolahService
                 'telp' => $data['telp'] ?? null,
                 'email' => $data['email'] ?? null,
                 'website' => $data['website'] ?? null,
-                'nama_ks' => $data['nama_ks'],
-                'nip_ks' => $data['nip_ks'] ?? '-'
+                'ks_id' => $data['ks_id']
             ]);
 
 

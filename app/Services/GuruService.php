@@ -25,13 +25,26 @@ class GuruService
     public function index($request) {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $gurus = Guru::all();
+            $gurus = Guru::with('sekolahs', 'user')->get();
         } else {
             $gurus = Guru::whereHas('sekolahs', function($q) use($user) {
                 $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);
-            })->get();
+            })->with('user')->get();
         }
 
+
+        return $gurus;
+    }
+
+    public function show($request) {
+        if ($request->query('sekolah') !== 'all') {
+            $idSekolah = $request->query('sekolah');
+            $gurus = Guru::wherehas('sekolahs', function($q) use ($idSekolah) {
+                $q->where('sekolahs.id', $idSekolah);
+            })->get(); 
+        } else {
+            $gurus = Guru::all();
+        }
 
         return $gurus;
     }
@@ -66,8 +79,18 @@ class GuruService
                 'jabatan' => $data['jabatan'] ?? null,
             ]
         );
-
-        $guru->sekolahs()->attach($data['sekolahs']);
+        if ($guru->sekolahs->count() < 1 ) {
+            $guru->sekolahs()->attach($data['sekolahs']);
+        } else {
+            $ids = explode(",", $data['sekolahs']);
+            foreach($guru->sekolahs->pluck('id') as $sekolah) {
+                for ($i=0; $i < count($ids); $i++) {
+                    if((int) $ids[$i] !== (int) $sekolah) {
+                        $guru->sekolahs()->attach($ids[$i]);
+                    }
+                }
+            }
+        }
 
 
         return $guru;
@@ -82,6 +105,9 @@ class GuruService
             'userable_id' => $guru->id,
             'userable_type' => 'App\Models\Guru'
         ]);
+        // if (->user()->hasRole('admin')) {
+        $user->assignRole($guru->jabatan);
+        // }
 
         // $guru->user()->attach($user->id);
 
@@ -106,25 +132,6 @@ class GuruService
                     $data['sekolahs'] = $request->sekolah;
                     $guru = $this->store($data, null);
                 }
-                // $guru = Guru::updateOrCreate(
-                //     [
-                //         'id' => $data['id'] ?? null,
-                //         'nip' => $data['nip'],
-                //     ],[
-                //         'nuptk' => $data['nuptk'] ?? null,
-                //         'gelar_depan' => $data['gelar_depan'] ?? null,
-                //         'nama' => $data['nama'],
-                //         'gelar_belakang' => $data['gelar_belakang'] ?? null,
-                //         'jk' => $data['jk'],
-                //         'alamat' => $data['alamat'] ?? '-',
-                //         'hp' => $data['hp'] ?? '-',
-                //         'status' => $data['status'],
-                //         'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
-                //         'agama' => $data['agama'],
-                //         'pangkat' => $data['pangkat'] ?? null,
-                //         'jabatan' => $data['jabatan'] ?? null,
-                //     ]
-                // );
             }
 
             return ['success' => true, 'message' => 'Data Guru diimpor', 'data' => null ];
@@ -133,6 +140,13 @@ class GuruService
             // dd($e->getMessage());
             return back()->withErrors($e->getMessage());
         }
+    }
+
+    public function update($request) {
+
+        $guru = Guru::find($request->id);
+        // dd($guru->isDirty());
+        dd($request->all());
     }
 
     public function destroy($id) {

@@ -82,7 +82,7 @@ const createAccount = async(id) => {
 
     <DashLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Data Operator</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">{{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Admin' }}</h2>
         </template>
         <div class="page">
             <el-card>

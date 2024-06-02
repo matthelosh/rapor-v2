@@ -22,6 +22,11 @@ class GuruController extends Controller
         ]);
     }
 
+    public function show(Request $request, GuruService $guruService) {
+        $gurus = $guruService->show($request);
+        return response()->json(['gurus' => $gurus]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
