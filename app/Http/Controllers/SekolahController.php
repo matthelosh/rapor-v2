@@ -11,13 +11,18 @@ use App\Services\SekolahService;
 
 class SekolahController extends Controller
 {
-    public function index(Request $request, SekolahService $sekolahService) {
+    public function home(Request $request, SekolahService $sekolahService) {
         $sekolahs = $sekolahService->index($request);
         // dd($sekolahs);
         return Inertia::render('Dash/Sekolah', [
             'sekolahs' => $sekolahs,
         ]);
     }
+
+    public function index(Request $request, SekolahService $sekolahService) {
+        return response()->json(['sekolahs' => $sekolahService->index($request)]);
+    }
+
     public function store(SekolahRequest $request, SekolahService $sekolahService) {
         $sekolahService->store($request);
         return back()->with('status', 'Data sekolah disimpan');

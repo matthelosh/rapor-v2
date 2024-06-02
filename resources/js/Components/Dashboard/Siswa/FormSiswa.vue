@@ -5,46 +5,46 @@ import { ElNotification } from 'element-plus'
 import axios from 'axios'
 
 const page = usePage()
-const props = defineProps({open: Boolean, selectedSekolah: Object})
+const props = defineProps({open: Boolean, selectedSiswa: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
 const loading = ref(false)
-const logoUrl = ref('/img/tutwuri.png')
-const fileLogo = ref(null)
-const gurus = ref([])
-const sekolah = ref({
-    npsn: null,
-    nama: 'SD Negeri',
-    alamat: 'Jl. Kaki',
-    desa: 'Sukamakmur',
-    kecamatan: 'Wagir',
-    kabupaten: 'Malang',
-    kode_pos: '65158',
-    telp: null,
-    email: null,
-    website: null,
-    ks_id: ''
+const fotoUrl = ref('/img/tutwuri.png')
+const fileFoto = ref(null)
+const sekolahs = ref([])
+const siswa = ref({
+    nisn: '',
+    nis: '',
+    nik: '',
+    nama: '',
+    jk: '',
+    agama: '',
+    alamat: '',
+    hp: '',
+    email: '',
+    foto: '',
+    angkatan: '',
+    sekolah_id: '',
 
 })
 
 const simpan = async() => {
     loading.value = true
     let fd = new FormData()
-    if (fileLogo.value !== null) {
-        fd.append('file', fileLogo.value)
+    if (fileFoto.value !== null) {
+        fd.append('file', fileFoto.value)
     }
-    Object.keys(sekolah.value).forEach(k => {
-        fd.append(k, sekolah.value[k])
+    Object.keys(siswa.value).forEach(k => {
+        fd.append(k, siswa.value[k])
     })
-    let url = sekolah.value.id ? 'dashboard.sekolah.update' : 'dashboard.sekolah.store'
-    // let httpMethod = sekolah.value.id ? 'put' : 'post'
-    if (sekolah.value.id) {
+    let url = siswa.value.id ? 'dashboard.siswa.update' : 'dashboard.siswa.store'
+    if (siswa.value.id) {
         fd.append("_method", "PUT")
     }
     router.post(route(url), fd, {
         onSuccess: (page) => {
             // console.log(res)
-            ElNotification({title: 'Info', message: 'Data Sekolah disimpan', type: 'success'})
+            ElNotification({title: 'Info', message: 'Data Siswa disimpan', type: 'success'})
             loading.value = false
             emit('close')
         },
@@ -58,11 +58,11 @@ const simpan = async() => {
     })
 }
 
-const onLogoPicked = (e) => {
+const onFotoPicked = (e) => {
     const file = e.target.files[0]
     let url  = URL.createObjectURL(file)
-    fileLogo.value = file
-    logoUrl.value = url
+    fileFoto.value = file
+    fotoUrl.value = url
     // console.log(e)
 }
 
@@ -71,107 +71,109 @@ const closeMe = () => {
     emit('close')
 }
 
-const getGurus = async() => {
-    axios.post(route('dashboard.guru.show', {_query: {sekolah: page.props.auth.roles.includes('admin') ? 'all' : sekolah.value.id}})).then( res => {
-        gurus.value = res.data.gurus
+const getSekolah = async() => {
+    axios.post('/dashboard/sekolah/index').then( res => {
+        sekolahs.value = res.data.sekolahs
     })
 }
 
 onBeforeMount(() => {
-    if (props.selectedSekolah !== null) {
-        sekolah.value = props.selectedSekolah
+    if (props.selectedSiswa !== null) {
+        siswa.value = props.selectedSiswa
     }
 
-    getGurus()
+    getSekolah()
 })
 </script>
 
 <template>
-    <!-- <h1>Form Sekolah {{ props.open }}</h1> -->
-    <el-dialog v-model="show" width="800" title="Formulir Data Sekolah" @close="closeMe" draggable>
-        <!-- {{ gurus }} -->
-        <el-form label-position="top" size="small">
-            <el-row :gutter="6">
-                <el-col :span="4">
-                    <el-form-item label="NPSN">
-                        <el-input v-model="sekolah.npsn" placeholder="Masukkan NPSN" required />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="20">
-                    <el-form-item label="Nama Sekolah">
-                        <el-input v-model="sekolah.nama" placeholder="Nama Sekolah" required />
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="6">
-                <el-col :span="12">
-                    <el-form-item label="Alamat">
-                        <el-input type="textarea" v-model="sekolah.alamat" placeholder="Alamat" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="Logo">
-                        <input type="file" placeholder="Pilih gambar logo" @change="onLogoPicked" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <img class="mx-auto w-14" :src="logoUrl" alt="Logo">
-                </el-col>
-                
-            </el-row>
-            <el-row :gutter="6">
-                <el-col :span="12">
-                    <el-form-item label="Desa">
-                        <el-input  v-model="sekolah.desa" placeholder="Desa" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="Kecamatan">
-                        <el-input v-model="sekolah.kecamatan" placeholder="Kecamatan" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                    <el-form-item label="Kabupaten">
-                        <el-input  v-model="sekolah.kabupaten" placeholder="Kabupaten" />
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="6">
-                <el-col :span="4">
-                    <el-form-item label="Kode Pos">
-                        <el-input v-model="sekolah.kode_pos" placeholder="Kode Pos" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                    <el-form-item label="No. Telepon">
-                        <el-input  v-model="sekolah.telp" placeholder="No. Telepon" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item label="Email">
-                        <el-input  v-model="sekolah.email" placeholder="Email" />
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="6">
-                <el-col :span="24">
-                    <el-form-item label="Website">
-                        <el-input v-model="sekolah.website" placeholder="Website" />
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row :gutter="6">
-                <el-col :span="12">
-                    <el-form-item label="Kepala Sekolah">
-                        <el-select v-model="sekolah.ks_id" placeholder="Kepala Sekolah" filterable>
-                            <el-option v-for="(guru, g) in gurus" :key="g" :value="guru.id" :label="`${guru.nip}|${guru.nama}`" />
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row justify="center">
-                <el-button type="primary" :loading="loading" @click="simpan">Simpan</el-button>
-            </el-row>
-        </el-form>
+    <el-dialog v-model="show" width="800" title="Formulir Data Siswa" @close="closeMe" draggable>
+        <el-row :gutter="10">
+            <el-col :span="6" class="border-r bg-slate-100 p-2">
+                <h4 class="text-center mb-2">Foto Siswa  <br /><small>[Klik untuk mengganti]</small></h4>
+                <div>
+                    <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
+                    <input type="file" placeholder="Pilih Foto Guru" ref="fotoInput" @change="onFotoPicked" class="hidden" accept=".jpg,.JPG,.png,.PNG,.bmp,.BMP,.svg, .SVG,.jpeg, .JPEG, .webp" />
+                </div>
+            </el-col>
+            <el-col :span="18">
+                <el-form label-position="top" size="small">
+                    <el-row :gutter="6">
+                        <el-col :span="8">
+                            <el-form-item label="NISN">
+                                <el-input v-model="siswa.nisn" placeholder="Masukkan NISN" required />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="NIS">
+                                <el-input v-model="siswa.nis" placeholder="NIS" required />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item label="NIK">
+                                <el-input v-model="siswa.nik" placeholder="NIK Siswa" required />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter="6">
+                        <el-col :span="12">
+                            <el-form-item label="Nama Siswa">
+                                <el-input v-model="siswa.nama" placeholder="Nama Siswa" required />
+                            </el-form-item>
+                        </el-col>
+                    
+                        <el-col :span="6">
+                            <el-form-item label="Jenis Kelamin">
+                                <el-select v-model="siswa.jk" placeholder="Jenis Kelamin">
+                                    <el-option value="Laki-laki" />
+                                    <el-option value="Perempuan" />
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="Agama">
+                                <el-select v-model="siswa.agama" placeholder="Agama">
+                                    <el-option value="Islam" />
+                                    <el-option value="Kristen" />
+                                    <el-option value="Katolik" />
+                                    <el-option value="Hindu" />
+                                    <el-option value="Budha" />
+                                    <el-option value="Konghuchu" />
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter="6">
+                        <el-col :span="14">
+                            <el-form-item label="Alamat">
+                                <el-input type="textarea" v-model="siswa.alamat" rows="1" :autosize="{ minRows: 1, maxRows: 2 }" placeholder="Alamat" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item label="HP">
+                                <el-input  v-model="siswa.hp" placeholder="HP" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter="6">
+                        <el-col :span="14">
+                            <el-form-item label="Email">
+                                <el-input  v-model="siswa.email" placeholder="Email" />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="10">
+                            <el-form-item label="Lembaga">
+                                <el-select v-model="siswa.sekolah_id" placeholder="Lembaga" collapse-tags filterable>
+                                    <el-option v-for="(sekolah, s) in page.props.sekolahs" :key="s" :value="sekolah.npsn" :label="sekolah.nama" />
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row justify="center">
+                        <el-button type="primary" :loading="loading" @click="simpan">Simpan</el-button>
+                    </el-row>
+                </el-form>
+            </el-col>
+        </el-row>
     </el-dialog>
 </template>

@@ -28,7 +28,8 @@ Route::middleware('auth')->group(function () {
             Route::get("/", [DashboardController::class, 'operator'])->name('dashboard.operator');
         });
         Route::prefix('sekolah')->group(function() {
-            Route::get("/", [SekolahController::class, 'index'])->name('dashboard.sekolah');
+            Route::get("/", [SekolahController::class, 'home'])->name('dashboard.sekolah');
+            Route::post("/index", [SekolahController::class, 'index'])->name('dashboard.sekolah.index');
             Route::post('/', [SekolahController::class, 'store'])->name('dashboard.sekolah.store');
             Route::put('/', [SekolahController::class, 'update'])->name('dashboard.sekolah.update');
             Route::post('/impor', [SekolahController::class, 'impor'])->name('dashboard.sekolah.impor');

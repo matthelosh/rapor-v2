@@ -124,7 +124,7 @@ const createAccount = async(id) => {
                     <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">
                         <template #default="scope">
                             <div>
-                                {{ scope.row.sekolah.nama }}
+                                {{ scope.row.sekolah?.nama }}
                             </div>
                         </template>
                     </el-table-column>
