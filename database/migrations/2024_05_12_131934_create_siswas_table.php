@@ -25,6 +25,7 @@ return new class extends Migration
             $table->enum('agama', ['Islam', 'Kristen','Katolik','Hindu','Budha', 'Konghuchu']);
             $table->string('angkatan', 10)->nullable();
             $table->string('sekolah_id', 10);
+            $table->enum('status', ['aktif','lulus','do','mutasi'])->default('aktif');
             $table->timestamps();
         });
     }

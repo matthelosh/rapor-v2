@@ -26,7 +26,8 @@ class SiswaFactory extends Factory
             'jk' => $this->faker->randomElement(['Laki-laki', 'Perempuan']),
             'agama' => $this->faker->randomElement(['Islam','Kristen','Katolik','Hindu','Budha','Konghuchu']),
             'alamat' => $this->faker->address(),
-            'sekolah_id' => $this->faker->randomElement($sekolahs->pluck('npsn'))
+            'sekolah_id' => $this->faker->randomElement($sekolahs->pluck('npsn')),
+            'status' => 'aktif'
         ];
     }
 }

@@ -21,7 +21,8 @@ class Siswa extends Model
         'foto',
         'agama',
         'angkatan',
-        'sekolah_id'
+        'sekolah_id',
+        'status'
     ];
 
     public function sekolah() {

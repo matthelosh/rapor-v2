@@ -55,9 +55,16 @@ class SiswaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Siswa $siswa)
+    public function nonMember(Request $request)
     {
-        //
+        try {
+            $siswas = Siswa::whereDoesntHave('rombels')
+                        ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
+                        ->with('sekolah')->whereStatus('aktif')->get();
+            return response()->json(['siswas' => $siswas]);
+        } catch(\Exception $e) {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 
     /**

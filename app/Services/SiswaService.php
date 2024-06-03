@@ -9,9 +9,9 @@ class SiswaService
     public function home($request) {
         $user = $request->user();
         if($user->hasRole('admin')) {
-            $siswas = Siswa::with('sekolah')->get();
+            $siswas = Siswa::with('sekolah', 'rombels')->get();
         } elseif ($user->hasRole('ops')) {
-            $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah')->get();
+            $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels')->get();
         }
         return $siswas;
     }

@@ -25,11 +25,11 @@ class RombelService
     public function home($request) {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $rombels = Rombel::with('sekolah','guru')->get();
+            $rombels = Rombel::with('sekolah','guru', 'siswas')->get();
         } elseif ($user->hasRole('ops')) {
-            $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah','guru')->get();
+            $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah','guru', 'siswas')->get();
         } elseif ($user->hasRole('guru_kelas')) {
-            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->with('sekolah','guru')->get();
+            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->with('sekolah','guru', 'siswas')->get();
         }
 
         return ['rombels' => $rombels];
@@ -73,6 +73,22 @@ class RombelService
         } catch(\Exception $e)
         {
             return back()->withErrors(['errors' => $e->getMessage()]);
+        }
+    }
+
+    public function assignMember($id, $siswas) {
+        try {
+            // dd($siswas);
+            $rombel = Rombel::findOrFail($id);
+            foreach($siswas as $siswa)
+            {
+                $rombel->siswas()->attach($siswa['id']);
+            }
+            return true;
+
+        } catch(\Exception $e)
+        {
+            return $e;
         }
     }
     // public function impor($datas)

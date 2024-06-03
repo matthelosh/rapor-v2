@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix("siswa")->group(function() {
             Route::get("/", [SiswaController::class, 'home'])->name('dashboard.siswa');
             Route::post("/", [SiswaController::class, 'store'])->name('dashboard.siswa.store');
+            Route::post("/nonmember", [SiswaController::class, 'nonMember'])->name('dashboard.siswa.nonmember');
             Route::put("/", [SiswaController::class, 'update'])->name('dashboard.siswa.update');
             Route::post("/impor", [SiswaController::class, 'impor'])->name('dashboard.siswa.impor');
             Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix("rombel")->group(function() {
             Route::get("/", [RombelController::class, 'home'])->name('dashboard.rombel');
             Route::post("/", [RombelController::class, 'store'])->name('dashboard.rombel.store');
+            Route::post("/member/assign", [RombelController::class, 'assignMember'])->name('dashboard.rombel.member.assign');
             Route::put("/", [RombelController::class, 'update'])->name('dashboard.rombel.update');
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });

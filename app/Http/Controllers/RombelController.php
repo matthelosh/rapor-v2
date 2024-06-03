@@ -37,9 +37,9 @@ class RombelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Rombel $rombel)
+    public function assignMember(Request $request, RombelService $rombelService)
     {
-        //
+        $assign = $rombelService->assignMember($request->query('id'), $request->siswas);
     }
 
     /**
@@ -47,7 +47,12 @@ class RombelController extends Controller
      */
     public function update(Request $request, RombelService $rombelService)
     {
-        $rombelService->store($request);
+        try {
+            $rombelService->store($request);
+        } catch(\Exception $e) 
+        {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 
 

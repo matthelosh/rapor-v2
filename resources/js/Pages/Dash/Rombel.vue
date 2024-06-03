@@ -41,6 +41,11 @@ const closeMgmSiswa = () => {
     selectedRombel.value = null
 }
 
+const reloadData = () => {
+    router.reload({only: ['rombels']})
+    
+}
+
 const hapus = async(id) => {
     await router.delete(route('dashboard.rombel.destroy', {id: id}), {
         onSuccess: (page) => {
@@ -110,8 +115,8 @@ const hapus = async(id) => {
                     <el-table-column label="Siswa">
                         <template #default="scope">
                             <div>
-                                <span>Lk: {{ scope.row.siswas?.filter(sa=>sa.jk=='Laki-laki').length }}</span>
-                                <span>Pr: {{ scope.row.siswas?.filter(sa=>sa.jk=='Perempuan').length }}</span>
+                                <span>Lk: {{ scope.row.siswas?.filter(sa=>sa.jk=='Laki-laki').length }}, </span>
+                                <span>Pr: {{ scope.row.siswas?.filter(sa=>sa.jk=='Perempuan').length }}, </span>
                                 <span>Jml: {{ scope.row.siswas?.length }}</span>
                             </div>
                         </template>    
@@ -146,7 +151,7 @@ const hapus = async(id) => {
 
         </div>
         <FormRombel :open="formRombel" @close="closeForm" :selectedRombel="selectedRombel" v-if="formRombel" />
-        <RombelSiswa :show=rombelSiswa @close="closeMgmSiswa" :selectedRombel="selectedRombel" v-if="rombelSiswa" />
+        <RombelSiswa :show=rombelSiswa @close="closeMgmSiswa" :selectedRombel="selectedRombel" v-if="rombelSiswa" @refresh="reloadData" />
         <!-- <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.guru.impor" title="Guru" /> -->
     </DashLayout>
 </template>

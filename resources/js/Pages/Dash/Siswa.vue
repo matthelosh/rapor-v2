@@ -142,7 +142,11 @@ const createAccount = async(id) => {
                     </el-table-column>
                     <el-table-column prop="jk" label="J. Kelamin" />
                     <el-table-column prop="agama" label="Agama" />
-                    <el-table-column prop="rombel.label" label="Kelas" />
+                    <el-table-column label="Kelas">
+                        <template #default="scope">
+                            {{scope.row.rombels[0]?.label}}
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Akun" >
                         <template #default="scope">
                             {{ scope.row.user?.name }}
