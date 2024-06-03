@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
             Route::get("/", [SiswaController::class, 'home'])->name('dashboard.siswa');
             Route::post("/", [SiswaController::class, 'store'])->name('dashboard.siswa.store');
             Route::put("/", [SiswaController::class, 'update'])->name('dashboard.siswa.update');
+            Route::post("/impor", [SiswaController::class, 'impor'])->name('dashboard.siswa.impor');
             Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
         });
         

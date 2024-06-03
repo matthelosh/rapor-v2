@@ -26,12 +26,14 @@ class SiswaController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function impor(Request $request, SiswaService $siswaService) {
+        try {
+            $siswaService->impor($request);
+            return back()->with('status', 'Data Siswa diimpor');
+        } catch(\Exception $e)
+        {
+            return back()->withErrors(['errors' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -79,8 +81,16 @@ class SiswaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Siswa $siswa)
+    public function destroy(Siswa $siswa, $id)
     {
-        //
+        try {
+            $siswa = $siswa->findOrFail($id);
+            $detachRombel = $siswa->rombels()->detach();
+            $siswa->delete();
+
+            return back()->with("success", true);
+        } catch(\Exception $e) {
+            return back()->withErrors(["errors", $e->getMessage()]);
+        }
     }
 }

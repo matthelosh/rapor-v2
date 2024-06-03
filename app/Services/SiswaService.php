@@ -28,12 +28,12 @@ class SiswaService
                 'id' => $data['id'] ?? null,
                 'nisn' => $data['nisn'],
             ],[
-                'nis' => $data['nis'],
-                'nik' => $data['nik'],
+                'nis' => $data['nis'] ?? null,
+                'nik' => $data['nik'] ?? null,
                 'nama' => $data['nama'],
                 'jk' => $data['jk'],
                 'alamat' => $data['alamat'],
-                'hp' => $data['hp'],
+                'hp' => $data['hp'] ?? null,
                 'email' => $data['email'] ?? null,
                 'foto' => $foto ?? null,
                 'agama' => $data['agama'],
@@ -45,18 +45,21 @@ class SiswaService
         return $siswa;
     }
 
-    public function update($data, $file) {
-        if ($file !== null) {
-            $foto_file = $file;
-            $foto_name = $data['nisn'].'.'.$foto_file->extension();
-            $store = $foto_file->storeAs('public/sekolah/siswa/', $foto_name);
-            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+    public function impor($request)
+    {
+        try {
+            $datas = $request->datas;
+            foreach($datas as $data)
+            {
+                $store = $this->store($data, null);
+            }
+
+            return true;
+        }catch(\Exception $e)
+        {
+            // dd($e->getMessage());
+            return back()->withErrors($e->getMessage());
         }
-
-        $siswa = Siswa::findOrFail($data['id']);
-        // $siswa->foto = $foto ?? null;
-        $update = $siswa->update($data);
-
-        return $update;
     }
+
 }
