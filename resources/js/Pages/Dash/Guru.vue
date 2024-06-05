@@ -6,6 +6,7 @@ import { Head, usePage, router } from '@inertiajs/vue3';
 import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 import { groupBy } from 'lodash'
+import { avatar } from '@/helpers/Gambar.js'
 
 const page = usePage()
 
@@ -54,7 +55,7 @@ const edit = (item) => {
 const hapus = async(id) => {
     await router.delete(route('dashboard.guru.destroy', {id: id}), {
         onSuccess: (page) => {
-            ElNotification({title: 'Info', message: 'Data Guru dihapus', type: 'success'})
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         },
         onError: err => {
             Object.keys(err).forEach(k => {
@@ -69,7 +70,7 @@ const hapus = async(id) => {
 const createAccount = async(id) => {
     router.post(route('dashboard.guru.account.add'), {id: id}, {
         onSuccess: (page) => {
-            ElNotification({title: 'Info', message: 'Akun Berhasil dibuat', type: 'success'})
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         },
         onError: err => {
             Object.keys(err).forEach(k => {
@@ -116,10 +117,10 @@ const createAccount = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="gurus" height="420px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
-                    <el-table-column label="Foto">
+                <el-table :data="gurus" height="600px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                    <el-table-column label="Foto" width="60">
                         <template #default="scope">
-                            <img :src="scope.row.foto" class="w-10" />
+                            <img :src="avatar(scope.row)" class="w-10" />
                         </template>
                     </el-table-column>
                     <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">
@@ -132,7 +133,7 @@ const createAccount = async(id) => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column  label="NIP" >
+                    <el-table-column  label="NIP" width="150" :fixed="true">
                         <template #default="scope">
                             <el-button type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.nip }}</el-button>
                         </template>
@@ -142,15 +143,15 @@ const createAccount = async(id) => {
                             <p>{{ scope.row.gelar_depan }} {{ scope.row.nama }}, {{ scope.row.gelar_belakang }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="status" label="Status" />
+                    <el-table-column prop="status" label="Status" width="65" />
                     <el-table-column prop="alamat" label="Alamat" />
-                    <el-table-column label="Jabatan" >
+                    <el-table-column label="Jabatan" width="100">
                         <template #default="scope">
                             {{ scope.row.jabatan }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="hp" label="Nomor HP" />
-                    <el-table-column label="Opsi">
+                    <el-table-column prop="hp" label="Nomor HP" width="150" />
+                    <el-table-column label="Opsi" width="80">
                         <template #default="scope">
                             <div class="flex items-center gap-1">
                                 <span>

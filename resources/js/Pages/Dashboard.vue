@@ -59,7 +59,9 @@ const sekolahs = page.props.sekolahs
                     </el-card>
                 </el-col>
                 <el-col :span="6">
-                    <el-card class="max-h-[300px] h-[300px]"></el-card>
+                    <el-card class="max-h-[300px] h-[300px]">
+                        {{page.props.auth.user.userable}}
+                    </el-card>
                 </el-col>
                 <el-col :span="6">
                     <el-card class="max-h-[300px] h-[300px]"></el-card>

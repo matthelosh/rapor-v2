@@ -121,8 +121,8 @@ const createAccount = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="siswas" height="420px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
-                    <el-table-column label="Foto">
+                <el-table :data="siswas" height="600px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                    <el-table-column label="Foto" width="55">
                         <template #default="scope">
                             <img :src="fotoUrl(scope.row)" class="w-10" />
                         </template>
@@ -134,7 +134,7 @@ const createAccount = async(id) => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column  label="NIS/NISN" >
+                    <el-table-column  label="NIS/NISN" :fixed="true" width="150">
                         <template #default="scope">
                             <el-button type="primary" text size="small" @click="edit(scope.row)">
                                 {{ scope.row.nis ?? '-' }} / {{ scope.row.nisn }}    
@@ -143,22 +143,22 @@ const createAccount = async(id) => {
                     </el-table-column>
                     <el-table-column label="Nama Siswa">
                         <template #default="scope">
-                            <p>{{ scope.row.gelar_depan }} {{ scope.row.nama }}, {{ scope.row.gelar_belakang }}</p>
+                            <p>{{ scope.row.nama }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="jk" label="J. Kelamin" />
-                    <el-table-column prop="agama" label="Agama" />
-                    <el-table-column label="Kelas">
+                    <el-table-column prop="jk" label="J. Kelamin" width="100" />
+                    <el-table-column prop="agama" label="Agama" width="60" />
+                    <el-table-column label="Kelas" width="80">
                         <template #default="scope">
                             {{scope.row.rombels[0]?.label}}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Akun" >
+                    <el-table-column label="Akun" width="100">
                         <template #default="scope">
                             {{ scope.row.user?.name }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Opsi">
+                    <el-table-column label="Opsi" width="80" fixed="right">
                         <template #default="scope">
                             <div class="flex items-center gap-1">
                                 <span>

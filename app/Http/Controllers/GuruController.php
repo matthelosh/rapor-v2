@@ -34,7 +34,7 @@ class GuruController extends Controller
     {
         try {
             $account = $guruService->addAccount($request->id);
-            return back()->with('data', $account);
+            return back()->with('message', $account);
         } catch (\Throwable $th) {
             return back()->withErrors(['errors' => $th->getMessage()]);
         }
@@ -59,7 +59,7 @@ class GuruController extends Controller
     public function impor(Request $request, GuruService $guruService) {
         try {
             $guruService->impor($request);
-            return back()->with('status', 'Data Guru diimpor');
+            return back()->with('message', 'Data Guru diimpor');
         } catch(\Exception $e)
         {
             return back()->withErrors(['errors' => $e->getMessage()]);

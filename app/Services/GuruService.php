@@ -24,12 +24,14 @@ class GuruService
 
     public function index($request) {
         $user = $request->user();
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole(['admin', 'kepala_sekolah'])) {
             $gurus = Guru::with('sekolahs', 'user')->get();
-        } else {
+        } elseif($user->hasRole('ops')) {
             $gurus = Guru::whereHas('sekolahs', function($q) use($user) {
                 $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);
-            })->where('jabatan', '!=', 'ops')->with('user')->get();
+            })->where('jabatan', '!=', 'ops')->with('sekolahs','user')->get();
+        } else {
+            $gurus = Guru::where('nip', $user->userable->nip)->with('user', 'sekolahs')->get();
         }
 
 
@@ -98,20 +100,25 @@ class GuruService
 
     public function addAccount($id) {
         $guru = Guru::findOrFail($id);
-        $user = User::create([
-            'name' => $guru->nip,
-            'email' => $guru->email ?? $guru->nip.'@raporsd.web.id',
-            'password' => Hash::make($guru->nip),
-            'userable_id' => $guru->id,
-            'userable_type' => 'App\Models\Guru'
-        ]);
+        if (!$guru->user) {
+            $user = User::create([
+                'name' => $guru->nip,
+                'email' => $guru->email ?? $guru->nip.'@raporsd.web.id',
+                'password' => Hash::make($guru->nip),
+                'userable_id' => $guru->id,
+                'userable_type' => 'App\Models\Guru'
+            ]);
+        } else {
+            $user = $guru->user;
+            $guru->update(['password' => Hash::make($guru->nip)]);
+        }
         // if (->user()->hasRole('admin')) {
-        $user->assignRole($guru->jabatan);
+        $user->assignRole(strtolower(str_replace(" ", "_",$guru->jabatan)));
         // }
 
         // $guru->user()->attach($user->id);
 
-        return ['success' => true, 'message' => 'Akun dibuat', 'data' => $user ];
+        return "Akun guru berhasil dibuat.";
     }
 
     public function impor($request)

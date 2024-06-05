@@ -42,6 +42,9 @@ class HandleInertiaRequests extends Middleware
 
                 
             ],
+            'flash' => [
+                "message" => fn() => $request->session()->get('message'),
+            ],
             'periode' => $this->periode(),
         ];
         if ($request->user()) {{

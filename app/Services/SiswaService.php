@@ -12,6 +12,11 @@ class SiswaService
             $siswas = Siswa::with('sekolah', 'rombels')->get();
         } elseif ($user->hasRole('ops')) {
             $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels')->get();
+        } elseif($user->hasRole('guru_kelas')) {
+            $siswas = Siswa::whereHas('rombels', function($q) use($user){
+                $q->where('rombels.guru_id', $user->userable->id);
+                $q->where('rombels.is_active','1');
+            })->with('rombels')->get();
         }
         return $siswas;
     }
