@@ -30,12 +30,32 @@ const selectionMember = (val) => {
     selectedMembers.value = val
 }
 
-const assignMember = async() => {
-    await router.post(route('dashboard.rombel.member.assign', {id: props.selectedRombel.id}), {siswas: selectedNonMembers.value}, {
+const keluarkan = async() => {
+    await router.post(route('dashboard.rombel.member.detach', {id: props.selectedRombel.id}), {siswas: selectedMembers.value}, {
         onSuccess: (page) => {
             emit('refresh')
-            selectedNonMembers.value.forEach(siswa => members.value.push(siswa))
-            getNonMember()
+            selectedMembers.value.forEach(siswa => {
+                let memberIndex = members.value.findIndex(item => item.id === siswa.id)
+                members.value.splice(memberIndex, 1)
+                nonMembers.value.push(siswa)}
+            )
+            
+            // getNonMember()
+
+        }
+    })
+}
+
+const assignMember = async() => {
+    await router.post(route('dashboard.rombel.member.attach', {id: props.selectedRombel.id}), {siswas: selectedNonMembers.value}, {
+        onSuccess: (page) => {
+            emit('refresh')
+            selectedNonMembers.value.forEach(siswa => {
+                let nonMemberIndex = nonMembers.value.findIndex(item => item.id === siswa.id)
+                nonMembers.value.splice(nonMemberIndex, 1)
+                members.value.push(siswa)
+            })
+            // getNonMember()
 
         }
     })
@@ -76,7 +96,7 @@ onMounted(() => {
                                     Data Peserta Didik {{ props.selectedRombel.label }}
                                     </div>
                                     <div class="card-toolbar flex">
-                                        <el-button type="danger" size="small" v-if="selectedMembers.length > 0">Keluarkan</el-button>
+                                        <el-button type="danger" size="small" v-if="selectedMembers.length > 0" @click="keluarkan">Keluarkan</el-button>
                                     </div>
                                 </div>
                                 <el-input v-model="searchMember" placeholder="Cari Siswa" class="mt-2" />

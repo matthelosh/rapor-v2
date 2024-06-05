@@ -144,11 +144,11 @@ const createAccount = async(id) => {
                     </el-table-column>
                     <el-table-column prop="status" label="Status" />
                     <el-table-column prop="alamat" label="Alamat" />
-                    <!-- <el-table-column label="Akun" >
+                    <el-table-column label="Jabatan" >
                         <template #default="scope">
-                            {{ scope.row.user }}
+                            {{ scope.row.jabatan }}
                         </template>
-                    </el-table-column> -->
+                    </el-table-column>
                     <el-table-column prop="hp" label="Nomor HP" />
                     <el-table-column label="Opsi">
                         <template #default="scope">

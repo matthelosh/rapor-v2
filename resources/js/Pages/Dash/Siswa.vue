@@ -50,6 +50,12 @@ const edit = (item) => {
     formSiswa.value = true
 }
 
+const fotoUrl = (item) => {
+    // console.log(item.foto)
+    let foto = item.foto ? item.foto : (item.jk == 'Perempuan' ? (item.agama == 'Islam' ? '/img/siswi-is.png' : '/img/siswi.png') : '/img/siswa.png') 
+    return foto
+}
+
 const hapus = async(id) => {
     await router.delete(route('dashboard.siswa.destroy', {id: id}), {
         onSuccess: (page) => {
@@ -118,7 +124,7 @@ const createAccount = async(id) => {
                 <el-table :data="siswas" height="420px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                     <el-table-column label="Foto">
                         <template #default="scope">
-                            <img :src="scope.row.foto" class="w-10" />
+                            <img :src="fotoUrl(scope.row)" class="w-10" />
                         </template>
                     </el-table-column>
                     <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">

@@ -76,7 +76,7 @@ class RombelService
         }
     }
 
-    public function assignMember($id, $siswas) {
+    public function attachMember($id, $siswas) {
         try {
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
@@ -88,7 +88,22 @@ class RombelService
 
         } catch(\Exception $e)
         {
-            return $e;
+            dd($e);
+        }
+    }
+    public function detachMember($id, $siswas) {
+        try {
+            // dd($siswas);
+            $rombel = Rombel::findOrFail($id);
+            foreach($siswas as $siswa)
+            {
+                $rombel->siswas()->detach($siswa['id']);
+            }
+            return true;
+
+        } catch(\Exception $e)
+        {
+            dd($e);
         }
     }
     // public function impor($datas)

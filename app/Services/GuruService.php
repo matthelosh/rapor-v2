@@ -29,7 +29,7 @@ class GuruService
         } else {
             $gurus = Guru::whereHas('sekolahs', function($q) use($user) {
                 $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);
-            })->with('user')->get();
+            })->where('jabatan', '!=', 'ops')->with('user')->get();
         }
 
 

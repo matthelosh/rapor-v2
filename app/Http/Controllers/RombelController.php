@@ -37,9 +37,14 @@ class RombelController extends Controller
     /**
      * Display the specified resource.
      */
-    public function assignMember(Request $request, RombelService $rombelService)
+    public function attachMember(Request $request, RombelService $rombelService)
     {
-        $assign = $rombelService->assignMember($request->query('id'), $request->siswas);
+
+        $assign = $rombelService->attachMember($request->query('id'), $request->siswas);
+    }
+    public function detachMember(Request $request, RombelService $rombelService)
+    {
+        $assign = $rombelService->detachMember($request->query('id'), $request->siswas);
     }
 
     /**

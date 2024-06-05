@@ -59,7 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::prefix("rombel")->group(function() {
             Route::get("/", [RombelController::class, 'home'])->name('dashboard.rombel');
             Route::post("/", [RombelController::class, 'store'])->name('dashboard.rombel.store');
-            Route::post("/member/assign", [RombelController::class, 'assignMember'])->name('dashboard.rombel.member.assign');
+            Route::post("/member/attach", [RombelController::class, 'attachMember'])->name('dashboard.rombel.member.attach');
+            Route::post("/member/detach", [RombelController::class, 'detachMember'])->name('dashboard.rombel.member.detach');
             Route::put("/", [RombelController::class, 'update'])->name('dashboard.rombel.update');
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });
