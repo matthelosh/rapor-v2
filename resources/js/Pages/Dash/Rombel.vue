@@ -78,41 +78,41 @@ const hapus = async(id) => {
                             <span class="uppercase">Data Rombel/Kelas {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
                         <div class="card-toolbar--items flex items-center gap-1 ">
-                            <el-input v-model="search" placeholder="Cari Rombel Berdasarkan Label" clearable>
-                                <template #suffix>
-                                    <Icon icon=mdi:magnify />
-                                </template>
-                            </el-input>
                             <el-button-group class="flex-grow">
                                 <el-button type="primary" @click="formRombel = true">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
                             </el-button-group>
+                            <el-input v-model="search" placeholder="Cari Rombel Berdasarkan Label" clearable>
+                                <template #suffix>
+                                    <Icon icon=mdi:magnify />
+                                </template>
+                            </el-input>
                         </div>
                     </div>
                 </template>
                 <el-table :data="rombels" height="420px" size="small" :default-sort="{ prop: 'label', order: 'descending' }">
-                    <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">
+                    <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')" width="150">
                         <template #default="scope">
                             <div>
                                 {{ scope.row.sekolah.nama }}
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column  label="Kode" >
+                    <el-table-column  label="Kode" width="200">
                         <template #default="scope">
                             <el-button type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.kode }}</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Label" prop="label" />
+                    <el-table-column label="Label" prop="label" width="80" />
                         
-                    <el-table-column label="Wali Kelas">
+                    <el-table-column label="Wali Kelas" >
                         <template #default="scope">
                             <p>{{ scope.row.guru.gelar_depan }} {{ scope.row.guru.nama }}, {{ scope.row.guru.gelar_belakang }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Siswa">
+                    <el-table-column label="Siswa" width="150">
                         <template #default="scope">
                             <div>
                                 <span>Lk: {{ scope.row.siswas?.filter(sa=>sa.jk=='Laki-laki').length }}, </span>
@@ -121,12 +121,12 @@ const hapus = async(id) => {
                             </div>
                         </template>    
                     </el-table-column>
-                    <el-table-column  label="Status" >
+                    <el-table-column  label="Status" width="60">
                         <template #default="scope">
                             <Icon :icon="`mdi:${scope.row.is_active == '1' ? 'check-circle' : 'close-circle'}`" :class="scope.row.is_active == '1' ? 'text-green-600' : 'text-red-600'" class="text-xl" />
                         </template>    
                     </el-table-column>
-                    <el-table-column label="Opsi">
+                    <el-table-column label="Opsi" width="100" fixed="right">
                         <template #default="scope">
                             <div class="flex items-center gap-1">
                                 <span>

@@ -45,7 +45,7 @@ const simpan = async() => {
     router.post(route(url), fd, {
         onSuccess: (page) => {
             // console.log(res)
-            ElNotification({title: 'Info', message: 'Data Guru disimpan', type: 'success'})
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
             loading.value = false
             emit('close')
         },

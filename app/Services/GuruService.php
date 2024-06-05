@@ -52,7 +52,7 @@ class GuruService
     }
 
     public function store($data, $file) {
-
+        // dd($data, $file);
         // $data = $request->all();
         // return response()->json(['cek' => $request->file('file')]);
         if ($file !== null) {
@@ -95,7 +95,7 @@ class GuruService
         }
 
 
-        return $guru;
+        return !isset($data['id']) ? 'Data Guru Disimpan' : 'Data Guru diperbarui';
     }
 
     public function addAccount($id) {

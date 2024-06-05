@@ -72,8 +72,8 @@ class GuruController extends Controller
      */
         public function update(Request $request, GuruService $guruService) 
         {
-            $guruService->store($request, null);
-            return back()->with('status', 'Data sekolah diperbarui');
+            $store = $guruService->store($request->all(), $request->file('file') ?? null);
+            return back()->with('message', $store);
         }
 
     /**

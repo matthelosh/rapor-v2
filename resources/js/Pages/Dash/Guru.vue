@@ -98,13 +98,8 @@ const createAccount = async(id) => {
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase">Data Guru {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
-                        <div class="card-toolbar--items flex items-center gap-1 ">
-                            <el-input v-model="search" placeholder="Cari Guru Berdasarkan Nama" clearable>
-                                <template #suffix>
-                                    <Icon icon=mdi:magnify />
-                                </template>
-                            </el-input>
-                            <el-button-group class="flex-grow w-[300px]">
+                        <div class="card-toolbar--items flex items-center gap-1 px-2">
+                            <el-button-group class="flex-grow w-[250px]">
                                 <el-button type="primary" @click="formGuru = true">
                                     <Icon icon="mdi-plus" />
                                     Baru
@@ -114,6 +109,11 @@ const createAccount = async(id) => {
                                     Impor
                                 </el-button>
                             </el-button-group>
+                            <el-input v-model="search" placeholder="Cari Guru Berdasarkan Nama" clearable>
+                                <template #suffix>
+                                    <Icon icon=mdi:magnify />
+                                </template>
+                            </el-input>
                         </div>
                     </div>
                 </template>

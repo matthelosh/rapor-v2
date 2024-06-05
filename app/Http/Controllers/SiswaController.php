@@ -14,7 +14,7 @@ class SiswaController extends Controller
         $siswas = $siswaService->home($request);
 
         return Inertia::render('Dash/Siswa', [
-            'siswas' => $siswas,
+            'siswas' => Inertia::lazy(fn () => $siswas),
         ]);      
     }
 
