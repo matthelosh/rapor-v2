@@ -11,8 +11,8 @@ const loading = ref(false)
 const fotoUrl = ref('/img/tutwuri.png')
 const fileFoto = ref(null)
 const guru = ref({
-    nip: '198407032019031007',
-    gelar_depan: 'Dr.',
+    nip: '1234556789',
+    gelar_depan: '',
     nama:'Bejo',
     gelar_belakang: 'S. Pd.',
     jk: 'Laki-laki',
@@ -20,7 +20,7 @@ const guru = ref({
     hp: '-',
     status: 'PNS',
     email: 'bejo@rmail.com',
-    foto: null,
+    foto: '',
     agama: 'Islam',
     pangkat: 'III/B',
     jabatan: 'guru_kelas',
@@ -180,11 +180,11 @@ onBeforeMount(() => {
                         <el-col :span="6">
                             <el-form-item label="Jabatan">
                                 <el-select  v-model="guru.jabatan" placeholder="Jabatan">
-                                    <el-option value="ks" label="Kepala Sekolah" />
-                                    <el-option value="guru_kelas" label="Guru Kelas" />
-                                    <el-option value="guru_agama" label="Guru Agama" />
-                                    <el-option value="guru_pjok" label="Guru PJOK" />
-                                    <el-option value="guru_inggris" label="Guru B. Inggris" />
+                                    <el-option value="Kepala Sekolah" />
+                                    <el-option  value="Guru Kelas" />
+                                    <el-option  value="Guru Agama" />
+                                    <el-option  value="Guru PJOK" />
+                                    <el-option  value="Guru B. Inggris" />
                                 </el-select>
                             </el-form-item>
                         </el-col>

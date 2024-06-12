@@ -77,7 +77,7 @@ const items = ref([
             {
                 label: 'Input Nilai',
                 icon: 'edit',
-                url: '#',
+                url: '/dashboard/nilai',
                 roles: ['admin', 'ops', 'guru_kelas', 'guru_agama','guru_pjok','guru_inggris']
             },
             {

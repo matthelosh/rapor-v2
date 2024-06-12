@@ -69,6 +69,26 @@ const getNonMember = async() => {
                 .catch(err => console.log(err))
 }
 
+const kirim = async() => {
+
+}
+
+const onFileSiswaChange = async(e)=> {
+    const file = e.target.files[0]
+    const ab = await file.arrayBuffer()
+    const wb = read(ab)
+    const ws = wb.Sheets[wb.SheetNames[0]]
+    utils.sheet_to_json(ws).forEach((siswa) => {
+        nonMembers.value.forEach((nm) => {
+            if (siswa.nisn == nm.nisn) {
+                // members.value.push(nm)
+                // selectionNonMember([nm])
+                selectedNonMembers.value.push(nm)
+            }
+        })
+    })
+}
+
 onMounted(() => {
     getNonMember()
     members.value = props.selectedRombel.siswas
@@ -96,6 +116,8 @@ onMounted(() => {
                                     Data Peserta Didik {{ props.selectedRombel.label }}
                                     </div>
                                     <div class="card-toolbar flex">
+                                        <input type="file" ref="fileSiswa" @change="onFileSiswaChange" v-if="!selectedMembers.length >0" />
+                                        <el-button type="primary" size="small">Kirim</el-button>
                                         <el-button type="danger" size="small" v-if="selectedMembers.length > 0" @click="keluarkan">Keluarkan</el-button>
                                     </div>
                                 </div>

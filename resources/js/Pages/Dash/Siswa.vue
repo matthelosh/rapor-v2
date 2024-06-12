@@ -148,7 +148,7 @@ onMounted(async() => {
                         </div>
                     </template>
                     <template #default>
-                    <el-table :data="siswas" height="600px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                    <el-table :data="siswas" height="550px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                         <el-table-column label="Foto" width="55">
                             <template #default="scope">
                                 <img :src="fotoUrl(scope.row)" class="w-10" />
@@ -217,6 +217,9 @@ onMounted(async() => {
                     </el-table>
                     </template>
                 </el-skeleton>
+                <template #footer>
+                    <span>Jumlah Siswa: {{page.props.siswas?.length}}</span>
+                </template>
             </el-card>
 
             <!-- p>lorem*10 -->

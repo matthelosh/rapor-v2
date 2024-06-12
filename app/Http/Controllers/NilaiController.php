@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Nilai;
+use App\Services\NilaiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NilaiController extends Controller
 {
+    
+    public function home(Request $request, NilaiService $nilaiService) {
+        
+        return Inertia::render('Dash/Nilai', [
+            'datas' => $nilaiService->home(),
+        ]);
+    }
+    
     /**
      * Display a listing of the resource.
      */

@@ -28,8 +28,9 @@ class RombelService
             $rombels = Rombel::with('sekolah','guru', 'siswas')->get();
         } elseif ($user->hasRole('ops')) {
             $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah','guru', 'siswas')->get();
+            
         } elseif ($user->hasRole('guru_kelas')) {
-            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->with('sekolah','guru', 'siswas')->get();
+            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->where('guru_id', $user->userable->id)->with('sekolah','guru', 'siswas')->get();
         }
 
         return ['rombels' => $rombels];

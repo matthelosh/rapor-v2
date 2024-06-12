@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Tapel;
@@ -33,12 +34,13 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
         $datas = [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user() ?? null,
-                'roles' => $request->user() ? $request->user()->getRoleNames() : null,
-                'can' => $request->user() ? $request->user()->getPermissionsViaRoles()->pluck('name') : null,
+                'user' => $user ?? null,
+                'roles' => $user ? $user->getRoleNames() : null,
+                'can' => $user ? $user->getPermissionsViaRoles()->pluck('name') : null,
 
                 
             ],
@@ -47,8 +49,16 @@ class HandleInertiaRequests extends Middleware
             ],
             'periode' => $this->periode(),
         ];
-        if ($request->user()) {{
-            $datas['sekolahs'] = $this->sekolahs($request->user());
+        if ($user) {{
+            $mapels = ['guru_agama','guru_pjok', 'guru_inggris'];
+            $datas['sekolahs'] = $this->sekolahs($user);
+            
+            if ($user->hasRole('guru_kelas')) {
+
+                $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas')->get();
+            } elseif(in_array($user->getRoleNames()[0], $mapels)) {
+                
+            }
         }}
 
         return $datas;

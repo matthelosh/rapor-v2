@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Siswa;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class SiswaService 
@@ -22,6 +23,7 @@ class SiswaService
     }
 
     public function store($data, $file) {
+        
         if ($file !== null) {
             $foto_file = $file;
             $foto_name = $data['nisn'].'.'.$foto_file->extension();
@@ -31,8 +33,8 @@ class SiswaService
             $siswa = Siswa::updateOrCreate(
                 [
                 'id' => $data['id'] ?? null,
+                ],[
                 'nisn' => $data['nisn'],
-            ],[
                 'nis' => $data['nis'] ?? null,
                 'nik' => $data['nik'] ?? null,
                 'nama' => $data['nama'],
@@ -56,6 +58,7 @@ class SiswaService
             $datas = $request->datas;
             foreach($datas as $data)
             {
+                $data['sekolah_id'] = ($request->user()->hasRole('admin') && $data['sekolah_id']) ? $data['sekolah_id'] : $request->user()->userable->sekolahs[0]->npsn;
                 $store = $this->store($data, null);
             }
 

@@ -64,6 +64,10 @@ Route::middleware('auth')->group(function () {
             Route::put("/", [RombelController::class, 'update'])->name('dashboard.rombel.update');
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });
+
+        Route::prefix("nilai")->group(function() {
+            Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai');
+        });
     });
 });
 

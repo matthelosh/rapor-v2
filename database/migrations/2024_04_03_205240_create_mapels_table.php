@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('kode', 10);
             $table->string('label', 60);
-            $table->enum('fase', ['A','B','C']);
-            $table->string('agama', 20)->nullable();
+            $table->string('fase',50);
+            $table->enum('kategori',['Wajib', 'Mulok']);
+            $table->string('deskripsi', 191);
             $table->timestamps();
         });
     }

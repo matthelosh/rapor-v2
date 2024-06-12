@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('kode', 20);
             $table->text('teks');
-            $table->text('deskripsi')->nullable();
+            $table->string('elemen', 191);
             $table->enum('fase', ['A','B','C']);
             $table->enum('tingkat', ['1','2','3','4','5','6']);
             $table->enum('semester', ['1','2']);

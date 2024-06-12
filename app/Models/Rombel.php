@@ -32,4 +32,5 @@ class Rombel extends Model
     public function siswas() {
         return $this->belongsToMany(Siswa::class, 'rombel_siswa');
     }
+
 }

@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Tp extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'kode',
+        'teks',
+        'elemen',
+        'fase',
+        'tingkat',
+        'semester',
+        'agama',
+    ];
 }

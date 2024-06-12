@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Guru;
+use App\Models\Sekolah;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class GuruSeeder extends Seeder
 {
@@ -13,115 +15,15 @@ class GuruSeeder extends Seeder
      */
     public function run(): void
     {
-        $guru_kelas = Role::where('name', 'guru_kelas')->first();
-        $guru_agama = Role::where('name', 'guru_agama')->first();
-        $guru_pjok = Role::where('name', 'guru_pjok')->first();
-        $guru_inggris = Role::where('name', 'guru_inggris')->first();
-        $guru_kelas->givePermissionTo([
-            'read user',
-            'update user',
-            'read school',
-            'read guru',
-            'update guru',
-            'add siswa',
-            'read siswa',
-            'update siswa',
-            'delete siswa',
-            'read rombel',
-            'add rombel',
-            'update rombel',
-            'delete rombel',
-            'read tp',
-            'add tp',
-            'update tp',
-            'delete tp',
-            'read atp',
-            'add atp',
-            'update atp',
-            'delete atp',
-            'read materi',
-            'add materi',
-            'update materi',
-            'delete materi',
-            'read nilai',
-            'add nilai',
-            'update nilai',
-            'delete nilai'
-        ]);
-        $guru_agama->givePermissionTo([
-            'read user',
-            'update user',
-            'read school',
-            'read guru',
-            'update guru',
-            'read siswa',
-            'read rombel',
-            'read tp',
-            'add tp',
-            'update tp',
-            'delete tp',
-            'read atp',
-            'add atp',
-            'update atp',
-            'delete atp',
-            'read materi',
-            'add materi',
-            'update materi',
-            'delete materi',
-            'read nilai',
-            'add nilai',
-            'update nilai',
-            'delete nilai'
-        ]);
-        $guru_pjok->givePermissionTo([
-            'read user',
-            'update user',
-            'read school',
-            'read guru',
-            'update guru',
-            'read siswa',
-            'read rombel',
-            'read tp',
-            'add tp',
-            'update tp',
-            'delete tp',
-            'read atp',
-            'add atp',
-            'update atp',
-            'delete atp',
-            'read materi',
-            'add materi',
-            'update materi',
-            'delete materi',
-            'read nilai',
-            'add nilai',
-            'update nilai',
-            'delete nilai'
-        ]);
-        $guru_inggris->givePermissionTo([
-            'read user',
-            'update user',
-            'read school',
-            'read guru',
-            'update guru',
-            'read siswa',
-            'read rombel',
-            'read tp',
-            'add tp',
-            'update tp',
-            'delete tp',
-            'read atp',
-            'add atp',
-            'update atp',
-            'delete atp',
-            'read materi',
-            'add materi',
-            'update materi',
-            'delete materi',
-            'read nilai',
-            'add nilai',
-            'update nilai',
-            'delete nilai'
-        ]);
+        $sekolahs = Sekolah::all();
+        $ids = [];
+        foreach($sekolahs as $sekolah) {
+            array_push($ids, $sekolah->id);
+        }
+
+        Guru::factory(50)->create()->each(function($s) use($ids) {
+            // 'sekolahs' => $this->faker->randomElement($sekolahs->pluck('id')),
+            $s->sekolahs()->attach(array_rand($ids,1));
+        });
     }
 }

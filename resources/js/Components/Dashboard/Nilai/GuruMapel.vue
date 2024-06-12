@@ -1,0 +1,72 @@
+<script setup>
+import { ref, computed } from 'vue'
+import { usePage } from '@inertiajs/vue3'
+import { ElCard } from 'element-plus'
+const page = usePage()
+import FormNilaiHarian from './FormNilaiHarian.vue';
+
+const selectedRombel = ref({})
+const selectedSekolah = ref({})
+const mode = ref('home')
+
+const closeForm = () => {
+    mode.value = 'home'
+    selectedRombel.value = {}
+    selectedSekolah.value = {}
+}
+
+const open = (rombel, komponen, sekolah) => {
+    selectedRombel.value = rombel
+    selectedSekolah.value = sekolah
+    mode.value = komponen
+}
+</script>
+
+<template>
+    <div>
+        <el-card>
+            <template #header>
+                <div class="card-toolbar flex items-center justify-between">
+                    <div class="title">
+                        <h3 class="text-lg font-bold">Penilaian Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.deskripsi }}</h3>
+                    </div>
+                    <div class="toolbar-items">
+                        
+                    </div>
+                </div>
+            </template>
+            <div class="card-body">
+
+                <!-- {{ page.props.datas }} -->
+                <el-collapse>
+                    <template v-for="(sekolah, s) in page.props.datas" :key="s">
+                        <el-collapse-item>
+                            <template #title>
+                                <span>{{ sekolah.npsn }} | {{ sekolah.nama }} | {{ sekolah.ks?.nama }}</span>
+                            </template>
+                            <el-table :data="sekolah.rombels">
+                                <el-table-column label="Rombel" prop="label" />
+                                <el-table-column label="Jumlah Siswa">
+                                    <template #default="scope">
+                                        {{ scope.row.siswas?.length }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="Entri Nilai">
+                                    <template #default="scope">
+                                        <span class="flex items-center">
+                                            <el-button type="primary" rounded size="small" @click="open(scope.row, 'harian', sekolah)">Nilai Harian</el-button>
+                                            <el-button type="primary" rounded size="small">PTS</el-button>
+                                            <el-button type="primary" rounded size="small">PAS</el-button>
+                                        </span>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
+                    </template>
+                </el-collapse>
+                
+            </div>
+        </el-card>
+        <FormNilaiHarian v-if="mode == 'harian'" :open="mode == 'harian'" :rombel="selectedRombel" :sekolah="selectedSekolah" @close="closeForm" />
+    </div>
+</template>
