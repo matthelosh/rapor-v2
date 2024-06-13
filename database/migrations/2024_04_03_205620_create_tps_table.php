@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tps', function (Blueprint $table) {
             $table->id();
+            $table->string('mapel_id', 20);
             $table->string('kode', 20);
             $table->text('teks');
             $table->string('elemen', 191);

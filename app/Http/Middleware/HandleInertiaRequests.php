@@ -55,7 +55,7 @@ class HandleInertiaRequests extends Middleware
             
             if ($user->hasRole('guru_kelas')) {
 
-                $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas')->get();
+                $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas', 'sekolah')->get();
             } elseif(in_array($user->getRoleNames()[0], $mapels)) {
                 
             }

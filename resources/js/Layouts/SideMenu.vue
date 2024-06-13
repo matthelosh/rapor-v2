@@ -66,6 +66,12 @@ const items = ref([
                 url: '/dashboard/rombel',
                 roles: ['admin', 'ops', 'guru_kelas']
             },
+            {
+                label: 'Data Pembelajaran',
+                icon: 'bookshelf',
+                url: '/dashboard/pembelajaran',
+                roles: ['admin', 'ops', 'guru_kelas']
+            },
         ]
     },
     {

@@ -1,9 +1,28 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { ElCard } from 'element-plus'
 const page = usePage()
 
+const FormNilaiHarian = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiHarian.vue'))
+
+const mode = ref('home')
+const selectedRombel = ref({})
+const selectedMapel = ref({})
+
+
+const openForm = (mapel, rombel, komponen) => {
+    // console.log(rombel, mapel, komponen)
+    selectedRombel.value = rombel
+    selectedMapel.value = mapel
+    mode.value = komponen
+}
+
+const closeForm = () => {
+    selectedRombel.value = {}
+    selectedMapel.value = {}
+    mode.value = 'home'
+}
 </script>
 
 <template>
@@ -20,22 +39,32 @@ const page = usePage()
                 </div>
             </template>
             <div class="card-body">
-
+                <el-collapse accordion>
+                    <template v-for="(rombel,r) in page.props.rombels" :key="r">
+                        <el-collapse-item>
+                            <template #title>
+                                <span>{{ rombel.label }} | {{ rombel.sekolah.nama }} | {{ rombel.siswas.length }} Siswa</span>
+                            </template>
+                            
+                            <el-table :data="page.props.datas">
+                                <el-table-column label="Mata Pelajaran" prop="label" />
+                                <el-table-column label="Kategori" prop="kategori" />
+                                <el-table-column label="Entri Nilai">
+                                    <template #default="scope">
+                                        <span class="flex items-center">
+                                            <el-button type="primary" rounded size="small" @click="openForm(scope.row, rombel, 'harian')">Nilai Harian</el-button>
+                                            <el-button type="primary" rounded size="small">PTS</el-button>
+                                            <el-button type="primary" rounded size="small">PAS</el-button>
+                                        </span>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
+                    </template>
+                </el-collapse>
                 <!-- {{ page.props.rombels }} -->
-                <el-table :data="page.props.datas">
-                    <el-table-column label="Mata Pelajaran" prop="label" />
-                    <el-table-column label="Kategori" prop="kategori" />
-                    <el-table-column label="Entri Nilai">
-                        <template #default="scope">
-                            <span class="flex items-center">
-                                <el-button type="primary" rounded size="small">Nilai Harian</el-button>
-                                <el-button type="primary" rounded size="small">PTS</el-button>
-                                <el-button type="primary" rounded size="small">PAS</el-button>
-                            </span>
-                        </template>
-                    </el-table-column>
-                </el-table>
             </div>
         </el-card>
+        <FormNilaiHarian v-if="mode == 'harian'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'harian'" />
     </div>
 </template>

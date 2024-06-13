@@ -10,6 +10,7 @@ class Tp extends Model
     use HasFactory;
 
     protected $fillable = [
+        'mapel_id',
         'kode',
         'teks',
         'elemen',

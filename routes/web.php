@@ -65,6 +65,10 @@ Route::middleware('auth')->group(function () {
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });
 
+        Route::prefix('pembelajaran')->group(function() {
+            Route::get('/', [PembelajaranController::class, 'home'])->name('dashboard.pembelajaran');
+        });
+
         Route::prefix("nilai")->group(function() {
             Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai');
         });
