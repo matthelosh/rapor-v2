@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix('pembelajaran')->group(function() {
             Route::get('/', [PembelajaranController::class, 'home'])->name('dashboard.pembelajaran');
+            Route::post('/elemen/impor', [ElemenController::class, 'impor'])->name('dashboard.pembelajaran.elemen.impor');
         });
 
         Route::prefix("nilai")->group(function() {

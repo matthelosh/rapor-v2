@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Elemen extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'mapel_id',
+        'fase',
+        'nama',
+        'agama'
+    ];
 }

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Elemen;
+use App\Models\Tp;
+use Inertia\Inertia;
+use App\Models\Mapel;
 use App\PembelajaranTrait;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class PembelajaranController extends Controller implements HasMiddleware
 {
@@ -13,7 +17,10 @@ class PembelajaranController extends Controller implements HasMiddleware
    
 
     public function home() {
-        
+        return Inertia::render('Dash/Pembelajaran', [
+            'mapels' => Mapel::with('tps')->get(),
+            'elemens' => Elemen::all(),
+        ]);
     }
 
     public static function middleware(): Array 

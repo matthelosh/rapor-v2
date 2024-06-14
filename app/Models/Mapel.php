@@ -16,4 +16,12 @@ class Mapel extends Model
         'kategori',
         'deskripsi'
     ];
+
+    public function tps() {
+        return $this->hasMany(Tp::class);
+    }
+
+    public function elemens() {
+        return $this->hasMany(Elemen::class, 'mapel_id','kode');
+    }
 }

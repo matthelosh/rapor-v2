@@ -18,9 +18,22 @@ class ElemenController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function impor(Request $request)
     {
-        //
+        try {
+            foreach($request->elemens as $elemen)
+            {
+                Elemen::create([
+                    'mapel_id' => $elemen['mapel_id'],
+                    'fase' => $elemen['fase'],
+                    'nama' => $elemen['nama'],
+                    'agama' => $elemen['agama'] ?? null
+                ]);
+            }
+            return back()->with("message", "Elemen diimpor");
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

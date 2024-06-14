@@ -5,7 +5,7 @@ import {ElContainer, ElHeader, ElAside,ElMain } from 'element-plus'
 import SideItem from './SideMenu.vue'
 </script>
 <template>
-<div class="common-layout h-screen w-screen bg-slate-300">
+<div class="common-layout h-screen w-screen ">
     <el-container class="h-full w-full">
       <el-aside width="15%" class=" h-full">
         <div class="side-content h-full  bg-slate-100">
