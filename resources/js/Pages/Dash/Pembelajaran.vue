@@ -28,7 +28,46 @@ const onFileElemenPicked = async(e) => {
     await router.post(route('dashboard.pembelajaran.elemen.impor'), {elemens: datas}, {
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
-            router.reload({only: 'mapels'})
+            router.reload({only: ['mapels']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                }, 500)
+            })
+        }
+    })
+}
+const onFileTpPicked = async(e) => {
+    // console.log(mapel)
+    const file = e.target.files[0]
+    const ab = await file.arrayBuffer();
+
+    const wb = read(ab);
+
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    let datas = utils.sheet_to_json(ws)
+    await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: datas}, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+            router.reload({only: ['mapels']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
+const hapusTp = async(id) => {
+    router.delete(route('dashboard.pembelajaran.tp.destroy', {id: id}), {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+            router.reload({only: ['mapels']})
         },
         onError: errs => {
             Object.keys(errs).forEach(k => {
@@ -49,7 +88,7 @@ const onFileElemenPicked = async(e) => {
     </template>
     <el-card shadow="never">
         <template #header>
-            <span class="title">Konten Pembelajaran</span>
+            <span class="title font-bold text-lg">Konten Pembelajaran</span>
         </template>
         <div class="card-body ">
             <el-row>
@@ -57,8 +96,12 @@ const onFileElemenPicked = async(e) => {
                     <div class="card border">
                         <div class="card-header bg-slate-100 p-2 flex items-center justify-between">
                             <h3 class="font-bold">Mata Pelajaran</h3>
-                            <el-button size="small" type="primary" @click="$refs.filElemen.click()">Impor Elemen</el-button>
-                            <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileElemenPicked" />
+                            <span>
+                                <el-button size="small" type="primary" @click="$refs.filElemen.click()">Impor Elemen</el-button>
+                                <el-button type="success" size="small" @click="$refs.fileTp.click()">Impor TP</el-button>
+                                <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileElemenPicked" />
+                                <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileTpPicked" />
+                            </span>
                         </div>
                         <div class="card-body p-2">
                         <template v-for="(mapel, m) in page.props.mapels" :key="m">
@@ -72,17 +115,23 @@ const onFileElemenPicked = async(e) => {
                                                 <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
                                                 <el-button-group>
                                                     <el-button type="primary" size="small" @click="tambah(mapel)">Tambah TP</el-button>
-                                                    <el-button type="success" size="small">Import TP</el-button>
+                                                    
                                                 </el-button-group>
                                         </div>
                                         <el-table :data="mapel.tps" class="shadow">
-                                            <el-table-column label="#" type="index"></el-table-column>
-                                            <el-table-column label="Fase" prop="fase" />
-                                            <el-table-column label="Kelas" prop="tingkat" />
+                                            <el-table-column label="#" type="index" width="50" />
+                                            <el-table-column label="Fase" prop="fase" width="55" />
+                                            <el-table-column label="Kelas" prop="tingkat" width="60" />
+                                            <el-table-column label="Agama" prop="agama" width="85" v-if="mapel.kode == 'pabp'" />
+                                            <el-table-column label="Kode" prop="kode" width="100" />
                                             <el-table-column label="Teks" prop="teks" />
-                                            <el-table-column label="Opsi">
+                                            <el-table-column label="Opsi" width="100">
                                                 <template #default="scope">
-                                                    
+                                                    <span>
+                                                        <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id)">
+                                                            <Icon icon="mdi-close" />
+                                                        </el-button>
+                                                    </span>
                                                 </template>
                                             </el-table-column>
             

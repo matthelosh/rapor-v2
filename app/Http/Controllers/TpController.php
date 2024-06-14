@@ -18,11 +18,27 @@ class TpController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function impor(Request $request)
     {
-        //
+        try {
+            foreach($request->tps as $tp)
+            {
+                Tp::create([
+                    'mapel_id' => $tp['mapel_id'],
+                    'kode' => $tp['kode'],
+                    'teks' => $tp['teks'],
+                    'elemen' => $tp['elemen'],
+                    'fase' => $tp['fase'],
+                    'tingkat' => $tp['tingkat'],
+                    'semester' => $tp['semester'],
+                    'agama' => $tp['agama'] ?? null,
+                ]);
+            }
+            return back()->with("message", "Elemen diimpor");
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -58,8 +74,14 @@ class TpController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tp $tp)
+    public function destroy(Tp $tp, $id)
     {
-        //
+        try {
+           $tp->destroy($id);
+
+           return back()->with('message', 'Tp Dihapus');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

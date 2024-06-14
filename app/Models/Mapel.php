@@ -18,7 +18,7 @@ class Mapel extends Model
     ];
 
     public function tps() {
-        return $this->hasMany(Tp::class);
+        return $this->hasMany(Tp::class, 'mapel_id','kode');
     }
 
     public function elemens() {

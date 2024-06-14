@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tps', function (Blueprint $table) {
             $table->id();
             $table->string('mapel_id', 20);
-            $table->string('kode', 20);
+            $table->string('kode', 20)->unique();
             $table->text('teks');
             $table->string('elemen', 191);
             $table->enum('fase', ['A','B','C']);
