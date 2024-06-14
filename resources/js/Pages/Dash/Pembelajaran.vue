@@ -63,6 +63,27 @@ const onFileTpPicked = async(e) => {
     })
 }
 
+const simpanTp = async() => {
+    // console.log(newTp.value)
+    newTp.value.mapel_id = selectedMapel.value.kode
+    router.post(route('dashboard.pembelajaran.tp.store'), newTp.value, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+            router.reload({only: ['mapels']})
+            newTp.value = {}
+            selectedMapel.value = {}
+            formTambah.value = false
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
 const hapusTp = async(id) => {
     router.delete(route('dashboard.pembelajaran.tp.destroy', {id: id}), {
         onSuccess: (page) => {
@@ -78,6 +99,7 @@ const hapusTp = async(id) => {
         }
     })
 }
+
 </script>
 
 <template>
@@ -201,7 +223,7 @@ const hapusTp = async(id) => {
                     </el-col>
                 </el-row>
                 <el-row align="middle" justify="center" class="mt-4">
-                    <el-button type="primary" size="small">Simpan</el-button>
+                    <el-button type="primary" size="small" @click="simpanTp">Simpan</el-button>
                 </el-row>
             </el-form>
         </div>

@@ -68,12 +68,14 @@ Route::middleware('auth')->group(function () {
         Route::prefix('pembelajaran')->group(function() {
             Route::get('/', [PembelajaranController::class, 'home'])->name('dashboard.pembelajaran');
             Route::post('/elemen/impor', [ElemenController::class, 'impor'])->name('dashboard.pembelajaran.elemen.impor');
+            Route::post('/tp', [TpController::class, 'index'])->name('dashboard.pembelajaran.tp.index');
             Route::post('/tp/impor', [TpController::class, 'impor'])->name('dashboard.pembelajaran.tp.impor');
+            Route::post('/tp/store', [TpController::class, 'store'])->name('dashboard.pembelajaran.tp.store');
             Route::delete('/tp/{id}', [TpController::class, 'destroy'])->name('dashboard.pembelajaran.tp.destroy');
         });
 
         Route::prefix("nilai")->group(function() {
-            Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai');
+            Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
         });
     });
 });

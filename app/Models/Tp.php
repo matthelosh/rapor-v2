@@ -19,4 +19,5 @@ class Tp extends Model
         'semester',
         'agama',
     ];
+
 }

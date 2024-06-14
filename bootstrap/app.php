@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,5 +29,22 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function(UnauthorizedException $e, Request $request) {
+            return Inertia::render('Error', [
+                'status' => $e->getStatusCode(),
+                'message' => $e->getMessage(),
+                
+            ])->toResponse($request)
+            ->setStatusCode($e->getStatusCode());
+        });
+
+
+        // $exceptions->respond(function (Response $response) {
+        //     $statusCode = $response->getStatusCode();
+        //     return Inertia::render('Error', [
+        //         'status' => $statusCode,
+        //     ]);
+
+        //     return $response;
+        // });
     })->create();

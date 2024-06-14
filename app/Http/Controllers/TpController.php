@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tp;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class TpController extends Controller
@@ -10,9 +11,19 @@ class TpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $tps  =Tp::where([
+                ['mapel_id', '=', $request->mapelId],
+                ['tingkat', '=', $request->tingkat],
+                ['semester', '=', $request->semester],
+                ['agama', '=', $request->agama],
+            ])->get();
+            return response()->json(['tps' => $tps]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -44,7 +55,25 @@ class TpController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            Tp::updateOrCreate(
+                [
+                    'id' => $request['id'] ?? null,
+                ], [
+                    'mapel_id' => $request['mapel_id'],
+                    'kode' => $request['kode'] ?? strtolower(Str::random(8)),
+                    'teks' => $request['teks'],
+                    'elemen' => $request['elemen'],
+                    'fase' => $request['fase'] ?? (in_array($request['tingkat'], ['1', '2']) ? 'A' : (in_array($request['tingkat'], ['3','4']) ? 'B' : 'C')),
+                    'tingkat' => $request['tingkat'],
+                    'semester' => $request['semester'],
+                    'agama' => $request['agama'] ?? null,
+                ]
+            );
+            return back()->with('message', "TP Disimpan");
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

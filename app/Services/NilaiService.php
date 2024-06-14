@@ -6,9 +6,12 @@ use App\Models\Mapel;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class NilaiService 
 {
+
+   
     /** @var \App\Models\User */
     // private $user = auth()->user();
 
@@ -36,8 +39,10 @@ class NilaiService
             //         array_push($datas, $rombel);
             //     }
             // }
-        } elseif ($user->hasRole('ops')) {
+        } elseif ($user->hasRole('ops') ) {
             $datas = Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('rombels.siswas', 'rombels.guru')->first();
+        } elseif($user->hasRole('admin')) {
+            $datas = Sekolah::all();
         }
 
         return $datas;

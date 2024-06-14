@@ -7,7 +7,14 @@ import FormNilaiHarian from './FormNilaiHarian.vue';
 
 const selectedRombel = ref({})
 const selectedSekolah = ref({})
+
 const mode = ref('home')
+
+const mapel = computed(() => {
+    const mapels = ['pabp', 'pjok', 'bing']
+    const roles = ['guru_agama', 'guru_pjok', 'guru_inggris']
+    return {kode: mapels[roles.findIndex(role => role === page.props.auth.roles[0])]}
+})
 
 const closeForm = () => {
     mode.value = 'home'
@@ -18,6 +25,7 @@ const closeForm = () => {
 const open = (rombel, komponen, sekolah) => {
     selectedRombel.value = rombel
     selectedSekolah.value = sekolah
+
     mode.value = komponen
 }
 </script>
@@ -67,6 +75,6 @@ const open = (rombel, komponen, sekolah) => {
                 
             </div>
         </el-card>
-        <FormNilaiHarian v-if="mode == 'harian'" :open="mode == 'harian'" :rombel="selectedRombel" :sekolah="selectedSekolah" @close="closeForm" />
+        <FormNilaiHarian v-if="mode == 'harian'" :open="mode == 'harian'" :rombel="selectedRombel" :sekolah="selectedSekolah" :mapel="mapel" @close="closeForm" />
     </div>
 </template>

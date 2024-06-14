@@ -37,37 +37,37 @@ const items = ref([
         ],
         children: [
             {
-                label: 'Data Operator',
+                label: 'Operator',
                 icon: 'laptop-account',
                 url: '/dashboard/operator',
                 roles: ['admin', 'kepala_sekolah']
             },
             {
-                label: 'Data Sekolah',
+                label: 'Sekolah',
                 icon: 'city-variant',
                 url: '/dashboard/sekolah',
                 roles: ['admin', 'ops', 'kepala_sekolah',]
             },
             {
-                label: 'Data Guru',
+                label: 'Guru',
                 icon: 'account-tie',
                 url: '/dashboard/guru',
                 roles: ['admin', 'ops', 'kepala_sekolah', 'guru_kelas','guru_agama','guru_pjok','guru_inggris']
             },
             {
-                label: 'Data Siswa',
+                label: 'Siswa',
                 icon: 'human-child',
                 url: '/dashboard/siswa',
                 roles: ['admin', 'ops', 'guru_kelas']
             },
             {
-                label: 'Data Rombel',
+                label: 'Rombel',
                 icon: 'google-classroom',
                 url: '/dashboard/rombel',
                 roles: ['admin', 'ops', 'guru_kelas']
             },
             {
-                label: 'Data Pembelajaran',
+                label: 'Pembelajaran',
                 icon: 'bookshelf',
                 url: '/dashboard/pembelajaran',
                 roles: ['admin', 'ops', 'guru_kelas']
@@ -151,44 +151,46 @@ const showItem = (roles) => {
 
 <template>
     <div class="p-0">
-        <div class="avatar bg-pink-200 relative">
+        <div class="avatar relative">
             <img :src="avatar()" class="rounded" />
             <h3 class="absolute bottom-0 bg-sky-800 text-center text-white font-black tracking-wide w-full py-3 px-2 bg-opacity-90">{{ page.props.auth.user.userable ? page.props.auth.user.userable.nama : page.props.auth.user.name}}</h3>
         </div>
         <div class="menu-item py-2 px-4">
             <el-divider>Menu</el-divider>
-            <ul>
-                <template v-for="(item, i) in items" :key="i">
-                    <li v-if="item.children && item.children.length < 1 && showItem(item.roles)">
-                        <Link :href="item.url" :class="{ 'active' : $page.url === item.url}" class="flex items-center gap-1">
-                            <Icon :icon="`mdi:${item.icon}`" />
-                            <span>{{ item.label }}</span>
-                        </Link>
-                    </li>
-                    <li v-else class="group">
-                        <a :href="item.url" class="flex justify-between items-center gap-1 text-slate-600">
-                            <span class="flex items-center gap-1">
+            <el-scrollbar height="300">
+                <ul>
+                    <template v-for="(item, i) in items" :key="i">
+                        <li v-if="item.children && item.children.length < 1 && showItem(item.roles)">
+                            <Link :href="item.url" :class="{ 'active' : $page.url === item.url}" class="flex items-center gap-1">
                                 <Icon :icon="`mdi:${item.icon}`" />
                                 <span>{{ item.label }}</span>
-                            </span>
-                            <Icon icon="mdi:chevron-up" />
-                        </a>
-                        <ul class="pl-4 pt-1 ">
-                            <template  v-for="(sub, s) in item.children" :key="i+'-'+s">
-                                <li v-if="showItem(sub.roles)">
-                                    <!-- <span>{{ sub.roles }}</span> -->
-                                    <Link :href="sub.url" :class="{ 'active' : $page.url === sub.url}" class="flex items-center gap-1">
-                                        <Icon :icon="`mdi:${sub.icon}`" />
-                                        <span>{{ sub.label }}</span>
-                                        
-                                        <!-- <Icon icon="mdi:chart" -->
-                                    </Link>
-                                </li>
-                            </template>
-                        </ul>
-                    </li>
-                </template>
-            </ul>
+                            </Link>
+                        </li>
+                        <li v-else class="group">
+                            <a :href="item.url" class="flex justify-between items-center gap-1 text-slate-600">
+                                <span class="flex items-center gap-1">
+                                    <Icon :icon="`mdi:${item.icon}`" />
+                                    <span>{{ item.label }}</span>
+                                </span>
+                                <Icon icon="mdi:chevron-up" />
+                            </a>
+                            <ul class="pl-4 pt-1 ">
+                                <template  v-for="(sub, s) in item.children" :key="i+'-'+s">
+                                    <li v-if="showItem(sub.roles)">
+                                        <!-- <span>{{ sub.roles }}</span> -->
+                                        <Link :href="sub.url" :class="{ 'active' : $page.url === sub.url}" class="flex items-center gap-1">
+                                            <Icon :icon="`mdi:${sub.icon}`" />
+                                            <span>{{ sub.label }}</span>
+                                            
+                                            <!-- <Icon icon="mdi:chart" -->
+                                        </Link>
+                                    </li>
+                                </template>
+                            </ul>
+                        </li>
+                    </template>
+                </ul>
+            </el-scrollbar>
         </div>
     </div> 
 </template>
