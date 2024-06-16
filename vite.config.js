@@ -26,4 +26,16 @@ export default defineConfig({
             resolvers: [ElementPlusResolver()]
         })
     ],
+
+    build: {
+        rollupOptions: {
+            output: {
+                assetFileNames: (assetInfo) => {
+                    return assetInfo.name == 'app.css' ? 'assets/app.css' : 'assets/'+assetInfo.name;
+                }
+            }
+        },
+        minify: process.env.APP_ENV !== 'local' ? true : false,
+        cssCodeSplit: process.env.APP_ENV === 'local' ? false : undefined
+    }
 });

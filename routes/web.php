@@ -39,12 +39,12 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("guru")->group(function() {
             Route::get("/", [GuruController::class, 'index'])->name('dashboard.guru');
-            Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store');
+            Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store')->middleware(['role:admin|ops']);
             Route::post('/get', [GuruController::class, 'show'])->name('dashboard.guru.show');
             Route::put('/', [GuruController::class, 'update'])->name('dashboard.guru.update');
             Route::post('/impor', [GuruController::class, 'impor'])->name('dashboard.guru.impor');
-            Route::post('/account/add', [GuruController::class, 'addAccount'])->name('dashboard.guru.account.add');
-            Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy');
+            Route::post('/account/add', [GuruController::class, 'addAccount'])->name('dashboard.guru.account.add')->middleware(['role:admin|ops']);
+            Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy')->middleware(['role:admin|ops']);
         });
 
         Route::prefix("siswa")->group(function() {
@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("nilai")->group(function() {
             Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
+            Route::post("/", [NilaiController::class, "index"])->name('dashboard.nilai.index')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
+            Route::post("/store", [NilaiController::class, "store"])->name('dashboard.nilai.store')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
         });
     });
 });

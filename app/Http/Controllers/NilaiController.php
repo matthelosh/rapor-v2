@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Nilai;
+use App\NilaiTrait;
 use App\Services\NilaiService;
 use Illuminate\Http\Request;
 
 class NilaiController extends Controller 
 {
-    
+    use NilaiTrait;
 
     public function home(Request $request, NilaiService $nilaiService) {
         
@@ -21,9 +22,10 @@ class NilaiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $nilais = $this->indexNilai($request);
+        return response()->json($nilais);
     }
 
     /**
@@ -39,7 +41,14 @@ class NilaiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $store = $this->simpanNilai($request);
+
+            return back()->with('message', $store);
+        } catch (\Throwable $th)
+        {
+            throw($th);
+        }
     }
 
     /**

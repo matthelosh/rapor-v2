@@ -140,12 +140,13 @@ const hapusTp = async(id) => {
                                                     
                                                 </el-button-group>
                                         </div>
-                                        <el-table :data="mapel.tps" class="shadow">
+                                        <el-table :data="mapel.tps" class="shadow" height="300">
                                             <el-table-column label="#" type="index" width="50" />
                                             <el-table-column label="Fase" prop="fase" width="55" />
                                             <el-table-column label="Kelas" prop="tingkat" width="60" />
+                                            <el-table-column label="Sem" prop="semester" width="60" />
                                             <el-table-column label="Agama" prop="agama" width="85" v-if="mapel.kode == 'pabp'" />
-                                            <el-table-column label="Kode" prop="kode" width="100" />
+                                            <el-table-column label="Kode" prop="kode" width="125" />
                                             <el-table-column label="Teks" prop="teks" />
                                             <el-table-column label="Opsi" width="100">
                                                 <template #default="scope">
