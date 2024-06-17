@@ -89,7 +89,7 @@ const items = ref([
             {
                 label: 'Ledger',
                 icon: 'spreadsheet',
-                url: '#',
+                url: '/dashboard/ledger',
                 roles: ['admin', 'ops', 'guru_kelas', 'kepala_sekolah']
             },
         ]

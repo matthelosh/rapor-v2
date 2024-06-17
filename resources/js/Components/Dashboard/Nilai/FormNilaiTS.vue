@@ -110,7 +110,7 @@ const unduhFormat = async() => {
     const ws = utils.json_to_sheet(data)
     const wb = utils.book_new()
     utils.book_append_sheet(wb, ws, "PTS")
-    writeFile(wb, "Format Impor Nilai PTS Kelas "+props.rombel.label+" Semester "+ page.props.periode.semester.label + page.props.periode.tapel.label+".xlsx")
+    writeFile(wb, "Format Impor Nilai PTS "+ props.mapel.label +"  "+props.rombel.label+" Semester "+ page.props.periode.semester.label +" "+ page.props.periode.tapel.label+".xlsx")
 
 }
 
@@ -134,10 +134,9 @@ onBeforeMount(async() => {
                 <div>
                     <p>Nilai Tengah Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.label }}</p>
                     <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
-                    <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span>
                     <p>
                         {{ props.rombel.label }} 
-                        <span v-if="role !== 'guru_kelas'">{{ props.sekolah.nama }}</span>
+                        <span>{{ role !== 'guru_kelas' ? props.sekolah.nama : props.rombel.sekolah.nama }}</span>
                     </p>
                 </div>
                 <div class="items flex items-start gap-6">

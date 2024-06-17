@@ -15,7 +15,15 @@ const tambah = (mapel) => {
     formTambah.value = true
 }
 
+const closeForm = () => {
+    selectedMapel.value = ''
+    newTp.value = {}
+    formTambah.value = false
+}
+
 const newTp = ref({})
+
+const role = computed(() => page.props.auth.roles[0])
 
 const onFileElemenPicked = async(e) => {
     const file = e.target.files[0]
@@ -61,6 +69,12 @@ const onFileTpPicked = async(e) => {
             })
         }
     })
+}
+
+const editTp = (item, mapel) => {
+    selectedMapel.value = mapel
+    newTp.value = item
+    formTambah.value = true
 }
 
 const simpanTp = async() => {
@@ -119,8 +133,8 @@ const hapusTp = async(id) => {
                         <div class="card-header bg-slate-100 p-2 flex items-center justify-between">
                             <h3 class="font-bold">Mata Pelajaran</h3>
                             <span>
-                                <el-button size="small" type="primary" @click="$refs.filElemen.click()">Impor Elemen</el-button>
-                                <el-button type="success" size="small" @click="$refs.fileTp.click()">Impor TP</el-button>
+                                <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
+                                <el-button type="success" size="small" @click="$refs.fileTp.click()" :disabled="role !== 'admin'">Impor TP</el-button>
                                 <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileElemenPicked" />
                                 <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileTpPicked" />
                             </span>
@@ -136,22 +150,26 @@ const hapusTp = async(id) => {
                                         <div class="collapse-body--tile flex justify-between mb-2">
                                                 <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
                                                 <el-button-group>
-                                                    <el-button type="primary" size="small" @click="tambah(mapel)">Tambah TP</el-button>
+                                                    <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="role !== 'admin'">Tambah TP</el-button>
                                                     
                                                 </el-button-group>
                                         </div>
-                                        <el-table :data="mapel.tps" class="shadow" height="300">
+                                        <el-table :data="mapel.tps" class="shadow" height="400">
                                             <el-table-column label="#" type="index" width="50" />
                                             <el-table-column label="Fase" prop="fase" width="55" />
                                             <el-table-column label="Kelas" prop="tingkat" width="60" />
                                             <el-table-column label="Sem" prop="semester" width="60" />
                                             <el-table-column label="Agama" prop="agama" width="85" v-if="mapel.kode == 'pabp'" />
-                                            <el-table-column label="Kode" prop="kode" width="125" />
+                                            <el-table-column label="Kode" width="125">
+                                                <template #default="scope">
+                                                    <el-button text type="primary" @click="editTp(scope.row, mapel)">{{ scope.row.kode }}</el-button>
+                                                </template>
+                                            </el-table-column>
                                             <el-table-column label="Teks" prop="teks" />
                                             <el-table-column label="Opsi" width="100">
                                                 <template #default="scope">
                                                     <span>
-                                                        <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id)">
+                                                        <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id )" :disabled="role !== 'admin'">
                                                             <Icon icon="mdi-close" />
                                                         </el-button>
                                                     </span>
@@ -170,7 +188,7 @@ const hapusTp = async(id) => {
         </div>
     </el-card>
 
-    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false">
+    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm">
         <template #header="{close}">
             <span class="flex justify-between">
                 <h3>Tambah <span class="font-black">TP</span> <small>{{ selectedMapel.label }}</small></h3>

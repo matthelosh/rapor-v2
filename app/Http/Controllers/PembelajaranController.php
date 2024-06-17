@@ -26,7 +26,7 @@ class PembelajaranController extends Controller implements HasMiddleware
     public static function middleware(): Array 
     {
         return [
-            'role:admin',
+            'role:admin|ops',
         ];
     }
 }

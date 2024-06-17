@@ -79,6 +79,10 @@ Route::middleware('auth')->group(function () {
             Route::post("/", [NilaiController::class, "index"])->name('dashboard.nilai.index')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
             Route::post("/store", [NilaiController::class, "store"])->name('dashboard.nilai.store')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
         });
+
+        Route::prefix("ledger")->group(function() {
+            Route::get("/", [LedgerController::class, "home"])->name('dashboard.ledger')->middleware('role:guru_kelas|guru_agama|guru_pjok|guru_inggris');
+        });
     });
 });
 

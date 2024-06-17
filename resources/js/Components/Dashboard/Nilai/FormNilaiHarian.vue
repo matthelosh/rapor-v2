@@ -140,11 +140,11 @@ onBeforeMount(async() => {
             <span class="flex items-center justify-between">
                 <div>
                     <small>Nilai Harian</small> <span class="text-sky-800 font-bold">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </span> 
-                    <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span>
+                    <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->
                     <small>
                         &nbsp;
                         {{ props.rombel.label }} 
-                        <span v-if="role !== 'guru_kelas'">{{ props.sekolah.nama }}</span>
+                        <span>{{ role !== 'guru_kelas' ? props.sekolah.nama : page.props.sekolahs[0].nama }}</span>
                     </small>
                 </div>
                 <div class="items flex items-center gap-6">
