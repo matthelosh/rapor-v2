@@ -4,6 +4,8 @@ import { usePage } from '@inertiajs/vue3'
 import { ElCard } from 'element-plus'
 const page = usePage()
 import FormNilaiHarian from './FormNilaiHarian.vue';
+import FormNilaiTS from './FormNilaiTS.vue'
+import FormNilaiAS from './FormNilaiAS.vue'
 
 const selectedRombel = ref({})
 const selectedSekolah = ref({})
@@ -63,8 +65,8 @@ const open = (rombel, komponen, sekolah) => {
                                     <template #default="scope">
                                         <span class="flex items-center">
                                             <el-button type="primary" rounded size="small" @click="open(scope.row, 'harian', sekolah)">Nilai Harian</el-button>
-                                            <el-button type="primary" rounded size="small">PTS</el-button>
-                                            <el-button type="primary" rounded size="small">PAS</el-button>
+                                            <el-button type="primary" rounded size="small"  @click="open(scope.row, 'sts', sekolah)">PTS</el-button>
+                                            <el-button type="primary" rounded size="small" @click="open(scope.row, 'sas', sekolah)">PAS</el-button>
                                         </span>
                                     </template>
                                 </el-table-column>
@@ -76,5 +78,7 @@ const open = (rombel, komponen, sekolah) => {
             </div>
         </el-card>
         <FormNilaiHarian v-if="mode == 'harian'" :open="mode == 'harian'" :rombel="selectedRombel" :sekolah="selectedSekolah" :mapel="mapel" @close="closeForm" />
+        <FormNilaiTS v-if="mode == 'sts'" :open="mode == 'sts'" :rombel="selectedRombel" :sekolah="selectedSekolah" :mapel="mapel" @close="closeForm" />
+        <FormNilaiAS v-if="mode == 'sas'" :open="mode == 'sas'" :rombel="selectedRombel" :sekolah="selectedSekolah" :mapel="mapel" @close="closeForm" />
     </div>
 </template>

@@ -4,14 +4,12 @@ import { usePage, router } from '@inertiajs/vue3'
 import { ElDialog, ElNotification } from 'element-plus';
 import { Icon } from '@iconify/vue'
 import axios from 'axios'
-import { read, utils, writeFile } from 'xlsx'
+import { read, utils, write, writeFile } from 'xlsx'
 const page = usePage()
 
 const props = defineProps({rombel: Object, open: Boolean, sekolah: Object, mapel: Object})
 const emit = defineEmits(['close'])
 const role = page.props.auth.roles[0]
-
-const tps = ref(['TP1','TP2', 'TP3'])
 
 const nilais = ref([])
 const siswas = ref([])
@@ -26,7 +24,7 @@ const simpan = async() => {
             agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
             semester: page.props.periode.semester.kode,
             tapel: page.props.periode.tapel.kode,
-            tipe: 'uh'
+            tipe: 'ts'
         }
     }), {siswas: siswas.value}, {
         onSuccess: (page) => {
@@ -44,24 +42,24 @@ const simpan = async() => {
     })
 }
 
-const getTps = async() => {
-    await axios.post(route('dashboard.pembelajaran.tp.index', {
-        _query: {
-            tingkat: props.rombel.tingkat,
-            mapelId: props.mapel?.kode,
-            agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
-            semester: page.props.periode.semester.kode
-        }
-    })).then(res => {
-        tps.value = res.data.tps
-        loading.value = false
-        props.rombel.siswas.forEach((siswa, s) => {
-            let ns = {}
-            tps.value.map((tp, t) => ns[tp.kode] = 0)
-            siswas.value.push({id: siswa.id, nisn: siswa.nisn, nama:siswa.nama, nilais: ns, jk: siswa.jk, agama: siswa.agama})
-        })
-    })
-}
+// const getTps = async() => {
+//     await axios.post(route('dashboard.pembelajaran.tp.index', {
+//         _query: {
+//             tingkat: props.rombel.tingkat,
+//             mapelId: props.mapel?.kode,
+//             agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
+//             semester: page.props.periode.semester.kode
+//         }
+//     })).then(res => {
+//         tps.value = res.data.tps
+//         loading.value = false
+//         props.rombel.siswas.forEach((siswa, s) => {
+//             let ns = {}
+//             tps.value.map((tp, t) => ns[tp.kode] = 0)
+//             siswas.value.push({id: siswa.id, nisn: siswa.nisn, nilais: ns})
+//         })
+//     })
+// }
 
 const getNilai = async() => {
     await axios.post(route('dashboard.nilai.index', {
@@ -72,14 +70,14 @@ const getNilai = async() => {
             agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
             semester: page.props.periode.semester.kode,
             tapel: page.props.periode.tapel.kode,
-            tipe: 'uh'
+            tipe: 'ts'
         }
     })).then( res => {
         if (res.data.length > 0) {
             siswas.value.forEach(siswa => {
                 res.data.filter(nilai => nilai.siswa_id == siswa.nisn).forEach(n => {
                     // console.log(n)
-                    siswa.nilais[n.tp_id] = n.skor
+                    siswa.nilai = n.skor
                 })
             })
         }
@@ -97,11 +95,7 @@ const onFileNilaiPicked = async(e) => {
     siswas.value.forEach(siswa => {
         datas.forEach(data => {
             if (siswa.nisn == data.nisn) {
-                Object.keys(data).forEach(k => {
-                    if(!['no','nisn','nama','jk','agama'].includes(k)) {
-                        siswa.nilais[k] = data[k]
-                    }
-                })
+                siswa.nilai = data.nilai
             }
         })
     })
@@ -110,24 +104,23 @@ const onFileNilaiPicked = async(e) => {
 
 const unduhFormat = async() => {
     let data = []
-    await siswas.value.forEach(siswa => {
-        let item = {nisn: siswa.nisn, nama: siswa.nama, jk: siswa.jk, agama: siswa.agama}
-        Object.keys(siswa.nilais).forEach((k) => {
-            item[k] = siswa.nilais[k]
-        })
-        data.push(item)
-        // console.log(siswa.nilais)
+    siswas.value.forEach(siswa => {
+        data.push({nisn: siswa.nisn, nama: siswa.nama, jk: siswa.jk, agama: siswa.agama, nilai: siswa.nilai??0})
     })
     const ws = utils.json_to_sheet(data)
     const wb = utils.book_new()
-    utils.book_append_sheet(wb, ws, "PAS")
-    writeFile(wb, "Format Impor Nilai Harian Kelas "+props.rombel.label+" Semester "+ page.props.periode.semester.label + page.props.periode.tapel.label+".xlsx")
+    utils.book_append_sheet(wb, ws, "PTS")
+    writeFile(wb, "Format Impor Nilai PTS Kelas "+props.rombel.label+" Semester "+ page.props.periode.semester.label + page.props.periode.tapel.label+".xlsx")
 
 }
 
 onBeforeMount(async() => {
-    loading.value = true
-    await getTps()
+    // loading.value = true
+    // await getTps()
+    props.rombel.siswas.forEach(siswa => {
+        siswa.nilai = 0
+        siswas.value.push(siswa)
+    })
     await getNilai()
 
 })
@@ -137,17 +130,17 @@ onBeforeMount(async() => {
 <el-dialog v-model="props.open" fullscreen @close="emit('close')" :show-close="false">
     <template #header="{ close, titleId, titleClass }">
         <span class="uppercase">
-            <span class="flex items-center justify-between">
+            <span class="flex items-start justify-between">
                 <div>
-                    <small>Nilai Harian</small> <span class="text-sky-800 font-bold">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </span> 
+                    <p>Nilai Tengah Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.label }}</p>
+                    <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
                     <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span>
-                    <small>
-                        &nbsp;
+                    <p>
                         {{ props.rombel.label }} 
                         <span v-if="role !== 'guru_kelas'">{{ props.sekolah.nama }}</span>
-                    </small>
+                    </p>
                 </div>
-                <div class="items flex items-center gap-6">
+                <div class="items flex items-start gap-6">
                     <input type="file" ref="fileNilai" accept=".xls,.xlsx,.ods" @change="onFileNilaiPicked" class="hidden" />
                     <el-button-group>
                         <el-button type="success" size="small" @click="unduhFormat">Unduh Format</el-button>
@@ -161,7 +154,7 @@ onBeforeMount(async() => {
             </span>
         </span>
     </template>
-    <div class="dialog-body">
+    <div class="dialog-body px-14">
         <el-skeleton :loading="loading" animated>
             <template #template>
                 <div v-for="d of 16" :key="d" style="width: 100%; display: flex; margin-bottom: 20px; align-items: middle;">
@@ -186,42 +179,30 @@ onBeforeMount(async() => {
                 </div>
             </template>
             <template #default>
-                <el-table :data="props.rombel.siswas" height="90vh" size="small">
+                <el-table :data="props.rombel.siswas" height="86.5vh" size="small">
                     <el-table-column type="index" label="#" width="50" fixed></el-table-column>
                     <el-table-column label="NISN" prop="nisn" width="120" fixed />
                     <el-table-column label="Nama" prop="nama" fixed />
-                    <el-table-column label="JK" width="60">
+                    <el-table-column label="Jenis KelaminK" width="100">
                         <template #default="scope">
-                            {{ scope.row.jk.substring(0,1) }}
+                            {{ scope.row.jk }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Agm" width="55">
+                    <el-table-column label="Agama" width="100">
                         <template #default="scope">
-                            {{ scope.row.agama.substring(0,2) }}
+                            {{ scope.row.agama }}
                         </template>
                     </el-table-column>
-                    <template v-for="(tp,t) in tps" :key="t">
-                        <el-table-column  width="90">
-                            <template #header>
-                                <span class="cursor-pointer">
-                                    <el-popover placement="bottom-end">
-                                        <template #reference>
-                                            <span class="text-sky-700">{{ tp.kode }}</span>
-                                        </template>
-                                        <div>
-                                            <h3 class="font-bold text-sky-600"><small>{{ tp.elemen }}</small></h3>
-                                            <small>
-                                                {{ tp.teks }}
-                                            </small>
-                                        </div>
-                                    </el-popover>
-                                </span>
-                            </template>
-                            <template #default="scope">
-                                <el-input v-model="siswas[scope.$index].nilais[tp.kode]" type="number" :tabindex="t" min="0" max="100" size="small" />
-                            </template>
-                        </el-table-column>
-                    </template>
+                    <el-table-column  width="90">
+                        <template #header>
+                            <span class="cursor-pointer">
+                                N. PTS
+                            </span>
+                        </template>
+                        <template #default="scope">
+                            <el-input v-model="siswas[scope.$index].nilai" type="number" min="0" max="100" size="small" />
+                        </template>
+                    </el-table-column>
                 </el-table>
             </template>
         </el-skeleton>

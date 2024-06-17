@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('rombel_id', 30);
             $table->string('mapel_id', 30);
             $table->string('agama', 20)->nullable();
-            $table->string('tp_id', 20);
+            $table->string('tp_id', 20)->nullable();
             $table->enum('tipe', ['uh','ts','as']);
             $table->integer('skor');
             $table->timestamps();
