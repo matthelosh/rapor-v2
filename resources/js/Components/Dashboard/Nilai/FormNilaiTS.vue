@@ -11,7 +11,7 @@ const props = defineProps({rombel: Object, open: Boolean, sekolah: Object, mapel
 const emit = defineEmits(['close'])
 const role = page.props.auth.roles[0]
 
-const nilais = ref([])
+const tipe = ref('PTS')
 const siswas = ref([])
 const loading = ref(false)
 const simpan = async() => {
@@ -90,7 +90,12 @@ const onFileNilaiPicked = async(e) => {
 
     const wb = read(ab);
 
+    if (wb.SheetNames[0] !== tipe.value) {
+        ElNotification({title: 'Error! Mapel Tidak Sesuai', message: 'Mapel Nilai yang Anda impor tidak sesuai', type: 'error'})
+        return false
+    }
     const ws = wb.Sheets[wb.SheetNames[0]];
+
     const datas = utils.sheet_to_json(ws)
     siswas.value.forEach(siswa => {
         datas.forEach(data => {

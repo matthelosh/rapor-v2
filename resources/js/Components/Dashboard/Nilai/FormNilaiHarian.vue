@@ -13,7 +13,7 @@ const role = page.props.auth.roles[0]
 
 const tps = ref(['TP1','TP2', 'TP3'])
 
-const nilais = ref([])
+const tipe = ref('UH')
 const siswas = ref([])
 const loading = ref(false)
 const simpan = async() => {
@@ -93,13 +93,19 @@ const onFileNilaiPicked = async(e) => {
     const wb = read(ab);
 
     const ws = wb.Sheets[wb.SheetNames[0]];
+    if (wb.SheetNames[0] !== props.mapel.kode) {
+        ElNotification({title: 'Error! Mapel Tidak Sesuai', message: 'Mapel Nilai yang Anda impor tidak sesuai', type: 'error'})
+        return false
+    }
     const datas = utils.sheet_to_json(ws)
+    // console.log(datas)
     siswas.value.forEach(siswa => {
         datas.forEach(data => {
             if (siswa.nisn == data.nisn) {
                 Object.keys(data).forEach(k => {
                     if(!['no','nisn','nama','jk','agama'].includes(k)) {
                         siswa.nilais[k] = data[k]
+                        // console.log(k)
                     }
                 })
             }
@@ -120,8 +126,8 @@ const unduhFormat = async() => {
     })
     const ws = utils.json_to_sheet(data)
     const wb = utils.book_new()
-    utils.book_append_sheet(wb, ws, "PAS")
-    writeFile(wb, "Format Impor Nilai Harian Kelas "+props.rombel.label+" Semester "+ page.props.periode.semester.label + page.props.periode.tapel.label+".xlsx")
+    utils.book_append_sheet(wb, ws, props.mapel.kode)
+    writeFile(wb, "Impor Nilai Harian "+props.mapel.label+" Kelas "+props.rombel.label+" Semester "+ page.props.periode.semester.label +" "+ page.props.periode.tapel.label+".xlsx")
 
 }
 

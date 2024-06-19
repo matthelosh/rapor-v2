@@ -28,7 +28,7 @@ trait NilaiTrait
                                 'guru_id' => auth()->user()->userable->nip,
                                 'rombel_id' => $query['rombelId'],
                                 'mapel_id' => $query['mapelId'],
-                                'agama' => $query['agama'],
+                                'agama' => $query['agama'] ?? null,
                                 'tp_id' => $k,
                                 'tipe' => $query['tipe'],
                             ], [

@@ -83,6 +83,11 @@ Route::middleware('auth')->group(function () {
         Route::prefix("ledger")->group(function() {
             Route::get("/", [LedgerController::class, "home"])->name('dashboard.ledger')->middleware('role:guru_kelas|guru_agama|guru_pjok|guru_inggris');
         });
+
+        Route::prefix('rapor')->group(function() {
+            Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor');
+            Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik');
+        })->middleware(['role:guru_kelas']);
     });
 });
 

@@ -11,7 +11,7 @@ const props = defineProps({rombel: Object, open: Boolean, sekolah: Object, mapel
 const emit = defineEmits(['close'])
 const role = page.props.auth.roles[0]
 
-const nilais = ref([])
+const tipe = ref('PAS')
 const siswas = ref([])
 const loading = ref(false)
 const simpan = async() => {
@@ -89,6 +89,10 @@ const onFileNilaiPicked = async(e) => {
     const ab = await file.arrayBuffer();
 
     const wb = read(ab);
+    if (wb.SheetNames[0] !== tipe.value) {
+        ElNotification({title: 'Error! Mapel Tidak Sesuai', message: 'Mapel Nilai yang Anda impor tidak sesuai', type: 'error'})
+        return false
+    }
 
     const ws = wb.Sheets[wb.SheetNames[0]];
     const datas = utils.sheet_to_json(ws)
@@ -134,7 +138,6 @@ onBeforeMount(async() => {
                 <div>
                     <p>Nilai Akhir Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.label }}</p>
                     <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
-                    <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span>
                     <p>
                         {{ props.rombel.label }} 
                         <span v-if="role !== 'guru_kelas'">{{ props.sekolah.nama }}</span>

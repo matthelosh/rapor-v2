@@ -103,13 +103,13 @@ const items = ref([
             {
                 label: 'Data Periodik',
                 icon: 'chart-line',
-                url: '#',
+                url: '/dashboard/rapor/periodik',
                 roles: ['admin', 'ops', 'guru_kelas']
             },
             {
                 label: 'Cetak',
                 icon: 'printer',
-                url: '#',
+                url: '/dashboard/rapor/cetak',
                 roles: ['admin', 'ops', 'guru_kelas', 'kepala_sekolah']
             },
         ]
@@ -157,7 +157,7 @@ const showItem = (roles) => {
         </div>
         <div class="menu-item py-2 px-4">
             <el-divider>Menu</el-divider>
-            <el-scrollbar height="300">
+            <el-scrollbar height="500">
                 <ul>
                     <template v-for="(item, i) in items" :key="i">
                         <li v-if="item.children && item.children.length < 1 && showItem(item.roles)">

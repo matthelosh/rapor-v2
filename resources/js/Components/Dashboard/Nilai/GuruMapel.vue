@@ -52,7 +52,7 @@ const open = (rombel, komponen, sekolah) => {
                     <template v-for="(sekolah, s) in page.props.datas" :key="s">
                         <el-collapse-item>
                             <template #title>
-                                <span>{{ sekolah.npsn }} | {{ sekolah.nama }} | {{ sekolah.ks?.nama }}</span>
+                                <span class="text-sky-700 font-bold">{{ sekolah.npsn }} | {{ sekolah.nama }} | {{ sekolah.ks?.nama }}</span>
                             </template>
                             <el-table :data="sekolah.rombels">
                                 <el-table-column label="Rombel" prop="label" />
