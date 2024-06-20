@@ -1,0 +1,28 @@
+name: CD
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy Using SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd /home/${{secrets.USERNAME}}/htdocs/raporsd.alsya.my.id
+            git pull origin main
+            git status
+            composer install
+            php artisan migrate
+            yarn --only=prod
+            yarn build
+            
+      
