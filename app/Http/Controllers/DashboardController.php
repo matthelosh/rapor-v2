@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $user = $request->user();
         $sekolahs = [];
         if ($user->hasRole('admin')) {
+            $mapels = Mapel::all();
             $sekolahs = Sekolah::all();
         } else {
             $sekolahs = $user->userable->sekolahs;
@@ -23,20 +25,21 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function operator(Request $request)  {
+    public function operator(Request $request)
+    {
         $user = $request->user();
         $ops = [];
         if ($user->hasRole('admin')) {
-            $ops = Guru::whereHas('user.roles', function($q) {
+            $ops = Guru::whereHas('user.roles', function ($q) {
                 $q->where('name', 'ops');
             })->with('user.roles')->get();
         } else {
             $sekolah = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)->first();
-            $ops = Guru::whereHas('user.roles', function($q) {
+            $ops = Guru::whereHas('user.roles', function ($q) {
                 $q->where('name', 'ops');
             })->where('nip', $sekolah->npsn)->with('user.roles')->get();
         }
-        
+
         return Inertia::render('Dash/Ops', [
             'ops' => $ops,
         ]);

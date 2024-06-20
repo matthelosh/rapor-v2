@@ -22,7 +22,7 @@ defineProps({
 
 <template>
     <Head title="Welcome" />
-    <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
+    <div class="bg-gray-50 text-black/50 dark:text-slate-50 dark:bg-slate-800">
         <div
             class="relative min-h-screen flex flex-col items-center justify-start selection:bg-[#20a9ff] selection:text-white"
         >
@@ -52,12 +52,12 @@ defineProps({
                     </nav>
                 </header>
 
-                <main class="mt-6 text-slate-800">
-                    <h3 class="text-xl font-bold">Aplikasi Rapor SD Kecamatan Wagir</h3>
+                <main class="mt-6">
+                    <h3 class="text-4xl text-center font-bold">Aplikasi Rapor SD Kecamatan Wagir</h3>
                     <h3 class="text-lg font-bold mt-8">Pengolahan Hasil Asesmen untuk Rapor</h3>
                     <p class="mt-4">Pengolahan hasil asesmen dilakukan dengan memanfaatkan hasil formatif dan sumatif. Terdapat 2 jenis data, yaitu data hasil asesmen yang berupa angka (kuantitatif) serta data hasil asesmen yang berupa narasi (kualitatif)</p>
                     <p class="mt-4">Pengolahan hasil asesmen dalam bentuk angka (kuantitatif) didasarkan hanya pada hasil asesmen sumatif, sementara asesmen formatif sebagaimana diuraikan sebelumnya, berupa data atau informasi yang bersifat kualitatif, digunakan sebagai umpan balik untuk perbaikan pembelajaran sekaligus sebagai bahan pertimbangan menyusun deskripsi capaian kompetensi.</p>
-                    <img src="/img/olah-nilai.png" alt="Opsi 3" class="mx-auto">
+                    <img src="/img/olah-nilai.png" alt="Opsi 3" class="mx-auto my-4">
                     <p class="mt-4">Komponen rapor peserta didik SD/MI, SMP/MTs, SMA/MA, dan SMK/MAK atau sederajat minimal memuat informasi mengenai:</p>
                     <ol class="list-decimal pl-8">
                         <li>Identitas peserta didik</li>
