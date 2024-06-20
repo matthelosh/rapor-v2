@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\SekolahController;
@@ -21,13 +22,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
-    Route::prefix('dashboard')->group(function() {
+
+    Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-        Route::prefix('operator')->group(function() {
+        Route::prefix('operator')->group(function () {
             Route::get("/", [DashboardController::class, 'operator'])->name('dashboard.operator');
         });
-        Route::prefix('sekolah')->group(function() {
+        Route::prefix('sekolah')->group(function () {
             Route::get("/", [SekolahController::class, 'home'])->name('dashboard.sekolah');
             Route::post("/index", [SekolahController::class, 'index'])->name('dashboard.sekolah.index');
             Route::post('/', [SekolahController::class, 'store'])->name('dashboard.sekolah.store');
@@ -37,7 +38,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/{id}/operator', [SekolahController::class, 'addOps'])->name('dashboard.sekolah.ops.add');
         });
 
-        Route::prefix("guru")->group(function() {
+        Route::prefix("guru")->group(function () {
             Route::get("/", [GuruController::class, 'index'])->name('dashboard.guru');
             Route::post('/', [GuruController::class, 'store'])->name('dashboard.guru.store')->middleware(['role:admin|ops']);
             Route::post('/get', [GuruController::class, 'show'])->name('dashboard.guru.show');
@@ -47,7 +48,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [GuruController::class, 'destroy'])->name('dashboard.guru.destroy')->middleware(['role:admin|ops']);
         });
 
-        Route::prefix("siswa")->group(function() {
+        Route::prefix("siswa")->group(function () {
             Route::get("/", [SiswaController::class, 'home'])->name('dashboard.siswa');
             Route::post("/", [SiswaController::class, 'store'])->name('dashboard.siswa.store');
             Route::post("/nonmember", [SiswaController::class, 'nonMember'])->name('dashboard.siswa.nonmember');
@@ -55,8 +56,8 @@ Route::middleware('auth')->group(function () {
             Route::post("/impor", [SiswaController::class, 'impor'])->name('dashboard.siswa.impor');
             Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
         });
-        
-        Route::prefix("rombel")->group(function() {
+
+        Route::prefix("rombel")->group(function () {
             Route::get("/", [RombelController::class, 'home'])->name('dashboard.rombel');
             Route::post("/", [RombelController::class, 'store'])->name('dashboard.rombel.store');
             Route::post("/member/attach", [RombelController::class, 'attachMember'])->name('dashboard.rombel.member.attach');
@@ -65,7 +66,7 @@ Route::middleware('auth')->group(function () {
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
         });
 
-        Route::prefix('pembelajaran')->group(function() {
+        Route::prefix('pembelajaran')->group(function () {
             Route::get('/', [PembelajaranController::class, 'home'])->name('dashboard.pembelajaran');
             Route::post('/elemen/impor', [ElemenController::class, 'impor'])->name('dashboard.pembelajaran.elemen.impor');
             Route::post('/tp', [TpController::class, 'index'])->name('dashboard.pembelajaran.tp.index');
@@ -74,21 +75,21 @@ Route::middleware('auth')->group(function () {
             Route::delete('/tp/{id}', [TpController::class, 'destroy'])->name('dashboard.pembelajaran.tp.destroy');
         });
 
-        Route::prefix("nilai")->group(function() {
+        Route::prefix("nilai")->group(function () {
             Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
             Route::post("/", [NilaiController::class, "index"])->name('dashboard.nilai.index')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
             Route::post("/store", [NilaiController::class, "store"])->name('dashboard.nilai.store')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
         });
 
-        Route::prefix("ledger")->group(function() {
+        Route::prefix("ledger")->group(function () {
             Route::get("/", [LedgerController::class, "home"])->name('dashboard.ledger')->middleware('role:guru_kelas|guru_agama|guru_pjok|guru_inggris');
         });
 
-        Route::prefix('rapor')->group(function() {
-            Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor');
-            Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik');
+        Route::prefix('rapor')->group(function () {
+            Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor.cetak')->middleware(['role:guru_kelas']);
+            Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik')->middleware(['role:guru_kelas']);
         })->middleware(['role:guru_kelas']);
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

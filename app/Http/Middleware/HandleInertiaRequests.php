@@ -42,29 +42,31 @@ class HandleInertiaRequests extends Middleware
                 'roles' => $user ? $user->getRoleNames() : null,
                 'can' => $user ? $user->getPermissionsViaRoles()->pluck('name') : null,
 
-                
+
             ],
             'flash' => [
-                "message" => fn() => $request->session()->get('message'),
+                "message" => fn () => $request->session()->get('message'),
             ],
             'periode' => $this->periode(),
+            'app_env' => env('APP_ENV')
         ];
-        if ($user) {{
-            $mapels = ['guru_agama','guru_pjok', 'guru_inggris'];
-            $datas['sekolahs'] = $this->sekolahs($user);
-            
-            if ($user->hasRole('guru_kelas')) {
+        if ($user) { {
+                $mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
+                $datas['sekolahs'] = $this->sekolahs($user);
 
-                $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas', 'sekolah')->get();
-            } elseif(in_array($user->getRoleNames()[0], $mapels)) {
-                
+                if ($user->hasRole('guru_kelas')) {
+
+                    $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas', 'sekolah')->get();
+                } elseif (in_array($user->getRoleNames()[0], $mapels)) {
+                }
             }
-        }}
+        }
 
         return $datas;
     }
 
-    private function sekolahs($user) {
+    private function sekolahs($user)
+    {
         if ($user->hasRole('admin')) {
             return Sekolah::all();
         } else {
@@ -72,12 +74,14 @@ class HandleInertiaRequests extends Middleware
         }
     }
 
-    private function user($user) {
-        $account = User::where('id', $user->id)->with('roles.permissions','userable')->first();
+    private function user($user)
+    {
+        $account = User::where('id', $user->id)->with('roles.permissions', 'userable')->first();
         return $account;
     }
 
-    private function periode() {
+    private function periode()
+    {
         $tapel = Tapel::whereIsActive(true)->first();
         $semester = Semester::whereisActive(true)->first();
         $periode = [

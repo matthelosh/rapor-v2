@@ -185,9 +185,14 @@ onMounted(async() => {
                                 {{ scope.row.user?.name }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="Opsi" width="80" fixed="right">
+                        <el-table-column label="Opsi" width="100" fixed="right">
                             <template #default="scope">
                                 <div class="flex items-center gap-1">
+                                    <el-tooltip :content="`Ortu ${scope.row.nama}`" placement="left">
+                                        <el-button circle type="success" size="small">
+                                            <Icon icon="mdi:human-male-female-child" />
+                                        </el-button>
+                                    </el-tooltip>
                                     <span>
                                         <el-popconfirm v-if="!scope.row.user" size="small" :title="`Buatkan akun untuk ${scope.row.nama}?`" @confirm="createAccount(scope.row.id)">
                                             <template #reference>
