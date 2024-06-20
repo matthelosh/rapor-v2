@@ -15,7 +15,6 @@ class DashboardController extends Controller
         $user = $request->user();
         $sekolahs = [];
         if ($user->hasRole('admin')) {
-            $mapels = Mapel::all();
             $sekolahs = Sekolah::all();
         } else {
             $sekolahs = $user->userable->sekolahs;
