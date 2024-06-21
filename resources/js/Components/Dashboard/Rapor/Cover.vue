@@ -58,17 +58,23 @@ const cetak = async() => {
     </div>
 </div>
     <div class="page cetak bg-slate-100 print:bg-white w-full bg-cover p-20 text-center font-serif">
-        <h1 class="text-center text-xl font-bold  uppercase">Laporan Hasil Capaian Kompetensi</h1>
-        <h1 class="text-center text-xl font-bold  uppercase">Peserta Didik</h1>
-        <h1 class="text-center text-xl font-bold  uppercase mb-20">Kurikulum Merdeka</h1>
+        <!-- <h1 class="mt-10 text-center text-2xl font-black" >{{ sekolah.nama }}</h1>
+        <h1 class="text-center" >{{ sekolah.alamat }}</h1> -->
+        <h1 class="text-center text-2xl font-bold  uppercase">Laporan Hasil Capaian Kompetensi</h1>
+        <h1 class="text-center text-2xl font-bold  uppercase">Peserta Didik</h1>
+        <h1 class="text-center text-2xl font-bold  uppercase">Sekolah Dasar (SD)</h1>
+        <h1 class="text-center text-xl font-bold  uppercase mt-8">Kurikulum Merdeka</h1>
         
-        <img :src="sekolah.logo" alt="Logo" class="h-36 mx-auto mb-20" @error="defaultLogo">
-        <h1 class="mt-10 text-center text-2xl font-black" >{{ sekolah.nama }}</h1>
-        <h1 class="text-center" >{{ sekolah.alamat }}</h1>
-        <p class="text-center uppercase mt-10">Nama siswa</p>
-        <div class="box border-2 text-center w-[500px] p-2 mx-auto border-black border-double mb-4">{{ siswa.nama }}</div>
+        <img :src="sekolah.logo" alt="Logo" class="h-40 mx-auto mt-40 mb-20" @error="defaultLogo">
+        <p class="text-center  mt-40">Nama Peserta Didik</p>
+        <div class="box border-2 text-center w-[500px] p-2 mx-auto border-black border-double mb-4 font-bold">{{ siswa.nama }}</div>
         <p class="text-center uppercase mt-10">NIS / NISN</p>
-        <div class="box border-2 text-center w-[500px] p-2 mx-auto border-black border-double mb-4">{{ siswa.nis ?? '-' }} / {{ siswa.nisn }}</div>
+        <div class="box border-2 text-center w-[500px] p-2 mx-auto border-black border-double mb-4 font-bold">{{ siswa.nis ?? '-' }} / {{ siswa.nisn }}</div>
+        <!-- <h3 class="text-center font-bold text-xl uppercase mt-10">Kementerian Pendidikan dan Kebudayaan</h3>
+        <h3 class="text-center font-bold text-xl uppercase">Republik Indonesia</h3> -->
+
+        <h1 class="mt-20 text-center text-2xl font-black" >{{ sekolah.nama }}</h1>
+        <h1 class="text-center" >{{ sekolah.alamat }}</h1>
     </div>
     <div>
         <!-- {{ sekolah }} -->

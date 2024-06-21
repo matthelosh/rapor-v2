@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { Head, usePage, router } from '@inertiajs/vue3'
 import { ElCard, ElCollapse, ElNotification, ElCollapseItem } from 'element-plus';
 import { Icon } from '@iconify/vue';
@@ -10,6 +10,7 @@ const page = usePage()
 const formTambah = ref(false)
 const formImpor = ref(false)
 const selectedMapel = ref('')
+const mapels = ref([])
 const tambah = (mapel) => {
     selectedMapel.value = mapel
     formTambah.value = true
@@ -98,6 +99,8 @@ const simpanTp = async() => {
     })
 }
 
+
+
 const hapusTp = async(id) => {
     router.delete(route('dashboard.pembelajaran.tp.destroy', {id: id}), {
         onSuccess: (page) => {
@@ -114,6 +117,24 @@ const hapusTp = async(id) => {
     })
 }
 
+const assignMapel = () => {
+    router.post(route('dashboard.pembelajaran.mapel.assign'), {sekolahId: page.props.sekolahs[0].id, mapels: mapels.value}, {
+        onSuccess: page => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
+onBeforeMount(() => {
+    mapels.value = page.props.sekolahs[0].mapels ? page.props.sekolahs[0].mapels.map(mapel => mapel.id) : []
+})
 </script>
 
 <template>
@@ -133,6 +154,20 @@ const hapusTp = async(id) => {
                         <div class="card-header bg-slate-100 p-2 flex items-center justify-between">
                             <h3 class="font-bold">Mata Pelajaran</h3>
                             <span>
+                                <el-popover trigger="click" width="350">
+                                    <template #reference>
+                                        <el-button size="small" type="success" :disabled="role !== 'ops'">Atur Mapel</el-button>
+                                    </template>
+                                    <template #default>
+                                        <h3 class="text-sky-600 font-bold">Pilih Mapel</h3>
+                                        <ol>
+                                            <li v-for="(mapel,m) in page.props.mapels" :key="mapel.id">
+                                                <el-checkbox :label="mapel.label" v-model="mapels" :value="mapel.id">{{ mapel.label }}</el-checkbox>
+                                            </li>
+                                        </ol>
+                                        <el-button type="success" @click="assignMapel" >Simpan</el-button>
+                                    </template>
+                                </el-popover>
                                 <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
                                 <el-button type="success" size="small" @click="$refs.fileTp.click()" :disabled="role !== 'admin'">Impor TP</el-button>
                                 <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileElemenPicked" />
@@ -140,52 +175,62 @@ const hapusTp = async(id) => {
                             </span>
                         </div>
                         <div class="card-body p-2">
-                        <template v-for="(mapel, m) in page.props.mapels" :key="m">
-                            <el-collapse>
-                                <el-collapse-item>
-                                    <template #title>
-                                        <h3>{{ mapel.label }}</h3>
-                                    </template>
-                                    <div class="collapse-body p-2 bg-sky-100">
-                                        <div class="collapse-body--tile flex justify-between mb-2">
-                                                <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
-                                                <el-button-group>
-                                                    <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="role !== 'admin'">Tambah TP</el-button>
-                                                    
-                                                </el-button-group>
-                                        </div>
-                                        <el-table :data="mapel.tps" class="shadow" height="400">
-                                            <el-table-column label="#" type="index" width="50" />
-                                            <el-table-column label="Fase" prop="fase" width="55" />
-                                            <el-table-column label="Kelas" prop="tingkat" width="60" />
-                                            <el-table-column label="Sem" prop="semester" width="60" />
-                                            <el-table-column label="Agama" prop="agama" width="85" v-if="mapel.kode == 'pabp'" />
-                                            <el-table-column label="Kode" width="125">
-                                                <template #default="scope">
-                                                    <el-button text type="primary" @click="editTp(scope.row, mapel)">{{ scope.row.kode }}</el-button>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="Teks" prop="teks" />
-                                            <el-table-column label="Opsi" width="100">
-                                                <template #default="scope">
-                                                    <span>
-                                                        <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id )" :disabled="role !== 'admin'">
-                                                            <Icon icon="mdi-close" />
-                                                        </el-button>
-                                                    </span>
-                                                </template>
-                                            </el-table-column>
-            
-                                        </el-table>
-                                    </div>
-                                </el-collapse-item>
-                            </el-collapse>
-                        </template>
+                            <div class="data-mapel" v-if="role !== 'admin' && page.props.sekolahs[0].mapels.length > 0">
+                                <template v-for="(mapel, m) in role == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
+                                    <el-collapse>
+                                        <el-collapse-item>
+                                            <template #title>
+                                                <h3>{{ m+1 }}. {{ mapel.label }}</h3>
+                                            </template>
+                                            <div class="collapse-body p-2 bg-sky-100">
+                                                <div class="collapse-body--tile flex justify-between mb-2">
+                                                        <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
+                                                        <el-button-group>
+                                                            <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="role !== 'admin'">Tambah TP</el-button>
+                                                            
+                                                        </el-button-group>
+                                                </div>
+                                                <el-table :data="mapel.tps" class="shadow" height="400">
+                                                    <el-table-column label="#" type="index" width="50" />
+                                                    <el-table-column label="Fase" prop="fase" width="55" />
+                                                    <el-table-column label="Kelas" prop="tingkat" width="60" />
+                                                    <el-table-column label="Sem" prop="semester" width="60" />
+                                                    <el-table-column label="Agama" prop="agama" width="85" v-if="mapel.kode == 'pabp'" />
+                                                    <el-table-column label="Kode" width="125">
+                                                        <template #default="scope">
+                                                            <el-button text type="primary" @click="editTp(scope.row, mapel)">{{ scope.row.kode }}</el-button>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="Teks" prop="teks" />
+                                                    <el-table-column label="Opsi" width="100">
+                                                        <template #default="scope">
+                                                            <span>
+                                                                <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id )" :disabled="role !== 'admin'">
+                                                                    <Icon icon="mdi-close" />
+                                                                </el-button>
+                                                            </span>
+                                                        </template>
+                                                    </el-table-column>
+                    
+                                                </el-table>
+                                            </div>
+                                        </el-collapse-item>
+                                    </el-collapse>
+                                </template>
+                            </div>
+                            <div v-else>
+                                <el-alert title="Atur Mapel Seperti video ini" type="warning">
+                                    <video controls width="800" autoplay>
+                                        <source src="/videos/atur-mapel.mp4" type="video/mp4">
+                                    </video>
+                                </el-alert>
+                            </div>
                         </div>
                     </div>
                 </el-col>
             </el-row>
         </div>
+        <!-- {{ page.props.sekolahs[0] }} -->
     </el-card>
 
     <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm">

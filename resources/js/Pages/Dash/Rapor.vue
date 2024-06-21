@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue'
 
 import DashLayout from '@/Layouts/DashLayout.vue'
 import Cover from '@/Components/Dashboard/Rapor/Cover.vue'
+import Biodata from '@/Components/Dashboard/Rapor/Biodata.vue'
 
 const page = usePage()
 const mode = ref('list')
@@ -47,7 +48,7 @@ const closeLaman = () => {
                         <div>
                             <el-button-group>
                                 <el-button type="primary" @click="cetak('cover', scope.row)">Cover</el-button>
-                                <el-button type="primary">Biodata</el-button>
+                                <el-button type="primary" @click="cetak('biodata', scope.row)">Biodata</el-button>
                                 <el-button type="primary">PTS</el-button>
                                 <el-button type="primary">PAS</el-button>
                             </el-button-group>
@@ -58,6 +59,7 @@ const closeLaman = () => {
         </div>
     </el-card>
     <Cover v-if="mode == 'cover'" :siswa="selectedSiswa" @close="closeLaman" />
+    <Biodata v-if="mode == 'biodata'" :siswa="selectedSiswa" @close="closeLaman" />
 </DashLayout>
 
 </template>

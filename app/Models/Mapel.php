@@ -17,11 +17,18 @@ class Mapel extends Model
         'deskripsi'
     ];
 
-    public function tps() {
-        return $this->hasMany(Tp::class, 'mapel_id','kode');
+    public function tps()
+    {
+        return $this->hasMany(Tp::class, 'mapel_id', 'kode');
     }
 
-    public function elemens() {
-        return $this->hasMany(Elemen::class, 'mapel_id','kode');
+    public function elemens()
+    {
+        return $this->hasMany(Elemen::class, 'mapel_id', 'kode');
+    }
+
+    public function sekolah()
+    {
+        return $this->belongsToMany(Sekolah::class, 'mapel_sekolah');
     }
 }

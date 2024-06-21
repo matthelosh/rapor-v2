@@ -10,12 +10,13 @@ use Inertia\Inertia;
 
 class SiswaController extends Controller
 {
-    public function home(Request $request, SiswaService $siswaService) {
+    public function home(Request $request, SiswaService $siswaService)
+    {
         $siswas = $siswaService->home($request);
 
         return Inertia::render('Dash/Siswa', [
-            'siswas' => Inertia::lazy(fn () => $siswas),
-        ]);      
+            'siswas' => $siswas,
+        ]);
     }
 
     /**
@@ -26,12 +27,12 @@ class SiswaController extends Controller
         //
     }
 
-    public function impor(Request $request, SiswaService $siswaService) {
+    public function impor(Request $request, SiswaService $siswaService)
+    {
         try {
             $siswaService->impor($request);
             return back()->with('status', 'Data Siswa diimpor');
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
@@ -42,12 +43,11 @@ class SiswaController extends Controller
     public function store(SiswaRequest $request, SiswaService $siswaService)
     {
         try {
-            
+
             $store = $siswaService->store($request->all(), $request->file('file') ?? null);
 
             return back()->with('data', $store);
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors("errors", $e->getMessage());
         }
     }
@@ -59,10 +59,10 @@ class SiswaController extends Controller
     {
         try {
             $siswas = Siswa::whereDoesntHave('rombels')
-                        ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
-                        ->with('sekolah')->whereStatus('aktif')->get();
+                ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
+                ->with('sekolah')->whereStatus('aktif')->get();
             return response()->json(['siswas' => $siswas]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
@@ -82,7 +82,7 @@ class SiswaController extends Controller
     {
         $update = $siswaService->store($request->all(), $request->file('file') ?? null);
         // dd($store);
-        return back()->with('status', 'Data Siswa diperbarui');
+        return back()->with('message', 'Data Siswa diperbarui');
     }
 
     /**
@@ -96,7 +96,7 @@ class SiswaController extends Controller
             $siswa->delete();
 
             return back()->with("success", true);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return back()->withErrors(["errors", $e->getMessage()]);
         }
     }

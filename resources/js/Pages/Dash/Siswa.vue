@@ -93,11 +93,26 @@ const createAccount = async(id) => {
 // router.on('start', () => {
 //     // alert('hi')
 // })
+const changeStatus = (e, siswa) => {
+    siswa.status = e
+    // console.log(siswa)
+    router.put(route('dashboard.siswa.update'), siswa, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        },
+        onError: err => {
+            Object.keys(err).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({ title: 'Error', message: err[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
 
-
-onMounted(async() => {
-    await router.reload({only: ['siswas']})
-})
+// onMounted(async() => {
+//     await router.reload({only: ['siswas']})
+// })
 </script>
 <template>
     <Head title="Data Siswa" />
@@ -106,7 +121,6 @@ onMounted(async() => {
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">{{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Admin' }}</h2>
         </template>
-
         <div class="page">
             <el-card>
                 <template #header>
@@ -115,7 +129,11 @@ onMounted(async() => {
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase">Data Siswa {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
-                        <div class="card-toolbar--items flex items-center gap-1 px-2">
+                        <div class="card-toolbar--items flex items-center gap-1 px-2 w-[50%]">
+                            <el-button type="warning" class="mr-2">
+                                <Icon icon="mdi:human-male-female-child" />
+                                Impor Ortu
+                            </el-button>
                             <el-button-group class="w-[250px]">
                                 <el-button type="primary" @click="formSiswa = true">
                                     <Icon icon="mdi-plus" />
@@ -134,7 +152,7 @@ onMounted(async() => {
                         </div>
                     </div>
                 </template>
-                <el-skeleton :loading="!page.props.siswas" animated>
+                <el-skeleton :loading="loading" animated>
                     <template #template>
                         <div v-for="d of 10" :key="d" style="width: 100%;display: flex; margin-bottom: 10px; align-item: middle;">
                             <el-skeleton-item variant="text" style="width:100px; margin: 0 5px;" />
@@ -183,6 +201,18 @@ onMounted(async() => {
                         <el-table-column label="Akun" width="100">
                             <template #default="scope">
                                 {{ scope.row.user?.name }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Angkatan" width="100">
+                            <template #default="scope">
+                                {{ scope.row.angkatan }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Status" width="130"> 
+                            <template #default="scope">
+                                <el-select v-model="scope.row.status" size="small" @change="changeStatus($event, scope.row)">
+                                    <el-option v-for="s in ['aktif', 'lulus','do','mutasi']" :key=s :value="s" :label="s.toUpperCase()"></el-option>
+                                </el-select>
                             </template>
                         </el-table-column>
                         <el-table-column label="Opsi" width="100" fixed="right">

@@ -34,19 +34,28 @@ class Sekolah extends Model
         );
     }
 
-    function ops() {
+    function ops()
+    {
         return $this->belongsTo(Guru::class, 'npsn', 'nip');
     }
 
-    function gurus() {
+    function gurus()
+    {
         return $this->belongsToMany(Guru::class, 'guru_sekolah');
     }
 
-    function ks() : BelongsTo {
+    function ks(): BelongsTo
+    {
         return $this->belongsTo(Guru::class, 'ks_id', 'id');
     }
 
-    function rombels() {
+    function rombels()
+    {
         return $this->hasMany(Rombel::class, 'sekolah_id', 'npsn');
+    }
+
+    function mapels()
+    {
+        return $this->belongsToMany(Mapel::class, 'mapel_sekolah');
     }
 }

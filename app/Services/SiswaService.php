@@ -1,39 +1,45 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class SiswaService 
+class SiswaService
 {
-    public function home($request) {
+    public function home($request)
+    {
         $user = $request->user();
-        if($user->hasRole('admin')) {
+        if ($user->hasRole('admin')) {
             $siswas = Siswa::with('sekolah', 'rombels')->get();
         } elseif ($user->hasRole('ops')) {
             $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels')->get();
-        } elseif($user->hasRole('guru_kelas')) {
-            $siswas = Siswa::whereHas('rombels', function($q) use($user){
+        } elseif ($user->hasRole('guru_kelas')) {
+            $siswas = Siswa::whereHas('rombels', function ($q) use ($user) {
                 $q->where('rombels.guru_id', $user->userable->id);
-                $q->where('rombels.is_active','1');
+                $q->where('rombels.is_active', '1');
             })->with('rombels')->get();
         }
         return $siswas;
     }
 
-    public function store($data, $file) {
-        
+    public function store($data, $file)
+    {
+
         if ($file !== null) {
             $foto_file = $file;
-            $foto_name = $data['nisn'].'.'.$foto_file->extension();
+            $foto_name = $data['nisn'] . '.' . $foto_file->extension();
             $store = $foto_file->storeAs('public/sekolah/siswa/', $foto_name);
-            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+            $foto = $store ?
+            /**$foto_name **/
+            Storage::url($store) : null;
         }
-            $siswa = Siswa::updateOrCreate(
-                [
+        $siswa = Siswa::updateOrCreate(
+            [
                 'id' => $data['id'] ?? null,
-                ],[
+            ],
+            [
                 'nisn' => $data['nisn'],
                 'nis' => $data['nis'] ?? null,
                 'nik' => $data['nik'] ?? null,
@@ -45,7 +51,8 @@ class SiswaService
                 'foto' => $foto ?? null,
                 'agama' => $data['agama'],
                 'angkatan' => $data['angkatan'] ?? null,
-                'sekolah_id' => $data['sekolah_id']
+                'sekolah_id' => $data['sekolah_id'],
+                'status' => $data['status'] ?? 'aktif'
             ]
         );
 
@@ -56,18 +63,15 @@ class SiswaService
     {
         try {
             $datas = $request->datas;
-            foreach($datas as $data)
-            {
+            foreach ($datas as $data) {
                 $data['sekolah_id'] = ($request->user()->hasRole('admin') && $data['sekolah_id']) ? $data['sekolah_id'] : $request->user()->userable->sekolahs[0]->npsn;
                 $store = $this->store($data, null);
             }
 
             return true;
-        }catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             // dd($e->getMessage());
             return back()->withErrors($e->getMessage());
         }
     }
-
 }

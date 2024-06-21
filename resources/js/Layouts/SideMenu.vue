@@ -70,7 +70,7 @@ const items = ref([
                 label: 'Pembelajaran',
                 icon: 'bookshelf',
                 url: '/dashboard/pembelajaran',
-                roles: ['admin', 'ops', 'guru_kelas']
+                roles: ['admin', 'ops']
             },
         ]
     },
