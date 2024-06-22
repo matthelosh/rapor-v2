@@ -5,7 +5,7 @@ import { Icon } from '@iconify/vue';
 
 const page = usePage()
 const props = defineProps({siswa: Object})
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'nextSiswa', 'prevSiswa'])
 
 const sekolah = computed(() => page.props.sekolahs[0])
 const logo = computed(() => sekolah.value.logo ?? '/img/tutwuri.png')
@@ -15,6 +15,13 @@ const defaultLogo = (e) => {
 }
 const close = () => {
     emit('close')
+}
+
+const showNext = () => {
+    emit('nextSiswa')
+}
+const showPrev = () => {
+    emit('prevSiswa')
 }
 const cetak = async() => {
     let host = window.location.host
@@ -49,6 +56,14 @@ const cetak = async() => {
 
     </span>
     <div class="toolbar-items flex items-center">
+        <el-button-group>
+            <el-button>
+                <Icon icon="mdi:chevron-double-left" @click="showPrev" />
+            </el-button>
+            <el-button @click="showNext">
+                <Icon icon="mdi:chevron-double-right" />
+            </el-button>
+        </el-button-group>
         <el-button @click="cetak">
             <Icon icon="mdi:printer" />
         </el-button>

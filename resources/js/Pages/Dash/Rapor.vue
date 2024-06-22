@@ -22,6 +22,27 @@ const closeLaman = () => {
     mode.value = 'list'
     selectedSiswa.value = {}
 }
+
+const nextSiswa = () => {
+    // alert('halo')
+    let current = rombel.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
+    if(current >= rombel.siswas.length-1 ) {
+        alert('Ini sudah siswa yang terakhir')
+        return false
+    } else {
+        selectedSiswa.value = rombel.siswas[current+1]
+    }
+}
+const prevSiswa = () => {
+    // alert('halo')
+    let current = rombel.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
+    if(current === 0 ) {
+        alert('Ini sudah siswa yang pertama')
+        return false
+    } else {
+        selectedSiswa.value = rombel.siswas[current-1]
+    }
+}
 </script>
 
 <template>
@@ -58,8 +79,8 @@ const closeLaman = () => {
             </el-table>
         </div>
     </el-card>
-    <Cover v-if="mode == 'cover'" :siswa="selectedSiswa" @close="closeLaman" />
-    <Biodata v-if="mode == 'biodata'" :siswa="selectedSiswa" @close="closeLaman" />
+    <Cover v-if="mode == 'cover'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" />
+    <Biodata v-if="mode == 'biodata'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" />
 </DashLayout>
 
 </template>
