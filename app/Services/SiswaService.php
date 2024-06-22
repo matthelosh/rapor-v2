@@ -12,14 +12,14 @@ class SiswaService
     {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $siswas = Siswa::with('sekolah', 'rombels')->get();
+            $siswas = Siswa::with('sekolah', 'rombels', 'ortus')->get();
         } elseif ($user->hasRole('ops')) {
-            $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels')->get();
+            $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels', 'ortus')->get();
         } elseif ($user->hasRole('guru_kelas')) {
             $siswas = Siswa::whereHas('rombels', function ($q) use ($user) {
                 $q->where('rombels.guru_id', $user->userable->id);
                 $q->where('rombels.is_active', '1');
-            })->with('rombels')->get();
+            })->with('rombels', 'ortus')->get();
         }
         return $siswas;
     }
@@ -32,8 +32,8 @@ class SiswaService
             $foto_name = $data['nisn'] . '.' . $foto_file->extension();
             $store = $foto_file->storeAs('public/sekolah/siswa/', $foto_name);
             $foto = $store ?
-            /**$foto_name **/
-            Storage::url($store) : null;
+                /**$foto_name **/
+                Storage::url($store) : null;
         }
         $siswa = Siswa::updateOrCreate(
             [

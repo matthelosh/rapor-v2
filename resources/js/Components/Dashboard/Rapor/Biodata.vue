@@ -17,7 +17,18 @@ const close = () => {
     emit('close')
 }
 
+
+
 const siswa = props.siswa
+
+const ortu = computed(() => {
+    return {
+        ayah: props.siswa.ortus.filter(ortu => ortu.relasi == 'Ayah')[0],
+        ibu: props.siswa.ortus.filter(ortu => ortu.relasi == 'Ibu')[0],
+        wali: props.siswa.ortus.filter(ortu => ortu.relasi == 'Wali')[0],
+
+    }
+})
 const cetak = async() => {
     let host = window.location.host
 	let el = document.querySelector(".cetak")
@@ -38,7 +49,7 @@ const cetak = async() => {
 	await win.document.write(html)
     setTimeout(() => {
         win.print();
-        // win.close();
+        win.close();
     }, 1500);
 
 }
@@ -61,7 +72,7 @@ const cetak = async() => {
 </div>
     <div class="page cetak bg-slate-100 print:bg-white w-full bg-cover p-20 font-serif">
         <h3 class="font-bold text-center uppercase text-xl">Identitas Peserta Didik</h3>
-        <table class="w-[80%] mx-auto mt-20  10">
+        <table class="mt-16  10">
             <tr>
                 <td class="text-left">Nama Peserta Didik</td>
                 <td class="text-left px-2">:</td>
@@ -93,41 +104,58 @@ const cetak = async() => {
                 <td class="text-left">{{ siswa.alamat }}</td>
             </tr>
         </table>
-        <table class="w-[80%] mx-auto mt-8">
+        <table class="mt-8">
             <tr>
                 <td class="text-left w-[200px]">Nama Orang Tua</td>
                 <td class="text-left px-2"></td>
                 <td class="text-left"></td>
             </tr>
             <tr>
-                <td class="text-left border">Ayah</td>
-                <td class="text-left border">:</td>
-                <td class="text-left border">Bejo</td>
+                <td class="text-left">Ayah</td>
+                <td class="text-left">:</td>
+                <td class="text-left">{{ ortu.ayah.nama }}</td>
             </tr>
             <tr>
                 <td class="text-left">Ibu</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Siti</td>
+                <td class="text-left">{{ ortu.ibu.nama }}</td>
             </tr>
         </table>
-        <table class="w-[50%] mx-auto mt-8  10">
+        <table class="mt-8  10">
             <tr>
-                <td class="text-left w-[200px]">Pekerjaan Orang Tua</td>
+                <td class="text-left w-[200px]">Alamat Orang Tua</td>
                 <td class="text-left px-2">&nbsp;</td>
                 <td class="text-left">&nbsp;</td>
             </tr>
             <tr>
                 <td class="text-left">Ayah</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Swasta</td>
+                <td class="text-left">{{ ortu.ayah.alamat }}</td>
             </tr>
             <tr>
                 <td class="text-left">Ibu</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Swasta</td>
+                <td class="text-left">{{ ortu.ibu.alamat }}</td>
             </tr>
         </table>
-        <table class="w-[80%] mx-auto mt-8">
+        <table class="mt-8  10">
+            <tr>
+                <td class="text-left w-[200px]">No. Kontak Orang Tua</td>
+                <td class="text-left px-2">&nbsp;</td>
+                <td class="text-left">&nbsp;</td>
+            </tr>
+            <tr>
+                <td class="text-left">Ayah</td>
+                <td class="text-left px-2">:</td>
+                <td class="text-left">{{ ortu.ayah.hp }}</td>
+            </tr>
+            <tr>
+                <td class="text-left">Ibu</td>
+                <td class="text-left px-2">:</td>
+                <td class="text-left">{{ ortu.ibu.hp }}</td>
+            </tr>
+        </table>
+        <table class="mt-8">
             <tr>
                 <td class="text-left w-[200px]">Wali Peserta Didik</td>
                 <td class="text-left px-2">&nbsp;</td>
@@ -136,17 +164,17 @@ const cetak = async() => {
             <tr>
                 <td class="text-left">Nama</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Paino</td>
+                <td class="text-left">{{ ortu.wali?.nama ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="text-left">Pekerjaan</td>
+                <td class="text-left">Alamat</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Swasta</td>
+                <td class="text-left">{{ ortu.wali?.alamat ?? '-' }}</td>
             </tr>
             <tr>
-                <td class="text-left w-[100px]">Alamat</td>
+                <td class="text-left w-[100px]">Kontak</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">Malang</td>
+                <td class="text-left">{{ ortu.wali?.hp ?? '-' }}</td>
             </tr>
         </table>
 

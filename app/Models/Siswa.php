@@ -14,6 +14,8 @@ class Siswa extends Model
         'nis',
         'nik',
         'nama',
+        'tempat_lahir',
+        'tanggal_lahir',
         'jk',
         'alamat',
         'hp',
@@ -25,11 +27,20 @@ class Siswa extends Model
         'status'
     ];
 
-    public function sekolah() {
+
+
+    public function sekolah()
+    {
         return $this->belongsTo(Sekolah::class, 'sekolah_id', 'npsn');
     }
 
-    public function rombels() {
+    public function rombels()
+    {
         return $this->belongsToMany(Rombel::class, 'rombel_siswa');
+    }
+
+    public function ortus()
+    {
+        return $this->hasMany(Ortu::class, 'siswa_id', 'nisn');
     }
 }

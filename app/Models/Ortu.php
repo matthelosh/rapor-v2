@@ -11,20 +11,14 @@ class Ortu extends Model
 
     protected $fillable = [
         'siswa_id',
-        'nik',
         'nama',
         'relasi',
         'alamat',
-        'rt',
-        'rw',
-        'desa',
-        'kode_pos',
-        'kecamatan',
-        'kabupaten',
         'hp'
     ];
 
-    public function siswa() {
+    public function siswa()
+    {
         return $this->belongsTo(Siswa::class, 'siswa_id', 'nisn');
     }
 }

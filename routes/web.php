@@ -26,16 +26,16 @@ Route::middleware('auth')->group(function () {
     Route::prefix('dashboard')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
         Route::prefix('operator')->group(function () {
-            Route::get("/", [DashboardController::class, 'operator'])->name('dashboard.operator');
+            Route::get("/", [DashboardController::class, 'operator'])->middleware(['role:admin|ops'])->name('dashboard.operator');
         });
         Route::prefix('sekolah')->group(function () {
-            Route::get("/", [SekolahController::class, 'home'])->name('dashboard.sekolah');
+            Route::get("/", [SekolahController::class, 'home'])->middleware(['role:admin|ops'])->name('dashboard.sekolah');
             Route::post("/index", [SekolahController::class, 'index'])->name('dashboard.sekolah.index');
             Route::post('/', [SekolahController::class, 'store'])->name('dashboard.sekolah.store');
-            Route::put('/', [SekolahController::class, 'update'])->name('dashboard.sekolah.update');
+            Route::put('/', [SekolahController::class, 'update'])->middleware(['role:admin|ops'])->name('dashboard.sekolah.update');
             Route::post('/impor', [SekolahController::class, 'impor'])->name('dashboard.sekolah.impor');
-            Route::delete('/{id}', [SekolahController::class, 'destroy'])->name('dashboard.sekolah.destroy');
-            Route::post('/{id}/operator', [SekolahController::class, 'addOps'])->name('dashboard.sekolah.ops.add');
+            Route::delete('/{id}', [SekolahController::class, 'destroy'])->middleware(['role:admin'])->name('dashboard.sekolah.destroy');
+            Route::post('/{id}/operator', [SekolahController::class, 'addOps'])->middleware(['role:admin'])->name('dashboard.sekolah.ops.add');
         });
 
         Route::prefix("guru")->group(function () {
@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
             Route::put("/", [SiswaController::class, 'update'])->name('dashboard.siswa.update');
             Route::post("/impor", [SiswaController::class, 'impor'])->name('dashboard.siswa.impor');
             Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
+            Route::prefix('ortu')->group(function () {
+                Route::post('/impor', [OrtuController::class, 'impor'])->name('dashboard.siswa.ortu.impor');
+            });
         });
 
         Route::prefix("rombel")->group(function () {

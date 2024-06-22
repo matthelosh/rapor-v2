@@ -7,7 +7,7 @@ import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 
 const page = usePage()
-
+const role = computed(() => page.props.auth.roles[0])
 const formImpor = ref(false)
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
 const formSekolah = ref(false)
@@ -87,7 +87,7 @@ const addOps = async(id) => {
             {{ !page.props.auth.can.includes('add guru') }}
         </template>
 
-        <div class="page">
+        <div class="page" >
             <el-card>
                 <template #header>
                     <div class="card-toolbar flex items-center justify-between">
@@ -171,8 +171,11 @@ const addOps = async(id) => {
                     </el-table-column>
                 </el-table>
             </el-card>
-
-            <!-- p>lorem*10 -->
+        </div>
+        <div class="vid-tutor p-20 bg-slate-800 flex justify-center" v-if="role === 'ops'">
+            <video controls width="1024">
+                <source src="/videos/update-sekolah.mp4" type="video/mp4">
+            </video>
         </div>
         <FormSekolah :open="formSekolah" @close="closeForm" :selectedSekolah="selectedSekolah" v-if="formSekolah" />
         <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" title="Sekolah" url="dashboard.sekolah.impor" />

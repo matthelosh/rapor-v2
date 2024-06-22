@@ -5,13 +5,20 @@ import { Head, usePage, router } from '@inertiajs/vue3';
 import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 import { groupBy } from 'lodash'
+import { utils, writeFile } from 'xlsx'
 
 const page = usePage()
 
-const formImpor = ref(false)
+const formImpor = ref({
+    show: false,
+    url: '',
+    fields: []
+})
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
 const formSiswa = ref(false)
 const FormSiswa = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa/FormSiswa.vue'))
+const formOrtu = ref(false)
+const FormOrtu = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa/FormOrtu.vue'))
 const search = ref('')
 const siswas = computed(() => {
     // let datas = groupBy(page.props.siswas, 'sekolas')
@@ -31,10 +38,15 @@ const closeForm = () => {
 }
 
 const closeImpor = () => {
-    formImpor.value = false
+    formImpor.value = {
+        show: false,
+        title: '',
+        fields: [],
+        url: ''
+    }
     router.reload({only: ['siswas']})
 }
-const fields = ref([ 
+const fieldSiswa = ref([ 
 'nisn',
     'nis',
     'nik',
@@ -47,6 +59,27 @@ const fields = ref([
     'agama',
     'angkatan',
     'sekolah_id'])
+
+const fieldOrtu = ref([
+    'nisn','nama','nik_ayah','nama_ayah','alamat_ayah','hp_ayah','nik_ibu','nama_ibu','hp_ibu','alamat_ibu','nik_wali','nama_wali','alamat_wali','alamat_wali'
+])
+
+const imporSiswa = () => {
+    formImpor.value = {
+        show: true,
+        url: 'dashboard.siswa.impor',
+        title: 'Siswa',
+        fields: fieldSiswa.value
+    }
+}
+const imporOrtu = () => {
+    formImpor.value = {
+        show: true,
+        url: 'dashboard.siswa.ortu.impor',
+        title: 'Ortu',
+        fields: fieldOrtu.value
+    }
+}
 
 const selectedSiswa = ref(null)
 const edit = (item) => {
@@ -110,6 +143,38 @@ const changeStatus = (e, siswa) => {
     })
 }
 
+const openFormOrtu = (siswa) => {
+    selectedSiswa.value = siswa
+    formOrtu.value = true
+}
+
+const closeFormOrtu = () => {
+    selectedSiswa.value = {}
+    formOrtu.value = false
+}
+
+const unduhFormat = async() => {
+    let data = []
+    page.props.siswas.forEach(siswa => {
+        data.push({
+            nisn: siswa.nisn, 
+            nama: siswa.nama, 
+            nama_ayah: siswa.ortus.map(ortu => ortu.relasi == 'Ayah' ? ortu.nama : '') ?? '',
+            alamat_ayah: siswa.ortus.map(ortu => ortu.relasi == 'Ayah' ? ortu.alamat : '') ?? '',
+            hp_ayah: siswa.ortus.map(ortu => ortu.relasi == 'Ayah' ? ortu.hp : '') ?? '',
+            nama_ibu: siswa.ortus.map(ortu => ortu.relasi == 'Ibu' ? ortu.nama : '') ?? '',
+            alamat_ibu: siswa.ortus.map(ortu => ortu.relasi == 'Ibu' ? ortu.alamat : '') ?? '',
+            hp_ibu: siswa.ortus.map(ortu => ortu.relasi == 'Ibu' ? ortu.hp : '') ?? '',
+            nama_wali: siswa.ortus.map(ortu => ortu.relasi == 'Wali' ? ortu.nama : '') ?? '',
+            alamat_wali: siswa.ortus.map(ortu => ortu.relasi == 'Wali' ? ortu.alamat : '') ?? '',
+            hp_wali: siswa.ortus.map(ortu => ortu.relasi == 'Wali' ? ortu.hp : '') ?? '',
+        })
+    })
+    const ws = utils.json_to_sheet(data)
+    const wb = utils.book_new()
+    utils.book_append_sheet(wb, ws, "ORTU")
+    writeFile(wb, "Format Impor Ortu "+page.props.sekolahs[0].nama+".xlsx")
+}
 // onMounted(async() => {
 //     await router.reload({only: ['siswas']})
 // })
@@ -129,22 +194,28 @@ const changeStatus = (e, siswa) => {
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase">Data Siswa {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
-                        <div class="card-toolbar--items flex items-center gap-1 px-2 w-[50%]">
-                            <el-button type="warning" class="mr-2">
-                                <Icon icon="mdi:human-male-female-child" />
-                                Impor Ortu
-                            </el-button>
-                            <el-button-group class="w-[250px]">
+                        <div class="card-toolbar--items flex items-center justify-end  px-2 w-[50%]">
+                            <el-button-group class="w-[300px]">
+                                <el-button type="success" @click="unduhFormat">
+                                    <Icon icon="mdi:file-excel" />
+                                    Unduh Format
+                                </el-button>
+                                <el-button type="warning" @click="imporOrtu">
+                                    <Icon icon="mdi:human-male-female-child" />
+                                    Impor Ortu
+                                </el-button>
+                            </el-button-group>
+                            <el-button-group class="w-[200px]">
                                 <el-button type="primary" @click="formSiswa = true">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true">
+                                <el-button type="success" @click="imporSiswa">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
                             </el-button-group>
-                            <el-input v-model="search" placeholder="Cari Siswa Berdasarkan Nama" clearable>
+                            <el-input v-model="search" placeholder="Cari Siswa Berdasarkan Nama" clearable style="width:400px;">
                                 <template #suffix>
                                     <Icon icon=mdi:magnify />
                                 </template>
@@ -191,6 +262,11 @@ const changeStatus = (e, siswa) => {
                                 <p>{{ scope.row.nama }}</p>
                             </template>
                         </el-table-column>
+                        <el-table-column label="Tempat, Tgl Lahir">
+                            <template #default="scope">
+                                <span>{{ scope.row.tempat_lahir }}, {{ scope.row.tanggal_lahir }}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="jk" label="J. Kelamin" width="100" />
                         <el-table-column prop="agama" label="Agama" width="60" />
                         <el-table-column label="Kelas" width="80">
@@ -208,6 +284,15 @@ const changeStatus = (e, siswa) => {
                                 {{ scope.row.angkatan }}
                             </template>
                         </el-table-column>
+                        <el-table-column label="Orang Tua">
+                            <template #default="scope">
+                                <div>
+                                    <p>Ayah: {{ scope.row.ortus.filter(ayah => ayah.relasi == 'Ayah')[0]?.nama }}</p>
+                                    <p>Ibu: {{ scope.row.ortus.filter(ibu => ibu.relasi == 'Ibu')[0]?.nama }}</p>
+                                    <p v-if="scope.row.ortus.filter(ortu => ortu.relasi == 'Wali').length > 0">Wali: {{ scope.row.ortus.filter(wali => wali.relasi == 'Wali')[0]?.nama }}</p>
+                                </div>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="Status" width="130"> 
                             <template #default="scope">
                                 <el-select v-model="scope.row.status" size="small" @change="changeStatus($event, scope.row)">
@@ -219,7 +304,7 @@ const changeStatus = (e, siswa) => {
                             <template #default="scope">
                                 <div class="flex items-center gap-1">
                                     <el-tooltip :content="`Ortu ${scope.row.nama}`" placement="left">
-                                        <el-button circle type="success" size="small">
+                                        <el-button circle type="success" size="small" @click="openFormOrtu(scope.row)">
                                             <Icon icon="mdi:human-male-female-child" />
                                         </el-button>
                                     </el-tooltip>
@@ -260,6 +345,8 @@ const changeStatus = (e, siswa) => {
             <!-- p>lorem*10 -->
         </div>
         <FormSiswa :open="formSiswa" @close="closeForm" :selectedSiswa="selectedSiswa" v-if="formSiswa" />
-        <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.siswa.impor" title="Siswa" />
+        <FormImpor :open="formImpor.show" @close="closeImpor" :fields="formImpor.fields" v-if="formImpor.show" :url="formImpor.url" :title="formImpor.title" />
+        <FormOrtu :open="formOrtu" @close="closeFormOrtu" v-if="formOrtu" :siswa="selectedSiswa" />
+
     </DashLayout>
 </template>
