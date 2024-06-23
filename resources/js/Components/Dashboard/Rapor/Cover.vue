@@ -8,7 +8,6 @@ const props = defineProps({siswa: Object})
 const emit = defineEmits(['close', 'nextSiswa', 'prevSiswa'])
 
 const sekolah = computed(() => page.props.sekolahs[0])
-const logo = computed(() => sekolah.value.logo ?? '/img/tutwuri.png')
 const defaultLogo = (e) => {
     e.target.src = '/img/tutwuri.png'
     e.onerror = null

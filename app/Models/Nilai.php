@@ -22,11 +22,17 @@ class Nilai extends Model
         'skor'
     ];
 
-    public function rombel() {
-        return $this->belongsTo(Rombel::class, 'rombel_id','kode');
+    public function rombel()
+    {
+        return $this->belongsTo(Rombel::class, 'rombel_id', 'kode');
     }
 
-    public function siswa() {
-        
+    public function siswa()
+    {
+    }
+
+    public function mapel()
+    {
+        return $this->belongsTo(Mapel::class, 'mapel_id', 'kode');
     }
 }

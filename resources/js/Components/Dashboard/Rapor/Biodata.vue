@@ -82,7 +82,7 @@ const cetak = async() => {
     </div>
 </div>
     <div class="page cetak bg-slate-100 print:bg-white w-full bg-cover p-20 font-serif">
-        <h3 class="font-bold text-center uppercase text-xl">Identitas Peserta Didik</h3>
+        <h3 class="font-bold print:text-center uppercase text-xl">Identitas Peserta Didik</h3>
         <table class="mt-16  10">
             <tr>
                 <td class="text-left">Nama Peserta Didik</td>

@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix('rapor')->group(function () {
             Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor.cetak')->middleware(['role:guru_kelas']);
             Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik')->middleware(['role:guru_kelas']);
+            Route::post('/pts', [RaporController::class, 'raporPTS'])->name('dashboard.rapor.pts')->middleware(['role:guru_kelas']);
         })->middleware(['role:guru_kelas']);
     });
 });
