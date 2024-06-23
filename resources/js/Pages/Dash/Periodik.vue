@@ -4,10 +4,24 @@ import { Head, router, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
 
 import DashLayout from '@/Layouts/DashLayout.vue'
+import FormEkskul from '@/Components/Dashboard/Periodik/FormEkskul.vue'
+
 
 const page = usePage()
 
 const rombel = page.props.rombels[0]
+const selectedSiswa = ref({})
+const mode = ref('list')
+
+const openForm = (formulir, siswa) => {
+    selectedSiswa.value = siswa
+    mode.value = formulir
+}
+
+const closeForm = () => {
+    selectedSiswa.value = false
+    mode.value = 'list'
+}
 </script>
 
 <template>
@@ -33,7 +47,7 @@ const rombel = page.props.rombels[0]
                     <template #default="scope">
                         <div>
                             <el-button-group>
-                                <el-button type="primary">Ekskul</el-button>
+                                <el-button type="primary" @click="openForm('ekskul', scope.row)">Ekskul</el-button>
                                 <el-button type="primary">Absensi</el-button>
                                 <el-button type="primary">Fisik</el-button>
                             </el-button-group>
@@ -44,5 +58,5 @@ const rombel = page.props.rombels[0]
         </div>
     </el-card>
 </DashLayout>
-
+<FormEkskul v-if="mode == 'ekskul'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'ekskul'" @close="closeForm" />
 </template>

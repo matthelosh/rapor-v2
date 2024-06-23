@@ -68,14 +68,14 @@ class HandleInertiaRequests extends Middleware
     private function sekolahs($user)
     {
         if ($user->hasRole('admin')) {
-            return Sekolah::with('mapels.tps', 'ks')->get();
+            return Sekolah::with('mapels.tps', 'ks', 'ekskuls')->get();
         } elseif ($user->hasRole('ops')) {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', function ($q) {
                 $q->orderBy('id', 'ASC');
                 $q->with('tps');
-            })->with('ks')->get();
+            })->with('ks', 'ekskuls')->get();
         } else {
-            return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', 'ks')->get() ?? null;
+            return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', 'ks', 'ekskuls')->get() ?? null;
         }
     }
 

@@ -26,6 +26,8 @@ const newTp = ref({})
 
 const role = computed(() => page.props.auth.roles[0])
 
+const ekskuls = ref([])
+
 const onFileElemenPicked = async(e) => {
     const file = e.target.files[0]
     const ab = await file.arrayBuffer();
@@ -132,8 +134,24 @@ const assignMapel = () => {
     })
 }
 
+const assignEkskul = () => {
+    router.post(route('dashboard.pembelajaran.ekskul.assign'), {sekolahId: page.props.sekolahs[0].id, ekskuls: ekskuls.value}, {
+        onSuccess: page => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
 onBeforeMount(() => {
     mapels.value = page.props.sekolahs[0].mapels ? page.props.sekolahs[0].mapels.map(mapel => mapel.id) : []
+    ekskuls.value = page.props.sekolahs[0].ekskuls ? page.props.sekolahs[0].ekskuls.map(ekskul => ekskul.id) : []
 })
 </script>
 
@@ -148,6 +166,7 @@ onBeforeMount(() => {
             <span class="title font-bold text-lg">Konten Pembelajaran</span>
         </template>
         <div class="card-body ">
+            <!-- {{ mapels }} -->
             <el-row>
                 <el-col>
                     <div class="card border">
@@ -229,8 +248,42 @@ onBeforeMount(() => {
                     </div>
                 </el-col>
             </el-row>
+            <el-row class="my-4">
+                <el-col>
+                    <div class="card border">
+                        <div class="card-header flex items-center justify-between p-2 bg-slate-100">
+                            <div class="card-header--title">
+                                <h3 class="font-bold">Ekstrakurikuler</h3>
+                            </div>
+                            <div class="card-header--items">
+                                <el-popover trigger="click" width="350">
+                                    <template #reference>
+                                        <el-button size="small" type="primary" :disabled="role !== 'ops'">Atur Ekskul</el-button>
+                                    </template>
+                                    <template #default>
+                                        <h3 class="text-sky-600 font-bold">Pilih Ekskul</h3>
+                                        <ol>
+                                            <li v-for="(ekskul,e) in page.props.ekskuls" :key="ekskul.id">
+                                                <el-checkbox :label="ekskul.nama" v-model="ekskuls" :value="ekskul.id">{{ ekskul.nama }}</el-checkbox>
+                                            </li>
+                                        </ol>
+                                        <el-button type="success" @click="assignEkskul" >Simpan</el-button>
+                                    </template>
+                                </el-popover>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <el-table :data="page.props.sekolahs[0].ekskuls">
+                                <el-table-column label="Kode" prop="kode"></el-table-column>
+                                <el-table-column label="Nama" prop="nama"></el-table-column>
+                                <el-table-column label="Keterangan" prop="keterangan"></el-table-column>
+                            </el-table>
+                            <!-- {{ page.props.sekolahs[0].ekskuls }} -->
+                        </div>
+                    </div>
+                </el-col>
+            </el-row>
         </div>
-        <!-- {{ page.props.sekolahs[0] }} -->
     </el-card>
 
     <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm">

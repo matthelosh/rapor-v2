@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Mapel;
+use App\Models\Absensi;
 use App\Models\Nilai;
+use App\Models\NilaiEkskul;
 
 class RaporService
 {
@@ -22,25 +23,43 @@ class RaporService
                 ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
                 ->orderBy('mapels.id')
                 ->get();
-            // $mapels = Mapel::whereHas('sekolah', function ($q) use ($sekolahId) {
-            //     $q->where(function ($sq) use ($sekolahId) {
-            //         $sq->where('npsn', $sekolahId);
-            //     });
-            // })->get();
-            // foreach ($mapels as $mapel) {
-            //     $nilais[$mapel->kode] = [
-            //         'label' => $mapel->label,
-            //         'nilai' => Nilai::where([
-            //             ['semester', '=', $queries['semester']],
-            //             ['tapel', '=', $queries['tapel']],
-            //             ['mapel_id', '=', $mapel->kode],
-            //             ['siswa_id', '=', $queries['siswaId']],
-            //             ['tipe', '=', 'ts'],
-            //             ['rombel_id','=', $queries['rombelId']]
-            //         ])->first(),
-            //     ];
-            // }
             return $nilais;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function nilaiPAS($request)
+    {
+        try {
+            //code...
+            return ['Halo PAS'];
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function absensi($queries)
+    {
+        try {
+            return Absensi::where([
+                ['siswa_id', '=', $queries['siswaId']],
+                ['semester', '=', $queries['semester']],
+                ['rombel_id', '=', $queries['rombelId']]
+            ])->first();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function ekskul($queries)
+    {
+        try {
+            return NilaiEkskul::where([
+                ['tapel', '=', $queries['tapel']],
+                ['semester', '=', $queries['semester']],
+                ['siswa_id', '=', $queries['siswaId']]
+            ])->with('ekskul')->get();
         } catch (\Throwable $th) {
             throw $th;
         }

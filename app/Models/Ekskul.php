@@ -12,11 +12,12 @@ class Ekskul extends Model
     protected $fillable = [
         'kode',
         'nama',
-        'sekolah_id',
-        'pembina',
-        'nip_pembina',
         'keterangan',
         'sifat',
         'is_active'
     ];
+    function sekolah()
+    {
+        return $this->belongsToMany(Sekolah::class, 'ekskul_sekolah');
+    }
 }

@@ -77,6 +77,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/tp/impor', [TpController::class, 'impor'])->name('dashboard.pembelajaran.tp.impor');
             Route::post('/tp/store', [TpController::class, 'store'])->name('dashboard.pembelajaran.tp.store');
             Route::delete('/tp/{id}', [TpController::class, 'destroy'])->name('dashboard.pembelajaran.tp.destroy');
+
+            Route::prefix('ekskul')->group(function () {
+                Route::get('/', [PembelajaranController::class, 'indexEkskul'])->name('dashboard.pembelajaran.ekskul');
+                Route::post('/assign', [PembelajaranController::class, 'assignEkskul'])->name('dashboard.pembelajaran.ekskul.assign');
+            });
         });
 
         Route::prefix("nilai")->group(function () {
@@ -93,6 +98,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor.cetak')->middleware(['role:guru_kelas']);
             Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik')->middleware(['role:guru_kelas']);
             Route::post('/pts', [RaporController::class, 'raporPTS'])->name('dashboard.rapor.pts')->middleware(['role:guru_kelas']);
+            Route::post('/pas', [RaporController::class, 'raporPAS'])->name('dashboard.rapor.pas')->middleware(['role:guru_kelas']);
         })->middleware(['role:guru_kelas']);
     });
 });

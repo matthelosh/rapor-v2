@@ -15,9 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('kode', 30)->unique();
             $table->string('nama', 150);
-            $table->string('sekolah_id', 30);
-            $table->string('pembina', 100);
-            $table->string('nip_pembina', 20)->nullable();
             $table->text('keterangan')->nullable();
             $table->enum('sifat', ['Wajib', 'Pilihan'])->default('Wajib');
             $table->boolean('is_active')->default(1);

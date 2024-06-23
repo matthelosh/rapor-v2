@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ekskul;
 use App\Models\Elemen;
 use App\Models\Tp;
 use Inertia\Inertia;
@@ -19,10 +20,10 @@ class PembelajaranController extends Controller implements HasMiddleware
 
     public function home(Request $request)
     {
-        $mapels = Mapel::with('tps')->get();
         return Inertia::render('Dash/Pembelajaran', [
-            'mapels' => $mapels,
+            'mapels' => Mapel::with('tps')->get(),
             'elemens' => Elemen::all(),
+            'ekskuls' => Ekskul::all()
         ]);
     }
 
@@ -39,6 +40,27 @@ class PembelajaranController extends Controller implements HasMiddleware
             return back()->withErrors($e->getMessage());
         }
     }
+
+    public function assignEkskul(Request $request)
+    {
+        $sekolah = Sekolah::findOrFail($request->sekolahId);
+        $sekolah->ekskuls()->sync($request->ekskuls);
+
+        return back()->with('message', "Ekskul ditambahkan ke " . $sekolah->nama);
+    }
+
+    public function indexEkskul(Request $request)
+    {
+        $sekolahId = $request->query('sekolahId');
+        $ekskuls =  Ekskul::whereHas('sekolah', function ($q) use ($sekolahId) {
+            $q->where(function ($sq) use ($sekolahId) {
+                $sq->where('npsn', $sekolahId);
+            });
+        })->get();
+
+        return response()->json(['ekskuls' => $ekskuls]);
+    }
+
 
     public static function middleware(): array
     {

@@ -18,7 +18,13 @@ class NilaiEkskul extends Model
         'deskripsi'
     ];
 
-    public function siswa() {
+    public function siswa()
+    {
         return $this->belongsTo(Siswa::class, 'siswa_id', 'nisn');
+    }
+
+    public function ekskul()
+    {
+        return $this->belongsTo(Ekskul::class);
     }
 }

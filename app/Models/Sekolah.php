@@ -58,4 +58,8 @@ class Sekolah extends Model
     {
         return $this->belongsToMany(Mapel::class, 'mapel_sekolah');
     }
+    function ekskuls()
+    {
+        return $this->belongsToMany(Ekskul::class, 'ekskul_sekolah');
+    }
 }

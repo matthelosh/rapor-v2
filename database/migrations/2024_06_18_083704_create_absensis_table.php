@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('rombel_id', 40);
             $table->string('siswa_id', 30);
+            $table->string('tapel', 10);
+            $table->string('semester', 1);
             $table->integer('ijin')->default(0);
             $table->integer('sakit')->default(0);
             $table->integer('alpa')->default(0);

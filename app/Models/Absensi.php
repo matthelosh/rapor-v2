@@ -12,12 +12,15 @@ class Absensi extends Model
     protected $fillable = [
         'rombel_id',
         'siswa_id',
+        'tapel',
+        'semester',
         'ijin',
         'sakit',
         'alpa'
     ];
 
-    public function siswa() {
+    public function siswa()
+    {
         return $this->belongsTo(Siswa::class, 'siswa_id', 'nisn');
     }
 }

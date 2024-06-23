@@ -27,4 +27,17 @@ class RaporController extends Controller
         // dd($nilaiPTS);
         return response()->json($nilaiPTS);
     }
+
+    public function raporPAS(Request $request, RaporService $raporService)
+    {
+        $queries = $request->query();
+        $absensis = $raporService->absensi($queries);
+        $ekskuls = $raporService->ekskul($queries);
+        $nilaiPas = $raporService->nilaiPAS($queries);
+        return response()->json([
+            'absensis' => $absensis,
+            'ekskuls' => $ekskuls,
+            'nilaiPas' => $nilaiPas
+        ]);
+    }
 }
