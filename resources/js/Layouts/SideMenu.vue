@@ -112,6 +112,12 @@ const items = ref([
                 url: '/dashboard/rapor/cetak',
                 roles: ['admin', 'ops', 'guru_kelas', 'kepala_sekolah']
             },
+            {
+                label: 'Tanggal Rapor',
+                icon: 'calendar',
+                url: '/dashboard/rapor/tanggal',
+                roles: ['ops']
+            }
         ]
     },
     {

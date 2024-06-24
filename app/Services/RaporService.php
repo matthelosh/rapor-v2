@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\Absensi;
+use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\NilaiEkskul;
+use App\Models\Rombel;
+use App\Models\Sekolah;
 
 class RaporService
 {
@@ -29,14 +32,80 @@ class RaporService
         }
     }
 
-    public function nilaiPAS($request)
+    public function nilaiPAS($queries)
     {
         try {
-            //code...
-            return ['Halo PAS'];
+            $rombel = Rombel::where('kode', $queries['rombelId'])->first();
+            $fase = $rombel->fase;
+            $sekolah = Sekolah::where('npsn', $queries['sekolahId'])->with('mapels', function ($q) use ($fase) {
+                $q->where('fase', 'LIKE', '%' . $fase . '%');
+            })->first();
+            $mapels = $sekolah->mapels;
+            $nilais = [];
+            foreach ($mapels as $mapel) {
+                $nas = Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
+                    ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
+                    ['tipe', '=', 'as']
+                ])->first();
+
+                $nuhs = Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
+                    ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
+                    ['tipe', '=', 'uh']
+                ])->with("tp")
+                    ->get();
+
+                $avgUh =  Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
+                    ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
+                    ['tipe', '=', 'uh']
+                ])->avg('skor');
+
+                $maxUh = Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
+                    ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
+                    ['tipe', '=', 'uh']
+                ])->orderBy('skor', 'DESC')->with('tp')->first();
+                $minUh = Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
+                    ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
+                    ['tipe', '=', 'uh']
+                ])->orderBy('skor', 'ASC')->with('tp')->first();
+
+                $na = round(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
+
+                $nilais[$mapel['kode']] = [
+                    'mapel' => $mapel,
+                    'na' => $na,
+                    'minu' => $minUh,
+                    'maxu' => $maxUh
+                ];
+            }
+
+            return $nilais;
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
         }
+    }
+
+    private function deskripsi($nilai)
+    {
     }
 
     public function absensi($queries)

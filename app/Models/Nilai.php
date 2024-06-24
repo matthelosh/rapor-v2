@@ -35,4 +35,9 @@ class Nilai extends Model
     {
         return $this->belongsTo(Mapel::class, 'mapel_id', 'kode');
     }
+
+    public function tp()
+    {
+        return $this->belongsTo(Tp::class, 'tp_id', 'kode');
+    }
 }

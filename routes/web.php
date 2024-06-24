@@ -88,6 +88,16 @@ Route::middleware('auth')->group(function () {
             Route::get("/", [NilaiController::class, "home"])->name('dashboard.nilai')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
             Route::post("/", [NilaiController::class, "index"])->name('dashboard.nilai.index')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
             Route::post("/store", [NilaiController::class, "store"])->name('dashboard.nilai.store')->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
+
+            Route::prefix('ekskul')->group(function () {
+                Route::get('/', [NilaiEkskulController::class, 'index'])->name('dashboard.nilai.ekskul.index');
+                Route::post('/store', [NilaiEkskulController::class, 'store'])->name('dashboard.nilai.ekskul.store');
+            });
+
+            Route::prefix('absen')->group(function () {
+                Route::get('/', [AbsensiController::class, 'index'])->name('dashboard.nilai.absen.index');
+                Route::post('/store', [AbsensiController::class, 'store'])->name('dashboard.nilai.absen.store');
+            });
         });
 
         Route::prefix("ledger")->group(function () {
@@ -99,6 +109,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik')->middleware(['role:guru_kelas']);
             Route::post('/pts', [RaporController::class, 'raporPTS'])->name('dashboard.rapor.pts')->middleware(['role:guru_kelas']);
             Route::post('/pas', [RaporController::class, 'raporPAS'])->name('dashboard.rapor.pas')->middleware(['role:guru_kelas']);
+            Route::prefix('tanggal')->group(function () {
+                Route::get('/', [RaporController::class, 'tanggal'])->name('dashboard.rapor.tanggal');
+                Route::post('/store', [RaporController::class, 'storeTanggal'])->name('dashboard.rapor.tanggal.store');
+                Route::delete('/{id}', [RaporController::class, 'destroyTanggal'])->name('dashboard.rapor.tanggal.destroy');
+            });
         })->middleware(['role:guru_kelas']);
     });
 });

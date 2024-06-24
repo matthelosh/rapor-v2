@@ -5,6 +5,7 @@ import { Icon } from '@iconify/vue'
 
 import DashLayout from '@/Layouts/DashLayout.vue'
 import FormEkskul from '@/Components/Dashboard/Periodik/FormEkskul.vue'
+import FormAbsen from '@/Components/Dashboard/Periodik/FormAbsen.vue'
 
 
 const page = usePage()
@@ -48,7 +49,7 @@ const closeForm = () => {
                         <div>
                             <el-button-group>
                                 <el-button type="primary" @click="openForm('ekskul', scope.row)">Ekskul</el-button>
-                                <el-button type="primary">Absensi</el-button>
+                                <el-button type="primary" @click="openForm('absen', scope.row)">Absensi</el-button>
                                 <el-button type="primary">Fisik</el-button>
                             </el-button-group>
                         </div>
@@ -59,4 +60,5 @@ const closeForm = () => {
     </el-card>
 </DashLayout>
 <FormEkskul v-if="mode == 'ekskul'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'ekskul'" @close="closeForm" />
+<FormAbsen v-if="mode == 'absen'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'absen'" @close="closeForm" />
 </template>

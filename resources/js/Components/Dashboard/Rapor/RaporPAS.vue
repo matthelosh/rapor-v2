@@ -13,17 +13,17 @@ const props = defineProps({siswa: Object, rombel: Object})
 const emit = defineEmits(['close', 'nextSiswa', 'prevSiswa'])
 
 const sekolah = computed(() => page.props.sekolahs[0])
-const nilais = ref([])
+const nilai = ref([])
 const close = () => {
     emit('close')
 }
 
-const showNext = () => {
-    emit('nextSiswa')
+const showNext = async() => {
+    await emit('nextSiswa')
     getNilaiPAS()
 }
-const showPrev = () => {
-    emit('prevSiswa')
+const showPrev = async() => {
+    await emit('prevSiswa')
     getNilaiPAS()
 }
 const cetak = async() => {
@@ -51,6 +51,7 @@ const cetak = async() => {
 
 }
 
+
 const getNilaiPAS = async() => {
     await axios.post(route('dashboard.rapor.pas', {
         _query: {
@@ -61,14 +62,14 @@ const getNilaiPAS = async() => {
             sekolahId: sekolah.value.npsn
         }
     })).then(res => {
-        console.log(res)
-        nilais.value = res.data
+        nilai.value = res.data
+
     }).catch(err => {
         console.log(err)
     })
 }
 
-onBeforeMount(async() => {
+onBeforeMount(() => {
     getNilaiPAS()
 })
 </script>
@@ -97,9 +98,9 @@ onBeforeMount(async() => {
         </div>
     </div>
     <el-scrollbar height="88vh">
-        <div class="cetak bg-slate-100 print:bg-white w-full bg-cover pt-4 pb-10 text-center font-serif">
+        <div class="cetak bg-slate-100 print:bg-white w-full bg-cover pt-4 print:pt-0 pb-10 text-center font-serif">
             <div class="page w-[60%] print:w-full bg-white mx-auto shadow-lg print:shadow-none pb-6 pt-4 print:pt-0">
-                <div class="meta my-6">
+                <div class="meta my-6 print:my-0">
                     <h3 class="text-center font-bold text-xl uppercase ">Laporan Hasil Belajar</h3>
                     <div class="grid grid-cols-6 text-left px-8 my-8">
                         <div class="col-span-3">
@@ -165,14 +166,19 @@ onBeforeMount(async() => {
                             </tr>
                         </thead>
                         <tbody>
-                            <template v-for="(mapel, m) in page.props.sekolahs[0].mapels" :key="m">
+                            <!-- <template v-for="(mapel, m) in page.props.sekolahs[0].mapels" :key="m"> -->
+                            <template v-for="(nilai, n) in nilai.pas" :key="n">
                                 <tr>
-                                    <td class="border border-black px-2 w-[70px]">{{ m+1 }}</td>
-                                    <td class="border border-black px-2 text-left w-[400px]">{{ mapel.label }}</td>
-                                    <td class="border border-black px-2 w-[100px]">90</td>
-                                    <td class="border border-black px-2"></td>
+                                    <td class="border align-top border-black px-2 w-[70px]">{{ nilai.mapel.id }}</td>
+                                    <td class="border align-top border-black px-2 text-left w-[200px]">{{ nilai.mapel?.label }}</td>
+                                    <td class="border align-top border-black px-2 w-[100px]">{{ nilai.na }}</td>
+                                    <td class="border align-top border-black px-2 text-left">
+                                        <p class=my-2>Ananda {{ props.siswa.nama }} menunjukkan penguasaan dalam {{ nilai.maxu?.tp.teks }}</p>
+                                        <p>Ananda {{ props.siswa.nama }} perlu bantuan dalam {{ nilai.minu?.tp.teks }}</p>
+                                    </td>
                                 </tr>
                             </template>
+                            <!-- {{ nilai.pas }} -->
                         </tbody>
                     </table>
                 </div>
@@ -186,13 +192,16 @@ onBeforeMount(async() => {
                             </tr>
                         </thead>
                         <tbody>
-                            <template v-for="(ekskul, e) in page.props.sekolahs[0].ekskuls" :key="ekskul.id">
+                            <template v-for="(neks, e) in nilai.ekskuls" :key="neks.id">
                                 <tr>
                                     <td class="border border-black px-2">{{ e+1 }}</td>
-                                    <td class="border border-black px-2 text-left">{{ ekskul.nama }}</td>
-                                    <td class="border border-black px-2 text-left">Keterangan</td>
+                                    <td class="border border-black px-2 text-left">{{ neks.ekskul.nama }}</td>
+                                    <td class="border border-black px-2 text-left">{{ neks.deskripsi }}</td>
                                 </tr>
                             </template>
+                            <tr v-if="nilai.ekskuls && nilai.ekskuls.length < 1">
+                                <td class="border border-black text-center p-2" colspan="3">Ananda {{ props.siswa.nama }} tidak mengikuti program Ekskul</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -207,15 +216,15 @@ onBeforeMount(async() => {
                             <tbody class="text-left">
                                 <tr>
                                     <td class="px-2 border">Sakit</td>
-                                    <td class="px-2 border">.... hari</td>
+                                    <td class="px-2 border text-right">{{ nilai.absensi?.sakit ?? '-' }} hari</td>
                                 </tr>
                                 <tr>
                                     <td class="px-2 border">Izin</td>
-                                    <td class="px-2 border">.... hari</td>
+                                    <td class="px-2 border text-right">{{ nilai.absensi?.ijin ??'-' }} hari</td>
                                 </tr>
                                 <tr>
                                     <td class="px-2 border">Tanpa Keterangan</td>
-                                    <td class="px-2 border">.... hari</td>
+                                    <td class="px-2 border text-right">{{ nilai.absensi?.alpa ?? '-' }} hari</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -228,7 +237,7 @@ onBeforeMount(async() => {
                         </div>
                     </div>
                     <div>
-                        <p>{{ capitalize(sekolah.desa) }}, {{ dayjs(new Date()).locale('id').format('DD MMMM YYYY') }}</p>
+                        <p>{{ capitalize(sekolah.desa) }}, {{ dayjs(nilai.tanggal?.tanggal).locale('id').format('DD MMMM YYYY') }}</p>
                         <p>Wali Kelas {{ rombel.label }}</p>
 
                         <p class="font-bold uppercase underline leading-4 mt-20">{{ page.props.auth.user.userable.nama }}, {{ page.props.auth.user.userable.gelar_belakang }}</p>

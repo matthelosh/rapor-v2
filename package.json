@@ -13,6 +13,7 @@
         "axios": "^1.7.2",
         "laravel-vite-plugin": "^1.0",
         "postcss": "^8.4.31",
+        "sass": "^1.77.6",
         "tailwindcss": "^3.2.1",
         "unplugin-auto-import": "^0.17.6",
         "unplugin-vue-components": "^0.27.0",

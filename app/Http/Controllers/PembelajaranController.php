@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Ekskul;
 use App\Models\Elemen;
-use App\Models\Tp;
 use Inertia\Inertia;
 use App\Models\Mapel;
 use App\Models\Sekolah;
 use App\PembelajaranTrait;
 use Illuminate\Http\Request;
-use Spatie\Permission\Middleware\RoleMiddleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
 class PembelajaranController extends Controller implements HasMiddleware

@@ -194,7 +194,7 @@ onBeforeMount(() => {
                             </span>
                         </div>
                         <div class="card-body p-2">
-                            <div class="data-mapel" v-if="role !== 'admin' && page.props.sekolahs[0].mapels.length > 0">
+                            <div class="data-mapel" v-if="page.props.sekolahs[0].mapels.length > 0">
                                 <template v-for="(mapel, m) in role == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
                                     <el-collapse>
                                         <el-collapse-item>
@@ -238,6 +238,7 @@ onBeforeMount(() => {
                                 </template>
                             </div>
                             <div v-else>
+                                <!-- {{ page.props.mapels }} -->
                                 <el-alert title="Atur Mapel Seperti video ini" type="warning">
                                     <video controls width="800" autoplay>
                                         <source src="/videos/atur-mapel.mp4" type="video/mp4">

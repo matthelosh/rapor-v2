@@ -1,8 +1,9 @@
 <script setup>
 import { ref, computed, onBeforeMount } from 'vue'
-import { usePage } from '@inertiajs/vue3'
+import { router, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue';
 import axios from 'axios'
+import { ElNotification } from 'element-plus';
 
 const page = usePage()
 const props = defineProps({siswa: Object, rombel: Object, open: Boolean})
@@ -20,15 +21,63 @@ const getEkskuls = async() => {
         })).then(res => {
             ekskuls.value = res.data.ekskuls
             res.data.ekskuls.forEach(item => {
-                nilais.value.push({kode: item.kode, nilai: 0, deskripsi: 'Halo'})
+                nilais.value.push({ekskulId: item.id, nilai: '', deskripsi: ''})
             })
         }).catch(err => console.log(err))
 
 }
 
+const getNilai = async() => {
+    await axios.get(route('dashboard.nilai.ekskul.index', {
+            _query: {
+                sekolahId: page.props.sekolahs[0].npsn,
+                siswaId: props.siswa.nisn,
+                tapel: page.props.periode.tapel.kode,
+                semester: page.props.periode.semester.kode,
+            }
+        })).then(res => {
+            if (res.data.nilais || res.data.nilais.length > 0) {
+                res.data.nilais.forEach(nilai => {
+                    const index = nilais.value.findIndex(n => n.ekskulId == nilai.ekskul_id)
+                    nilais.value[index].nilai = nilai.nilai
+                    nilais.value[index].deskripsi = nilai.deskripsi
+                    // console.log(index)
+                })
+            }
+            // ekskuls.value = res.data.ekskuls
+            // res.data.ekskuls.forEach(item => {
+            //     nilais.value.push({ekskulId: item.id, nilai: '', deskripsi: ''})
+            // })
+            // console.log(res)
+            
+        }).catch(err => console.log(err))
+}
 
-onBeforeMount(() => {
-    getEkskuls()
+const simpan = async() => {
+    router.post(route('dashboard.nilai.ekskul.store', {
+        _query: {
+            siswaId: props.siswa.nisn,
+            tapel: page.props.periode.tapel.kode,
+            semester: page.props.periode.semester.kode,
+        }
+    }), {nilais: nilais.value}, {
+        onSuccess: page => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:' success'})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
+                }, 500)
+            })
+        }
+    })
+}
+
+
+onBeforeMount(async () => {
+    await getEkskuls()
+    getNilai()
 })
 </script>
 
@@ -46,22 +95,24 @@ onBeforeMount(() => {
         </template>
         <div class="dialog-body">
             <el-table :data="ekskuls">
-                <el-table-column label="Nama Ekskul" prop="nama"></el-table-column>
-                <el-table-column label="Nilai" >
+                <el-table-column label="Nama Ekskul" prop="nama" width="200"></el-table-column>
+                <el-table-column label="Nilai" width="150">
                     <template #default="scope">
-                        <el-input v-model="nilais[scope.$index].nilai"></el-input>
+                        <el-select v-model="nilais[scope.$index].nilai" placeholder="Pilih Nilai">
+                            <el-option v-for="nilai in ['A','B','C','D']" :key="nilai" :value="nilai" />
+                        </el-select>
                     </template>
                 </el-table-column>
                 <el-table-column label="Deskripsi" >
                     <template #default="scope">
-                        <el-input type="textarea" rows="1" autosize v-model="nilais[scope.$index].deskripsi"></el-input>
+                        <el-input type="textarea" rows="1" autosize v-model="nilais[scope.$index].deskripsi" placeholder="Isikan deskripsi capaian"></el-input>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <template #footer>
             <div class="flex justify-end px-4">
-                <el-button type="primary">Simpan</el-button>
+                <el-button type="primary" @click="simpan">Simpan</el-button>
             </div>
         </template>
     </el-dialog>
