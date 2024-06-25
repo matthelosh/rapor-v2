@@ -97,7 +97,7 @@ onBeforeMount(async() => {
             </el-button>
         </div>
     </div>
-    <div class="cetak bg-slate-100 print:bg-white w-full bg-cover p-4 text-center font-serif">
+    <div class="cetak bg-slate-100 print:bg-white w-full bg-cover p-4 print:p-0 text-center font-serif">
         <div class="page w-[80%] print:w-full bg-white mx-auto shadow-lg print:shadow-none">
             <Kop />
             <div class="meta my-6">
@@ -150,7 +150,7 @@ onBeforeMount(async() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(nilai, m) in nilais" :key="nilai.id">
+                        <template v-for="(nilai, m) in nilais.pts" :key="nilai.id">
                             <tr>
                                 <td class="border border-black p-2">{{ m+1 }}</td>
                                 <td class="border border-black p-2 text-left">{{ nilai.mapel.label }}</td>
@@ -164,7 +164,7 @@ onBeforeMount(async() => {
                 <div></div>
                 <div></div>
                 <div>
-                    <p>{{ capitalize(sekolah.desa) }}, {{ dayjs(new Date()).locale('id').format('DD MMMM YYYY') }}</p>
+                    <p>{{ capitalize(sekolah.desa) }}, {{ dayjs(nilais.tanggal).locale('id').format('DD MMMM YYYY') }}</p>
                     <p>Wali Kelas {{ rombel.label }}</p>
 
                     <p class="font-bold uppercase underline leading-4 mt-20">{{ page.props.auth.user.userable.nama }}, {{ page.props.auth.user.userable.gelar_belakang }}</p>

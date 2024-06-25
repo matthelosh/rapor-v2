@@ -8,6 +8,7 @@ use App\Models\Nilai;
 use App\Models\NilaiEkskul;
 use App\Models\Rombel;
 use App\Models\Sekolah;
+use App\Models\TanggalRapor;
 
 class RaporService
 {
@@ -15,17 +16,24 @@ class RaporService
     {
         try {
             $sekolahId = $queries['sekolahId'];
-            // $nilais = [];
-            $nilais = Nilai::where([
-                ['siswa_id', '=', $queries['siswaId']],
-                ['rombel_id', '=', $queries['rombelId']],
+            $nilais = [
+                'pts' => Nilai::where([
+                    ['siswa_id', '=', $queries['siswaId']],
+                    ['rombel_id', '=', $queries['rombelId']],
+                    ['semester', '=', $queries['semester']],
+                    ['tipe', '=', 'ts']
+                ])->select('nilais.*')
+                    ->with('mapel')
+                    ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
+                    ->orderBy('mapels.id')
+                    ->get(),
+            ];
+            $tgl = TanggalRapor::where([
                 ['semester', '=', $queries['semester']],
-                ['tipe', '=', 'ts']
-            ])->select('nilais.*')
-                ->with('mapel')
-                ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
-                ->orderBy('mapels.id')
-                ->get();
+                ['tipe', '=', 'pts'],
+                ['tapel', '=', $queries['tapel']],
+            ])->select('tanggal')->first();
+            $nilais['tanggal'] = $tgl->tanggal;
             return $nilais;
         } catch (\Throwable $th) {
             throw $th;
