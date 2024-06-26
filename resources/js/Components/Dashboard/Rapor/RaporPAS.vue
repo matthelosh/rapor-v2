@@ -169,10 +169,10 @@ onBeforeMount(() => {
                             <!-- <template v-for="(mapel, m) in page.props.sekolahs[0].mapels" :key="m"> -->
                             <template v-for="(nilai, n) in nilai.pas" :key="n">
                                 <tr>
-                                    <td class="border align-top border-black px-2 w-[70px]">{{ nilai.mapel.id }}</td>
-                                    <td class="border align-top border-black px-2 text-left w-[200px]">{{ nilai.mapel?.label }}</td>
-                                    <td class="border align-top border-black px-2 w-[100px]">{{ nilai.na }}</td>
-                                    <td class="border align-top border-black px-2 text-left">
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[50px]">{{ nilai.mapel.id }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[170px]">{{ nilai.mapel?.label }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]">{{ nilai.na }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left">
                                         <p class=my-2>Ananda {{ props.siswa.nama }} menunjukkan penguasaan dalam {{ nilai.maxu?.tp.teks }}</p>
                                         <p>Ananda {{ props.siswa.nama }} perlu bantuan dalam {{ nilai.minu?.tp.teks }}</p>
                                     </td>
@@ -186,8 +186,8 @@ onBeforeMount(() => {
                     <table class="border" width="100%">
                         <thead>
                             <tr>
-                                <th class="border border-black p-2 bg-slate-100 w-[70px]">No</th>
-                                <th class="border border-black p-2 bg-slate-100 w-[400px]">Ekstrakurikuler</th>
+                                <th class="border border-black p-2 bg-slate-100 w-[50px]">No</th>
+                                <th class="border border-black p-2 bg-slate-100 w-[270px]">Ekstrakurikuler</th>
                                 <th class="border border-black p-2 bg-slate-100">Keterangan</th>
                             </tr>
                         </thead>
