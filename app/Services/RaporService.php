@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Absensi;
+use App\Models\Catatan;
 use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\NilaiEkskul;
@@ -127,6 +128,17 @@ class RaporService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function catatan($queries)
+    {
+        $catatan = Catatan::where([
+            ['siswa_id', '=', $queries['siswaId']],
+            ['semester', '=', $queries['semester']],
+            ['rombel_id', '=', $queries['rombelId']]
+        ])->first();
+
+        return $catatan ?  $catatan->teks : null;
     }
 
     public function ekskul($queries)

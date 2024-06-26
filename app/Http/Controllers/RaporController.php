@@ -36,10 +36,12 @@ class RaporController extends Controller
         $absensis = $raporService->absensi($queries);
         $ekskuls = $raporService->ekskul($queries);
         $nilaiPas = $raporService->nilaiPAS($queries);
+        $catatan = $raporService->catatan($queries);
         return response()->json([
             'absensi' => $absensis,
             'ekskuls' => $ekskuls,
             'pas' => $nilaiPas,
+            'catatan' => $catatan,
             'tanggal' => TanggalRapor::where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
                 ->where('semester', $queries['semester'])
                 ->where('tapel', $queries['tapel'])

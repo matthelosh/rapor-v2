@@ -129,13 +129,13 @@ const items = ref([
             {
                 label: 'Hak Akses',
                 icon: 'account-settings',
-                url: '#',
+                url: '/dashboard/roles',
                 roles: ['admin']
             },
             {
                 label: 'Backup',
                 icon: 'harddisk',
-                url: '#',
+                url: '/dashboard/backup',
                 roles: ['admin', 'ops']
             },
         ]

@@ -6,6 +6,7 @@ import { Icon } from '@iconify/vue'
 import DashLayout from '@/Layouts/DashLayout.vue'
 import FormEkskul from '@/Components/Dashboard/Periodik/FormEkskul.vue'
 import FormAbsen from '@/Components/Dashboard/Periodik/FormAbsen.vue'
+import FormCatatan from '@/Components/Dashboard/Periodik/FormCatatan.vue'
 
 
 const page = usePage()
@@ -50,7 +51,7 @@ const closeForm = () => {
                             <el-button-group>
                                 <el-button type="primary" @click="openForm('ekskul', scope.row)">Ekskul</el-button>
                                 <el-button type="primary" @click="openForm('absen', scope.row)">Absensi</el-button>
-                                <el-button type="primary">Fisik</el-button>
+                                <el-button type="primary" @click="openForm('catatan', scope.row)">Catatan</el-button>
                             </el-button-group>
                         </div>
                     </template>
@@ -61,4 +62,5 @@ const closeForm = () => {
 </DashLayout>
 <FormEkskul v-if="mode == 'ekskul'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'ekskul'" @close="closeForm" />
 <FormAbsen v-if="mode == 'absen'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'absen'" @close="closeForm" />
+<FormCatatan v-if="mode == 'catatan'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'catatan'" @close="closeForm" />
 </template>

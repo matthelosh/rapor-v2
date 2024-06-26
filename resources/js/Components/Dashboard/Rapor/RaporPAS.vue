@@ -205,6 +205,12 @@ onBeforeMount(() => {
                         </tbody>
                     </table>
                 </div>
+                <div class="grid grid-cols-1 px-8">
+                    <h3 class="text-left font-bold">Catatan Wali Kelas</h3>
+                    <div class="border border-double border-black text-left p-4">
+                        <p>{{ nilai.catatan }}</p>
+                    </div>
+                </div>
                 <div class="ttd grid grid-cols-3 mt-8 px-8">
                     <div class="col-span-1">
                         <table>

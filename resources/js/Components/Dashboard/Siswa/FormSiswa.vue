@@ -9,7 +9,11 @@ const props = defineProps({open: Boolean, selectedSiswa: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
 const loading = ref(false)
-const fotoUrl = ref('/img/tutwuri.png')
+const fotoUrl = (e) => {
+    console.log(e.target)
+    e.target.src = '/img/tutwuri.png'
+    e.onerror = null
+}
 const fileFoto = ref(null)
 const sekolahs = ref([])
 const siswa = ref({
@@ -62,7 +66,7 @@ const onFotoPicked = (e) => {
     const file = e.target.files[0]
     let url  = URL.createObjectURL(file)
     fileFoto.value = file
-    fotoUrl.value = url
+    siswa.value.foto = url
     // console.log(e)
 }
 
@@ -92,7 +96,7 @@ onBeforeMount(() => {
             <el-col :span="6" class="border-r bg-slate-100 p-2">
                 <h4 class="text-center mb-2">Foto Siswa  <br /><small>[Klik untuk mengganti]</small></h4>
                 <div>
-                    <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
+                    <img class="mx-auto w-24 hover:cursor-pointer" :src="siswa.foto" :on-error="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
                     <input type="file" placeholder="Pilih Foto Guru" ref="fotoInput" @change="onFotoPicked" class="hidden" accept=".jpg,.JPG,.png,.PNG,.bmp,.BMP,.svg, .SVG,.jpeg, .JPEG, .webp" />
                 </div>
             </el-col>

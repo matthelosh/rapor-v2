@@ -168,7 +168,7 @@ onBeforeMount(async() => {
                     <p>Wali Kelas {{ rombel.label }}</p>
 
                     <p class="font-bold uppercase underline leading-4 mt-20">{{ page.props.auth.user.userable.nama }}, {{ page.props.auth.user.userable.gelar_belakang }}</p>
-                    <p class="leading-4">NIP. {{ page.props.auth.user.userable.nip }}</p>
+                    <p class="leading-4 mb-8">NIP. {{ page.props.auth.user.userable.nip }}</p>
                 </div>
             </div>
         </div>

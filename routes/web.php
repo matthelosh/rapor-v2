@@ -98,6 +98,10 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', [AbsensiController::class, 'index'])->name('dashboard.nilai.absen.index');
                 Route::post('/store', [AbsensiController::class, 'store'])->name('dashboard.nilai.absen.store');
             });
+            Route::prefix('catatan')->group(function () {
+                Route::get('/', [CatatanController::class, 'index'])->name('dashboard.nilai.catatan.index');
+                Route::post('/store', [CatatanController::class, 'store'])->name('dashboard.nilai.catatan.store');
+            });
         });
 
         Route::prefix("ledger")->group(function () {
@@ -115,6 +119,14 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/{id}', [RaporController::class, 'destroyTanggal'])->name('dashboard.rapor.tanggal.destroy');
             });
         })->middleware(['role:guru_kelas']);
+
+        Route::prefix("roles")->group(function () {
+            Route::get('/', [RoleController::class, 'home'])->name('dashboard.role');
+        });
+        Route::prefix("backup")->group(function () {
+            Route::get('/', [BackupController::class, 'home'])->name('dashboard.backup')->middleware(['role:admin']);
+            Route::post('/', [BackupController::class, 'store'])->name('dashboard.backup.store')->middleware(['role:admin']);
+        });
     });
 });
 
