@@ -14,7 +14,8 @@ class Ortu extends Model
         'nama',
         'relasi',
         'alamat',
-        'hp'
+        'hp',
+        'pekerjaan'
     ];
 
     public function siswa()

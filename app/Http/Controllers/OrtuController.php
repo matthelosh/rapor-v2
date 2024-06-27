@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ortu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrtuController extends Controller
 {
@@ -51,6 +52,44 @@ class OrtuController extends Controller
                 // dd($ayah, $ibu, $wali);
             }
             return back()->with('message', 'Data Ortu Diimpor');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            // dd($request->ortu);
+            $ortu = $request->ortu;
+            $ayah = $ortu['ayah'];
+            $ayah['siswa_id'] = $ortu['siswa_id'];
+            $newAyah = new Ortu($ayah);
+            $newAyah->save();
+
+            $ibu = $ortu['ibu'];
+            $ibu['siswa_id'] = $ortu['siswa_id'];
+            $newIbu = new Ortu($ibu);
+            $newIbu->save();
+
+            if (isset($ortu['wali'])) {
+                $wali = $ortu['wali'];
+                $wali['siswa_id'] = $ortu['siswa_id'];
+                $newWali = new Ortu($wali);
+                $newWali->save();
+            }
+
+            return \response()->json(['message' => 'Data Ortu disimpan']);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function indexPekerjaan(Request $request)
+    {
+        try {
+            $pekerjaans = DB::table('pekerjaans')->get();
+            return \response()->json(['pekerjaans' => $pekerjaans]);
         } catch (\Throwable $th) {
             throw $th;
         }

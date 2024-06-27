@@ -33,7 +33,7 @@ const cetak = async() => {
 	let html = `<!doctype html>
 				<html>
 					<head>
-						<title>Cover Rapor</title>
+						<title class="uppercase">Laporan Hasil Belajar ${props.siswa.nama}</title>
 						<link rel="stylesheet" href="${cssUrl}" />
 					</head>
 					<body>
@@ -46,7 +46,7 @@ const cetak = async() => {
 	await win.document.write(html)
     setTimeout(() => {
         win.print();
-        // win.close();
+        win.close();
     }, 1500);
 
 }

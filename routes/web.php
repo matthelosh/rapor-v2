@@ -56,7 +56,9 @@ Route::middleware('auth')->group(function () {
             Route::post("/impor", [SiswaController::class, 'impor'])->name('dashboard.siswa.impor');
             Route::delete("/{id}", [SiswaController::class, 'destroy'])->name('dashboard.siswa.destroy');
             Route::prefix('ortu')->group(function () {
+                Route::post('/', [OrtuController::class, 'store'])->name('dashboard.siswa.ortu.store');
                 Route::post('/impor', [OrtuController::class, 'impor'])->name('dashboard.siswa.ortu.impor');
+                Route::get('/pekerjaan', [OrtuController::class, 'indexPekerjaan'])->name('dashboard.siswa.ortu.pekerjaan.index');
             });
         });
 
@@ -126,6 +128,7 @@ Route::middleware('auth')->group(function () {
         Route::prefix("backup")->group(function () {
             Route::get('/', [BackupController::class, 'home'])->name('dashboard.backup')->middleware(['role:admin']);
             Route::post('/', [BackupController::class, 'store'])->name('dashboard.backup.store')->middleware(['role:admin']);
+            Route::post('/tes', [BackupController::class, 'tes'])->name('dashboard.backup.tes')->middleware(['role:admin']);
         });
     });
 });
