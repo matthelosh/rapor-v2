@@ -7,7 +7,7 @@ import { ElNotification } from 'element-plus';
 
 const page = usePage()
 const props = defineProps({ siswa: Object, open: Boolean })
-// const emit = defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 const ortu = ref({
     siswa_id: props.siswa.nisn,
@@ -60,6 +60,11 @@ const simpan = async() => {
 onBeforeMount(async () => {
     // ortu.value = props.siswa.or
     getPekerjaan()
+    if (props.siswa.ortus.length > 0) {
+        ortu.value.ayah = props.siswa.ortus.filter(ortu => ortu.relasi == 'Ayah')[0]
+        ortu.value.ibu = props.siswa.ortus.filter(ortu => ortu.relasi == 'Ibu')[0]
+        ortu.value.wali = props.siswa.ortus.filter(ortu => ortu.relasi == 'Wali')[0]
+    }
 })
 </script>
 
@@ -69,7 +74,7 @@ onBeforeMount(async () => {
         <div class="header flex items-center justify-between">
 
             <h3 class="uppercase">Formulir Orang Tua / Wali dari {{ siswa.nama }}</h3>
-            <el-button type="danger" @click="close" circle>
+            <el-button type="danger" @click="emit('close')" circle>
                 <Icon icon="mdi:close" />
             </el-button>
         </div>
@@ -233,6 +238,7 @@ onBeforeMount(async () => {
                 </el-col>
             </el-row>
         </el-form>
+        <!-- {{ props.siswa.ortus }} -->
     </div>
     <template #footer>
         <div class="flex items-center justify-center p-2">
