@@ -120,7 +120,11 @@ Route::middleware('auth')->group(function () {
                 Route::post('/store', [RaporController::class, 'storeTanggal'])->name('dashboard.rapor.tanggal.store');
                 Route::delete('/{id}', [RaporController::class, 'destroyTanggal'])->name('dashboard.rapor.tanggal.destroy');
             });
-        })->middleware(['role:guru_kelas']);
+
+            Route::prefix('arsip')->group(function () {
+                Route::get('/', [ArsipController::class, 'home'])->name('dashboard.rapor.arsip')->middleware(['role:ops']);
+            });
+        });
 
         Route::prefix("roles")->group(function () {
             Route::get('/', [RoleController::class, 'home'])->name('dashboard.role');
@@ -129,6 +133,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [BackupController::class, 'home'])->name('dashboard.backup')->middleware(['role:admin']);
             Route::post('/', [BackupController::class, 'store'])->name('dashboard.backup.store')->middleware(['role:admin']);
             Route::post('/tes', [BackupController::class, 'tes'])->name('dashboard.backup.tes')->middleware(['role:admin']);
+        });
+
+        Route::prefix('tapel')->group(function () {
+            Route::put('/{id}/toggle', [TapelController::class, 'toggle'])->name('dashboard.tapel.toggle')->middleware(['role:admin']);
+        });
+        Route::prefix('semester')->group(function () {
+            Route::put('/{id}/toggle', [SemesterController::class, 'toggle'])->name('dashboard.semester.toggle')->middleware(['role:admin']);
         });
     });
 });

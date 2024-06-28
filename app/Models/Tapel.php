@@ -15,4 +15,9 @@ class Tapel extends Model
         'deskripsi',
         'is_active'
     ];
+
+    public function rombels()
+    {
+        return $this->hasMany(Rombel::class, 'tapel', 'kode');
+    }
 }

@@ -117,7 +117,13 @@ const items = ref([
                 icon: 'calendar',
                 url: '/dashboard/rapor/tanggal',
                 roles: ['ops']
-            }
+            },
+            {
+                label: 'Arsip',
+                icon: 'archive',
+                url: '/dashboard/rapor/arsip',
+                roles: ['ops']
+            },
         ]
     },
     {

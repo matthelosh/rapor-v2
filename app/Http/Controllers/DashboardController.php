@@ -3,24 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
-use App\Models\User;
-use Inertia\Inertia;
 use App\Models\Sekolah;
+use App\Models\Semester;
+use App\Models\Tapel;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
         $user = $request->user();
-        $sekolahs = [];
+        $data = [];
         if ($user->hasRole('admin')) {
-            $sekolahs = Sekolah::all();
+            $data['sekolahs'] = Sekolah::with('ks')->get();
+            $data['tapels'] = Tapel::all();
+            $data['semester'] = Semester::all();
         } else {
-            $sekolahs = $user->userable->sekolahs;
+            $data['sekolahs'] = $user->userable->sekolahs;
         }
         return Inertia::render('Dashboard', [
-            'sekolahs' => $sekolahs,
+            'data' => $data,
         ]);
     }
 
