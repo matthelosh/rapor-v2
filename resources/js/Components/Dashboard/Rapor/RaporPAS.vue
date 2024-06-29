@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeUnmount, onBeforeMount } from 'vue'
 import { Head, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue';
 import { capitalize } from '@/helpers/String';
@@ -8,7 +8,7 @@ import 'dayjs/locale/id'
 import axios from 'axios';
 
 const page = usePage()
-const props = defineProps({siswa: Object, rombel: Object})
+const props = defineProps({siswa: Object, rombel: Object, arsip: Boolean, tapel: Object, semester: String})
 
 const emit = defineEmits(['close', 'nextSiswa', 'prevSiswa'])
 
@@ -56,8 +56,8 @@ const getNilaiPAS = async() => {
     await axios.post(route('dashboard.rapor.pas', {
         _query: {
             rombelId: props.rombel.kode,
-            semester: page.props.periode.semester.kode,
-            tapel: page.props.periode.tapel.kode,
+            semester: !props.arsip ? page.props.periode.semester.kode : props.semester,
+            tapel: !props.arsip ? page.props.periode.tapel.kode : props.tapel.kode,
             siswaId: props.siswa.nisn,
             sekolahId: sekolah.value.npsn
         }
@@ -72,16 +72,20 @@ const getNilaiPAS = async() => {
 onBeforeMount(() => {
     getNilaiPAS()
 })
+
+onBeforeUnmount(() => {
+    nilai.value = {}
+})
 </script>
 
 <template>
     <Head :title="`Laporan Hasil Belajar Akhir Semester ${page.props.periode.semester.label}`" />
     <div class="toolbar h-12 bg-slate-200 w-full flex items-center justify-between print:hidden px-4">
         <span>
-            Cetak Rapor PAS {{ page.props.periode.semester.label }} Tahun {{ page.props.periode.tapel.label }}
+            Cetak Rapor PAS Semester {{ !props.arsip ? page.props.periode.semester.label : props.semester }} Tahun {{ !props.arsip ?  page.props.periode.tapel.label : props.tapel.label }}
         </span>
         <div class="toolbar-items flex items-center">
-            <el-button-group>
+            <el-button-group v-if="!props.arsip">
                 <el-button>
                     <Icon icon="mdi:chevron-double-left" @click="showPrev" />
                 </el-button>
@@ -89,10 +93,13 @@ onBeforeMount(() => {
                     <Icon icon="mdi:chevron-double-right" />
                 </el-button>
             </el-button-group>
+            <el-button @click="getNilaiPAS" v-if="props.arsip">
+                <Icon icon="mdi:reload" />
+            </el-button>
             <el-button @click="cetak">
                 <Icon icon="mdi:printer" />
             </el-button>
-            <el-button circle type="danger" @click="close">
+            <el-button circle type="danger" @click="close" v-if="!props.arsip">
                 <Icon icon="mdi:close" />
             </el-button>
         </div>
@@ -143,12 +150,12 @@ onBeforeMount(() => {
                                 <tr>
                                     <td>Semester</td>
                                     <td class="px-1">:</td>
-                                    <td>{{ page.props.periode.semester.label }}</td>
+                                    <td>{{ !props.arsip ? page.props.periode.semester.label : (props.semester == '1' ? 'Ganjil' : 'Genap') }}</td>
                                 </tr>
                                 <tr>
                                     <td>Tahun Pelajaran</td>
                                     <td class="px-1">:</td>
-                                    <td>{{ page.props.periode.tapel.label }}</td>
+                                    <td>{{ !props.arsip ? page.props.periode.tapel.label : props.tapel.label }}</td>
                                 </tr>
                             </table>
                         </div>

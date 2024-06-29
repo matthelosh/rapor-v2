@@ -20,8 +20,26 @@ class DashboardController extends Controller
             $data['sekolahs'] = Sekolah::with('ks')->get();
             $data['tapels'] = Tapel::all();
             $data['semester'] = Semester::all();
-        } else {
-            $data['sekolahs'] = $user->userable->sekolahs;
+        } elseif ($user->hasRole('ops')) {
+            $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
+                ->with('gurus', 'ks')
+                ->with('rombels', function ($q) {
+                    $q->with('guru');
+                    $q->with('siswas');
+                })
+                ->with('mapels')
+                ->first();
+        } elseif ($user->hasRole('guru_kelas')) {
+            $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
+                ->with('mapels')
+                ->first();
+        } elseif ($user->hasRole(['guru_agama', 'guru_pjok', 'guru_inggris'])) {
+            $guruId = $user->userable->id;
+            $data['sekolahs'] = Sekolah::whereHas('gurus', function ($q) use ($guruId) {
+                $q->where('gurus.id', $guruId);
+            })
+                ->with('rombels.siswas')
+                ->get();
         }
         return Inertia::render('Dashboard', [
             'data' => $data,

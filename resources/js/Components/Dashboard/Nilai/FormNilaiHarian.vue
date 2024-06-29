@@ -145,7 +145,7 @@ onBeforeMount(async() => {
         <span class="uppercase">
             <span class="flex items-center justify-between">
                 <div>
-                    <small>Nilai Harian</small> <span class="text-sky-800 font-bold">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </span> 
+                    <small>Nilai Harian</small> <span class="text-sky-800 font-bold">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </span> 
                     <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->
                     <small>
                         &nbsp;

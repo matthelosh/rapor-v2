@@ -137,7 +137,7 @@ onBeforeMount(async() => {
             <span class="flex items-start justify-between">
                 <div>
                     <p>Nilai Akhir Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.label }}</p>
-                    <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.split("_")[1].toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
+                    <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
                     <p>
                         {{ props.rombel.label }} 
                         <span v-if="role !== 'guru_kelas'">{{ props.sekolah.nama }}</span>

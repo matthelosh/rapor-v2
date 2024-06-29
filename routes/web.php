@@ -114,7 +114,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/cetak', [RaporController::class, 'home'])->name('dashboard.rapor.cetak')->middleware(['role:guru_kelas']);
             Route::get('/periodik', [RaporController::class, 'periodik'])->name('dashboard.rapor.periodik')->middleware(['role:guru_kelas']);
             Route::post('/pts', [RaporController::class, 'raporPTS'])->name('dashboard.rapor.pts')->middleware(['role:guru_kelas']);
-            Route::post('/pas', [RaporController::class, 'raporPAS'])->name('dashboard.rapor.pas')->middleware(['role:guru_kelas']);
+            Route::post('/pas', [RaporController::class, 'raporPAS'])->name('dashboard.rapor.pas')->middleware(['role:guru_kelas|ops']);
             Route::prefix('tanggal')->group(function () {
                 Route::get('/', [RaporController::class, 'tanggal'])->name('dashboard.rapor.tanggal');
                 Route::post('/store', [RaporController::class, 'storeTanggal'])->name('dashboard.rapor.tanggal.store');

@@ -9,7 +9,7 @@ import { capitalize } from '@/helpers/String.js'
 const page = usePage()
 const role = page.props.auth.roles[0]
 const comp = computed(() => {
-    return role == 'admin' ? 'Admin' : 'Ops'
+    return role == 'admin' ? 'Admin' : (role == 'ops' ? 'Ops' : (role == 'guru_kelas' ? 'Wali' : 'Mapel'))
 })
 const is = computed(() => {
     return defineAsyncComponent(() => import('../Components/Dashboard/Home/'+comp.value+'.vue'))

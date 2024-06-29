@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -28,11 +29,20 @@ class Guru extends Model
         'jabatan'
     ];
 
-    public function user() : MorphOne {
+    // protected function foto(): Attribute
+    // {
+    //     return Attribute::make(
+    //         get: fn ($foto) => url('/storage/guru/' . $foto),
+    //     );
+    // }
+
+    public function user(): MorphOne
+    {
         return $this->morphOne(User::class, 'userable');
     }
 
-    public function sekolahs() {
+    public function sekolahs()
+    {
         return $this->belongsToMany(Sekolah::class, 'guru_sekolah');
     }
 }

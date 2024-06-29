@@ -52,7 +52,7 @@ const prevSiswa = () => {
 
 <DashLayout>
     <template #header>
-        <h3 class="uppercase">Rapor Siswa {{ selectedSiswa?.nama }} - {{ mode }}</h3>
+        <h3 class="uppercase">Rapor Siswa {{ selectedSiswa?.nama }}</h3>
     </template>
     <el-card v-if="mode == 'list'">
         <template #header>

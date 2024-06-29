@@ -44,10 +44,16 @@ class NilaiService
             //         array_push($datas, $rombel);
             //     }
             // }
+
         } elseif ($user->hasRole('ops')) {
             $datas = Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('rombels.siswas', 'rombels.guru')->first();
         } elseif ($user->hasRole('admin')) {
             $datas = Sekolah::all();
+        } else {
+            $guruId = $user->userable->id;
+            $datas = Sekolah::whereHas('gurus', function ($q) use ($guruId) {
+                $q->where('gurus.id', $guruId);
+            })->with('ks')->with('rombels.siswas')->get();
         }
 
         return $datas;
