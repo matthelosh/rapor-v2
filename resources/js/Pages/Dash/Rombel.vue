@@ -92,7 +92,7 @@ const hapus = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="rombels" height="420px" size="small" :default-sort="{ prop: 'label', order: 'descending' }">
+                <el-table :data="rombels" height="80vh" size="small" :default-sort="{ prop: 'label', order: 'descending' }">
                     <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')" width="150">
                         <template #default="scope">
                             <div>

@@ -34,7 +34,7 @@ onBeforeMount(async() => {
                     </div>
                 </template>
                 <div class="collapse-body">
-                    <el-table :data="rombel.siswas" height="600" size="small">
+                    <el-table :data="rombel.siswas" height="80vh" size="small">
                         <el-table-column label="#" type="index" prop="scope.$index" />
                         <el-table-column label="NISN" prop="nisn"></el-table-column>
                         <el-table-column label="Nama" prop="nama"></el-table-column>
@@ -52,6 +52,5 @@ onBeforeMount(async() => {
         </template>
     </el-collapse>
 
-    {{ page.props.nilais }}
 </DashLayout>
 </template>

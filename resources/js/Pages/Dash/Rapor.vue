@@ -61,7 +61,7 @@ const prevSiswa = () => {
             </div>
         </template>
         <div class="card-body">
-            <el-table :data="rombel.siswas" height="700" size="small">
+            <el-table :data="rombel.siswas" height="80vh" size="small">
                 <el-table-column label="#" type="index" prop="scope.$index" />
                 <el-table-column label="NISN" prop="nisn" />
                 <el-table-column label="Nama" prop="nama" />

@@ -225,7 +225,7 @@ const unduhFormat = async() => {
                 </template>
                 <el-skeleton :loading="loading" animated>
                     <template #template>
-                        <div v-for="d of 10" :key="d" style="width: 100%;display: flex; margin-bottom: 10px; align-item: middle;">
+                        <div v-for="d of 10" :key="d" style="width: 100%;display: flex; margin-bottom: 10px; align-items: middle;">
                             <el-skeleton-item variant="text" style="width:100px; margin: 0 5px;" />
                             <el-skeleton-item variant="image" style="width: 50px; height: 50px;margin: 0 10px;" />
                             <el-skeleton-item variant="text" style="width:100px; margin:0 10px;" />
@@ -237,7 +237,7 @@ const unduhFormat = async() => {
                         </div>
                     </template>
                     <template #default>
-                    <el-table :data="siswas" height="550px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                    <el-table :data="siswas" height="70vh" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                         <el-table-column label="Foto" width="55">
                             <template #default="scope">
                                 <img :src="fotoUrl(scope.row)" class="w-10" />

@@ -117,7 +117,7 @@ const createAccount = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="gurus" height="600px" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                <el-table :data="gurus" height="80vh" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                     <el-table-column label="Foto" width="60">
                         <template #default="scope">
                             <img :src="avatar(scope.row)" class="w-10" />
