@@ -128,6 +128,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("roles")->group(function () {
             Route::get('/', [RoleController::class, 'home'])->name('dashboard.role');
+            Route::post('/permission/assign', [RoleController::class, 'assignPermission'])->name('dashboard.role.permission.assign');
         });
         Route::prefix("backup")->group(function () {
             Route::get('/', [BackupController::class, 'home'])->name('dashboard.backup')->middleware(['role:admin']);

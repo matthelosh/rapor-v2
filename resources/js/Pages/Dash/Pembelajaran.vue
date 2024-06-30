@@ -173,7 +173,8 @@ onBeforeMount(() => {
                         <div class="card-header bg-slate-100 p-2 flex items-center justify-between">
                             <h3 class="font-bold">Mata Pelajaran</h3>
                             <span>
-                                <el-popover trigger="click" width="350">
+                                <!-- {{ page.props.mapels }} -->
+                                <el-popover trigger="click" width="350" v-if="page.props.mapels.length > 0">
                                     <template #reference>
                                         <el-button size="small" type="success" :disabled="role !== 'ops'">Atur Mapel</el-button>
                                     </template>
@@ -189,8 +190,8 @@ onBeforeMount(() => {
                                 </el-popover>
                                 <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
                                 <el-button type="success" size="small" @click="$refs.fileTp.click()" :disabled="role !== 'admin'">Impor TP</el-button>
-                                <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileElemenPicked" />
-                                <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods" class="hidden" @change="onFileTpPicked" />
+                                <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileElemenPicked" />
+                                <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileTpPicked" />
                             </span>
                         </div>
                         <div class="card-body p-2">

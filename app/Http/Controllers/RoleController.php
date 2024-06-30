@@ -19,7 +19,21 @@ class RoleController extends Controller
                 'users' => User::with('roles', 'permissions')->get()
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
+            throw $th;
+        }
+    }
+
+    public function assignPermission(Request $request)
+    {
+        try {
+            // dd($request->role['permissions']);
+            $permissions = $request->role['permissions'];
+            $role = Role::findOrFail($request->role['id']);
+            // dd($role);
+            $role->givePermissionTo($permissions);
+            return back()->with('message', 'Permission assigned');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

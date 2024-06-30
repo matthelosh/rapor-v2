@@ -78,19 +78,19 @@ const items = ref([
         label: 'Data Nilai',
         icon: 'numeric',
         url: '#',
-        roles: ['admin', 'ops'],
+        roles: ['guru_kelas', 'guru_agama','guru_pjok','guru_inggris', 'ops'],
         children: [
             {
                 label: 'Input Nilai',
                 icon: 'edit',
                 url: '/dashboard/nilai',
-                roles: ['admin', 'ops', 'guru_kelas', 'guru_agama','guru_pjok','guru_inggris']
+                roles: ['guru_kelas', 'guru_agama','guru_pjok','guru_inggris']
             },
             {
                 label: 'Ledger',
                 icon: 'spreadsheet',
                 url: '/dashboard/ledger',
-                roles: ['admin', 'ops', 'guru_kelas', 'kepala_sekolah']
+                roles: [ 'guru_kelas', 'guru_agama','guru_pjok','guru_inggris']
             },
         ]
     },
@@ -98,19 +98,19 @@ const items = ref([
         label: 'Rapor',
         icon: 'report',
         url: '#',
-        roles: ['admin', 'ops'],
+        roles: ['guru_kelas', 'ops'],
         children: [
             {
                 label: 'Data Periodik',
                 icon: 'chart-line',
                 url: '/dashboard/rapor/periodik',
-                roles: ['admin', 'ops', 'guru_kelas']
+                roles: ['guru_kelas']
             },
             {
                 label: 'Cetak',
                 icon: 'printer',
                 url: '/dashboard/rapor/cetak',
-                roles: ['admin', 'ops', 'guru_kelas', 'kepala_sekolah']
+                roles: ['guru_kelas', 'kepala_sekolah']
             },
             {
                 label: 'Tanggal Rapor',
@@ -142,7 +142,7 @@ const items = ref([
                 label: 'Backup',
                 icon: 'harddisk',
                 url: '/dashboard/backup',
-                roles: ['admin', 'ops']
+                roles: ['admin']
             },
         ]
     },
@@ -178,8 +178,8 @@ const showItem = (roles) => {
                                 <span>{{ item.label }}</span>
                             </Link>
                         </li>
-                        <li v-else class="group">
-                            <a :href="item.url" class="flex justify-between items-center gap-1 text-slate-600">
+                        <li v-else class="group" >
+                            <a :href="item.url" class="flex justify-between items-center gap-1 text-slate-600 " >
                                 <span class="flex items-center gap-1">
                                     <Icon :icon="`mdi:${item.icon}`" />
                                     <span>{{ item.label }}</span>

@@ -2,10 +2,15 @@
 import { ref, onMounted } from 'vue';
 import { router, Head, usePage, Link } from '@inertiajs/vue3'
 import {ElContainer, ElHeader, ElAside,ElMain } from 'element-plus'
+import { Icon } from '@iconify/vue';
 // import 'element-plus/es/components/button/style/css'
 import SideItem from './SideMenu.vue'
 
 const contentTrigger = ref(false)
+
+const logout = () => {
+  router.post(route('logout'))
+}
 
 onMounted(() => contentTrigger.value = true)
 </script>
@@ -24,7 +29,14 @@ onMounted(() => contentTrigger.value = true)
                 <slot name="header"></slot>
             </div>
             <div class="header-items">
-                <Link :href="route('logout')" method="post" as="button" class="hover:text-red-600">Logout</Link>
+              <el-popconfirm title="Yakin Keluar?" @confirm="logout">
+                <template #reference>
+                  <!-- <Link :href="route('logout')" method="post" as="button" class="hover:text-red-600">Logout</Link> -->
+                   <el-button type="danger" text>
+                    <Icon icon="mdi:exit-to-app" class="text-2xl" />
+                   </el-button>
+              </template>
+              </el-popconfirm>
             </div>
         </el-header>
         <el-main >

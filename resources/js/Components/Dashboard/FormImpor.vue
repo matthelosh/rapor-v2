@@ -22,7 +22,7 @@ const onFilePicked = async(e) => {
 const kirim = async() => {
     await router.post(route(props.url), {sekolah: page.props.auth.roles[0] === 'admin' ? null: page.props.sekolahs[0].id, datas: datas.value}, {
         onSuccess: (page) => {
-            ElNotification({title: 'Info', message: `Data ${props.title} diimpor`, type: 'success'})
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
             datas.value = []
             emit('close')
         },

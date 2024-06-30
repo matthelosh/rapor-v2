@@ -30,6 +30,7 @@ const closeImpor = () => {
 const fields = ref([ 
         'npsn',
         'nama',
+        'logo',
         'alamat',
         'desa',
         'kecamatan',
@@ -38,8 +39,7 @@ const fields = ref([
         'telp',
         'email',
         'website',
-        'nama_ks',
-        'nip_ks'])
+        'ks_id',])
 
 const selectedSekolah = ref(null)
 const edit = (item) => {
@@ -114,7 +114,7 @@ const addOps = async(id) => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="sekolahs" height="420px" size="small">
+                <el-table :data="sekolahs" height="80vh" size="small">
                     <el-table-column label="Logo">
                         <template #default="scope">
                             <img :src="scope.row.logo" class="w-10" />
