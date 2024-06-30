@@ -67,8 +67,13 @@ onBeforeMount(async() => {
                             </el-table-column>
                             <el-table-column label="Ijin">
                                 <template #default="scope">
-                                    <el-select v-model="roles[scope.$index]['permissions']" multiple filterable placeholder="Pilih Ijin untuk Pengguna" >
+                                    <el-select v-model="roles[scope.$index]['permissions']" multiple filterable placeholder="Pilih Ijin untuk Pengguna" collapse-tags collapse-tags-tooltip :max-collapse-tags="5" style="width: 300px">
                                         <el-option v-for="(per, p) in page.props.permissions" :key="p" :value="per.name" :label="per.name"></el-option>
+                                        <!-- <template #tag>
+                                            <span class="w-[100px]">
+                                                <el-tag v-for="name in roles[scope.$index]['permissions']">{{ name }}</el-tag>
+                                            </span>
+                                        </template> -->
                                     </el-select>
                                 </template>
                             </el-table-column>
@@ -86,3 +91,11 @@ onBeforeMount(async() => {
         </el-card>
     </DashLayout>
 </template>
+
+<style>
+    .el-popper.is-light {
+        max-width: 300px;
+        /* background: #efefef!important; */
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+</style>

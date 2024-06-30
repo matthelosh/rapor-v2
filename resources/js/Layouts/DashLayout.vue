@@ -32,7 +32,7 @@ onMounted(() => contentTrigger.value = true)
               <el-popconfirm title="Yakin Keluar?" @confirm="logout">
                 <template #reference>
                   <!-- <Link :href="route('logout')" method="post" as="button" class="hover:text-red-600">Logout</Link> -->
-                   <el-button type="danger" text>
+                   <el-button type="danger" circle text>
                     <Icon icon="mdi:exit-to-app" class="text-2xl" />
                    </el-button>
               </template>

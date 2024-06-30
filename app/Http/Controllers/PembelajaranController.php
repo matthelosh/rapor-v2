@@ -30,12 +30,60 @@ class PembelajaranController extends Controller implements HasMiddleware
         // dd($request->sekolahId);
         try {
             $sekolah = Sekolah::findOrFail($request->sekolahId);
-            // dd($sekolah);
+            // dd($request->mapels);
             $sekolah->mapels()->sync($request->mapels);
 
             return back()->with('message', "Mapel ditambahkan ke " . $sekolah->nama);
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
+        }
+    }
+
+    public function imporMapel(Request $request)
+    {
+        try {
+            $datas = $request->datas;
+            foreach ($datas as $data) {
+                Mapel::updateOrCreate(
+                    [
+                        'kode' => $data['kode'],
+                    ],
+                    [
+                        'kode' => $data['kode'],
+                        'label' => $data['label'],
+                        'fase' => $data['fase'],
+                        'kategori' => $data['kategori'],
+                        'deskripsi' => $data['deskripsi'],
+                    ]
+                );
+            }
+
+            return back()->with('message', 'Mapel Diimpor');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function imporEkskul(Request $request)
+    {
+        try {
+            $datas = $request->datas;
+            foreach ($datas as $data) {
+                Ekskul::updateOrCreate(
+                    [
+                        'kode' => $data['kode'],
+                    ],
+                    [
+                        'nama' => $data['nama'],
+                        'keterangan' => $data['keterangan'],
+                        'sifat' => $data['sifat'],
+                        'is_active' => true,
+                    ]
+                );
+            }
+
+            return back()->with('message', 'Ekskul Diimpor');
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

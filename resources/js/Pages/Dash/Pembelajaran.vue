@@ -73,6 +73,52 @@ const onFileTpPicked = async(e) => {
         }
     })
 }
+const onFileMapelPicked = async(e) => {
+    // console.log(mapel)
+    const file = e.target.files[0]
+    const ab = await file.arrayBuffer();
+
+    const wb = read(ab);
+
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    let datas = utils.sheet_to_json(ws)
+    await router.post(route('dashboard.pembelajaran.mapel.impor'), {datas: datas}, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+            router.reload({only: ['mapels']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                }, 500)
+            })
+        }
+    })
+}
+const onFileEkskulPicked = async(e) => {
+    // console.log(mapel)
+    const file = e.target.files[0]
+    const ab = await file.arrayBuffer();
+
+    const wb = read(ab);
+
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    let datas = utils.sheet_to_json(ws)
+    await router.post(route('dashboard.pembelajaran.ekskul.impor'), {datas: datas}, {
+        onSuccess: (page) => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+            router.reload({only: ['mapels']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                }, 500)
+            })
+        }
+    })
+}
 
 const editTp = (item, mapel) => {
     selectedMapel.value = mapel
@@ -120,7 +166,8 @@ const hapusTp = async(id) => {
 }
 
 const assignMapel = () => {
-    router.post(route('dashboard.pembelajaran.mapel.assign'), {sekolahId: page.props.sekolahs[0].id, mapels: mapels.value}, {
+    console.log(mapels.value)
+    router.post(route('dashboard.pembelajaran.mapel.assign'), {sekolahId: page.props.sekolahs[0].id, mapels: mapels.value.filter(m => m !== null)}, {
         onSuccess: page => {
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         },
@@ -135,7 +182,7 @@ const assignMapel = () => {
 }
 
 const assignEkskul = () => {
-    router.post(route('dashboard.pembelajaran.ekskul.assign'), {sekolahId: page.props.sekolahs[0].id, ekskuls: ekskuls.value}, {
+    router.post(route('dashboard.pembelajaran.ekskul.assign'), {sekolahId: page.props.sekolahs[0].id, ekskuls: ekskuls.value.filter(e => e !== null)}, {
         onSuccess: page => {
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         },
@@ -182,20 +229,23 @@ onBeforeMount(() => {
                                         <h3 class="text-sky-600 font-bold">Pilih Mapel</h3>
                                         <ol>
                                             <li v-for="(mapel,m) in page.props.mapels" :key="mapel.id">
-                                                <el-checkbox :label="mapel.label" v-model="mapels" :value="mapel.id">{{ mapel.label }}</el-checkbox>
+                                                <el-checkbox :label="mapel.label" v-model="mapels[m]" :true-value="mapel.id">{{ mapel.label }}</el-checkbox>
                                             </li>
                                         </ol>
                                         <el-button type="success" @click="assignMapel" >Simpan</el-button>
                                     </template>
                                 </el-popover>
+                                <el-button size="small" type="primary" @click="$refs.fileMapel.click()" :disabled="role !== 'admin'">Impor Mapel</el-button>
                                 <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
                                 <el-button type="success" size="small" @click="$refs.fileTp.click()" :disabled="role !== 'admin'">Impor TP</el-button>
                                 <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileElemenPicked" />
                                 <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileTpPicked" />
+                                <input type="file" ref="fileMapel" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileMapelPicked" />
                             </span>
                         </div>
                         <div class="card-body p-2">
-                            <div class="data-mapel" v-if="page.props.sekolahs[0].mapels.length > 0">
+                            <!-- {{ page.props.mapels }} -->
+                            <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && role == 'admin')">
                                 <template v-for="(mapel, m) in role == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
                                     <el-collapse>
                                         <el-collapse-item>
@@ -266,12 +316,15 @@ onBeforeMount(() => {
                                         <h3 class="text-sky-600 font-bold">Pilih Ekskul</h3>
                                         <ol>
                                             <li v-for="(ekskul,e) in page.props.ekskuls" :key="ekskul.id">
-                                                <el-checkbox :label="ekskul.nama" v-model="ekskuls" :value="ekskul.id">{{ ekskul.nama }}</el-checkbox>
+                                                <el-checkbox :label="ekskul.nama" v-model="ekskuls[e]" :true-value="ekskul.id">{{ ekskul.nama }}</el-checkbox>
                                             </li>
                                         </ol>
+
                                         <el-button type="success" @click="assignEkskul" >Simpan</el-button>
                                     </template>
                                 </el-popover>
+                                <el-button type="success" size="small" @click="$refs.fileEkskul.click()" :disabled="role !== 'admin'">Impor Ekskul</el-button>
+                                <input type="file" ref="fileEkskul" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileEkskulPicked" />
                             </div>
                         </div>
                         <div class="card-body">

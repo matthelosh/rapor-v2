@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [PembelajaranController::class, 'home'])->name('dashboard.pembelajaran');
             Route::post('/elemen/impor', [ElemenController::class, 'impor'])->name('dashboard.pembelajaran.elemen.impor');
             Route::post('/mapel/assign', [PembelajaranController::class, 'assignMapel'])->name('dashboard.pembelajaran.mapel.assign');
+            Route::post('/mapel/impor', [PembelajaranController::class, 'imporMapel'])->name('dashboard.pembelajaran.mapel.impor');
             Route::post('/tp', [TpController::class, 'index'])->name('dashboard.pembelajaran.tp.index');
             Route::post('/tp/impor', [TpController::class, 'impor'])->name('dashboard.pembelajaran.tp.impor');
             Route::post('/tp/store', [TpController::class, 'store'])->name('dashboard.pembelajaran.tp.store');
@@ -82,6 +83,7 @@ Route::middleware('auth')->group(function () {
 
             Route::prefix('ekskul')->group(function () {
                 Route::get('/', [PembelajaranController::class, 'indexEkskul'])->name('dashboard.pembelajaran.ekskul');
+                Route::post('/impor', [PembelajaranController::class, 'imporEkskul'])->name('dashboard.pembelajaran.ekskul.impor');
                 Route::post('/assign', [PembelajaranController::class, 'assignEkskul'])->name('dashboard.pembelajaran.ekskul.assign');
             });
         });
