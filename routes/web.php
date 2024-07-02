@@ -139,9 +139,11 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('tapel')->group(function () {
+            Route::post('/store', [TapelController::class, 'store'])->name('dashboard.tapel.store')->middleware(['role:admin']);
             Route::put('/{id}/toggle', [TapelController::class, 'toggle'])->name('dashboard.tapel.toggle')->middleware(['role:admin']);
         });
         Route::prefix('semester')->group(function () {
+            Route::post('/store', [SemesterController::class, 'store'])->name('dashboard.semester.store')->middleware(['role:admin']);
             Route::put('/{id}/toggle', [SemesterController::class, 'toggle'])->name('dashboard.semester.toggle')->middleware(['role:admin']);
         });
     });

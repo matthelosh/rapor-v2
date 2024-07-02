@@ -8,7 +8,25 @@ use Illuminate\Http\Request;
 class TapelController extends Controller
 {
     //
+    public function store(Request $request)
+    {
+        try {
+            Tapel::updateOrCreate(
+                [
+                    'id' => $request->data['id'] ?? null
+                ],
+                [
+                    'kode' => $request->data['kode'],
+                    'label' => $request->data['label'],
+                    'deskripsi' => $request->data['deskripsi']
+                ]
+            );
 
+            return back()->with('message', 'Tapel Disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
     public function toggle(Request $request, $id)
     {
         try {

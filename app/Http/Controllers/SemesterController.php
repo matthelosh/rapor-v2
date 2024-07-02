@@ -8,6 +8,25 @@ use Illuminate\Http\Request;
 class SemesterController extends Controller
 {
     //
+    public function store(Request $request)
+    {
+        try {
+            Semester::updateOrCreate(
+                [
+                    'id' => $request->data['id'] ?? null,
+                ],
+                [
+                    'kode' => $request->data['kode'],
+                    'label' => $request->data['label'],
+                    'deskripsi' => $request->data['deskripsi']
+                ]
+            );
+
+            return back()->with('message', 'Data Semester Disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 
     public function toggle(Request $request, $id)
     {

@@ -37,10 +37,44 @@ const onSemesterChange = async(e, item) => {
         }
     })
 }
+const tapel = ref({})
 
+const simpanTapel = async() => {
+    router.post(route('dashboard.tapel.store'), {data: tapel.value}, {
+        onSuccess: page => {
+            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
+            router.reload({only:['tapels']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: "Error", message: errs[k], type: 'error'})
+                }, 500);
+            })
+        }
+    })
+} 
+const semester = ref({})
+
+const simpanSemester = async() => {
+    router.post(route('dashboard.semester.store'), {data: semester.value}, {
+        onSuccess: page => {
+            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
+            router.reload({only:['semester']})
+        },
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: "Error", message: errs[k], type: 'error'})
+                }, 500);
+            })
+        }
+    })
+} 
 </script>
 
 <template>
+    <!-- <div>{{page.props.data}}</div> -->
     <div class="flex gap-2">
         <el-card class="w-[50%] h-[600px]">
             <template #header>
@@ -56,7 +90,30 @@ const onSemesterChange = async(e, item) => {
         </el-card>
         <el-card class="w-[25%] h-[350px]">
             <template #header>
-                <span>Tahun Pelajaran</span>
+                <div class="flex items-center justify-between">
+                    <span>Tahun Pelajaran</span>
+                    <el-popover trigger="click" width="250">
+                        <template #reference>
+                            <el-button circle type="primary" size="small">
+                                <Icon icon="mdi-plus" />
+                            </el-button>
+                        </template>
+                        <div class="form-tapel">
+                            <el-form v-model="tapel" label-position="top" size="small">
+                                <el-form-item label="Kode">
+                                    <el-input v-model="tapel.kode" placeholder="Kode Tapel" size="small"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Label">
+                                    <el-input v-model="tapel.label" placeholder="Label" size="small"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Deskripsi">
+                                    <el-input v-model="tapel.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
+                                </el-form-item>
+                                <el-button class="mx-auto" type="primary" @click="simpanTapel">Simpan</el-button>
+                            </el-form>
+                        </div>
+                    </el-popover>
+                </div>
             </template>
             <el-table :data="data.tapels" height="300" size="small">
                 <el-table-column label="#" type="index"></el-table-column>
@@ -71,7 +128,30 @@ const onSemesterChange = async(e, item) => {
         </el-card>
         <el-card class="w-[25%] h-[200px]">
             <template #header>
-                <span>Semester</span>
+                <div class="flex items-center justify-between">
+                    <span>Semester</span>
+                    <el-popover trigger="click" width="250">
+                        <template #reference>
+                            <el-button circle type="primary" size="small">
+                                <Icon icon="mdi-plus" />
+                            </el-button>
+                        </template>
+                        <div class="form-semester">
+                            <el-form v-model="semester" label-position="top" size="small">
+                                <el-form-item label="Kode">
+                                    <el-input v-model="semester.kode" placeholder="Kode Semester" size="small"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Label">
+                                    <el-input v-model="semester.label" placeholder="Label" size="small"></el-input>
+                                </el-form-item>
+                                <el-form-item label="Deskripsi">
+                                    <el-input v-model="semester.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
+                                </el-form-item>
+                                <el-button class="mx-auto" type="primary" @click="simpanSemester">Simpan</el-button>
+                            </el-form>
+                        </div>
+                    </el-popover>
+                </div>
             </template>
             <el-table :data="data.semester" height="200" size="small">
                 <el-table-column label="#" type="index"></el-table-column>
