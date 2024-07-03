@@ -1,12 +1,11 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
+import { ref, computed, defineAsyncComponent, onBeforeMount } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { Head, usePage, router } from '@inertiajs/vue3';
 import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
-import { groupBy } from 'lodash'
-
+import axios from 'axios';
 const page = usePage()
 
 const formRombel = ref(false)
@@ -15,11 +14,7 @@ const rombelSiswa = ref(false)
 const RombelSiswa = defineAsyncComponent(() => import('@/Components/Dashboard/Rombel/RombelSiswa.vue'))
 const DialogTutor = defineAsyncComponent(() => import('@/Components/Dashboard/Tutorial.vue'))
 const search = ref('')
-const rombels = computed(() => {
-    return page.props.rombels.filter(rombel => {
-        return rombel.label.toLowerCase().includes(search.value.toLowerCase())
-    })
-})
+const rombels = ref([])
 
 const closeForm = () => {
     formRombel.value = false
@@ -66,6 +61,48 @@ const tutor = ref(false)
 const showTutor = () => tutor.value = true
 const closeTutor = () => tutor.value = false
 
+
+const kktps = ref([])
+const simpanKktp = async(rombel) => {
+    console.log(rombel.kktps)
+    router.post(route('dashboard.rombel.kktp.store', {
+        _query: {
+            sekolahId: page.props.sekolahs[0].npsn,
+            semester: page.props.periode.semester.kode,
+            tapel: page.props.periode.tapel.kode,
+            rombelId: rombel.kode,
+            tingkat: rombel.tingkat
+        }
+    }), {datas: rombel.kktps}, {
+        onSuccess: page => {
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        }
+    })
+}
+onBeforeMount(async() => {
+    
+await
+    page.props.rombels.forEach((rombel,r) => {
+        if (rombel.kktps.length  > 0) {
+            rombels.value.push(rombel)
+        } else {
+            // rombels.value.push(rombel)
+            // let kktps = []
+        //     let item = {}
+            rombels.value.push(rombel)
+            page.props.sekolahs[0].mapels.forEach(mapel => {
+                // kktps.push({mapel_id: mapel.kode, minimal: 0, mapel: mapel})
+            rombels.value[r].kktps.push({mapel_id: mapel.kode, mapel: {label: mapel.label}, minimal: 0})
+            })
+            // console.log(kktps)
+
+            // rombels.value[r].kktps = kktps
+        //     item = rombel
+        //     item.kktps = kktps
+        //     rombels.value.push(item)
+        }
+    })
+})
 </script>
 <template>
     <Head title="Data Rombel" />
@@ -122,6 +159,28 @@ const closeTutor = () => tutor.value = false
                             <p>{{ scope.row.guru?.gelar_depan }} {{ scope.row.guru?.nama }}, {{ scope.row.guru?.gelar_belakang }}</p>
                         </template>
                     </el-table-column>
+                    <el-table-column label="KKTP" v-if="page.props.auth.roles[0] == 'guru_kelas'">
+                        <template #default="scope" >
+                            <el-popover width="400px" trigger="click">
+                                <template #reference>
+                                    <el-button type="primary" size="small">KKTP</el-button>
+                                </template>
+                                <div>
+                                    <ul>
+                                        <li v-for="(kktp,k) in scope.row.kktps" :key="k" class="flex items-center justify-between mb-2">
+                                            <span>{{ kktp.mapel?.label }}</span>
+                                            <span  class="w-[80px]">
+                                                <el-input type="number" size="small" v-model="kktp.minimal"></el-input>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                    <el-divider>
+                                        <el-button type="primary" size="small" @click="simpanKktp(scope.row)">Simpan</el-button>
+                                    </el-divider>
+                                </div>
+                            </el-popover>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Siswa" width="150">
                         <template #default="scope">
                             <div>
@@ -158,7 +217,6 @@ const closeTutor = () => tutor.value = false
                     </el-table-column>
                 </el-table>
             </el-card>
-
         </div>
         <FormRombel :open="formRombel" @close="closeForm" :selectedRombel="selectedRombel" v-if="formRombel" />
         <RombelSiswa :show=rombelSiswa @close="closeMgmSiswa" :selectedRombel="selectedRombel" v-if="rombelSiswa" @refresh="reloadData" />

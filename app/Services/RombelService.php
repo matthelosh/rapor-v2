@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Guru;
+use App\Models\Kktp;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Rombel;
@@ -22,19 +23,25 @@ class RombelService
         //
     }
 
-    public function home($request) {
+    public function home($request)
+    {
         $user = $request->user();
+        $kktps = [];
         if ($user->hasRole('admin')) {
-            $rombels = Rombel::with('sekolah','guru', 'siswas')->get();
+            $rombels = Rombel::with('sekolah', 'guru', 'siswas')->get();
         } elseif ($user->hasRole('ops')) {
-            $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah','guru', 'siswas')->get();
-            
+            $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah', 'guru', 'siswas')->get();
         } elseif ($user->hasRole('guru_kelas')) {
-            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->where('guru_id', $user->userable->id)->with('sekolah','guru', 'siswas')->get();
+            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
+                ->where('guru_id', $user->userable->id)
+                ->with('sekolah', 'guru', 'siswas')
+                ->with('kktps', function ($q) {
+                    $q->with('mapel');
+                })
+                ->get();
         }
 
         return ['rombels' => $rombels];
-
     }
 
     // public function index($request) {
@@ -50,7 +57,8 @@ class RombelService
     //     return $sekolahs;
     // }
 
-    public function store($request) {
+    public function store($request)
+    {
         try {
             $data = $request->all();
 
@@ -71,39 +79,34 @@ class RombelService
                 ]
             );
             return back()->with("success", true);
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
 
-    public function attachMember($id, $siswas) {
+    public function attachMember($id, $siswas)
+    {
         try {
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
-            foreach($siswas as $siswa)
-            {
+            foreach ($siswas as $siswa) {
                 $rombel->siswas()->attach($siswa['id']);
             }
             return true;
-
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             dd($e);
         }
     }
-    public function detachMember($id, $siswas) {
+    public function detachMember($id, $siswas)
+    {
         try {
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
-            foreach($siswas as $siswa)
-            {
+            foreach ($siswas as $siswa) {
                 $rombel->siswas()->detach($siswa['id']);
             }
             return true;
-
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             dd($e);
         }
     }

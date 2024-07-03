@@ -21,16 +21,23 @@ class Rombel extends Model
         'is_active'
     ];
 
-    public function guru() {
+    public function guru()
+    {
         return $this->belongsTo(Guru::class, 'guru_id', 'id');
     }
 
-    public function sekolah() {
-        return $this->belongsTo(Sekolah::class, 'sekolah_id','npsn');
+    public function sekolah()
+    {
+        return $this->belongsTo(Sekolah::class, 'sekolah_id', 'npsn');
     }
 
-    public function siswas() {
+    public function siswas()
+    {
         return $this->belongsToMany(Siswa::class, 'rombel_siswa');
     }
 
+    public function kktps()
+    {
+        return $this->hasMany(Kktp::class, 'rombel_id', 'kode');
+    }
 }

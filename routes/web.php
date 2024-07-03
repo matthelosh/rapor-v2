@@ -69,6 +69,10 @@ Route::middleware('auth')->group(function () {
             Route::post("/member/detach", [RombelController::class, 'detachMember'])->name('dashboard.rombel.member.detach');
             Route::put("/", [RombelController::class, 'update'])->name('dashboard.rombel.update');
             Route::delete("/{id}", [RombelController::class, 'destroy'])->name('dashboard.rombel.destroy');
+
+            Route::prefix('kktp')->group(function () {
+                Route::post('/store', [KktpController::class, 'store'])->name('dashboard.rombel.kktp.store');
+            });
         });
 
         Route::prefix('pembelajaran')->group(function () {
