@@ -86,20 +86,10 @@ await
         if (rombel.kktps.length  > 0) {
             rombels.value.push(rombel)
         } else {
-            // rombels.value.push(rombel)
-            // let kktps = []
-        //     let item = {}
             rombels.value.push(rombel)
             page.props.sekolahs[0].mapels.forEach(mapel => {
-                // kktps.push({mapel_id: mapel.kode, minimal: 0, mapel: mapel})
             rombels.value[r].kktps.push({mapel_id: mapel.kode, mapel: {label: mapel.label}, minimal: 0})
             })
-            // console.log(kktps)
-
-            // rombels.value[r].kktps = kktps
-        //     item = rombel
-        //     item.kktps = kktps
-        //     rombels.value.push(item)
         }
     })
 })

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Absensi;
 use App\Models\Catatan;
+use App\Models\Kktp;
 use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\NilaiEkskul;
@@ -49,9 +50,24 @@ class RaporService
             $sekolah = Sekolah::where('npsn', $queries['sekolahId'])->with('mapels', function ($q) use ($fase) {
                 $q->where('fase', 'LIKE', '%' . $fase . '%');
             })->first();
-            $mapels = $sekolah->mapels;
+            $npsn = $sekolah->npsn;
+            $mapels = Mapel::whereHas('sekolah', function ($q) use ($npsn) {
+                $q->where('npsn', $npsn);
+            })
+                ->where('fase', 'LIKE', '%' . $rombel->fase . '%')
+                ->orderBy('id', 'ASC')
+                ->get();
             $nilais = [];
+            $nomor = 0;
             foreach ($mapels as $mapel) {
+                $nomor++;
+                $kktp = Kktp::where('rombel_id', $rombel->kode)
+                    ->where('mapel_id', $mapel->kode)
+                    ->where('sekolah_id', $sekolah->npsn)
+                    ->where('tapel', $queries['tapel'])
+                    ->where('semester', $queries['semester'])
+                    ->first();
+
                 $nas = Nilai::where([
                     ['siswa_id', '=', $queries['siswaId']],
                     ['rombel_id', '=', $queries['rombelId']],
@@ -100,10 +116,12 @@ class RaporService
                 $na = round(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 
                 $nilais[$mapel['kode']] = [
+                    'nomor' => $nomor,
                     'mapel' => $mapel,
                     'na' => $na,
                     'minu' => $minUh,
-                    'maxu' => $maxUh
+                    'maxu' => $maxUh,
+                    'kktp' => $kktp
                 ];
             }
 

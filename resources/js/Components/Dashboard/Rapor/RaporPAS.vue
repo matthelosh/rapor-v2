@@ -69,6 +69,8 @@ const getNilaiPAS = async() => {
     })
 }
 
+
+
 onBeforeMount(() => {
     getNilaiPAS()
 })
@@ -168,16 +170,19 @@ onBeforeUnmount(() => {
                             <tr class="bg-slate-100">
                                 <th class="border border-black font-bold uppercase p-2">No</th>
                                 <th class="border border-black font-bold uppercase p-2">Mata Pelajaran</th>
+                                <th class="border border-black font-bold uppercase p-2">KKTP</th>
                                 <th class="border border-black font-bold uppercase p-2">Nilai Akhir</th>
                                 <th class="border border-black font-bold uppercase p-2">Capaian Kompetensi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- <template v-for="(mapel, m) in page.props.sekolahs[0].mapels" :key="m"> -->
+                                <!-- {{ Object.keys(nilai.pas).length }} -->
                             <template v-for="(nilai, n) in nilai.pas" :key="n">
                                 <tr>
-                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[50px]">{{ nilai.mapel.id }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[50px]">{{ nilai.nomor}}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[170px]">{{ nilai.mapel?.label }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]">{{ nilai.kktp?.minimal }}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]">{{ nilai.na }}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left">
                                         <p class=my-2>Ananda {{ props.siswa.nama }} menunjukkan penguasaan dalam {{ nilai.maxu?.tp.teks }}</p>
