@@ -7,6 +7,7 @@ import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 import { groupBy } from 'lodash'
 import { avatar } from '@/helpers/Gambar.js'
+import { utils, writeFile } from 'xlsx'
 
 const page = usePage()
 
@@ -81,6 +82,31 @@ const createAccount = async(id) => {
         }
     })
 }
+
+const unduhFormat = async() => {
+    let data = [
+        {
+            nip : '',
+            nuptk: '',
+            gelar_depan: '',
+            nama: '',
+            gelar_belakang: '',
+            jk: '',
+            alamat: '',
+            hp: '',
+            status: '',
+            email: '',
+            agama: '',
+            pangkat: '',
+            jabatan: ''
+        }
+    ]
+
+    const ws = utils.json_to_sheet(data)
+    const wb = utils.book_new()
+    utils.book_append_sheet(wb, ws, "ORTU")
+    writeFile(wb, "Format Impor Guru "+page.props.sekolahs[0].nama+".xlsx")
+}
 </script>
 <template>
     <Head title="Data Guru" />
@@ -98,18 +124,22 @@ const createAccount = async(id) => {
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase">Data Guru {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
-                        <div class="card-toolbar--items flex items-center gap-1 px-2">
-                            <el-button-group class="flex-grow w-[250px]">
+                        <div class="card-toolbar--items flex items-center gap-1 px-2 w-[50%]">
+                            <el-button-group class="flex-grow w-[500px]">
                                 <el-button type="primary" @click="formGuru = true">
                                     <Icon icon="mdi-plus" />
                                     Baru
+                                </el-button>
+                                <el-button type="warning" @click="unduhFormat">
+                                    <Icon icon="mdi-file-download" />
+                                    Unduh Format
                                 </el-button>
                                 <el-button type="success" @click="formImpor = true">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
                             </el-button-group>
-                            <el-input v-model="search" placeholder="Cari Guru Berdasarkan Nama" clearable>
+                            <el-input v-model="search" placeholder="Cari Guru Berdasarkan Nama" clearable >
                                 <template #suffix>
                                     <Icon icon=mdi:magnify />
                                 </template>

@@ -67,8 +67,7 @@ const simpan = async() => {
         onSuccess: (page) => {
             // console.log(res)
             ElNotification({title: 'Info', message: 'Data Rombel disimpan', type: 'success'})
-            loading.value = false
-            emit('close')
+            closeMe()
         },
         onError: (err) => {
             // console.log(err)

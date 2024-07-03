@@ -13,6 +13,7 @@ const formRombel = ref(false)
 const FormRombel = defineAsyncComponent(() => import('@/Components/Dashboard/Rombel/FormRombel.vue'))
 const rombelSiswa = ref(false)
 const RombelSiswa = defineAsyncComponent(() => import('@/Components/Dashboard/Rombel/RombelSiswa.vue'))
+const DialogTutor = defineAsyncComponent(() => import('@/Components/Dashboard/Tutorial.vue'))
 const search = ref('')
 const rombels = computed(() => {
     return page.props.rombels.filter(rombel => {
@@ -61,23 +62,29 @@ const hapus = async(id) => {
     })
 }
 
+const tutor = ref(false)
+const showTutor = () => tutor.value = true
+const closeTutor = () => tutor.value = false
+
 </script>
 <template>
-    <Head title="Data Guru" />
+    <Head title="Data Rombel" />
 
     <DashLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">{{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Admin' }}</h2>
         </template>
         <div class="page">
+            <!-- {{ page.props.rombels }} -->
             <el-card>
                 <template #header>
                     <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center ">
-                            <Icon icon="mdi:caccount-tie" class="mb-1" />
+                            <Icon icon="mdi:account-tie" class="text-lg" />
                             <span class="uppercase">Data Rombel/Kelas {{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Semua Sekolah' }}</span>
                         </div>
-                        <div class="card-toolbar--items flex items-center gap-1 ">
+                        <div class="card-toolbar--items flex items-center gap-1 " v-if="page.props.auth.roles[0] == 'ops'">
+                            
                             <el-button-group class="flex-grow">
                                 <el-button type="primary" @click="formRombel = true">
                                     <Icon icon="mdi-plus" />
@@ -89,6 +96,9 @@ const hapus = async(id) => {
                                     <Icon icon=mdi:magnify />
                                 </template>
                             </el-input>
+                            <el-button type="success" text @click="showTutor">
+                                <Icon icon="mdi:information-variant-circle" class="text-2xl" />
+                            </el-button>
                         </div>
                     </div>
                 </template>
@@ -109,7 +119,7 @@ const hapus = async(id) => {
                         
                     <el-table-column label="Wali Kelas" >
                         <template #default="scope">
-                            <p>{{ scope.row.guru.gelar_depan }} {{ scope.row.guru.nama }}, {{ scope.row.guru.gelar_belakang }}</p>
+                            <p>{{ scope.row.guru?.gelar_depan }} {{ scope.row.guru?.nama }}, {{ scope.row.guru?.gelar_belakang }}</p>
                         </template>
                     </el-table-column>
                     <el-table-column label="Siswa" width="150">
@@ -136,7 +146,7 @@ const hapus = async(id) => {
                                             </el-button>
                                     </el-tooltip>
                                 </span>
-                                <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
+                                <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)" v-if="page.props.auth.roles[0] == 'ops'">
                                     <template #reference>
                                         <el-button circle type="danger" size="small">
                                             <Icon icon="mdi:delete" />
@@ -152,6 +162,7 @@ const hapus = async(id) => {
         </div>
         <FormRombel :open="formRombel" @close="closeForm" :selectedRombel="selectedRombel" v-if="formRombel" />
         <RombelSiswa :show=rombelSiswa @close="closeMgmSiswa" :selectedRombel="selectedRombel" v-if="rombelSiswa" @refresh="reloadData" />
+        <DialogTutor url="/videos/input-rombel.mp4" @close="closeTutor" :show="tutor" />
         <!-- <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" url="dashboard.guru.impor" title="Guru" /> -->
     </DashLayout>
 </template>
