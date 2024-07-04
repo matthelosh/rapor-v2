@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
                                 <tr>
                                     <td>Nama Peserta Didik</td>
                                     <td class="px-1">:</td>
-                                    <td>{{ siswa.nama }}</td>
+                                    <td>{{ siswa.nama?.toUpperCase() }}</td>
                                 </tr>
                                 <tr>
                                     <td>NISN</td>
@@ -127,7 +127,7 @@ onBeforeUnmount(() => {
                                 <tr>
                                     <td>Sekolah</td>
                                     <td class="px-1">:</td>
-                                    <td>{{ sekolah.nama }}</td>
+                                    <td>{{ sekolah.nama?.toUpperCase() }}</td>
                                 </tr>
                                 <tr>
                                     <td>Alamat</td>

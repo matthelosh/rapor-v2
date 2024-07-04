@@ -23,7 +23,7 @@ onMounted(() => contentTrigger.value = true)
         </div>
       </el-aside>
       <el-container>
-        <el-header class="px-8">
+        <el-header class="px-8 z-40 bg-white">
           <div class="content mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md">
             <div class="head-title flex items-center gap-2">
                 <img src="/img/tutwuri.png" class="w-10" />

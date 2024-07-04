@@ -11,7 +11,9 @@ class LedgerController extends Controller
 {
     use NilaiTrait;
 
-    public function home(Request $request) {
+    public function home(Request $request)
+    {
+        // dd($request->query());
         return Inertia::render("Dash/Ledger", [
             'mapels' => Mapel::all(),
             'nilais' => $this->ledger($request),
