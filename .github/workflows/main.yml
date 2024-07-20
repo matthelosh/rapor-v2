@@ -21,7 +21,8 @@ jobs:
             git pull origin main
             git status
             composer install
-            php artisan migrate
+            php artisan migrate:refresh
+            php artisan db:seed
             yarn --only=prod
             yarn build
             

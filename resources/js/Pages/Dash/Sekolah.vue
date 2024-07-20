@@ -118,8 +118,6 @@ const addOps = async(id) => {
                     <el-table-column label="Logo">
                         <template #default="scope">
                             <img :src="scope.row.logo" class="w-10" />
-                            <!-- {{ scope.row }} -->
-                            <!-- {{ scope.row.logo === null }} -->
                         </template>
                     </el-table-column>
                     <el-table-column  label="NPSN" >
@@ -159,11 +157,9 @@ const addOps = async(id) => {
                                 </el-button>
                             <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
                                 <template #reference>
-                                    
                                         <el-button circle type="danger" size="small" :disabled="!page.props.auth.can.includes('delete school')">
                                             <Icon icon="mdi:delete" />
                                         </el-button>
-                                    
                                 </template>
                             </el-popconfirm>
                         </span>
