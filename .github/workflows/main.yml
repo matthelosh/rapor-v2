@@ -20,10 +20,12 @@ jobs:
             cd /home/${{secrets.USER}}/htdocs/raporsd.alsya.my.id
             git pull origin main
             git status
+            php artisan down
             composer install
             php artisan migrate:refresh
             php artisan db:seed
             yarn --only=prod
             yarn build
+            php artisan up
             
       

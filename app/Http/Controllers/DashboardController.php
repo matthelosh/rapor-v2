@@ -15,7 +15,8 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $tapel = Tapel::whereIsActive(true)->pluck('kode');
+        $tapel = Tapel::whereIsActive(true)->pluck('kode')->first();
+        dd($tapel);
         $data = [];
         if ($user->hasRole('admin')) {
             $data['sekolahs'] = Sekolah::with('ks', 'gurus')
@@ -24,8 +25,7 @@ class DashboardController extends Controller
                         $q->whereTapel($tapel);
                     },
                     'siswas' => fn ($s) => $s->whereStatus('aktif'),
-                ])
-                ->get();
+                ])->get();
         } elseif ($user->hasRole('ops')) {
             $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
                 ->with('gurus', 'ks')
