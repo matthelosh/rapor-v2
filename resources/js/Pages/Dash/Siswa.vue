@@ -6,6 +6,7 @@ import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 import { groupBy } from 'lodash'
 import { utils, writeFile } from 'xlsx'
+const Pagination = defineAsyncComponent(() => import('@/Components/Dashboard/Pagination.vue'))
 
 const page = usePage()
 
@@ -22,8 +23,8 @@ const FormOrtu = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa
 const search = ref('')
 const siswas = computed(() => {
     // let datas = groupBy(page.props.siswas, 'sekolas')
-    if(page.props.siswas) {
-        return page.props.siswas.filter(siswa => {
+    if(page.props.siswas.data) {
+        return page.props.siswas.data.filter(siswa => {
             return siswa.nama.toLowerCase().includes(search.value.toLowerCase())
         })
     }
@@ -76,6 +77,7 @@ const imporOrtu = () => {
     formImpor.value = {
         show: true,
         url: 'dashboard.siswa.ortu.impor',
+        query: {rombelId: page.props.rombels[0].kode},
         title: 'Ortu',
         fields: fieldOrtu.value
     }
@@ -223,20 +225,6 @@ const unduhFormat = async() => {
                         </div>
                     </div>
                 </template>
-                <el-skeleton :loading="loading" animated>
-                    <template #template>
-                        <div v-for="d of 10" :key="d" style="width: 100%;display: flex; margin-bottom: 10px; align-items: middle;">
-                            <el-skeleton-item variant="text" style="width:100px; margin: 0 5px;" />
-                            <el-skeleton-item variant="image" style="width: 50px; height: 50px;margin: 0 10px;" />
-                            <el-skeleton-item variant="text" style="width:100px; margin:0 10px;" />
-                            <el-skeleton-item variant="text" style="width:300px; margin:0 10px;" />
-                            <el-skeleton-item variant="text" style="width:100px; margin:0 10px;" />
-                            <el-skeleton-item variant="text" style="width:150px; margin:0 10px;" />
-                            <el-skeleton-item variant="circle" style="width:30px; height: 30px; margin:0 5px;" />
-                            <el-skeleton-item variant="circle" style="width:30px; height: 30px; margin:0 5px;" />
-                        </div>
-                    </template>
-                    <template #default>
                     <el-table :data="siswas" height="70vh" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                         <el-table-column label="Foto" width="55">
                             <template #default="scope">
@@ -335,17 +323,15 @@ const unduhFormat = async() => {
                             </template>
                         </el-table-column>
                     </el-table>
-                    </template>
-                </el-skeleton>
                 <template #footer>
-                    <span>Jumlah Siswa: {{page.props.siswas?.length}}</span>
+                    <Pagination :data="page.props.siswas" dataName="siswas" />
                 </template>
             </el-card>
 
             <!-- p>lorem*10 -->
         </div>
         <FormSiswa :open="formSiswa" @close="closeForm" :selectedSiswa="selectedSiswa" v-if="formSiswa" />
-        <FormImpor :open="formImpor.show" @close="closeImpor" :fields="formImpor.fields" v-if="formImpor.show" :url="formImpor.url" :title="formImpor.title" />
+        <FormImpor :open="formImpor.show" @close="closeImpor" :fields="formImpor.fields" v-if="formImpor.show" :url="formImpor.url" :query="formImpor.query" :title="formImpor.title" />
         <FormOrtu :open="formOrtu" @close="closeFormOrtu" v-if="formOrtu" :siswa="selectedSiswa" />
 
     </DashLayout>

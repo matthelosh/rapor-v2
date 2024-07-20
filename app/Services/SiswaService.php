@@ -12,7 +12,7 @@ class SiswaService
     {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $siswas = Siswa::with('sekolah', 'rombels', 'ortus')->get();
+            $siswas = Siswa::with('sekolah', 'rombels', 'ortus')->paginate(15);
         } elseif ($user->hasRole('ops')) {
             $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels', 'ortus')->get();
         } elseif ($user->hasRole('guru_kelas')) {

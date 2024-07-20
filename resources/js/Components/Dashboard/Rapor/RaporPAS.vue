@@ -181,7 +181,7 @@ onBeforeUnmount(() => {
                             <template v-for="(nilai, n) in nilai.pas" :key="n">
                                 <tr>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[50px]">{{ nilai.nomor}}</td>
-                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[170px]">{{ nilai.mapel?.label }}</td>
+                                    <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[170px]">{{ nilai.mapel?.deskripsi }}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]">{{ nilai.kktp?.minimal }}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]">{{ nilai.na }}</td>
                                     <td class="print:break-inside-avoid-page border align-top border-black px-2 text-left">

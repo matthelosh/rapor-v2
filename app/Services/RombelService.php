@@ -30,7 +30,13 @@ class RombelService
         if ($user->hasRole('admin')) {
             $rombels = Rombel::with('sekolah', 'guru', 'siswas')->get();
         } elseif ($user->hasRole('ops')) {
-            $rombels = Rombel::where('sekolah_id', $user->name)->with('sekolah', 'guru', 'siswas')->get();
+            // dd('Tes');
+            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
+                ->with('sekolah', 'guru', 'siswas')
+                ->with('kktps', function ($q) {
+                    $q->with('mapel');
+                })
+                ->get();;
         } elseif ($user->hasRole('guru_kelas')) {
             $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
                 ->where('guru_id', $user->userable->id)

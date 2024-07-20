@@ -5,7 +5,7 @@ import { router, usePage } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus';
 
 const page = usePage()
-const props = defineProps({open: Boolean, fields: Array, title: String, url: String})
+const props = defineProps({open: Boolean, fields: Array, title: String, url: String, query: Object})
 const emit = defineEmits(['close'])
 const show = computed(() => props.open)
 const datas = ref([])
@@ -20,19 +20,20 @@ const onFilePicked = async(e) => {
 }
 
 const kirim = async() => {
-    await router.post(route(props.url), {sekolah: page.props.auth.roles[0] === 'admin' ? null: page.props.sekolahs[0].id, datas: datas.value}, {
-        onSuccess: (page) => {
-            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
-            datas.value = []
-            emit('close')
-        },
-        onError: err => {
-            Object.keys(err).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({ title: 'Error', message: err[k], type: 'error'})
-                }, 500)
-            })
-        }
+    await router.post(route(props.url, {_query: props.query ?? null}), 
+                    {sekolah: page.props.auth.roles[0] === 'admin' ? null: page.props.sekolahs[0].id, datas: datas.value}, {
+                    onSuccess: (page) => {
+                        ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+                        datas.value = []
+                        emit('close')
+                    },
+                    onError: err => {
+                        Object.keys(err).forEach(k => {
+                            setTimeout(() => {
+                                ElNotification({ title: 'Error', message: err[k], type: 'error'})
+                            }, 500)
+                        })
+                    }
     })
 }
 
@@ -49,7 +50,7 @@ const closeMe = () => {
             <div class="toolbar flex items-center justify-between">
                 <h3 class="title">Impor Data {{ props.title }}</h3>
                 <div class="toolbar-items flex items-center">
-                    <input type="file" @change="onFilePicked" accept=".xlsx, xls, ods, csv" />
+                    <input type="file" @change="onFilePicked" accept=".xlsx, .xls, .ods, .csv" />
                     <el-button type="primary" @click="kirim" v-if="datas.length > 0">Simpan</el-button>
                 </div>
             </div>

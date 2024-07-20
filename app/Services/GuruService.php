@@ -22,14 +22,15 @@ class GuruService
         //
     }
 
-    public function index($request) {
+    public function index($request)
+    {
         $user = $request->user();
         if ($user->hasRole(['admin', 'kepala_sekolah'])) {
-            $gurus = Guru::with('sekolahs', 'user')->get();
-        } elseif($user->hasRole('ops')) {
-            $gurus = Guru::whereHas('sekolahs', function($q) use($user) {
+            $gurus = Guru::with('sekolahs', 'user')->paginate(10);
+        } elseif ($user->hasRole('ops')) {
+            $gurus = Guru::whereHas('sekolahs', function ($q) use ($user) {
                 $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);
-            })->where('jabatan', '!=', 'ops')->with('sekolahs','user')->get();
+            })->where('jabatan', '!=', 'ops')->with('sekolahs', 'user')->paginate(10);
         } else {
             $gurus = Guru::where('nip', $user->userable->nip)->with('user', 'sekolahs')->get();
         }
@@ -38,12 +39,13 @@ class GuruService
         return $gurus;
     }
 
-    public function show($request) {
+    public function show($request)
+    {
         if ($request->query('sekolah') !== 'all') {
             $idSekolah = $request->query('sekolah');
-            $gurus = Guru::wherehas('sekolahs', function($q) use ($idSekolah) {
+            $gurus = Guru::wherehas('sekolahs', function ($q) use ($idSekolah) {
                 $q->where('sekolahs.id', $idSekolah);
-            })->get(); 
+            })->get();
         } else {
             $gurus = Guru::all();
         }
@@ -51,21 +53,25 @@ class GuruService
         return $gurus;
     }
 
-    public function store($data, $file) {
+    public function store($data, $file)
+    {
         // dd($data, $file);
         // $data = $request->all();
         // return response()->json(['cek' => $request->file('file')]);
         if ($file !== null) {
             $foto_file = $file;
-            $foto_name = $data['nip'].'.'.$foto_file->extension();
+            $foto_name = $data['nip'] . '.' . $foto_file->extension();
             $store = $foto_file->storeAs('public/sekolah/guru/', $foto_name);
-            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+            $foto = $store ?
+            /**$foto_name **/
+            Storage::url($store) : null;
         }
-            $guru = Guru::updateOrCreate(
-                [
+        $guru = Guru::updateOrCreate(
+            [
                 'id' => $data['id'] ?? null,
                 'nip' => $data['nip'],
-            ],[
+            ],
+            [
                 'nuptk' => $data['nuptk'] ?? null,
                 'gelar_depan' => $data['gelar_depan'] ?? null,
                 'nama' => $data['nama'],
@@ -74,20 +80,20 @@ class GuruService
                 'alamat' => $data['alamat'] ?? null,
                 'hp' => $data['hp'] ?? '-',
                 'status' => $data['status'],
-                'email' => $data['email'] ?? $data['nip'].'@raporsd.web.id',
+                'email' => $data['email'] ?? $data['nip'] . '@raporsd.web.id',
                 'foto' => $foto ?? null,
                 'agama' => $data['agama'],
                 'pangkat' => $data['pangkat'] ?? null,
                 'jabatan' => $data['jabatan'] ?? null,
             ]
         );
-        if ($guru->sekolahs->count() < 1 ) {
+        if ($guru->sekolahs->count() < 1) {
             $guru->sekolahs()->attach($data['sekolahs']);
         } else {
             $ids = explode(",", $data['sekolahs']);
-            foreach($guru->sekolahs->pluck('id') as $sekolah) {
-                for ($i=0; $i < count($ids); $i++) {
-                    if((int) $ids[$i] !== (int) $sekolah) {
+            foreach ($guru->sekolahs->pluck('id') as $sekolah) {
+                for ($i = 0; $i < count($ids); $i++) {
+                    if ((int) $ids[$i] !== (int) $sekolah) {
                         $guru->sekolahs()->attach($ids[$i]);
                     }
                 }
@@ -98,12 +104,13 @@ class GuruService
         return !isset($data['id']) ? 'Data Guru Disimpan' : 'Data Guru diperbarui';
     }
 
-    public function addAccount($id) {
+    public function addAccount($id)
+    {
         $guru = Guru::findOrFail($id);
         if (!$guru->user) {
             $user = User::create([
                 'name' => $guru->nip,
-                'email' => $guru->email ?? $guru->nip.'@raporsd.web.id',
+                'email' => $guru->email ?? $guru->nip . '@raporsd.web.id',
                 'password' => Hash::make($guru->nip),
                 'userable_id' => $guru->id,
                 'userable_type' => 'App\Models\Guru'
@@ -113,7 +120,7 @@ class GuruService
             $guru->update(['password' => Hash::make($guru->nip)]);
         }
         // if (->user()->hasRole('admin')) {
-        $user->assignRole(strtolower(str_replace(" ", "_",$guru->jabatan)));
+        $user->assignRole(strtolower(str_replace(" ", "_", $guru->jabatan)));
         // }
 
         // $guru->user()->attach($user->id);
@@ -125,8 +132,7 @@ class GuruService
     {
         try {
             $datas = $request->datas;
-            foreach($datas as $data)
-            {
+            foreach ($datas as $data) {
                 if ($request->user()->hasRole('admin')) {
                     if (isset($data['sekolah'])) {
                         $sekolah = Sekolah::where('npsn', $data['sekolah'])->first();
@@ -141,32 +147,32 @@ class GuruService
                 }
             }
 
-            return ['success' => true, 'message' => 'Data Guru diimpor', 'data' => null ];
-        }catch(\Exception $e)
-        {
+            return ['success' => true, 'message' => 'Data Guru diimpor', 'data' => null];
+        } catch (\Exception $e) {
             // dd($e->getMessage());
             return back()->withErrors($e->getMessage());
         }
     }
 
-    public function update($request) {
+    public function update($request)
+    {
 
         $guru = Guru::find($request->id);
         // dd($guru->isDirty());
         dd($request->all());
     }
 
-    public function destroy($id) {
+    public function destroy($id)
+    {
         try {
             $guru = Guru::findOrFail($id);
             $split = explode("/", $guru->foto);
             // dd($split);
-            Storage::delete("public/sekolah/guru/".$split[(count($split) - 1)]);
+            Storage::delete("public/sekolah/guru/" . $split[(count($split) - 1)]);
             $guru->sekolahs()->detach();
             $delete = $guru->delete();
-            return ['success' => true, 'message' => 'Data Guru dihapus', 'data' => $delete ];
-        }catch(\Exception $e)
-        {
+            return ['success' => true, 'message' => 'Data Guru dihapus', 'data' => $delete];
+        } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage(), 'data' => 'Error'];
         }
     }

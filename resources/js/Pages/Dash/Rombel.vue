@@ -46,6 +46,7 @@ const hapus = async(id) => {
     await router.delete(route('dashboard.rombel.destroy', {id: id}), {
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: 'Data Rombel dihapus', type: 'success'})
+            init()
         },
         onError: err => {
             Object.keys(err).forEach(k => {
@@ -79,10 +80,12 @@ const simpanKktp = async(rombel) => {
         }
     })
 }
-onBeforeMount(async() => {
-    
-await
-    page.props.rombels.forEach((rombel,r) => {
+
+const init = async() => {
+    // if (page.props.auth.roles[0] === 'ops') {
+    //     rombels.value = page.props.rombels
+    // } else {
+    await page.props.rombels.forEach((rombel,r) => {
         if (rombel.kktps.length  > 0) {
             rombels.value.push(rombel)
         } else {
@@ -92,6 +95,12 @@ await
             })
         }
     })
+// }
+}
+onBeforeMount(async() => {
+    init()
+
+  
 })
 </script>
 <template>

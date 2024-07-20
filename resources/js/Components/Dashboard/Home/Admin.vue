@@ -2,168 +2,109 @@
 import { ref, computed } from 'vue'
 import { usePage, Head, router } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
+import { dataAgama, dataJk } from '@/helpers/data';
+import { useTransition } from '@vueuse/core'
+
+import { Doughnut } from 'vue-chartjs';
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement, CategoryScale, LinearScale } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement,CategoryScale, LinearScale)
 
 const page = usePage()
 
-const data = computed(() => page.props.data)
+const sekolahs = computed(() => page.props.data.sekolahs)
 
-const onTapelChange = async(e, item) => {
-    await router.post(route('dashboard.tapel.toggle', {id: item.id}), {status: e, _method: 'put'}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['tapels']})
-        },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
+const labels = computed(() => sekolahs.value.map(sekolah => sekolah.nama))
+const selectedSekolah = ref('all')
+const dataApa = ref('siswas')
+
+const datas = computed(() => {
+    if (selectedSekolah.value == 'all') {
+        return sekolahs.value.reduce((a,c,cI,ar) => (a.concat(c[dataApa.value])), [])
+    } else {
+        return sekolahs.value[selectedSekolah.value][dataApa.value]
+    }
+
+})
+
+const byAgama = computed(() => {
+    return {
+        labels: ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu'],
+        datasets: [
+            {
+                // label: ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu'],
+                data: dataAgama(datas.value),
+                backgroundColor: ['#177E89', '#084C61', '#DB3A34', '#FFC857', '#997C44', '#323031']
+            }
+        ]
+    }
+})
+
+
+const byJk = computed(() => {
+    return {
+        labels: ['Laki-laki', 'Perempuan'],
+        datasets: [
+            {
+                // label: ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu'],
+                data: dataJk(datas.value),
+                backgroundColor: ['#177E89', '#fe8999']
+            }
+        ]
+    }
+})
+
+const jml = (total) => {
+    return useTransition(total, { duration: 1500})
 }
-const onSemesterChange = async(e, item) => {
-    await router.post(route('dashboard.semester.toggle', {id: item.id}), {status: e, _method: 'put'}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['semester']})
-        },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-}
-const tapel = ref({})
+// const jmlSiswa = computed(() => sekolahs.value[selectedSekolah.value].siswas.length)
 
-const simpanTapel = async() => {
-    router.post(route('dashboard.tapel.store'), {data: tapel.value}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['tapels']})
-        },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-} 
-const semester = ref({})
 
-const simpanSemester = async() => {
-    router.post(route('dashboard.semester.store'), {data: semester.value}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['semester']})
-        },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-} 
 </script>
 
 <template>
-    <!-- <div>{{page.props.data}}</div> -->
-    <div class="flex gap-2">
-        <el-card class="w-[50%] h-[600px]">
-            <template #header>
-                <span>Data Sekolah</span>
-            </template>
-            <el-table :data="data.sekolahs" height="550" size="small">
-                <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="NPSN" prop="npsn"></el-table-column>
-                <el-table-column label="Nama" prop="nama"></el-table-column>
-                <el-table-column label="Alamat" prop="alamat"></el-table-column>
-                <el-table-column label="KS" prop="ks.nama"></el-table-column>
-            </el-table>
-        </el-card>
-        <el-card class="w-[25%] h-[350px]">
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <span>Tahun Pelajaran</span>
-                    <el-popover trigger="click" width="250">
-                        <template #reference>
-                            <el-button circle type="primary" size="small">
-                                <Icon icon="mdi-plus" />
-                            </el-button>
-                        </template>
-                        <div class="form-tapel">
-                            <el-form v-model="tapel" label-position="top" size="small">
-                                <el-form-item label="Kode">
-                                    <el-input v-model="tapel.kode" placeholder="Kode Tapel" size="small"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Label">
-                                    <el-input v-model="tapel.label" placeholder="Label" size="small"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Deskripsi">
-                                    <el-input v-model="tapel.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
-                                </el-form-item>
-                                <el-button class="mx-auto" type="primary" @click="simpanTapel">Simpan</el-button>
-                            </el-form>
-                        </div>
-                    </el-popover>
-                </div>
-            </template>
-            <el-table :data="data.tapels" height="300" size="small">
-                <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="Kode" prop="kode"></el-table-column>
-                <el-table-column label="Label" prop="label"></el-table-column>
-                <el-table-column label="Status" align="center">
-                    <template #default="scope">
-                        <el-switch v-model="scope.row.is_active" size="small" :active-value="1" :inactive-value="0" @change="onTapelChange($event, scope.row)"></el-switch>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-card>
-        <el-card class="w-[25%] h-[200px]">
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <span>Semester</span>
-                    <el-popover trigger="click" width="250">
-                        <template #reference>
-                            <el-button circle type="primary" size="small">
-                                <Icon icon="mdi-plus" />
-                            </el-button>
-                        </template>
-                        <div class="form-semester">
-                            <el-form v-model="semester" label-position="top" size="small">
-                                <el-form-item label="Kode">
-                                    <el-input v-model="semester.kode" placeholder="Kode Semester" size="small"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Label">
-                                    <el-input v-model="semester.label" placeholder="Label" size="small"></el-input>
-                                </el-form-item>
-                                <el-form-item label="Deskripsi">
-                                    <el-input v-model="semester.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
-                                </el-form-item>
-                                <el-button class="mx-auto" type="primary" @click="simpanSemester">Simpan</el-button>
-                            </el-form>
-                        </div>
-                    </el-popover>
-                </div>
-            </template>
-            <el-table :data="data.semester" height="200" size="small">
-                <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="Kode" prop="kode"></el-table-column>
-                <el-table-column label="Label" prop="label"></el-table-column>
-                <el-table-column label="Status" align="center">
-                    <template #default="scope">
-                        <!-- {{ scope.row.is_active }} -->
-                        <el-switch v-model="scope.row.is_active" size="small" :active-value="1" :inactive-value="0" @change="onSemesterChange($event, scope.row)"></el-switch>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-card>
+    <div class="toolbar flex justify-between w-full mb-6">
+        <el-select v-model="selectedSekolah" >
+            <el-option value="all" label="Semua Sekolah"></el-option>
+            <el-option v-for="(sekolah, s) in sekolahs" :key="s" :value="s" :label="sekolah.nama"></el-option>
+        </el-select>
     </div>
+
+    <!-- {{ datas }} -->
+<el-row class="w-full" :gutter="20">
+    <el-col :span="16">
+        <el-card>
+            <template #header>
+                <h3>Data Agama Siswa</h3>
+            </template>
+            <div class="card-body">
+                <el-row>
+                    <el-col :span="12">
+                        <Doughnut ref="chartAgama" :options="{responsive: true}" :data="byAgama" />
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card shadow="never">
+                            <h3 class="font-bold">Keterangan:</h3>
+                            <table class="w-full">
+                                <tr v-for="(ag,a) in ['Islam', 'Kristen', 'Katolik','Hindu','Budha', 'Konghuchu']" :key="a">
+                                    <td class="border-y">{{ ag }}</td>
+                                    <td class="border-y">:</td>
+                                    <td class="border-y"><el-statistic :value="jml(dataAgama(datas)[a])"></el-statistic></td>
+                                </tr>
+                            </table>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
+        </el-card>
+    </el-col>
+    <el-col :span="8">
+        <el-card>
+            <template #header>
+                <h3>Data Jenis Kelamin Siswa</h3>
+            </template>
+            <Doughnut ref="chartJk" :options="{responsive: true}" :data="byJk" />
+        </el-card>
+    </el-col>
+</el-row>
 </template>

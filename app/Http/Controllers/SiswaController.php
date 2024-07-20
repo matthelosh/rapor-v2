@@ -13,6 +13,7 @@ class SiswaController extends Controller
     public function home(Request $request, SiswaService $siswaService)
     {
         $siswas = $siswaService->home($request);
+        // $siswas = Siswa::paginate(20);
 
         return Inertia::render('Dash/Siswa', [
             'siswas' => $siswas,

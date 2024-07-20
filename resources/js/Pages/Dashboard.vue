@@ -25,7 +25,7 @@ const sekolahs = page.props.sekolahs
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
 
-        <component :is="comp" class="page">
+        <component :is="comp">
         </component>
     </DashLayout>
 </template>

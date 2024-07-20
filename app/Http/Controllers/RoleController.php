@@ -23,6 +23,24 @@ class RoleController extends Controller
         }
     }
 
+    public function store(Request $request)
+    {
+        try {
+            $role = $request->role;
+            Role::updateOrCreate(
+                [
+                    'id' => $role['id'] ?? null,
+                ],
+                [
+                    'name' => $role['name']
+                ]
+            );
+            return back()->with('message', 'Peran disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function assignPermission(Request $request)
     {
         try {

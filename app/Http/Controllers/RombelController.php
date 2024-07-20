@@ -10,13 +10,20 @@ use App\Http\Requests\RombelRequest;
 
 class RombelController extends Controller
 {
-    public function home(Request $request, RombelService $rombelService) {
-        $datas = $rombelService->home($request);
-        return Inertia::render('Dash/Rombel', 
-            $datas
-        ); 
+    public function home(Request $request, RombelService $rombelService)
+    {
+        try {
+            // dd('halo');
+            $datas = $rombelService->home($request);
+            return Inertia::render(
+                'Dash/Rombel',
+                $datas
+            );
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -54,8 +61,7 @@ class RombelController extends Controller
     {
         try {
             $rombelService->store($request);
-        } catch(\Exception $e) 
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
@@ -73,8 +79,7 @@ class RombelController extends Controller
             $delete = $rombel->delete();
 
             return back()->with("success", true);
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }

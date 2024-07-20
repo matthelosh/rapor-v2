@@ -11,6 +11,7 @@ import { utils, writeFile } from 'xlsx'
 
 const page = usePage()
 
+const Pagination = defineAsyncComponent(() => import('@/Components/Dashboard/Pagination.vue'))
 const formImpor = ref(false)
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
 const formGuru = ref(false)
@@ -18,7 +19,7 @@ const FormGuru = defineAsyncComponent(() => import('@/Components/Dashboard/Guru/
 const search = ref('')
 const gurus = computed(() => {
     // let datas = groupBy(page.props.gurus, 'sekolas')
-    return page.props.gurus.filter(guru => {
+    return page.props.gurus.data.filter(guru => {
         return guru.nama.toLowerCase().includes(search.value.toLowerCase())
     })
 })
@@ -147,7 +148,7 @@ const unduhFormat = async() => {
                         </div>
                     </div>
                 </template>
-                <el-table :data="gurus" height="80vh" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
+                <el-table :data="gurus"  size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
                     <el-table-column label="Foto" width="60">
                         <template #default="scope">
                             <img :src="avatar(scope.row)" class="w-10" />
@@ -211,6 +212,9 @@ const unduhFormat = async() => {
                         </template>
                     </el-table-column>
                 </el-table>
+                <template #footer>
+                    <Pagination :data="page.props.gurus" dataName="gurus" />
+                </template>
             </el-card>
 
             <!-- p>lorem*10 -->

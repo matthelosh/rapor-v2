@@ -49,6 +49,12 @@ class Sekolah extends Model
         return $this->belongsTo(Guru::class, 'ks_id', 'id');
     }
 
+
+    public function siswas()
+    {
+        return $this->hasMany(Siswa::class, 'sekolah_id', 'npsn');
+    }
+
     function rombels()
     {
         return $this->hasMany(Rombel::class, 'sekolah_id', 'npsn');

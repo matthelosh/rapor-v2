@@ -134,8 +134,15 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("roles")->group(function () {
             Route::get('/', [RoleController::class, 'home'])->name('dashboard.role');
+            Route::post('/store', [RoleController::class, 'store'])->name('dashboard.role.store');
             Route::post('/permission/assign', [RoleController::class, 'assignPermission'])->name('dashboard.role.permission.assign');
         });
+
+        Route::prefix("permissions")->group(function () {
+            Route::get('/', [PermissionController::class, 'home'])->name('dashboard.permission');
+        });
+
+
         Route::prefix("backup")->group(function () {
             Route::get('/', [BackupController::class, 'home'])->name('dashboard.backup')->middleware(['role:admin']);
             Route::post('/', [BackupController::class, 'store'])->name('dashboard.backup.store')->middleware(['role:admin']);
