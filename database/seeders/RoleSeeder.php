@@ -21,19 +21,17 @@ class RoleSeeder extends Seeder
             'guru_agama',
             'guru_pjok',
             'guru_inggris',
-            'siswa'
+            'siswa',
+            'korwil'
         ];
 
-        foreach($role_names as $role) 
-        {
+        foreach ($role_names as $role) {
             Role::create(['name' => $role]);
         }
 
         $roles = Role::all();
-        foreach($roles as $role)
-        {
-            switch($role->name)
-            {
+        foreach ($roles as $role) {
+            switch ($role->name) {
                 case 'admin':
                     $role->givePermissionTo($roles);
                     break;

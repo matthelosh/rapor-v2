@@ -19,10 +19,12 @@ class DashboardController extends Controller
         $data = [];
         if ($user->hasRole('admin')) {
             $data['sekolahs'] = Sekolah::with('ks', 'gurus')
-                ->with('rombels', function ($r) use ($tapel) {
-                    $r->whereTapel($tapel);
-                })
-                ->with('siswas', fn ($q) => $q->where('status', 'aktif'))
+                ->with([
+                    'rombels' => function ($q) use ($tapel) {
+                        $q->whereTapel($tapel);
+                    },
+                    'siswas' => fn ($s) => $s->whereStatus('aktif'),
+                ])
                 ->get();
         } elseif ($user->hasRole('ops')) {
             $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)

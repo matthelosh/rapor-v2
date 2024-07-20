@@ -84,7 +84,7 @@ const addOps = async(id) => {
     <DashLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">{{ page.props.auth.roles[0] !== 'admin' ? page.props.sekolahs[0]?.nama : 'Admin' }}</h2>
-            {{ !page.props.auth.can.includes('add guru') }}
+            {{ !page.props.auth.can.includes('add_guru') }}
         </template>
 
         <div class="page" >
@@ -102,11 +102,11 @@ const addOps = async(id) => {
                                 </template>
                             </el-input>
                             <el-button-group class="flex-grow w-[300px]">
-                                <el-button type="primary" @click="formSekolah = true" :disabled="!page.props.auth.can.includes('add school')">
+                                <el-button type="primary" @click="formSekolah = true" :disabled="!page.props.auth.can.includes('add_school')">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add school')">
+                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add_school')">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -154,7 +154,7 @@ const addOps = async(id) => {
                     <el-table-column label="Opsi">
                         <template #default="scope">
                             <span class="flex items-center gap-1">
-                                <el-button  circle :type="scope.row.ops ? 'warning' : 'primary'" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add guru') || (!!scope.row.ops)">
+                                <el-button  circle :type="scope.row.ops ? 'warning' : 'primary'" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add_guru') || (!!scope.row.ops)">
                                     <Icon icon="mdi:laptop-account" />
                                 </el-button>
                             <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
