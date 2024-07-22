@@ -6,7 +6,10 @@ import { ElCard, ElNotification } from 'element-plus'
 import { Icon } from '@iconify/vue'
 import { groupBy } from 'lodash'
 import { utils, writeFile } from 'xlsx'
-const Pagination = defineAsyncComponent(() => import('@/Components/Dashboard/Pagination.vue'))
+import { fotoSiswa } from '@/helpers/Gambar';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id')
 
 const page = usePage()
 
@@ -20,14 +23,11 @@ const formSiswa = ref(false)
 const FormSiswa = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa/FormSiswa.vue'))
 const formOrtu = ref(false)
 const FormOrtu = defineAsyncComponent(() => import('@/Components/Dashboard/Siswa/FormOrtu.vue'))
-const search = ref('')
+const search = ref(null)
 const siswas = computed(() => {
-    // let datas = groupBy(page.props.siswas, 'sekolas')
-    if(page.props.siswas.data) {
-        return page.props.siswas.data.filter(siswa => {
-            return siswa.nama.toLowerCase().includes(search.value.toLowerCase())
-        })
-    }
+    // setTimeout(() => {
+        return !search.value ? page.props.siswas : siswa.nama.toLowerCase().includes(search.value.toLowerCase())
+    // }, 10000)
 })
 
 const loading = ref(false)
@@ -177,6 +177,8 @@ const unduhFormat = async() => {
     utils.book_append_sheet(wb, ws, "ORTU")
     writeFile(wb, "Format Impor Ortu "+page.props.sekolahs[0].nama+".xlsx")
 }
+
+const onFotoError = () => true
 // onMounted(async() => {
 //     await router.reload({only: ['siswas']})
 // })
@@ -225,12 +227,8 @@ const unduhFormat = async() => {
                         </div>
                     </div>
                 </template>
-                    <el-table :data="siswas" height="70vh" size="small" :default-sort="{ prop: 'sekolahs', order: 'descending' }">
-                        <el-table-column label="Foto" width="55">
-                            <template #default="scope">
-                                <img :src="fotoUrl(scope.row)" class="w-10" />
-                            </template>
-                        </el-table-column>
+                    <el-table :data="siswas" max-height="78vh" v-loading="!siswas">
+                        <el-table-column label="#" type="index"></el-table-column>
                         <el-table-column label="Sekolah" v-if="page.props.auth.roles.includes('admin')">
                             <template #default="scope">
                                 <div>
@@ -238,28 +236,24 @@ const unduhFormat = async() => {
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column  label="NIS/NISN" :fixed="true" width="150">
+                        <el-table-column label="NISN" prop="nisn"></el-table-column>
+                        <el-table-column label="Foto">
                             <template #default="scope">
-                                <el-button type="primary" text size="small" @click="edit(scope.row)">
-                                    {{ scope.row.nis ?? '-' }} / {{ scope.row.nisn }}    
-                                </el-button>
+                                <el-avatar :src="scope.row.foto" @error="onFotoError">
+                                    <img :src="fotoSiswa(scope.row)" />
+                                </el-avatar>
                             </template>
                         </el-table-column>
-                        <el-table-column label="Nama Siswa">
+                        <el-table-column label="Nama" prop="nama"></el-table-column>
+                        <el-table-column label="JK" prop="jk"></el-table-column>
+                        <el-table-column label="Tempat, Tanggal Lahir" >
                             <template #default="scope">
-                                <p>{{ scope.row.nama }}</p>
+                                {{ scope.row.tempat_lahir }}, {{ dayjs(scope.row.tanggal_lahir).locale('id').format('DD MMM YYYY') }}
                             </template>
                         </el-table-column>
-                        <el-table-column label="Tempat, Tgl Lahir">
+                        <el-table-column label="Kelas">
                             <template #default="scope">
-                                <span>{{ scope.row.tempat_lahir }}, {{ scope.row.tanggal_lahir }}</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="jk" label="J. Kelamin" width="100" />
-                        <el-table-column prop="agama" label="Agama" width="60" />
-                        <el-table-column label="Kelas" width="80">
-                            <template #default="scope">
-                                {{scope.row.rombels[0]?.label}}
+                                {{ scope.row.rombels[0]?.label }}
                             </template>
                         </el-table-column>
                         <el-table-column label="Akun" width="100">
@@ -323,12 +317,8 @@ const unduhFormat = async() => {
                             </template>
                         </el-table-column>
                     </el-table>
-                <template #footer>
-                    <Pagination :data="page.props.siswas" dataName="siswas" />
-                </template>
             </el-card>
 
-            <!-- p>lorem*10 -->
         </div>
         <FormSiswa :open="formSiswa" @close="closeForm" :selectedSiswa="selectedSiswa" v-if="formSiswa" />
         <FormImpor :open="formImpor.show" @close="closeImpor" :fields="formImpor.fields" v-if="formImpor.show" :url="formImpor.url" :query="formImpor.query" :title="formImpor.title" />

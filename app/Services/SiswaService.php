@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Siswa;
+use App\Models\Tapel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,10 +12,15 @@ class SiswaService
     public function home($request)
     {
         $user = $request->user();
+        $tapel = $this->tapel()->kode;
         if ($user->hasRole('admin')) {
             $siswas = Siswa::with('sekolah', 'rombels', 'ortus')->paginate(15);
         } elseif ($user->hasRole('ops')) {
-            $siswas = Siswa::where('sekolah_id', $user->name)->with('sekolah', 'rombels', 'ortus')->get();
+            $siswas = Siswa::where('sekolah_id', $user->name)
+                ->with('sekolah', 'ortus')
+                ->with('rombels', fn ($r) => $r->where('tapel', $tapel))
+                ->get();
+            // $siswas = Siswa::all();
         } elseif ($user->hasRole('guru_kelas')) {
             $siswas = Siswa::whereHas('rombels', function ($q) use ($user) {
                 $q->where('rombels.guru_id', $user->userable->id);
@@ -73,5 +79,10 @@ class SiswaService
             // dd($e->getMessage());
             return back()->withErrors($e->getMessage());
         }
+    }
+
+    public function tapel()
+    {
+        return Tapel::whereIsActive(true)->first();
     }
 }

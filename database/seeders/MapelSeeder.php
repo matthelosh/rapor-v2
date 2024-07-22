@@ -86,22 +86,21 @@ class MapelSeeder extends Seeder
             ],
             [
                 'kode' => 'bing',
-                'label' => 'Bahsasa Inggris',
+                'label' => 'Bahasa Inggris',
                 'fase' => 'A,B,C',
                 'kategori' => 'Wajib',
                 'deskripsi' => 'Bahasa Inggris'
             ],
             [
                 'kode' => 'bj',
-                'label' => 'Bahsasa Jawa',
+                'label' => 'Bahasa Jawa',
                 'fase' => 'A,B,C',
                 'kategori' => 'Mulok',
                 'deskripsi' => 'Bahasa Jawa'
             ],
         ];
-        
-        foreach ($mapels as $mapel ) 
-        {
+
+        foreach ($mapels as $mapel) {
             $newMapel = new Mapel($mapel);
             $newMapel->save();
         }

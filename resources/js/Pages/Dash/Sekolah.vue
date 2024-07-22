@@ -115,6 +115,7 @@ const addOps = async(id) => {
                     </div>
                 </template>
                 <el-table :data="sekolahs" height="80vh" size="small">
+                    <el-table-column label="#" type="index"></el-table-column>
                     <el-table-column label="Logo">
                         <template #default="scope">
                             <img :src="scope.row.logo" class="w-10" />
@@ -122,7 +123,7 @@ const addOps = async(id) => {
                     </el-table-column>
                     <el-table-column  label="NPSN" >
                         <template #default="scope">
-                            <el-button :disabled="!page.props.auth.can.includes('update school')" type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.npsn }}</el-button>
+                            <el-button :disabled="!page.props.auth.can.includes('update_school')" type="primary" text size="small" @click="edit(scope.row)">{{ scope.row.npsn }}</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column prop="nama" label="Nama Sekolah" />
@@ -152,12 +153,12 @@ const addOps = async(id) => {
                     <el-table-column label="Opsi">
                         <template #default="scope">
                             <span class="flex items-center gap-1">
-                                <el-button  circle :type="scope.row.ops ? 'warning' : 'primary'" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add_guru') || (!!scope.row.ops)">
+                                <el-button  circle :type="scope.row.ops ? 'warning' : 'primary'" size="small" @click="addOps(scope.row.id)" :disabled="!page.props.auth.can.includes('add_ops') || (!!scope.row.ops)">
                                     <Icon icon="mdi:laptop-account" />
                                 </el-button>
                             <el-popconfirm size="small" :title="`Yakin menghapus data ${scope.row.nama}?`" @confirm="hapus(scope.row.id)">
                                 <template #reference>
-                                        <el-button circle type="danger" size="small" :disabled="!page.props.auth.can.includes('delete school')">
+                                        <el-button circle type="danger" size="small" :disabled="!page.props.auth.can.includes('delete_school')">
                                             <Icon icon="mdi:delete" />
                                         </el-button>
                                 </template>

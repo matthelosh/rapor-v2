@@ -2,10 +2,44 @@
 import { ref, computed } from 'vue'
 import { usePage, Head, router } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
+import axios from 'axios';
 
 const page = usePage()
 
 const data = computed(() => page.props.data)
+
+// curl -v \
+// 	GET \
+// 	-H "User-Agent: HTTPBot-iOS/2024.0.1" \
+// 	-H "Authorization: Bearer QteRgcGaC8TGojF" \
+// 	"http://192.168.1.14:5774/WebService/getPengguna?npsn=20518848&access_token="
+
+const results = ref(null)
+
+const tesDapodik = async() => {
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: 'http://192.168.1.14:5774/WebService/getPengguna?npsn=20518848',
+        headers: { 
+            'Authorization': 'Bearer QteRgcGaC8TGojF', 
+            'Content-Type': 'application/json',
+            "Accept": "/",
+            "Cache-Control": "no-cache",
+            // 'user-agent':'curl/7.79.1'
+            // "Cookie": document.cookie
+        },
+        creadentials: 'same-origin'
+    };
+
+    axios.request(config)
+    .then((response) => {
+        console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+}
 </script>
 
 <template>
@@ -83,6 +117,20 @@ const data = computed(() => page.props.data)
                         </template>
                     </el-table-column>
                 </el-table>
+
+            </div>
+        </el-card>
+
+        <el-card class="my-4">
+            <template #header>
+                <div class="flex items-center justify-between">
+                    <h3>Tes Dapodik</h3>
+
+                    <el-button @click="tesDapodik">Tes</el-button>
+                </div>
+            </template>
+            <div class="card-body">
+                {{ results }}
             </div>
         </el-card>
     </el-col>

@@ -140,6 +140,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("permissions")->group(function () {
             Route::get('/', [PermissionController::class, 'home'])->name('dashboard.permission');
+            Route::post('/store', [PermissionController::class, 'store'])->name('dashboard.permission.store');
         });
 
 

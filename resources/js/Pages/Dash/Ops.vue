@@ -99,11 +99,11 @@ const createAccount = async(id) => {
                                 </template>
                             </el-input>
                             <el-button-group class="flex-grow w-[300px]" >
-                                <el-button type="primary" @click="formOps = true" :disabled="!page.props.auth.can.includes('add_guru')">
+                                <el-button type="primary" @click="formOps = true" :disabled="!page.props.auth.can.includes('add_ops')">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add_guru')">
+                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add_ops')">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>

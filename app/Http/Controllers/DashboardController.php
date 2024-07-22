@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use App\Models\Sekolah;
-use App\Models\Semester;
 use App\Models\Tapel;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -16,8 +15,20 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $tapel = Tapel::whereIsActive(true)->pluck('kode')->first();
-        dd($tapel);
         $data = [];
+
+        // Tes Dapodik
+        // $response = Http::withOptions([
+        //     'verify' => false,
+        // ])
+        //     ->withHeaders([
+        //         'Authorization' => 'Bearer QteRgcGaC8TGojF',
+        //         'Content-Type' => 'application/json'
+        //     ])
+        //     ->get('http://192.168.1.14:5774/WebService/getPengguna', ['npsn' => '20518848']);
+
+        // dd($response);
+
         if ($user->hasRole('admin')) {
             $data['sekolahs'] = Sekolah::with('ks', 'gurus')
                 ->with([
