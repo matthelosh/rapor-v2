@@ -155,6 +155,11 @@ const goto = (url) => {
 // const avatar = () => {
 //     return page.props.auth.roles.includes('admin') ? '/img/user_l.png' : (page.props.auth.user.userable.jk == 'Laki-laki' ? '/img/user_l.png' : (page.props.auth.user.agama == 'Islam' ? '/img/user_p_is.png': '/img/user_p.png'))
 // }
+const toggleChild = (e) => {
+    const li = e.target.closest('li')
+    const child = li.querySelector("ul.child")
+    child.classList.toggle('hidden')
+}
 
 const showItem = (roles) => {
     return roles.includes(page.props.auth.roles[0])
@@ -179,14 +184,14 @@ const showItem = (roles) => {
                             </Link>
                         </li>
                         <li v-else class="group" >
-                            <a :href="item.url" class="flex justify-between items-center gap-1 text-slate-600 " >
+                            <a :href="item.url" @click="toggleChild" class="parent flex justify-between items-center gap-1 text-slate-600 " >
                                 <span class="flex items-center gap-1">
                                     <Icon :icon="`mdi:${item.icon}`" />
                                     <span>{{ item.label }}</span>
                                 </span>
                                 <Icon icon="mdi:chevron-up" />
                             </a>
-                            <ul class="pl-4 pt-1 ">
+                            <ul class="pl-4 pt-1 child">
                                 <template  v-for="(sub, s) in item.children" :key="i+'-'+s">
                                     <li v-if="showItem(sub.roles)">
                                         <!-- <span>{{ sub.roles }}</span> -->
@@ -215,5 +220,9 @@ const showItem = (roles) => {
 a.active {
     color: #2881b1;
     font-weight: 800;
+}
+
+ul.child {
+    transition: all .35s ease-in-out .5s;
 }
 </style>

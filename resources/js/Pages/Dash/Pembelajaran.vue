@@ -182,7 +182,7 @@ const assignMapel = () => {
 }
 
 const assignEkskul = () => {
-    router.post(route('dashboard.pembelajaran.ekskul.assign'), {sekolahId: page.props.sekolahs[0].id, ekskuls: ekskuls.value.filter(e => e !== null)}, {
+    router.post(route('dashboard.pembelajaran.ekskul.assign'), {sekolahId: page.props.sekolahs[0].id, ekskuls: ekskuls.value.filter(e => e )}, {
         onSuccess: page => {
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         },

@@ -12,6 +12,13 @@ const formImpor = ref(false)
 const FormImpor = defineAsyncComponent(() => import('@/Components/Dashboard/FormImpor.vue'))
 const formSekolah = ref(false)
 const FormSekolah = defineAsyncComponent(() => import('@/Components/Dashboard/Sekolah/FormSekolah.vue'))
+
+const DialogTutor = defineAsyncComponent(() => import('@/Components/Dashboard/Tutorial.vue'))
+const tutor = ref(false)
+const showTutor = () => tutor.value = true
+const closeTutor = () => tutor.value = false
+
+
 const search = ref('')
 const sekolahs = computed(() => {
     return page.props.sekolahs.filter(sekolah => sekolah.nama.toLowerCase().includes(search.value.toLowerCase()))
@@ -111,6 +118,9 @@ const addOps = async(id) => {
                                     Impor
                                 </el-button>
                             </el-button-group>
+                            <el-button type="success" text @click="showTutor">
+                                <Icon icon="mdi:information-variant-circle" class="text-2xl" />
+                            </el-button>
                         </div>
                     </div>
                 </template>
@@ -169,12 +179,8 @@ const addOps = async(id) => {
                 </el-table>
             </el-card>
         </div>
-        <div class="vid-tutor p-20 bg-slate-800 flex justify-center" v-if="role === 'ops'">
-            <video controls width="1024">
-                <source src="/videos/update-sekolah.mp4" type="video/mp4">
-            </video>
-        </div>
         <FormSekolah :open="formSekolah" @close="closeForm" :selectedSekolah="selectedSekolah" v-if="formSekolah" />
         <FormImpor :open="formImpor" @close="closeImpor" :fields="fields" v-if="formImpor" title="Sekolah" url="dashboard.sekolah.impor" />
+        <DialogTutor url="/videos/update-sekolah.mp4" @close="closeTutor" :show="tutor" />
     </DashLayout>
 </template>

@@ -72,7 +72,7 @@ class OrtuController extends Controller
             $newIbu = new Ortu($ibu);
             $newIbu->save();
 
-            if (isset($ortu['wali'])) {
+            if ($ortu['wali']['nama']) {
                 $wali = $ortu['wali'];
                 $wali['siswa_id'] = $ortu['siswa_id'];
                 $newWali = new Ortu($wali);
