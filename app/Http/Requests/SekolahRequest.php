@@ -26,7 +26,6 @@ class SekolahRequest extends FormRequest
             'nama' => 'required',
             'alamat' => 'required',
             'desa' => 'required',
-            'nama_ks' => 'required',
         ];
     }
 }
