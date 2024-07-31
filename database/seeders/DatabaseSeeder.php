@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
                 PermissionSeeder::class,
                 RoleSeeder::class,
                 SekolahSeeder::class,
+                OperatorSeeder::class,
                 OpsSeeder::class,
                 MapelSeeder::class,
                 PeriodeSeeder::class,
