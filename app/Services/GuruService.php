@@ -25,8 +25,11 @@ class GuruService
     public function index($request)
     {
         $user = $request->user();
+        $q = $request->query("q") ? "%".$request->query('q')."%" : "%";
         if ($user->hasRole(['admin', 'kepala_sekolah'])) {
-            $gurus = Guru::with('sekolahs', 'user')->paginate(10);
+            $gurus = Guru::with('sekolahs', 'user')
+                ->where('nama','LIKE', $q)
+                ->paginate(10);
         } elseif ($user->hasRole('ops')) {
             $gurus = Guru::whereHas('sekolahs', function ($q) use ($user) {
                 $q->where('sekolahs.npsn', $user->userable->sekolahs[0]->npsn);

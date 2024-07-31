@@ -10,11 +10,11 @@ use App\Models\Rombel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 // use App\Http\Resources\SekolahResource;
 
 class RombelService
 {
-
     /**
      * Create a new class instance.
      */
@@ -36,7 +36,9 @@ class RombelService
                 ->with('kktps', function ($q) {
                     $q->with('mapel');
                 })
-                ->get();;
+                ->orderBy('id')
+                ->get();
+            ;
         } elseif ($user->hasRole('guru_kelas')) {
             $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
                 ->where('guru_id', $user->userable->id)

@@ -22,23 +22,28 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
-        $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            SekolahSeeder::class,
-            OpsSeeder::class,
-            MapelSeeder::class,
-            PeriodeSeeder::class,
-            PekerjaanSeeder::class,
-            EkskulSeeder::class,
-            RoleGuruSeeder::class,
-        ]);
+        $this->call(
+            [
+                PermissionSeeder::class,
+                RoleSeeder::class,
+                SekolahSeeder::class,
+                OpsSeeder::class,
+                MapelSeeder::class,
+                PeriodeSeeder::class,
+                PekerjaanSeeder::class,
+                EkskulSeeder::class,
+                RoleGuruSeeder::class,
+                SiswaSeeder::class
+            ]
+        );
 
-        $admin = User::create([
-            'name' => 'admin',
-            'email' => 'admin@raporsd.id',
-            'password' => Hash::make('123')
-        ]);
+        $admin = User::create(
+            [
+                'name' => 'admin',
+                'email' => 'admin@raporsd.id',
+                'password' => Hash::make('123')
+            ]
+        );
 
         $admin->assignRole('admin');
     }

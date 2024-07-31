@@ -42,8 +42,7 @@ class RaporController extends Controller
             'ekskuls' => $ekskuls,
             'pas' => $nilaiPas,
             'catatan' => $catatan,
-            'tanggal' => TanggalRapor::where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
-                ->where('semester', $queries['semester'])
+            'tanggal' => TanggalRapor::where('semester', $queries['semester'])
                 ->where('tapel', $queries['tapel'])
                 ->where('tipe', 'pas')
                 ->first(),
@@ -54,7 +53,7 @@ class RaporController extends Controller
     {
         try {
             return Inertia::render('Dash/TanggalRapor', [
-                'tanggals' => TanggalRapor::where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)->with('tahun', 'sem')->get(),
+                'tanggals' => TanggalRapor::with('tahun', 'sem')->get(),
                 'tapels' => Tapel::all(),
             ]);
         } catch (\Throwable $th) {
@@ -69,7 +68,7 @@ class RaporController extends Controller
             $data = $request->data;
             TanggalRapor::updateOrCreate(
                 [
-                    'sekolah_id' => $sekolahId,
+                    'sekolah_id' => null,
                     'tapel' => $data['tapel'],
                     'semester' => $data['semester'],
                     'tipe' => $data['tipe']

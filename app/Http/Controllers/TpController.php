@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tp;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Requests\TpRequest;
 
 class TpController extends Controller
 {
@@ -53,7 +54,7 @@ class TpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TpRequest $request)
     {
         try {
             Tp::updateOrCreate(

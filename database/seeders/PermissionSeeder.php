@@ -66,6 +66,10 @@ class PermissionSeeder extends Seeder
             "add_nilai",
             "update_nilai",
             "delete_nilai",
+            "read_ops",
+            "add_ops",
+            "update_ops",
+            "delete_ops"
 
         ];
         // create permission

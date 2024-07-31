@@ -15,7 +15,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 
 Route::middleware('auth')->group(function () {
@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
 
         Route::prefix("rombel")->group(function () {
             Route::get("/", [RombelController::class, 'home'])->name('dashboard.rombel');
+            Route::get('/index', [Rombelcontroller::class, 'index'])->name('dashboard.rombel.index');
             Route::post("/", [RombelController::class, 'store'])->name('dashboard.rombel.store');
             Route::post("/member/attach", [RombelController::class, 'attachMember'])->name('dashboard.rombel.member.attach');
             Route::post("/member/detach", [RombelController::class, 'detachMember'])->name('dashboard.rombel.member.detach');

@@ -27,9 +27,18 @@ class RombelController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+            $sekolahId = $request->query('sekolahId');
+            $currentRombel = $request->query('currentRombel');
+
+            $rombels = Rombel::where('sekolah_id', $sekolahId)->whereNot('id', $currentRombel)->get();
+
+            return response()->json(['rombels' => $rombels]);
+        } catch(\Exception $e) {
+            throw $e;
+        }
     }
 
 

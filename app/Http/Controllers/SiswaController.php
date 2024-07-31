@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SiswaRequest;
+use App\Models\Rombel;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use App\Services\SiswaService;
@@ -58,10 +59,23 @@ class SiswaController extends Controller
      */
     public function nonMember(Request $request)
     {
+        $rombelId = $request->query('rombelId');
+        $targetRombel = $request->query('targetRombel');
         try {
-            $siswas = Siswa::whereDoesntHave('rombels')
-                ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
-                ->with('sekolah')->whereStatus('aktif')->get();
+            if (!$targetRombel) {
+                $siswas = Siswa::whereDoesntHave('rombels')
+                    ->orWhereHas(
+                        'rombels',
+                        function ($q) use ($rombelId) {
+                            $q->whereNot('rombels.id', $rombelId);
+                        }
+                    )
+                    ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
+                    ->with('sekolah')->whereStatus('aktif')->get();
+            } else {
+                $rombel = Rombel::where('id', $targetRombel)->with('siswas')->first();
+                $siswas = $rombel->siswas;
+            }
             return response()->json(['siswas' => $siswas]);
         } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
