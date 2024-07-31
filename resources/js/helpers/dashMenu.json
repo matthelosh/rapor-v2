@@ -1,0 +1,167 @@
+[
+    {
+        "label": "Dashboard",
+        "icon": "monitor-dashboard",
+        "url": "/dashboard",
+        "children": [],
+        "roles": [
+            "admin",
+            "ops",
+            "kepala_sekolah",
+            "guru_kelas",
+            "guru_agama",
+            "guru_pjok",
+            "guru_inggris",
+            "siswa"
+        ]
+    },
+    {
+        "label": "Data Utama",
+        "icon": "database",
+        "url": "#",
+        "roles": [
+            "admin",
+            "ops",
+            "kepala_sekolah",
+            "guru_kelas",
+            "guru_agama",
+            "guru_pjok",
+            "guru_inggris",
+            "siswa"
+        ],
+        "children": [
+            {
+                "label": "Operator",
+                "icon": "laptop-account",
+                "url": "/dashboard/operator",
+                "roles": ["admin", "kepala_sekolah"]
+            },
+            {
+                "label": "Sekolah",
+                "icon": "city-variant",
+                "url": "/dashboard/sekolah",
+                "roles": ["admin", "ops", "kepala_sekolah"]
+            },
+            {
+                "label": "Guru",
+                "icon": "account-tie",
+                "url": "/dashboard/guru",
+                "roles": [
+                    "admin",
+                    "ops",
+                    "kepala_sekolah",
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris"
+                ]
+            },
+            {
+                "label": "Siswa",
+                "icon": "human-child",
+                "url": "/dashboard/siswa",
+                "roles": ["admin", "ops", "guru_kelas"]
+            },
+            {
+                "label": "Rombel",
+                "icon": "google-classroom",
+                "url": "/dashboard/rombel",
+                "roles": ["admin", "ops", "guru_kelas"]
+            },
+            {
+                "label": "Pembelajaran",
+                "icon": "bookshelf",
+                "url": "/dashboard/pembelajaran",
+                "roles": ["admin", "ops"]
+            }
+        ]
+    },
+    {
+        "label": "Data Nilai",
+        "icon": "numeric",
+        "url": "#",
+        "roles": [
+            "guru_kelas",
+            "guru_agama",
+            "guru_pjok",
+            "guru_inggris",
+            "ops"
+        ],
+        "children": [
+            {
+                "label": "Input Nilai",
+                "icon": "edit",
+                "url": "/dashboard/nilai",
+                "roles": [
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris"
+                ]
+            },
+            {
+                "label": "Ledger",
+                "icon": "spreadsheet",
+                "url": "/dashboard/ledger",
+                "roles": [
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris"
+                ]
+            }
+        ]
+    },
+    {
+        "label": "Rapor",
+        "icon": "report",
+        "url": "#",
+        "roles": ["guru_kelas", "ops"],
+        "children": [
+            {
+                "label": "Data Periodik",
+                "icon": "chart-line",
+                "url": "/dashboard/rapor/periodik",
+                "roles": ["guru_kelas"]
+            },
+            {
+                "label": "Cetak",
+                "icon": "printer",
+                "url": "/dashboard/rapor/cetak",
+                "roles": ["guru_kelas", "kepala_sekolah"]
+            },
+            {
+                "label": "Tanggal Rapor",
+                "icon": "calendar",
+                "url": "/dashboard/rapor/tanggal",
+                "roles": ["admin"]
+            },
+            {
+                "label": "Arsip",
+                "icon": "archive",
+                "url": "/dashboard/rapor/arsip",
+                "roles": ["ops"]
+            }
+        ]
+    },
+    {
+        "label": "Pengaturan",
+        "icon": "settings",
+        "url": "#",
+        "roles": ["admin", "ops"],
+        "children": [
+            {
+                "label": "Hak Akses",
+                "icon": "account-settings",
+                "url": "/dashboard/roles",
+                "roles": ["admin"]
+            },
+            {
+                "label": "Backup",
+                "icon": "harddisk",
+                "url": "/dashboard/backup",
+                "roles": ["admin"]
+            }
+        ]
+    }
+]
