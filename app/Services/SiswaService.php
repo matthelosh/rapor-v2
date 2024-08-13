@@ -11,23 +11,35 @@ class SiswaService
 {
     public function home($request)
     {
-        $user = $request->user();
-        $tapel = $this->tapel()->kode;
-        if ($user->hasRole('admin')) {
-            $siswas = Siswa::with('sekolah', 'rombels', 'ortus')->paginate(15);
-        } elseif ($user->hasRole('ops')) {
-            $siswas = Siswa::where('sekolah_id', $user->name)
-                ->with('sekolah', 'ortus')
-                ->with('rombels', fn ($r) => $r->where('tapel', $tapel))
-                ->get();
-            // $siswas = Siswa::all();
-        } elseif ($user->hasRole('guru_kelas')) {
-            $siswas = Siswa::whereHas('rombels', function ($q) use ($user) {
-                $q->where('rombels.guru_id', $user->userable->id);
-                $q->where('rombels.is_active', '1');
-            })->with('rombels', 'ortus')->get();
+        try {
+            $user = $request->user();
+            $tapel = $this->tapel()->kode;
+            $q = $request->query('q') ? '%'.$request->query('q').'%' : '%';
+            if ($user->hasRole('admin')) {
+                $siswas = Siswa::where('nama', 'LIKE', $q)
+                    ->with('sekolah', 'rombels', 'ortus')
+                    ->paginate(15);
+            } elseif ($user->hasRole('ops')) {
+                $siswas = Siswa::where('sekolah_id', $user->name)
+                    ->where('nama', 'LIKE', $q)
+                    ->with('sekolah', 'ortus')
+                    ->with('rombels', fn ($r) => $r->where('tapel', $tapel))
+                    ->get();
+                // $siswas = Siswa::all();
+            } elseif ($user->hasRole('guru_kelas')) {
+                $siswas = Siswa::where('nama', 'LIKE', $q)
+                    ->whereHas(
+                        'rombels',
+                        function ($q) use ($user) {
+                            $q->where('rombels.guru_id', $user->userable->id);
+                            $q->where('rombels.is_active', '1');
+                        }
+                    )->with('rombels', 'ortus')->get();
+            }
+            return $siswas;
+        } catch(\Exception $e) {
+            throw $e;
         }
-        return $siswas;
     }
 
     public function store($data, $file)

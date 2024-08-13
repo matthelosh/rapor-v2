@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Post extends Model
 {
-  use HasFactory;
-  protected $fillable = [
-    'image',
-    'title',
-    'content'
-  ];
+    use HasFactory;
+    protected $fillable = [
+        'cover',
+        'category',
+        'type',
+        'slug',
+        'title',
+        'content',
+        'user_id'
+    ];
 
-  protected function image(): Attribute
-  {
-    return Attribute::make(
-      get: fn ($image) => url('/storage/post/' . $image),
-    );
-  }
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($cover) => url('/storage/post/' . $cover),
+        );
+    }
 }

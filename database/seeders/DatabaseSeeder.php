@@ -34,7 +34,9 @@ class DatabaseSeeder extends Seeder
                 PekerjaanSeeder::class,
                 EkskulSeeder::class,
                 RoleGuruSeeder::class,
-                SiswaSeeder::class
+                SiswaSeeder::class,
+                PostSeeder::class,
+                AdminSeeder::class,
             ]
         );
 

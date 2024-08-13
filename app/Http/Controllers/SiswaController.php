@@ -16,9 +16,12 @@ class SiswaController extends Controller
         $siswas = $siswaService->home($request);
         // $siswas = Siswa::paginate(20);
 
-        return Inertia::render('Dash/Siswa', [
-            'siswas' => $siswas,
-        ]);
+        return Inertia::render(
+            'Dash/Siswa',
+            [
+                'siswas' => $siswas,
+            ]
+        );
     }
 
     /**

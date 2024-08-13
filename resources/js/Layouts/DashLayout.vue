@@ -4,7 +4,7 @@ import { router, Head, usePage, Link } from "@inertiajs/vue3";
 import { ElContainer, ElHeader, ElAside, ElMain } from "element-plus";
 import { Icon } from "@iconify/vue";
 // import 'element-plus/es/components/button/style/css'
-import SideItem from "./SideMenu.vue";
+import SideItem from "@/Layouts/SideMenu.vue";
 
 const contentTrigger = ref(false);
 

@@ -151,6 +151,12 @@
         "roles": ["admin", "ops"],
         "children": [
             {
+                "label": "Periode Akademik",
+                "icon": "calendar",
+                "url": "/dashboard/periode",
+                "roles": ["admin"]
+            },
+            {
                 "label": "Hak Akses",
                 "icon": "account-settings",
                 "url": "/dashboard/roles",

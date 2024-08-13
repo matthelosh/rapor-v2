@@ -1,5 +1,7 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from "@inertiajs/vue3";
+
+const page = usePage();
 
 defineProps({
     canLogin: {
@@ -16,76 +18,76 @@ defineProps({
         type: String,
         required: true,
     },
+    posts: Array,
+    infos: Array,
 });
-
 </script>
 
 <template>
-    <Head title="Welcome" />
-    <div class="bg-gray-50 text-black/50 dark:text-slate-50 dark:bg-slate-800">
-        <div
-            class="relative min-h-screen flex flex-col items-center justify-start selection:bg-[#20a9ff] selection:text-white"
+    <Head title="Selamat Datang" />
+    <div class="wrapper bg-sky-100">
+        <header
+            class="w-full h-16 bg-slate-200 dark:bg-slate-500 dark:text-white flex justify-between items-center px-2 md:px-40"
         >
-            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3 border-slate-500 border-double border-b-8">
-                    <div class="flex lg:justify-center lg:col-start-2">
-                        <img src="/img/tutwuri.png" alt="Tutwuri" class="h-28">
-                    </div>
-                    <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
-                        <Link
-                            v-if="$page.props.auth.user"
-                            :href="route('dashboard')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Dashboard
-                        </Link>
-
-                        <template v-else>
-                            <Link
-                                :href="route('login')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Masuk
-                            </Link>
-
-                        </template>
-                    </nav>
-                </header>
-
-                <main class="mt-6">
-                    <h3 class="text-4xl text-center font-bold">Aplikasi Rapor SD Kecamatan Wagir</h3>
-                    <h3 class="text-lg font-bold mt-8">Pengolahan Hasil Asesmen untuk Rapor</h3>
-                    <p class="mt-4">Pengolahan hasil asesmen dilakukan dengan memanfaatkan hasil formatif dan sumatif. Terdapat 2 jenis data, yaitu data hasil asesmen yang berupa angka (kuantitatif) serta data hasil asesmen yang berupa narasi (kualitatif)</p>
-                    <p class="mt-4">Pengolahan hasil asesmen dalam bentuk angka (kuantitatif) didasarkan hanya pada hasil asesmen sumatif, sementara asesmen formatif sebagaimana diuraikan sebelumnya, berupa data atau informasi yang bersifat kualitatif, digunakan sebagai umpan balik untuk perbaikan pembelajaran sekaligus sebagai bahan pertimbangan menyusun deskripsi capaian kompetensi.</p>
-                    <img src="/img/olah-nilai.png" alt="Opsi 3" class="mx-auto my-4">
-                    <p class="mt-4">Komponen rapor peserta didik SD/MI, SMP/MTs, SMA/MA, dan SMK/MAK atau sederajat minimal memuat informasi mengenai:</p>
-                    <ol class="list-decimal pl-8">
-                        <li>Identitas peserta didik</li>
-                        <li>Nama Satuan Pendidikan</li>
-                        <li>Kelas</li>
-                        <li>Semester</li>
-                        <li>Mata Pelajaran</li>
-                        <li>Nilai</li>
-                        <li>Deskripsi</li>
-                        <li>Catatan Guru</li>
-                        <li>Presensi, dan</li>
-                        <li>Kegiatan Ekstrakurikuler</li>
-                    </ol>
-                    <p class="mt-4">
-                        Format rapor ini menggunakan opsi 3. Yaitu, deskripsi diambil dari poin-poin penting dari  materi yang sudah diberikan.
-                        <img src="/img/opsi-3.png" alt="Opsi 3" class=mx-auto>
-                    </p>
-                    <h3 class="text-lg font-bold mt-8">Format Rapor</h3>
-                    <p class="mt-4">
-                        <img src="/img/format-rapor.png" alt="Format Rapor" class="mx-auto">
-                    </p>
-                    <p class="mt-4">*) <a href="https://kurikulum.kemdikbud.go.id/wp-content/uploads/2022/06/Panduan-Pembelajarn-dan-Asesmen.pdf" target="_blank" class="text-sky-500">Panduan Pembelajaran dan Asesmen Kemdikbud Tahun 2022</a></p>
-                </main>
-
+            <div class="title">
+                <h1>PKG Kec. Wagir</h1>
+            </div>
+            <nav class="flex items-center gap-2">
+                <Link href="/">Beranda</Link>
+            </nav>
+        </header>
+        <div
+            class="hero h-[500px] w-full md:w-[60%] mt-4 mx-auto bg-sky-300 dark:bg-sky-500 dark:text-sky-50 flex items-center justify-center"
+        >
+            <div class="text-center">
+                <h3 class="text-4xl tracking-wider">Halo Bos!</h3>
+                <small>Semoga Bermanfaat</small>
             </div>
         </div>
-        <footer class="py-6 text-center text-sm text-black dark:text-white/70 bg-sky-100 w-full">
-            &copy; {{ new Date().getFullYear() }} <a href="mailto:matthelosh@gmail.com" class="text-sky-800 font-bold">Matsoleh</a>
-        </footer>
+        <main class="py-4 w-full md:w-[60%] mx-auto dark:bg-slate-200 bg-white">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                <div class="posts col-span-1 md:col-span-4">
+                    <template v-for="(post, p) in posts" :key="p">
+                        <div
+                            class="card grid grid-cols-3 gap-2 my-4 bg-white shadow"
+                        >
+                            <div class="cover col-span-1">
+                                <img :src="post.cover" alt="Cover" />
+                            </div>
+                            <article class="col-span-2 p-2 pr-4">
+                                <h3
+                                    class="text-2xl font-bold tracking-wide text-justify"
+                                >
+                                    <Link :href="`/baca/${post.slug}`">
+                                        {{ post.title }}
+                                    </Link>
+                                </h3>
+                                <p
+                                    v-html="post.content.substring(0, 300)"
+                                    class="text-justify"
+                                ></p>
+                            </article>
+                        </div>
+                    </template>
+                </div>
+                <div class="side col-span-1 md:col-span-2 mx-2">
+                    <el-divider>Pengumuman</el-divider>
+                    <div class="infos">
+                        <ol>
+                            <li
+                                v-for="(info, i) in infos"
+                                :key="i"
+                                class="my-2 text-sky-800 hover:underline leading-5"
+                            >
+                                <Link :href="`/baca/${info.slug}`">
+                                    <h3>{{ info.title }}</h3>
+                                </Link>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="w-full"></footer>
     </div>
 </template>
