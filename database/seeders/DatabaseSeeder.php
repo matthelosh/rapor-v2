@@ -14,14 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // // User::factory(10)->create();
-
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-
         $this->call(
             [
                 PermissionSeeder::class,
@@ -39,15 +31,5 @@ class DatabaseSeeder extends Seeder
                 AdminSeeder::class,
             ]
         );
-
-        $admin = User::create(
-            [
-                'name' => 'admin',
-                'email' => 'admin@raporsd.id',
-                'password' => Hash::make('123')
-            ]
-        );
-
-        $admin->assignRole('admin');
     }
 }

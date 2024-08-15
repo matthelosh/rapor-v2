@@ -1,11 +1,13 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, defineAsyncComponent } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
 
 import DashLayout from '@/Layouts/DashLayout.vue'
 import { findIndex } from 'lodash';
 import { ElNotification } from 'element-plus';
+
+const User = defineAsyncComponent(() => import('@/Components/Dashboard/Setting/User.vue'))
 
 const page = usePage()
 const roles = ref([])
@@ -72,6 +74,7 @@ onBeforeMount(async() => {
     <Head title="Pengaturan peran dan ijin user" />
     <DashLayout>
         <template #header>Admin</template>
+        <User :users="page.props.users" />
         <el-card >
             <template #header>
                 <div class="toolbar flex items-center justify-between">
