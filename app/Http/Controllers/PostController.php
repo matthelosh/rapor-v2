@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -16,11 +17,23 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the post read page.
      */
-    public function create()
+    public function read(Request $request, $slug)
     {
-        //
+        try {
+            $post = Post::whereSlug($slug)->first();
+            $posts = Post::whereCategory($post->category)->whereNot('id', $post->id)->get();
+            return Inertia::render(
+                'Front/Read',
+                [
+                    'post' => $post,
+                    'posts' => $posts
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

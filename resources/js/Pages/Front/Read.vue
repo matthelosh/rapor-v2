@@ -4,22 +4,8 @@ import { Icon } from "@iconify/vue";
 const page = usePage();
 
 defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
+    post: Object,
     posts: Array,
-    infos: Array,
 });
 </script>
 
@@ -27,7 +13,7 @@ defineProps({
     <Head title="Selamat Datang" />
     <div class="common-layout">
         <el-container>
-            <el-header style="background: #facefd;">
+            <el-header style="background: #dfdfdf;">
                 <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
                     <h3>Halo</h3>
                     <nav class="flex gap-4 uppercase">
@@ -48,31 +34,23 @@ defineProps({
             </el-header>
             <el-main>
                 <div class="w-full px-2 md:px-[15%]">
-                    <div class="hero h-[500px] bg-sky-100 w-full flex items-center justify-center mb-4">
-                        <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1>
+                    <div class="hero h-[500px] bg-sky-100 w-full flex items-center justify-center mb-4 overflow-hidden">
+                        <img :src="post.cover" alt="" class="w-full object-cover">
+                        <!-- <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1> -->
                     </div>
                     <div class="grid grid-cols-6 gap-4">
                         <div class="main col-span-4">
-                            <template v-for="(post, p) in posts" :key="p">
-                                <div class="card mb-6 bg-slate-100 grid grid-cols-4 gap-2 hover:shadow transition-all duration-300 linear">
-                                    <div class="cover col-span-1">
-                                        <img :src="post.cover" alt="Cover" />
-                                    </div>
-                                    <article class="col-span-3 pr-4 pt-2">
-                                        <h3 class="text-lg font-bold text-sky-800 hover:underline mb-4">
-                                            <Link :href="`/baca/${post.slug}`">{{ post.title }}</Link>
-                                        </h3>
-                                        <p class="text-justify" v-html="post.content.substring(0, 250)"></p>
-                                    </article>
-                                </div>
-                            </template>
+                            <article class="font-serif">
+                                <h3 class="text-4xl mb-4">{{ post.title }}</h3>
+                                <p v-html="post.content" class="text-justify tracking-wide leading-7"></p>
+                            </article>
                         </div>
                         <div class="main col-span-2">
-                            <el-divider>Pengumuman</el-divider>
+                            <el-divider>Berita Lainnya</el-divider>
                             <ol class="pl-6">
-                                <li v-for="(info, i) in infos" :key="i" class="list-disc">
-                                    <Link :href="`/baca/${info.slug}`" class="hover:underline">
-                                        {{ info.title }}
+                                <li v-for="(post, p) in posts" :key="p" class="list-disc">
+                                    <Link :href="`/baca/${post.slug}`" class="hover:underline">
+                                        {{ post.title }}
                                     </Link>
                                 </li>
                             </ol>

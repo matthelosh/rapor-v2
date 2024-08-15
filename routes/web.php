@@ -16,6 +16,14 @@ Route::prefix("")->group(
                 'home'
             ]
         )->name('home');
+
+        Route::get(
+            '/baca/{slug}',
+            [
+                PostController::class,
+                'read'
+            ]
+        )->name('home.post.read');
     }
 );
 
@@ -54,7 +62,7 @@ Route::middleware('auth')->group(
                     ]
                 )->middleware(
                     [
-                         'auth',
+                        'auth',
                         'verified'
                     ]
                 )->name('dashboard');
@@ -141,20 +149,23 @@ Route::middleware('auth')->group(
                             '/',
                             [
                                 GuruController::class,
-                                'store']
+                                'store'
+                            ]
                         )->name('dashboard.guru.store')
                             ->middleware(['role:admin|ops']);
                         Route::post(
                             '/get',
                             [
                                 GuruController::class,
-                                'show']
+                                'show'
+                            ]
                         )->name('dashboard.guru.show');
                         Route::put(
                             '/',
                             [
                                 GuruController::class,
-                                'update']
+                                'update'
+                            ]
                         )->name('dashboard.guru.update');
                         Route::post(
                             '/impor',
@@ -245,7 +256,8 @@ Route::middleware('auth')->group(
                                 Route::get(
                                     '/pekerjaan',
                                     [
-                                        OrtuController::class, 'indexPekerjaan'
+                                        OrtuController::class,
+                                        'indexPekerjaan'
                                     ]
                                 )->name('dashboard.siswa.ortu.pekerjaan.index');
                             }
@@ -434,7 +446,7 @@ Route::middleware('auth')->group(
                                 "store"
                             ]
                         )->name('dashboard.nilai.store')
-                        ->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
+                            ->middleware(['role:guru_kelas|guru_agama|guru_pjok|guru_inggris']);
 
                         Route::prefix('ekskul')->group(
                             function () {
@@ -536,7 +548,8 @@ Route::middleware('auth')->group(
                         Route::post(
                             '/pas',
                             [
-                                RaporController::class, 'raporPAS'
+                                RaporController::class,
+                                'raporPAS'
                             ]
                         )->name('dashboard.rapor.pas')
                             ->middleware(['role:guru_kelas|ops']);
