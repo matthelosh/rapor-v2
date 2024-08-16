@@ -30,6 +30,8 @@ defineProps({
 const searchPost = () => {
     router.visit(route('front.post.search', { _query: {q: search.value}}))
 }
+
+const params = computed(() => route().params)
 </script>
 
 <template>
@@ -40,7 +42,7 @@ const searchPost = () => {
             <el-main>
                 <div class="main-container">
                     <div class="hero ">
-                        <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1>
+                        <h1 class="text-2xl font-bold text-sky-800">Hasil Pencarian "{{ params.q }}"</h1>
                     </div>
                     <div class="main-content">
                         <div class="main">
@@ -57,23 +59,6 @@ const searchPost = () => {
                                     </article>
                                 </div>
                             </template>
-                        </div>
-                        <div class="side">
-                            <el-input placeholder="Cari Tulisan" v-model="search">
-                                <template #suffix>
-                                    <el-button text size="small" @click="searchPost">
-                                        <Icon icon="mdi:magnify" />
-                                    </el-button>
-                                </template>
-                            </el-input>
-                            <el-divider>Pengumuman</el-divider>
-                            <ol class="pl-6">
-                                <li v-for="(info, i) in infos" :key="i" class="list-disc">
-                                    <Link :href="`/baca/${info.slug}`" class="hover:underline">
-                                        {{ info.title }}
-                                    </Link>
-                                </li>
-                            </ol>
                         </div>
                     </div>
                 </div>
@@ -124,15 +109,14 @@ header {
 
     .main-content {
         display: grid;
-        grid-template-areas: 'post post post post side side';
-        gap: 20px;
+        grid-template-areas: 'post post post post post post';
     }
     .hero {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: black;
+        background: rgb(232, 242, 246);
         height: 500px;
         margin-bottom: 20px;
     }

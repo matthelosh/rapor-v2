@@ -24,6 +24,14 @@ Route::prefix("")->group(
                 'read'
             ]
         )->name('home.post.read');
+
+        Route::get(
+            '/cari',
+            [
+                FrontController::class,
+                'cari'
+            ]
+        )->name('front.post.search');
     }
 );
 

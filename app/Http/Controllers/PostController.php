@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -22,13 +24,18 @@ class PostController extends Controller
     public function read(Request $request, $slug)
     {
         try {
-            $post = Post::whereSlug($slug)->first();
+            $post = Post::whereSlug($slug)->with('author.userable')->first();
             $posts = Post::whereCategory($post->category)->whereNot('id', $post->id)->get();
             return Inertia::render(
                 'Front/Read',
                 [
                     'post' => $post,
-                    'posts' => $posts
+                    'posts' => $posts,
+                    'canLogin' => Route::has('login'),
+                    'canRegister' => Route::has('register'),
+                    'appName' => \env('APP_NAME'),
+                    'laravelVersion' => Application::VERSION,
+                    'phpVersion' => PHP_VERSION,
                 ]
             );
         } catch (\Throwable $th) {

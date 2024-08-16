@@ -22,7 +22,12 @@ class Post extends Model
     protected function image(): Attribute
     {
         return Attribute::make(
-            get: fn ($cover) => url('/storage/post/' . $cover),
+            get: fn($cover) => url('/storage/post/' . $cover),
         );
+    }
+
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

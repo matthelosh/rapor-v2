@@ -20,13 +20,36 @@ class FrontController extends Controller
                     'infos' => Post::where('category', 'Info')->get(),
                     'canLogin' => Route::has('login'),
                     'canRegister' => Route::has('register'),
+                    'appName' => \env('APP_NAME'),
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,
                 ]
             );
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
+    }
 
+    public function cari(Request $request)
+    {
+        try {
+            $q = $request->query('q');
+            $posts = Post::where('content', 'LIKE', '%' . $q . '%')
+                ->orWhere('title', 'LIKE', '%' . $q . '%')
+                ->get();
+            return Inertia::render(
+                'Front/Cari',
+                [
+                    'posts' => $posts,
+                    'canLogin' => Route::has('login'),
+                    'canRegister' => Route::has('register'),
+                    'appName' => \env('APP_NAME'),
+                    'laravelVersion' => Application::VERSION,
+                    'phpVersion' => PHP_VERSION,
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
