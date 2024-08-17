@@ -35,7 +35,7 @@ export default defineConfig({
                 }
             }
         },
-        minify: process.env.APP_ENV !== 'local' ? true : false,
-        cssCodeSplit: process.env.APP_ENV === 'local' ? false : undefined
+        // minify: process.env.APP_ENV !== 'local' ? true : false,
+        // cssCodeSplit: process.env.APP_ENV === 'local' ? false : undefined
     }
 });
