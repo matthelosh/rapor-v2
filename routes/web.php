@@ -616,14 +616,14 @@ Route::middleware('auth')->group(
                                 RoleController::class,
                                 'store'
                             ]
-                        )->name('dashboard.role.store');
+                        )->name('dashboard.role.store')->middleware('role:superadmin');
                         Route::post(
                             '/permission/assign',
                             [
                                 RoleController::class,
                                 'assignPermission'
                             ]
-                        )->name('dashboard.role.permission.assign');
+                        )->name('dashboard.role.permission.assign')->middleware('role:superadmin');
                     }
                 );
 
@@ -719,6 +719,12 @@ Route::middleware('auth')->group(
                             ]
                         )->name('dashboard.semester.toggle')
                             ->middleware(['role:admin']);
+                    }
+                );
+
+                Route::prefix('user')->group(
+                    function () {
+                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store');
                     }
                 );
             }

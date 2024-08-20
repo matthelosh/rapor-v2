@@ -45,7 +45,7 @@ class HandleInertiaRequests extends Middleware
 
             ],
             'flash' => [
-                "message" => fn () => $request->session()->get('message'),
+                "message" => fn() => $request->session()->get('message'),
             ],
             'periode' => $this->periode(),
             'app_env' => env('APP_ENV')
@@ -67,7 +67,7 @@ class HandleInertiaRequests extends Middleware
 
     private function sekolahs($user)
     {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
             return Sekolah::with('mapels.tps', 'ks', 'ekskuls')->get();
         } elseif ($user->hasRole('ops')) {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', function ($q) {

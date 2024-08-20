@@ -15,6 +15,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $role_names = [
+            'superadmin',
             'admin',
             'ops',
             'kepala_sekolah',
@@ -34,7 +35,7 @@ class RoleSeeder extends Seeder
         $permissions = Permission::all();
         foreach ($roles as $role) {
             switch ($role->name) {
-                case 'admin':
+                case 'superadmin':
                     $role->givePermissionTo($permissions->pluck('name'));
                     break;
                 default:

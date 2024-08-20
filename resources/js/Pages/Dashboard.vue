@@ -11,7 +11,7 @@ const Mapel = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Map
 const page = usePage()
 const role = page.props.auth.roles[0]
 const comp = computed(() => {
-    return role == 'admin' ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : Mapel))
+    return (role == 'admin' || role == 'superadmin') ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : Mapel))
 })
 
 const sekolahs = page.props.sekolahs

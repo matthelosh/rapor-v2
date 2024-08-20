@@ -6,6 +6,7 @@
         "children": [],
         "roles": [
             "admin",
+            "superadmin",
             "ops",
             "kepala_sekolah",
             "guru_kelas",
@@ -20,6 +21,7 @@
         "icon": "database",
         "url": "#",
         "roles": [
+            "superadmin",
             "admin",
             "ops",
             "kepala_sekolah",
@@ -34,19 +36,20 @@
                 "label": "Operator",
                 "icon": "laptop-account",
                 "url": "/dashboard/operator",
-                "roles": ["admin", "kepala_sekolah"]
+                "roles": ["superadmin","admin", "kepala_sekolah"]
             },
             {
                 "label": "Sekolah",
                 "icon": "city-variant",
                 "url": "/dashboard/sekolah",
-                "roles": ["admin", "ops", "kepala_sekolah"]
+                "roles": ["superadmin","admin", "ops", "kepala_sekolah"]
             },
             {
                 "label": "Guru",
                 "icon": "account-tie",
                 "url": "/dashboard/guru",
                 "roles": [
+                    "superadmin",
                     "admin",
                     "ops",
                     "kepala_sekolah",
@@ -60,19 +63,19 @@
                 "label": "Siswa",
                 "icon": "human-child",
                 "url": "/dashboard/siswa",
-                "roles": ["admin", "ops", "guru_kelas"]
+                "roles": ["superadmin","admin", "ops", "guru_kelas"]
             },
             {
                 "label": "Rombel",
                 "icon": "google-classroom",
                 "url": "/dashboard/rombel",
-                "roles": ["admin", "ops", "guru_kelas"]
+                "roles": ["superadmin","admin", "ops", "guru_kelas"]
             },
             {
                 "label": "Pembelajaran",
                 "icon": "bookshelf",
                 "url": "/dashboard/pembelajaran",
-                "roles": ["admin", "ops"]
+                "roles": ["superadmin","admin", "ops"]
             }
         ]
     },
@@ -134,7 +137,7 @@
                 "label": "Tanggal Rapor",
                 "icon": "calendar",
                 "url": "/dashboard/rapor/tanggal",
-                "roles": ["admin"]
+                "roles": ["superadmin","admin"]
             },
             {
                 "label": "Arsip",
@@ -148,25 +151,25 @@
         "label": "Pengaturan",
         "icon": "settings",
         "url": "#",
-        "roles": ["admin", "ops"],
+        "roles": ["superadmin","admin", "ops"],
         "children": [
             {
                 "label": "Periode Akademik",
                 "icon": "calendar",
                 "url": "/dashboard/periode",
-                "roles": ["admin"]
+                "roles": ["superadmin","admin"]
             },
             {
                 "label": "Hak Akses",
                 "icon": "account-settings",
                 "url": "/dashboard/roles",
-                "roles": ["admin"]
+                "roles": ["superadmin","admin"]
             },
             {
                 "label": "Backup",
                 "icon": "harddisk",
                 "url": "/dashboard/backup",
-                "roles": ["admin"]
+                "roles": ["superadmin","admin"]
             }
         ]
     }

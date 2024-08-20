@@ -74,7 +74,7 @@ onBeforeMount(async() => {
     <Head title="Pengaturan peran dan ijin user" />
     <DashLayout>
         <template #header>Admin</template>
-        <User :users="page.props.users" />
+        <User :users="page.props.users" :roles="roles" />
         <el-card >
             <template #header>
                 <div class="toolbar flex items-center justify-between">
