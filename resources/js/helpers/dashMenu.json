@@ -80,6 +80,13 @@
         ]
     },
     {
+        "label": "Berita",
+        "icon": "typewriter",
+        "url": "/dashboard/post",
+        "roles": ["superadmin","admin"],
+        "children": []
+    },
+    {
         "label": "Data Nilai",
         "icon": "numeric",
         "url": "#",

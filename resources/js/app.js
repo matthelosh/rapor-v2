@@ -6,8 +6,12 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 // import { ElementPlus } from '../../node_modules/element-plus'
+// import ElementPlus from 'element-plus';
+import ElementTiptapPlugin from 'element-tiptap-vue3-fixed';
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/display.css'
+// import ElementTiptap's styles
+import 'element-tiptap-vue3-fixed/lib/style.css';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -18,7 +22,9 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             // .use(ElementPlus, { size: 'small', zIndex: 3000 })
+            // .use(ElementPlus)
             .use(ZiggyVue)
+            .use(ElementTiptapPlugin)
             .mount(el);
     },
     progress: {

@@ -16,7 +16,8 @@ class Post extends Model
         'slug',
         'title',
         'content',
-        'user_id'
+        'user_id',
+        'status'
     ];
 
     protected function image(): Attribute

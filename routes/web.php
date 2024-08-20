@@ -426,6 +426,17 @@ Route::middleware('auth')->group(
                     }
                 );
 
+                Route::prefix("post")->group(
+                    function () {
+                        Route::get("/", [PostController::class, "home"])->name('dashboard.post.home');
+                        Route::post("/store", [PostController::class, "store"])->name('dashboard.post.store');
+                        Route::put("/{id}", [PostController::class, "update"])->name('dashboard.post.update');
+                        Route::delete("/{id}", [PostController::class, "destroy"])->name('dashboard.post.destroy');
+                        Route::post('/image/upload', [PostController::class, 'uploadImage'])->name('dashboard.post.image.upload');
+                        Route::post('/image/list', [PostController::class, 'listFiles'])->name('dashboard.post.image.list');
+                    }
+                );
+
                 Route::prefix("nilai")->group(
                     function () {
                         Route::get(

@@ -6,6 +6,8 @@ use App\Models\Post;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PostController extends Controller
@@ -13,9 +15,43 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function home(Request $request)
     {
-        //
+        try {
+            $posts = Post::with('author.userable')->orderBy('updated_at', 'DESC')->paginate(15);
+
+            return Inertia::render(
+                'Dash/Post',
+                [
+                    'posts' => $posts
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function listFiles()
+    {
+        $files = Storage::disk('public')->allFiles('post');
+        return response()->json([
+            'files' => $files
+        ]);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        try {
+            $image = $request->file('image');
+            $store = Storage::putFileAs('public/post', $image, $image->getClientOriginalName() . '.' . $image->extension());
+            return response()->json(
+                [
+                    'url' => Storage::url($store)
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
@@ -48,7 +84,28 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $data = $request->data;
+            $post = Post::updateOrCreate(
+                [
+                    'id' => $data['id'] ?? null,
+                ],
+                [
+                    'cover'  => $data['cover'],
+                    'category' => $data['category'],
+                    'type' => $data['type'],
+                    'slug' => strtolower(str_replace(" ", "-", $data['title'])),
+                    'title' => $data['title'],
+                    'content' => $data['content'],
+                    'user_id' => $request->user()->id,
+                    'status' => 'published'
+                ]
+            );
+
+            return back()->with('message', 'Tulisan disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**
