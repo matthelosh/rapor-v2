@@ -73,6 +73,15 @@ class PostController extends Controller
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,
                 ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'PKG Kecamatan Wagir',
+                        'description' => substr($post->content, 0, 200),
+                        'image' => $post->cover,
+                        'url' => $request->url()
+                    ]
+                ]
             );
         } catch (\Throwable $th) {
             throw $th;

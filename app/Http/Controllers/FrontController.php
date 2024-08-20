@@ -24,6 +24,14 @@ class FrontController extends Controller
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,
                 ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'PKG Kecamatan Wagir',
+                        'description' => 'Website Resmi PKG Kecamatan Wagir',
+                        'image' => asset('img/tutwuri.png'),
+                    ]
+                ]
             );
         } catch (\Exception $e) {
             throw $e;
