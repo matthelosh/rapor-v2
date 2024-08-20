@@ -82,7 +82,7 @@ Route::middleware('auth')->group(
                                 DashboardController::class,
                                 'operator'
                             ]
-                        )->middleware(['role:admin|ops'])
+                        )->middleware(['role:admin|ops|superadmin'])
                             ->name('dashboard.operator');
                     }
                 );
@@ -94,7 +94,7 @@ Route::middleware('auth')->group(
                                 SekolahController::class,
                                 'home'
                             ]
-                        )->middleware(['role:admin|ops'])
+                        )->middleware(['role:admin|ops|superadmin'])
                             ->name('dashboard.sekolah');
                         Route::post(
                             "/index",
@@ -152,7 +152,7 @@ Route::middleware('auth')->group(
                                 GuruController::class,
                                 'index'
                             ]
-                        )->name('dashboard.guru');
+                        )->name('dashboard.guru')->name('can:read_guru');
                         Route::post(
                             '/',
                             [
@@ -209,7 +209,7 @@ Route::middleware('auth')->group(
                                 SiswaController::class,
                                 'home'
                             ]
-                        )->name('dashboard.siswa');
+                        )->name('dashboard.siswa')->middleware('can:read_siswa');
                         Route::post(
                             "/",
                             [
@@ -281,7 +281,7 @@ Route::middleware('auth')->group(
                                 RombelController::class,
                                 'home'
                             ]
-                        )->name('dashboard.rombel');
+                        )->name('dashboard.rombel')->middleware('can:read_rombel');
                         Route::get(
                             '/index',
                             [
@@ -666,7 +666,7 @@ Route::middleware('auth')->group(
                                 BackupController::class,
                                 'home'
                             ]
-                        )->name('dashboard.backup')->middleware(['role:admin']);
+                        )->name('dashboard.backup')->middleware(['role:admin|superadmin']);
                         Route::post(
                             '/',
                             [
@@ -674,21 +674,21 @@ Route::middleware('auth')->group(
                                 'store'
                             ]
                         )->name('dashboard.backup.store')
-                            ->middleware(['role:admin']);
+                            ->middleware(['role:admin|superadmin']);
                         Route::post(
                             '/tes',
                             [
                                 BackupController::class,
                                 'tes'
                             ]
-                        )->name('dashboard.backup.tes')->middleware(['role:admin']);
+                        )->name('dashboard.backup.tes')->middleware(['role:admin|superadmin']);
                     }
                 );
 
                 Route::prefix("periode")->group(
                     function () {
                         Route::get("/", [PeriodeController::class, 'home'])
-                            ->name('dashboard.setting.periode');
+                            ->name('dashboard.setting.periode')->middleware('role:admin|superadmin');
                     }
                 );
 
@@ -701,7 +701,7 @@ Route::middleware('auth')->group(
                                 'store'
                             ]
                         )->name('dashboard.tapel.store')
-                            ->middleware(['role:admin']);
+                            ->middleware(['role:admin|superadmin']);
                         Route::put(
                             '/{id}/toggle',
                             [
@@ -709,7 +709,7 @@ Route::middleware('auth')->group(
                                 'toggle'
                             ]
                         )->name('dashboard.tapel.toggle')
-                            ->middleware(['role:admin']);
+                            ->middleware(['role:admin|superadmin']);
                     }
                 );
                 Route::prefix('semester')->group(
@@ -721,7 +721,7 @@ Route::middleware('auth')->group(
                                 'store'
                             ]
                         )->name('dashboard.semester.store')
-                            ->middleware(['role:admin']);
+                            ->middleware(['role:admin|superadmin']);
                         Route::put(
                             '/{id}/toggle',
                             [
@@ -729,13 +729,20 @@ Route::middleware('auth')->group(
                                 'toggle'
                             ]
                         )->name('dashboard.semester.toggle')
-                            ->middleware(['role:admin']);
+                            ->middleware(['role:admin|superadmin']);
                     }
                 );
 
                 Route::prefix('user')->group(
                     function () {
-                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store');
+                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store')->middleware('can:create_user|update_user');
+                    }
+                );
+
+                Route::prefix("agenda")->group(
+                    function () {
+                        Route::get("/", [AgendaController::class, 'home'])->name('dashboard.agenda')->middleware('role: admin|superadmin');
+                        Route::post('/store', [AgendaController::class, 'store'])->name('dashboard.agenda.store')->middleware('role: admin|superadmin');
                     }
                 );
             }

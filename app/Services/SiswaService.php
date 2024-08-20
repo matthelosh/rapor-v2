@@ -14,8 +14,8 @@ class SiswaService
         try {
             $user = $request->user();
             $tapel = $this->tapel()->kode;
-            $q = $request->query('q') ? '%'.$request->query('q').'%' : '%';
-            if ($user->hasRole('admin')) {
+            $q = $request->query('q') ? '%' . $request->query('q') . '%' : '%';
+            if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
                 $siswas = Siswa::where('nama', 'LIKE', $q)
                     ->with('sekolah', 'rombels', 'ortus')
                     ->paginate(15);
@@ -23,7 +23,7 @@ class SiswaService
                 $siswas = Siswa::where('sekolah_id', $user->name)
                     ->where('nama', 'LIKE', $q)
                     ->with('sekolah', 'ortus')
-                    ->with('rombels', fn ($r) => $r->where('tapel', $tapel))
+                    ->with('rombels', fn($r) => $r->where('tapel', $tapel))
                     ->get();
                 // $siswas = Siswa::all();
             } elseif ($user->hasRole('guru_kelas')) {
@@ -37,7 +37,7 @@ class SiswaService
                     )->with('rombels', 'ortus')->get();
             }
             return $siswas;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

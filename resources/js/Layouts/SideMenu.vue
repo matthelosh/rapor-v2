@@ -62,7 +62,7 @@ const showItem = (roles) => {
                                 <span>{{ item.label }}</span>
                             </Link>
                         </li>
-                        <li v-else class="group">
+                        <li v-if="item.children.length > 0 && showItem(item.roles)" class="group">
                             <a
                                 :href="item.url"
                                 @click="toggleChild"

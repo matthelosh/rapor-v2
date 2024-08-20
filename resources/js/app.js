@@ -12,6 +12,7 @@ import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/display.css'
 // import ElementTiptap's styles
 import 'element-tiptap-vue3-fixed/lib/style.css';
+import { setupCalendar } from 'v-calendar';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -25,6 +26,7 @@ createInertiaApp({
             // .use(ElementPlus)
             .use(ZiggyVue)
             .use(ElementTiptapPlugin)
+            .use(setupCalendar, {})
             .mount(el);
     },
     progress: {

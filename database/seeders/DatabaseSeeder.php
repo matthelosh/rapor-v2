@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
                 SiswaSeeder::class,
                 PostSeeder::class,
                 AdminSeeder::class,
+                Agendaseeder::class,
             ]
         );
     }

@@ -25,10 +25,10 @@ class GuruService
     public function index($request)
     {
         $user = $request->user();
-        $q = $request->query("q") ? "%".$request->query('q')."%" : "%";
-        if ($user->hasRole(['admin', 'kepala_sekolah'])) {
+        $q = $request->query("q") ? "%" . $request->query('q') . "%" : "%";
+        if ($user->hasRole(['admin', 'kepala_sekolah', 'superadmin'])) {
             $gurus = Guru::with('sekolahs', 'user')
-                ->where('nama','LIKE', $q)
+                ->where('nama', 'LIKE', $q)
                 ->paginate(10);
         } elseif ($user->hasRole('ops')) {
             $gurus = Guru::whereHas('sekolahs', function ($q) use ($user) {
@@ -66,8 +66,8 @@ class GuruService
             $foto_name = $data['nip'] . '.' . $foto_file->extension();
             $store = $foto_file->storeAs('public/sekolah/guru/', $foto_name);
             $foto = $store ?
-            /**$foto_name **/
-            Storage::url($store) : null;
+                /**$foto_name **/
+                Storage::url($store) : null;
         }
         $guru = Guru::updateOrCreate(
             [

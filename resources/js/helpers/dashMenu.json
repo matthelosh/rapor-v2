@@ -167,6 +167,12 @@
                 "roles": ["superadmin","admin"]
             },
             {
+                "label": "Agenda",
+                "icon": "calendar-check",
+                "url": "/dashboard/agenda",
+                "roles": ["superadmin","admin"]
+            },
+            {
                 "label": "Hak Akses",
                 "icon": "account-settings",
                 "url": "/dashboard/roles",

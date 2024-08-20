@@ -24,7 +24,7 @@ class SekolahService
     public function index($request)
     {
         $user = $request->user();
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
             $sekolahs = Sekolah::with('ks', 'ops')->with('gurus', function ($q) {
                 $q->where('gurus.jabatan', '!=', 'ops');
             })->get();

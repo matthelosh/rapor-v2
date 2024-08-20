@@ -27,7 +27,7 @@ class RombelService
     {
         $user = $request->user();
         $kktps = [];
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
             $rombels = Rombel::with('sekolah', 'guru', 'siswas')->get();
         } elseif ($user->hasRole('ops')) {
             // dd('Tes');
@@ -37,8 +37,7 @@ class RombelService
                     $q->with('mapel');
                 })
                 ->orderBy('id')
-                ->get();
-            ;
+                ->get();;
         } elseif ($user->hasRole('guru_kelas')) {
             $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
                 ->where('guru_id', $user->userable->id)

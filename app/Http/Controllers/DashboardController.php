@@ -29,13 +29,13 @@ class DashboardController extends Controller
 
         // dd($response);
 
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
             $data['sekolahs'] = Sekolah::with('ks', 'gurus')
                 ->with([
                     'rombels' => function ($q) use ($tapel) {
                         $q->whereTapel($tapel);
                     },
-                    'siswas' => fn ($s) => $s->whereStatus('aktif'),
+                    'siswas' => fn($s) => $s->whereStatus('aktif'),
                 ])->get();
         } elseif ($user->hasRole('ops')) {
             $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
@@ -43,7 +43,7 @@ class DashboardController extends Controller
                 ->with('rombels', function ($q) use ($tapel) {
                     $q->where('tapel', $tapel);
                     $q->with('guru');
-                    $q->with('siswas', fn ($q) => $q->where('status', 'aktif'));
+                    $q->with('siswas', fn($q) => $q->where('status', 'aktif'));
                 })
                 ->with('mapels')
                 ->first();
@@ -68,7 +68,7 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $ops = [];
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
             $ops = Guru::whereHas('user.roles', function ($q) {
                 $q->where('name', 'ops');
             })->with('user.roles')->get();
