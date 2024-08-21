@@ -39,7 +39,7 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="submit" >
             <div>
                 <InputLabel for="name" value="Username" />
 

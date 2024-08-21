@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
                 PostSeeder::class,
                 AdminSeeder::class,
                 Agendaseeder::class,
+                p5Seeder::class,
+                Elemenp5Seeder::class
             ]
         );
     }

@@ -59,7 +59,7 @@ const searchPost = () => {
                             </template>
                         </div>
                         <div class="side">
-                            <el-input placeholder="Cari Tulisan" v-model="search">
+                            <el-input placeholder="Cari Tulisan" v-model="search" >
                                 <template #suffix>
                                     <el-button text size="small" @click="searchPost">
                                         <Icon icon="mdi:magnify" />
