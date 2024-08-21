@@ -39,7 +39,7 @@ const showDrawer = ref(false)
                     <Icon icon="mdi:application-import"  />
                 </Link>
             </nav>
-            <Icon icon="mdi:dots-vertical" class="text-2xl" @click="showDrawer = !showDrawer" />
+            <Icon icon="mdi:dots-vertical" class="text-2xl inline md:hidden" @click="showDrawer = !showDrawer" />
         </div>
     </header>
     <el-drawer v-model="showDrawer" size="60%" :withHeader="false">
