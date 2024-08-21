@@ -40,14 +40,14 @@ const searchPost = () => {
             <el-main>
                 <div class="main-container">
                     <div class="hero ">
-                        <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1>
-                        <img :src="post.cover" alt="">
+                        <!-- <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1> -->
+                        <img :src="post.cover" alt="" class="w-full h-full object-cover cover">
                     </div>
                     <div class="main-content">
                         <div class="main">
                             <article class="font-serif">
                                 <h3 class="text-2xl mb-2 font-bold text-slate-800">{{ post.title }}</h3>
-                                <p class="mb-4 font-bold text-slate-800 text-right">
+                                <p class="mb-4 font-bold text-slate-800">
                                     <el-tag type="error">
                                         <span class="flex items-center gap-1 py-2" >
                                             <Icon icon="mdi:account-circle" class="text-xl" />
@@ -90,7 +90,7 @@ const searchPost = () => {
                     </div>
                 </div>
             </el-main>
-            <el-footer style="background: #facefd;">
+            <el-footer style="background: #fefeff;">
                 <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
                     <p>&copy; {{ new Date().getFullYear() }}</p>
                 </div>
@@ -100,7 +100,7 @@ const searchPost = () => {
 </template>
 
 <style>
-header {
+/* header {
     height: 60px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     position: sticky;
@@ -150,5 +150,5 @@ header {
     }
 
 
-}
+} */
 </style>

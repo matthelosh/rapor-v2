@@ -12,6 +12,8 @@ defineProps({
     },
     appName: String,
 });
+
+const showDrawer = ref(false)
 </script>
 
 <template>
@@ -23,7 +25,7 @@ defineProps({
                     {{ appName }}
                 </Link>
             </h3>
-            <nav class="flex gap-4 uppercase">
+            <nav class="gap-4 uppercase hidden md:flex">
                 <Link href="/">
                     Beranda
                 </Link>
@@ -37,8 +39,26 @@ defineProps({
                     <Icon icon="mdi:application-import"  />
                 </Link>
             </nav>
+            <Icon icon="mdi:dots-vertical" class="text-2xl" @click="showDrawer = !showDrawer" />
         </div>
     </header>
+    <el-drawer v-model="showDrawer" size="60%" :withHeader="false">
+        <nav class="gap-2 flex-col flex">
+                <Link href="/">
+                    Beranda
+                </Link>
+                <Link href="#">
+                    Profil
+                </Link>
+                <Link href="#">
+                    Berita
+                </Link>
+                <Link href="/login" class="flex items-center gap-1">
+                    <Icon icon="mdi:application-import"  />
+                    Login
+                </Link>
+            </nav>
+    </el-drawer>
 </template>
 
 <style>

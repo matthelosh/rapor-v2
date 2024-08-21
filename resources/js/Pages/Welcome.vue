@@ -45,11 +45,11 @@ const searchPost = () => {
                     <div class="main-content">
                         <div class="main">
                             <template v-for="(post, p) in posts" :key="p">
-                                <div class="card mb-6 bg-slate-100 grid grid-cols-4 gap-2 hover:shadow transition-all duration-300 linear">
-                                    <div class="cover col-span-1">
-                                        <img :src="post.cover" alt="Cover" />
+                                <div class="card mb-6 bg-slate-100 grid grid-cols-1 md:grid-cols-4 gap-0 md:gap-2 hover:shadow transition-all duration-300 linear">
+                                    <div class="cover col-span-1 h-[200px]">
+                                        <img :src="post.cover" alt="Cover" class="w-full object-fit h-full" />
                                     </div>
-                                    <article class="col-span-3 pr-4 pt-2">
+                                    <article class="col-span-3 px-2 md:pr-4 pt-2">
                                         <h3 class="text-lg font-bold text-sky-800 hover:underline mb-4">
                                             <Link :href="`/baca/${post.slug}`">{{ post.title }}</Link>
                                         </h3>
@@ -78,7 +78,7 @@ const searchPost = () => {
                     </div>
                 </div>
             </el-main>
-            <el-footer style="background: #facefd;">
+            <el-footer style="background: #a9acff;">
                 <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
                     <p>&copy; {{ new Date().getFullYear() }}</p>
                 </div>
@@ -105,8 +105,17 @@ header {
 }
 
 .main-container {
-    padding: 0 20px;
+    padding: 0;
 }
+.hero {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: black;
+        height: 200px;
+        margin-bottom: 20px;
+    }
 
 @media only screen and (min-width: 736px) {
     .main {
