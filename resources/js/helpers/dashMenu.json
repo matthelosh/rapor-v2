@@ -155,6 +155,33 @@
         ]
     },
     {
+        "label": "P5",
+        "icon": "folder",
+        "url": "#",
+        "roles": ["superadmin", "admin", "guru_kelas"],
+        "children": [
+            {
+                "label" : "Dimensi & Elemen",
+                "icon": "folder",
+                "url": "/dashboard/p5",
+                "roles": ["superadmin", "admin"]
+            },
+            {
+                "label" : "Input Nilai",
+                "icon": "pencil-box",
+                "url": "/dashboard/p5",
+                "roles": ["guru_kelas"]
+            }
+        ]
+    },
+    {
+        "label": "SPN",
+        "icon": "religion-islamic",
+        "url": "#",
+        "roles": ["superadmin", "admin", "guru_kelas"],
+        "children": []
+    },
+    {
         "label": "Pengaturan",
         "icon": "settings",
         "url": "#",

@@ -7,6 +7,8 @@ const page = usePage()
 const FormNilaiHarian = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiHarian.vue'))
 const FormNilaiTS = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiTS.vue'))
 const FormNilaiAS = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiAS.vue'))
+const FormNilaiP5 = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiP5.vue'))
+const FormNilaiSPN = defineAsyncComponent(() => import('@/Components/Dashboard/Nilai/FormNilaiSPN.vue'))
 
 const mode = ref('home')
 const selectedRombel = ref({})
@@ -60,6 +62,8 @@ const closeForm = () => {
                                             <el-button type="primary" :disabled="guruKelas && scope.row.kode == 'pabp'" rounded size="small" @click="openForm(scope.row, rombel, 'harian')">Nilai Harian</el-button>
                                             <el-button type="primary" :disabled="guruKelas && scope.row.kode == 'pabp'" rounded size="small"  @click="openForm(scope.row, rombel, 'sts')">PTS</el-button>
                                             <el-button type="primary" :disabled="guruKelas && scope.row.kode == 'pabp'" rounded size="small"  @click="openForm(scope.row, rombel, 'sas')">PAS</el-button>
+                                            <el-button type="primary" :disabled="guruKelas && scope.row.kode == 'pabp'" rounded size="small"  @click="openForm(scope.row, rombel, 'p5')">P5</el-button>
+                                            <el-button type="primary" :disabled="guruKelas && scope.row.kode == 'pabp'" rounded size="small"  @click="openForm(scope.row, rombel, 'spn')">SPN</el-button>
                                         </span>
                                     </template>
                                 </el-table-column>
@@ -73,5 +77,7 @@ const closeForm = () => {
         <FormNilaiHarian v-if="mode == 'harian'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'harian'" />
         <FormNilaiTS v-if="mode == 'sts'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'sts'" />
         <FormNilaiAS v-if="mode == 'sas'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'sas'" />
+        <FormNilaiP5 v-if="mode == 'p5'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'p5'" />
+        <FormNilaiP5 v-if="mode == 'spn'" :rombel="selectedRombel" :mapel="selectedMapel" @close="closeForm" :open="mode == 'spn'" />
     </div>
 </template>

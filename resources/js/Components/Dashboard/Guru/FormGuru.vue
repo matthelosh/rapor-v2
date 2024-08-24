@@ -184,7 +184,7 @@ onBeforeMount(() => {
                                     <el-option  value="Guru Kelas" />
                                     <el-option  value="Guru Agama" />
                                     <el-option  value="Guru PJOK" />
-                                    <el-option  value="Guru B. Inggris" />
+                                    <el-option  value="Guru Inggris" />
                                 </el-select>
                             </el-form-item>
                         </el-col>

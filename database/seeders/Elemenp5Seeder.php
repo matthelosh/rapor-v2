@@ -80,7 +80,7 @@ class Elemenp5Seeder extends Seeder
             ],
             [
                 'dimensi_id' => 'D5',
-                'teks' => 'Merefleksi dan mengevaluasi pemikirannya sendiri'
+                'teks' => 'Refleksi Pemikiran dan Proses Berfikir'
             ],
             [
                 'dimensi_id' => 'D6',

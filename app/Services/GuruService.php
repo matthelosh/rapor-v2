@@ -123,7 +123,7 @@ class GuruService
             $guru->update(['password' => Hash::make($guru->nip)]);
         }
         // if (->user()->hasRole('admin')) {
-        $user->assignRole(strtolower(str_replace(" ", "_", $guru->jabatan)));
+        $user->syncRoles(strtolower(str_replace(" ", "_", $guru->jabatan)));
         // }
 
         // $guru->user()->attach($user->id);

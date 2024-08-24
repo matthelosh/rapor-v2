@@ -11,6 +11,7 @@ class Apd extends Model
 
     protected $fillable = [
         'elemen_id',
+        'sub_elemen',
         'teks',
         'fase',
         'tingkat',

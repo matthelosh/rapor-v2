@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('apds', function (Blueprint $table) {
             $table->id();
             $table->integer('elemen_id');
+            $table->string('sub_elemen', 191);
             $table->text('teks');
             $table->string('fase', 1);
-            $table->string('tingkat', 1);
+            $table->string('tingkat', 1)->nullable();
             $table->string('semester', 1)->nullable();
             $table->timestamps();
         });

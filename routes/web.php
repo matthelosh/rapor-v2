@@ -735,15 +735,27 @@ Route::middleware('auth')->group(
 
                 Route::prefix('user')->group(
                     function () {
-                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store')->middleware('can:create_user|update_user');
+                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store')->middleware('role:superadmin');
                     }
                 );
 
                 Route::prefix("agenda")->group(
                     function () {
-                        Route::get("/", [AgendaController::class, 'home'])->name('dashboard.agenda')->middleware('role: admin|superadmin');
-                        Route::post('/store', [AgendaController::class, 'store'])->name('dashboard.agenda.store')->middleware('role: admin|superadmin');
+                        Route::get("/", [AgendaController::class, 'home'])->name('dashboard.agenda')->middleware('role:admin|superadmin');
+                        Route::post('/store', [AgendaController::class, 'store'])->name('dashboard.agenda.store')->middleware('role:admin|superadmin');
                     }
+                );
+
+                Route::prefix("p5")->group(
+                    function () {
+                        Route::get("/", [P5Controller::class, 'home'])->name('dashboard.p5');
+                        Route::prefix("apd")->group(
+                            function () {
+                                Route::post('/impor', [ApdController::class, 'impor'])->name('dashboard.apd.impor');
+                            }
+                        );
+                    }
+
                 );
             }
         );
