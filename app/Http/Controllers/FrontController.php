@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Galeri;
 use App\Models\Post;
 use App\Models\Sekolah;
 use App\Models\Tapel;
@@ -36,6 +37,7 @@ class FrontController extends Controller
                         ]
                     )->get(),
                     'agendas' => Agenda::whereTapel($this->tapel()->kode)->orderBy('mulai', 'ASC')->get(),
+                    'galeris' => Galeri::all(),
                     'appName' => \env('APP_NAME'),
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,

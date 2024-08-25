@@ -29,6 +29,7 @@ defineProps({
     posts: Array,
     infos: Array,
     agendas: Array,
+    galeris: Array,
 });
 
 
@@ -61,7 +62,7 @@ defineProps({
                             </template>
                         </div>
                         <div class="side">
-                            <Side :infos="infos" :agendas="agendas" />
+                            <Side :infos="infos" :agendas="agendas" :galeris="galeris" />
                             
                         </div>
                     </div>

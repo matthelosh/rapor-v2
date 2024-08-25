@@ -4,10 +4,12 @@ import { router, Link } from '@inertiajs/vue3';
 import { Icon } from '@iconify/vue';
 
 const Agenda = defineAsyncComponent(() => import('@/Components/Front/Side/Agenda.vue'))
+const Galeri = defineAsyncComponent(() => import('@/Components/Front/Side/Galeri.vue'))
 const search = ref('')
 defineProps({
     infos: Array,
-    agendas: Array
+    agendas: Array,
+    galeris: Array
 })
 
 const searchPost = () => {
@@ -34,5 +36,7 @@ const searchPost = () => {
     </ol>
     <el-divider>Agenda</el-divider>
     <Agenda :agendas="agendas" />
+    <el-divider>Galeri</el-divider>
+    <Galeri :galeris="galeris" />
 </div>
 </template>
