@@ -4,6 +4,7 @@ import { Head, Link, usePage, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
 import Header from '@/Layouts/Front/Header.vue';
+const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
 
 const page = usePage();
 const search = ref('')
@@ -63,11 +64,7 @@ const params = computed(() => route().params)
                     </div>
                 </div>
             </el-main>
-            <el-footer style="background: #facefd;">
-                <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
-                    <p>&copy; {{ new Date().getFullYear() }}</p>
-                </div>
-            </el-footer>
+            <Footer />
         </div>
     </div>
 </template>

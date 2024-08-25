@@ -17,7 +17,7 @@ const showDrawer = ref(false)
 </script>
 
 <template>
-    <header class="navbar">
+    <header class="navbar z-40">
         <div class="navbar-container">
             <h3 class="uppercase">
                 <Link href="/" class="flex items-center gap-1">

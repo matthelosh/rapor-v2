@@ -15,11 +15,11 @@ class GuruSeeder extends Seeder
      */
     public function run(): void
     {
-        $ids = Sekolah::get()->map(fn ($s) => $s->id);
+        $ids = Sekolah::get()->map(fn($s) => $s->id);
 
         Guru::factory(50)->create()->each(function ($s) use ($ids) {
             // 'sekolahs' => $this->faker->randomElement($sekolahs->pluck('id')),
-            $s->sekolahs()->attach(array_rand($ids, 1));
+            $s->sekolahs()->attach(\fake()->randomElement($ids));
         });
     }
 }

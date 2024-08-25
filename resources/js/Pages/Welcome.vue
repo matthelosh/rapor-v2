@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { Head, Link, usePage, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
 import Header from '@/Layouts/Front/Header.vue';
+const Hero = defineAsyncComponent(() => import('@/Layouts/Front/Hero.vue'))
+const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
 
 const page = usePage();
 const search = ref('')
@@ -40,7 +42,7 @@ const searchPost = () => {
             <el-main>
                 <div class="main-container">
                     <div class="hero ">
-                        <h1 class="text-2xl font-bold text-sky-800">Selamat Datang</h1>
+                        <Hero />
                     </div>
                     <div class="main-content">
                         <div class="main">
@@ -78,11 +80,7 @@ const searchPost = () => {
                     </div>
                 </div>
             </el-main>
-            <el-footer style="background: #a9acff;">
-                <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
-                    <p>&copy; {{ new Date().getFullYear() }}</p>
-                </div>
-            </el-footer>
+            <Footer />
         </div>
     </div>
 </template>
@@ -112,7 +110,7 @@ header {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: black;
+        /* background: black; */
         height: 200px;
         margin-bottom: 20px;
     }
@@ -141,7 +139,7 @@ header {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: black;
+        /* background: black; */
         height: 500px;
         margin-bottom: 20px;
     }

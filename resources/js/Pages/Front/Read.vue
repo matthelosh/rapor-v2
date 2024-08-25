@@ -4,6 +4,7 @@ import { Head, Link, usePage, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
 import Header from '@/Layouts/Front/Header.vue';
+const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
 
 const page = usePage();
 const search = ref('')
@@ -90,65 +91,10 @@ const searchPost = () => {
                     </div>
                 </div>
             </el-main>
-            <el-footer style="background: #fefeff;">
-                <div class="w-full flex justify-between items-center h-full px-2 md:px-[15%]">
-                    <p>&copy; {{ new Date().getFullYear() }}</p>
-                </div>
-            </el-footer>
+            <Footer />
         </div>
     </div>
 </template>
 
 <style>
-/* header {
-    height: 60px;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-    position: sticky;
-    top: 0;
-}
-.navbar .navbar-container {
-    color: #efefef;
-    height: 100%;   
-    background: rgb(27, 110, 226);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-}
-
-.main-container {
-    padding: 0 20px;
-}
-
-@media only screen and (min-width: 736px) {
-    .main {
-        grid-area: post;
-    }
-    .side {
-        grid-area: side;
-    }
-    .main-container {
-        padding: 0 15%;
-    }
-    .navbar .navbar-container {
-        padding: 0 15.5%;
-    }
-
-    .main-content {
-        display: grid;
-        grid-template-areas: 'post post post post side side';
-        gap: 20px;
-    }
-    .hero {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: black;
-        height: 500px;
-        margin-bottom: 20px;
-    }
-
-
-} */
 </style>
