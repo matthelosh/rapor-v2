@@ -6,6 +6,14 @@ const page = usePage()
 </script>
 
 <template>
+    <div class="h-[500px] w-full bg-sky-50 mb-4 flex items-center justify-center overflow-hidden caompaign" :class="`bg-[url('/img/logo-hutri-79.webp')] bg-no-repeat bg-cover`">
+        <!-- <el-carousel height="500px" motion-blur>
+            <el-carousel-item v-for="item in 4" :key="item">
+                <h3 class="small justify-center" text="2xl">{{ item }}</h3>
+            </el-carousel-item>
+        </el-carousel> -->
+        <!-- <el-image src="/img/logo-hutri-79.webp" style="width: 100%;"></el-image> -->
+    </div>
     <div class="w-full h-full p-4 shadow bg-sky-50 border border-sky-300 rounded">
         <h3 class="text-sky-700 uppercase font-bold mb-3">Data Sekolah SD di Kecamatan Wagir</h3>
         <el-scrollbar max-height="420">
@@ -13,7 +21,7 @@ const page = usePage()
                 <template v-for="(sekolah, s) in page.props.sekolahs" :key="s">
                     <el-collapse-item>
                         <template #title>
-                            <h3 class="pl-2 underline">{{ s+1 }}. {{ sekolah.nama }}</h3>
+                            <h3 class="pl-2 text-sky-700">{{ s+1 }}. {{ sekolah.nama }}</h3>
                         </template>
                         <div class="collapse-body p-4 hidden md:block">
                             <h3 class="font-bold text-sky-700">Data Guru</h3>

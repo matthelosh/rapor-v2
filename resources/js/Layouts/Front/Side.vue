@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent } from 'vue'
 import { router, Link } from '@inertiajs/vue3';
+import { Icon } from '@iconify/vue';
 
 const Agenda = defineAsyncComponent(() => import('@/Components/Front/Side/Agenda.vue'))
 const search = ref('')

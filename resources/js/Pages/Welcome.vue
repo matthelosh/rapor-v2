@@ -94,9 +94,9 @@ header {
 }
 .hero {
         width: 100%;
-        display: flex;
+        /* display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
         /* background: black; */
         height: auto;
         margin-bottom: 20px;
@@ -123,11 +123,11 @@ header {
     }
     .hero {
         width: 100%;
-        display: flex;
+        /* display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: center; */
         /* background: black; */
-        height: 500px;
+        /* height: 500px; */
         margin-bottom: 20px;
     }
 
