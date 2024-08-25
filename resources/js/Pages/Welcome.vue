@@ -5,10 +5,11 @@ import { Icon } from "@iconify/vue";
 
 import Header from '@/Layouts/Front/Header.vue';
 const Hero = defineAsyncComponent(() => import('@/Layouts/Front/Hero.vue'))
+const Side = defineAsyncComponent(() => import('@/Layouts/Front/Side.vue'))
 const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
 
 const page = usePage();
-const search = ref('')
+
 defineProps({
     canLogin: {
         type: Boolean,
@@ -27,11 +28,10 @@ defineProps({
     appName: String,
     posts: Array,
     infos: Array,
+    agendas: Array,
 });
 
-const searchPost = () => {
-    router.visit(route('front.post.search', { _query: {q: search.value}}))
-}
+
 </script>
 
 <template>
@@ -61,21 +61,8 @@ const searchPost = () => {
                             </template>
                         </div>
                         <div class="side">
-                            <el-input placeholder="Cari Tulisan" v-model="search" >
-                                <template #suffix>
-                                    <el-button text size="small" @click="searchPost">
-                                        <Icon icon="mdi:magnify" />
-                                    </el-button>
-                                </template>
-                            </el-input>
-                            <el-divider>Pengumuman</el-divider>
-                            <ol class="pl-6">
-                                <li v-for="(info, i) in infos" :key="i" class="list-disc">
-                                    <Link :href="`/baca/${info.slug}`" class="hover:underline">
-                                        {{ info.title }}
-                                    </Link>
-                                </li>
-                            </ol>
+                            <Side :infos="infos" :agendas="agendas" />
+                            
                         </div>
                     </div>
                 </div>
@@ -111,7 +98,7 @@ header {
         align-items: center;
         justify-content: center;
         /* background: black; */
-        height: 200px;
+        height: auto;
         margin-bottom: 20px;
     }
 

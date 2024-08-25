@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agenda;
 use App\Models\Post;
 use App\Models\Sekolah;
 use App\Models\Tapel;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Foundation\Application;
 
 class FrontController extends Controller
 {
@@ -34,6 +35,7 @@ class FrontController extends Controller
                             'siswas' => fn($s) => $s->whereStatus('aktif')
                         ]
                     )->get(),
+                    'agendas' => Agenda::whereTapel($this->tapel()->kode)->orderBy('mulai', 'ASC')->get(),
                     'appName' => \env('APP_NAME'),
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,
