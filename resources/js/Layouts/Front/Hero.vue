@@ -1,6 +1,6 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3';
-
+import { Icon } from '@iconify/vue';
 const page = usePage()
 
 </script>

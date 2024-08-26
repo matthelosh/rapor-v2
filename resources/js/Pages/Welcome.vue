@@ -73,7 +73,7 @@ defineProps({
     </div>
 </template>
 
-<style>
+<style scoped>
 header {
     height: 60px;
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);

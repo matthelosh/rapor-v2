@@ -21,7 +21,7 @@ class FrontController extends Controller
             return Inertia::render(
                 'Welcome',
                 [
-                    'posts' => Post::where('category', 'Berita')->get(),
+                    'posts' => Post::where('category', 'Berita')->orderBy('updated_at', 'DESC')->limit(5)->get(),
                     'infos' => Post::where('category', 'Info')->get(),
                     'canLogin' => Route::has('login'),
                     'canRegister' => Route::has('register'),
@@ -107,6 +107,33 @@ class FrontController extends Controller
                     'meta' => [
                         'title' => 'Berita PKG Kecamatan Wagir',
                         'description' => 'List Berita PKG Kecamatan Wagir',
+                        'image' => '/img/tutwuri.png',
+                    ]
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function info(Request $request)
+    {
+        try {
+            $infos = Post::whereCategory('Info')->paginate(8);
+            if ($request->query('q')) {
+                $infos->filter(fn($info) => \str_contains($info->title, $request->query('q')) || \str_contains($info->content, $request->query('q')));
+            }
+            return Inertia::render(
+                'Front/Info',
+                [
+                    'infos' => $infos,
+                    'canLogin' => Route::has('login'),
+                    'appName' => \env('APP_NAME'),
+                ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'Pengumuman PKG Kecamatan Wagir',
+                        'description' => 'List Pengumuman PKG Kecamatan Wagir',
                         'image' => '/img/tutwuri.png',
                     ]
                 ]
