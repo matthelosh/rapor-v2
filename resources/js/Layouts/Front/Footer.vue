@@ -10,7 +10,7 @@ const tahun = computed(() => {
 
 <template>
 <footer class="bg-sky-500 w-screen">
-    <el-backtop :right="100" :bottom="100"></el-backtop>
+    <el-backtop :right="50" :bottom="50"></el-backtop>
     <div class="footer p-4 flex justify-between items-center">
         <p class="text-white">
             &copy; {{ tahun }} 

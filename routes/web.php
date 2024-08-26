@@ -32,6 +32,35 @@ Route::prefix("")->group(
                 'cari'
             ]
         )->name('front.post.search');
+
+        Route::get(
+            '/berita',
+            [
+                FrontController::class,
+                'berita'
+            ]
+        )->name('front.berita');
+        Route::get(
+            '/info',
+            [
+                FrontController::class,
+                'info'
+            ]
+        )->name('front.info');
+        Route::get(
+            '/galeri',
+            [
+                FrontController::class,
+                'galeri'
+            ]
+        )->name('front.galeri');
+        Route::get(
+            '/agenda',
+            [
+                FrontController::class,
+                'agenda'
+            ]
+        )->name('front.agenda');
     }
 );
 

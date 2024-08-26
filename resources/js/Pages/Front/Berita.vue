@@ -8,30 +8,23 @@ const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
 
 const page = usePage();
 const search = ref('')
-defineProps({
+const props = defineProps({
     canLogin: {
         type: Boolean,
     },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
     appName: String,
-    posts: Array,
-    infos: Array,
+    beritas: Object,
 });
 
 const searchPost = () => {
     router.visit(route('front.post.search', { _query: {q: search.value}}))
 }
 
+const currentPage = ref(1)
+const currentChange = (n) => {
+    currentPage.value = n
+    router.visit(props.beritas.path+"?page="+n, {preserveState: true})
+}
 const params = computed(() => route().params)
 </script>
 
@@ -43,21 +36,23 @@ const params = computed(() => route().params)
             <el-main>
                 <div class="main-container">
                     <div class="hero ">
-                        <h1 class="text-2xl font-bold text-sky-800">Hasil Pencarian "{{ params.q }}"</h1>
+                        <h1 class="text-2xl font-bold text-sky-800">Berita PKG SD Kecamatan Wagir</h1>
                     </div>
                     <div class="main-content">
-                        <div class="main">
-                            <template v-for="(post, p) in posts" :key="p">
-                                <div class="card mb-6 bg-slate-100 grid grid-cols-4 gap-2 hover:shadow transition-all duration-300 linear">
-                                    <div class="cover col-span-1">
-                                        <img :src="post.cover" alt="Cover" />
-                                    </div>
-                                    <article class="col-span-3 pr-4 pt-2">
-                                        <h3 class="text-lg font-bold text-sky-800 hover:underline mb-4">
-                                            <Link :href="`/baca/${post.slug}`">{{ post.title }}</Link>
+                        <el-pagination :total="props.beritas.total" layout="total, prev, pager, next" @current-change="currentChange" :current-page="currentPage"></el-pagination>
+                        <div class="main w-full columns-1 md:columns-4 gap-4 space-y-4 mx-auto">
+                            <template v-for="(berita, b) in props.beritas.data" :key="b">
+                                <div class="card bg-slate-100 relative overflow-hidden rounded-md" :class="`${[0,3,4,7].includes(b) ? 'md:h-[200px] h-[200px]' : 'md:h-[500px] h-[200px]'} bg-[url('${berita.cover}')]`">
+                                <!-- <div class="card bg-slate-100 relative overflow-hidden rounded-md" :class="`${b ===( Math.floor(Math.random() * (beritas.data.length -1 ))) ? 'md:h-[200px] h-[200px]' : 'md:h-[500px] h-[200px]'} bg-[url('${berita.cover}')]`"> -->
+                                    <div class="absolute top-0 right-0 bottom-0 left-0 bg-slate-500 bg-opacity-60 hover:backdrop-blur-sm backdrop-blur-none p-4 hover:cursor-pointer group">
+                                        <h3 class="group-hover:text-white font-bold">
+                                            {{ berita.title }}
                                         </h3>
-                                        <p class="text-justify" v-html="post.content.substring(0, 250)"></p>
-                                    </article>
+                                        <p class="group-hover:text-white" v-html="berita.content.substring(0, 200)">
+                                            
+                                        </p>
+                                    </div>
+                                    <img :src="berita.cover" alt="Cover" class="h-full w-full object-cover ">
                                 </div>
                             </template>
                         </div>
@@ -114,7 +109,7 @@ header {
         align-items: center;
         justify-content: center;
         background: rgb(232, 242, 246);
-        height: 500px;
+        height: 300px;
         margin-bottom: 20px;
     }
 

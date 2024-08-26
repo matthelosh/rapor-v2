@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { Link } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
+import menus from '@/helpers/frontMenu.json'
+
 defineProps({
     canLogin: {
         type: Boolean,
@@ -26,15 +28,11 @@ const showDrawer = ref(false)
                 </Link>
             </h3>
             <nav class="gap-4 uppercase hidden md:flex">
-                <Link href="/">
-                    Beranda
-                </Link>
-                <Link href="#">
-                    Profil
-                </Link>
-                <Link href="#">
-                    Berita
-                </Link>
+                <template v-for="(menu, m) in menus" :key="m">
+                    <Link :href="menu.url">
+                        {{ menu.label }}
+                    </Link>
+                </template>
                 <Link href="/login" class="flex items-center">
                     <Icon icon="mdi:application-import"  />
                 </Link>
@@ -44,20 +42,15 @@ const showDrawer = ref(false)
     </header>
     <el-drawer v-model="showDrawer" size="60%" :withHeader="false">
         <nav class="gap-2 flex-col flex">
-                <Link href="/">
-                    Beranda
+            <template v-for="(menu, m) in menus" :key="m">
+                <Link :href="menu.url">
+                    {{ menu.label }}
                 </Link>
-                <Link href="#">
-                    Profil
-                </Link>
-                <Link href="#">
-                    Berita
-                </Link>
-                <Link href="/login" class="flex items-center gap-1">
-                    <Icon icon="mdi:application-import"  />
-                    Login
-                </Link>
-            </nav>
+            </template>
+            <Link href="/login" class="flex items-center">
+                <Icon icon="mdi:application-import"  />
+            </Link>  
+        </nav>
     </el-drawer>
 </template>
 

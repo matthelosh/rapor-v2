@@ -47,7 +47,7 @@ class FrontController extends Controller
                     'meta' => [
                         'title' => 'PKG Kecamatan Wagir',
                         'description' => 'Website Resmi PKG Kecamatan Wagir',
-                        'image' => asset('img/tutwuri.png'),
+                        'image' => '/img/tutwuri.png',
                     ]
                 ]
             );
@@ -72,6 +72,43 @@ class FrontController extends Controller
                     'appName' => \env('APP_NAME'),
                     'laravelVersion' => Application::VERSION,
                     'phpVersion' => PHP_VERSION,
+                ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'Hasil Pencarian PKG Kecamatan Wagir',
+                        'description' => 'Hasil pencarian Berita PKG Kecamatan Wagir',
+                        'image' => '/img/tutwuri.png',
+                    ]
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+    public function berita(Request $request)
+    {
+        try {
+            $beritas = Post::whereCategory('Berita')->paginate(8);
+            if ($request->query('q')) {
+                $beritas->filter(fn($berita) => \str_contains($berita->title, $request->query('q')) || \str_contains($berita->content, $request->query('q')));
+            }
+            return Inertia::render(
+                'Front/Berita',
+                [
+                    'beritas' => $beritas,
+                    'canLogin' => Route::has('login'),
+                    'appName' => \env('APP_NAME'),
+                ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'Berita PKG Kecamatan Wagir',
+                        'description' => 'List Berita PKG Kecamatan Wagir',
+                        'image' => '/img/tutwuri.png',
+                    ]
                 ]
             );
         } catch (\Throwable $th) {

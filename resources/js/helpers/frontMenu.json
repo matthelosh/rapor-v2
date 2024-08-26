@@ -1,0 +1,27 @@
+[
+    {
+        "label": "Beranda",
+        "url": "/",
+        "children": []
+    },
+    {
+        "label": "Berita",
+        "url": "/berita",
+        "children": []
+    },
+    {
+        "label": "Pengumuman",
+        "url": "/info",
+        "children": []
+    },
+    {
+        "label": "Galeri",
+        "url": "/galeri",
+        "children": []
+    },
+    {
+        "label": "Agenda",
+        "url": "/agenda",
+        "children": []
+    }
+]
