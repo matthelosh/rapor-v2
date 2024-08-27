@@ -9,7 +9,7 @@ const tahun = computed(() => {
 </script>
 
 <template>
-<footer class="bg-sky-500 w-screen">
+<footer class="bg-sky-500 max-w-screen">
     <el-backtop :right="50" :bottom="50"></el-backtop>
     <div class="footer p-4 flex justify-between items-center">
         <p class="text-white">
