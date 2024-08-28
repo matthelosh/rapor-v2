@@ -4,12 +4,9 @@ import { router, Head } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
 import { read, utils } from 'xlsx'
 
-import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
-
 const props = defineProps({p5s: Array})
 const loading = ref(false)
-const mode = ref('list')
 
 const apds = ref([])
 const imporApd = async(e) => {
@@ -40,10 +37,7 @@ const imporApd = async(e) => {
 <template>
 <Head title="P5" />
 
-<DashLayout>
-    <template #header>
-        Manajemen P5
-    </template>
+<div>
     <el-card class="body" v-loading="loading">
         <template #header>
             <div class="flex items-center justify-between">
@@ -79,5 +73,5 @@ const imporApd = async(e) => {
             </template>
         </el-collapse>
     </el-card>
-</DashLayout>
+</div>
 </template>

@@ -764,7 +764,20 @@ Route::middleware('auth')->group(
 
                 Route::prefix('user')->group(
                     function () {
-                        Route::post('/store', [UserController::class, 'store'])->name('dashboard.user.store')->middleware('role:superadmin');
+                        Route::post(
+                            '/store',
+                            [
+                                UserController::class,
+                                'store'
+                            ]
+                        )->name('dashboard.user.store')->middleware('role:superadmin');
+                        Route::post(
+                            '/permission/assign',
+                            [
+                                UserController::class,
+                                'assignPermission'
+                            ]
+                        )->name('dashboard.user.permission.assign')->middleware('role:superadmin');
                     }
                 );
 
@@ -778,6 +791,7 @@ Route::middleware('auth')->group(
                 Route::prefix("p5")->group(
                     function () {
                         Route::get("/", [P5Controller::class, 'home'])->name('dashboard.p5');
+                        Route::get("/nilai", [P5Controller::class, 'nilai'])->name('dashboard.p5.nilai');
                         Route::prefix("apd")->group(
                             function () {
                                 Route::post('/impor', [ApdController::class, 'impor'])->name('dashboard.apd.impor');

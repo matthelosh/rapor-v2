@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { router, Head, usePage, Link } from "@inertiajs/vue3";
 import { ElContainer, ElHeader, ElAside, ElMain } from "element-plus";
 import { Icon } from "@iconify/vue";
@@ -12,14 +12,25 @@ const logout = () => {
     router.post(route("logout"));
 };
 
+const sideWidth = computed(() => {
+    return window.innerWidth <= 414 ? '0%' : '15%'
+})
+
+const toggleSide = () => {
+    const side = document.querySelector('aside')
+    side.style.width = '50%'
+    side.classList.toggle("hidden-sm-and-down")
+}
 onMounted(() => (contentTrigger.value = true));
 </script>
 <template>
     <div class="common-layout h-screen w-screen">
         <el-container class="h-full w-full">
-            <el-aside width="15%" class="h-full">
+            <el-aside width="15%" class="max-h-screen hidden-sm-and-down">
                 <div class="side-content h-full bg-slate-100">
-                    <SideItem />
+                    <el-scrollbar max-height="100vh">
+                        <SideItem />
+                    </el-scrollbar>
                 </div>
             </el-aside>
             <el-container>
@@ -28,7 +39,8 @@ onMounted(() => (contentTrigger.value = true));
                         class="content mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md"
                     >
                         <div class="head-title flex items-center gap-2">
-                            <img src="/img/tutwuri.png" class="w-10" />
+                            <Icon icon="mdi:menu" class="text-xl hidden-md-and-up" @click="toggleSide" />
+                            <img src="/img/tutwuri.png" class="w-10 hidden-md-and-down" />
                             <slot name="header"></slot>
                         </div>
                         <div class="header-items flex items-center">
@@ -85,5 +97,13 @@ onMounted(() => (contentTrigger.value = true));
 .slide-fade-leave-to {
     transform: translateY(20px);
     opacity: 0;
+}
+
+.el-dialog {
+    padding: 0!important;
+}
+
+.el-dialog__header {
+    margin-right: 0!important;
 }
 </style>

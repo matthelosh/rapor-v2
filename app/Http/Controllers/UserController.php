@@ -29,4 +29,16 @@ class UserController extends Controller
             throw $th;
         }
     }
+
+    public function assignPermission(Request $request)
+    {
+        try {
+            $user = User::findOrFail($request->id);
+
+            $user->givePermissionTo($request->permissions);
+            return back()->with('message', 'Ijin diberikan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

@@ -83,21 +83,21 @@ const jml = (total) => {
 <template>
     <!-- {{ datas }} -->
     <el-row class="w-full" :gutter="20">
-        <el-col :span="16">
+        <el-col :span="16" :xs="24">
             <el-card>
                 <template #header>
                     <h3>Data Agama Siswa</h3>
                 </template>
                 <div class="card-body">
-                    <el-row>
-                        <el-col :span="12">
+                    <el-row :gutter="20">
+                        <el-col :span="12" :xs="24">
                             <Doughnut
                                 ref="chartAgama"
                                 :options="{ responsive: true }"
                                 :data="byAgama"
                             />
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :span="12" :xs="24">
                             <el-card shadow="never">
                                 <h3 class="font-bold">Keterangan:</h3>
                                 <table class="w-full">
@@ -129,7 +129,7 @@ const jml = (total) => {
                 </div>
             </el-card>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" :xs="24">
             <el-card style="width: 100%">
                 <template #header>
                     <h3>Pilih Sekolah</h3>

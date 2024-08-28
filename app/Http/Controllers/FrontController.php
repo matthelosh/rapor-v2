@@ -30,8 +30,9 @@ class FrontController extends Controller
                             'gurus' => function ($g) {
                                 $g->whereNot('jabatan', 'ops');
                             },
-                            'rombels.siswas' => function ($q) use ($tapel) {
+                            'rombels' => function ($q) use ($tapel) {
                                 $q->where('tapel', $tapel);
+                                $q->with('siswas');
                             },
                             'siswas' => fn($s) => $s->whereStatus('aktif')
                         ]

@@ -14,6 +14,9 @@ import 'element-plus/theme-chalk/display.css'
 import 'element-tiptap-vue3-fixed/lib/style.css';
 import { setupCalendar } from 'v-calendar';
 
+// import 'codemirror/lib/codemirror.css'
+// import 'codemirror/mode/xml/xml.js'
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({

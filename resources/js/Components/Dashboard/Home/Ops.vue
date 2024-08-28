@@ -121,7 +121,7 @@ const tesDapodik = async() => {
             </div>
         </el-card>
 
-        <el-card class="my-4">
+        <!-- <el-card class="my-4">
             <template #header>
                 <div class="flex items-center justify-between">
                     <h3>Tes Dapodik</h3>
@@ -132,7 +132,7 @@ const tesDapodik = async() => {
             <div class="card-body">
                 {{ results }}
             </div>
-        </el-card>
+        </el-card> -->
     </el-col>
     <el-col :span="8">
         <el-card>

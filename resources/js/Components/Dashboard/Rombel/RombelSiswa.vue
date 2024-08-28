@@ -214,7 +214,7 @@ onMounted(() => {
                         </el-card>
                     </el-col>
                     <el-col :span="12">
-                        <el-card>
+                        <el-card v-loading="nonMembers.length < 1">
                             <template #header>
                                 <div class="flex items-center justify-between">
                                     <div class="card-title flex items-center">
@@ -259,6 +259,7 @@ onMounted(() => {
                                     :data="filteredNonMembers"
                                     @selection-change="selectionNonMember"
                                     height="65vh"
+                                    
                                 >
                                     <el-table-column
                                         type="selection"

@@ -169,7 +169,7 @@
             {
                 "label" : "Input Nilai",
                 "icon": "pencil-box",
-                "url": "/dashboard/p5",
+                "url": "/dashboard/p5/nilai",
                 "roles": ["guru_kelas"]
             }
         ]

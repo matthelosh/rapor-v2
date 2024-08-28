@@ -24,7 +24,7 @@ class SiswaService
                     ->where('nama', 'LIKE', $q)
                     ->with('sekolah', 'ortus')
                     ->with('rombels', fn($r) => $r->where('tapel', $tapel))
-                    ->get();
+                    ->paginate(15);
                 // $siswas = Siswa::all();
             } elseif ($user->hasRole('guru_kelas')) {
                 $siswas = Siswa::where('nama', 'LIKE', $q)
@@ -34,7 +34,7 @@ class SiswaService
                             $q->where('rombels.guru_id', $user->userable->id);
                             $q->where('rombels.is_active', '1');
                         }
-                    )->with('rombels', 'ortus')->get();
+                    )->with('rombels', 'ortus')->paginate(15);
             }
             return $siswas;
         } catch (\Exception $e) {

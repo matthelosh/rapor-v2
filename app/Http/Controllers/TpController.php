@@ -15,7 +15,7 @@ class TpController extends Controller
     public function index(Request $request)
     {
         try {
-            $tps  =Tp::where([
+            $tps  = Tp::where([
                 ['mapel_id', '=', $request->mapelId],
                 ['tingkat', '=', $request->tingkat],
                 ['semester', '=', $request->semester],
@@ -33,18 +33,21 @@ class TpController extends Controller
     public function impor(Request $request)
     {
         try {
-            foreach($request->tps as $tp)
-            {
-                Tp::create([
-                    'mapel_id' => $tp['mapel_id'],
-                    'kode' => $tp['kode'],
-                    'teks' => $tp['teks'],
-                    'elemen' => $tp['elemen'],
-                    'fase' => $tp['fase'],
-                    'tingkat' => $tp['tingkat'],
-                    'semester' => $tp['semester'],
-                    'agama' => $tp['agama'] ?? null,
-                ]);
+            foreach ($request->tps as $tp) {
+                Tp::updateOrCreate(
+                    [
+                        'kode' => $tp['kode'],
+                    ],
+                    [
+                        'mapel_id' => $tp['mapel_id'],
+                        'teks' => $tp['teks'],
+                        'elemen' => $tp['elemen'],
+                        'fase' => $tp['fase'],
+                        'tingkat' => $tp['tingkat'],
+                        'semester' => $tp['semester'],
+                        'agama' => $tp['agama'] ?? null,
+                    ]
+                );
             }
             return back()->with("message", "Elemen diimpor");
         } catch (\Throwable $th) {
@@ -60,12 +63,13 @@ class TpController extends Controller
             Tp::updateOrCreate(
                 [
                     'id' => $request['id'] ?? null,
-                ], [
+                ],
+                [
                     'mapel_id' => $request['mapel_id'],
                     'kode' => $request['kode'] ?? strtolower(Str::random(8)),
                     'teks' => $request['teks'],
                     'elemen' => $request['elemen'],
-                    'fase' => $request['fase'] ?? (in_array($request['tingkat'], ['1', '2']) ? 'A' : (in_array($request['tingkat'], ['3','4']) ? 'B' : 'C')),
+                    'fase' => $request['fase'] ?? (in_array($request['tingkat'], ['1', '2']) ? 'A' : (in_array($request['tingkat'], ['3', '4']) ? 'B' : 'C')),
                     'tingkat' => $request['tingkat'],
                     'semester' => $request['semester'],
                     'agama' => $request['agama'] ?? null,
@@ -107,9 +111,9 @@ class TpController extends Controller
     public function destroy(Tp $tp, $id)
     {
         try {
-           $tp->destroy($id);
+            $tp->destroy($id);
 
-           return back()->with('message', 'Tp Dihapus');
+            return back()->with('message', 'Tp Dihapus');
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -43,4 +43,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Ortu::class, 'siswa_id', 'nisn');
     }
+
+    public function nilaip5()
+    {
+        return $this->hasMany(NilaiP5::class, 'siswa_id', 'nisn');
+    }
 }

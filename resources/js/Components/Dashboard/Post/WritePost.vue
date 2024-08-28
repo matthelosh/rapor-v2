@@ -4,9 +4,14 @@ import { router } from '@inertiajs/vue3';
 import { Icon } from '@iconify/vue';
 // import { ElementTiptap } from 'element-tiptap-vue3-fixed'
 // import 'element-tiptap-vue3-fixed/lib/style.css'
-import { Doc, Text, History, Paragraph, Dropcursor, FontFamily, Bold, Underline, Italic, Strike, Heading, Link, Color, BulletList, OrderedList, TextAlign, LineHeight, Indent, Blockquote, Image, Table, Iframe, HorizontalRule, Fullscreen, Print, SelectAll } from 'element-tiptap-vue3-fixed'
+import { Doc, Text, History, Paragraph, Dropcursor, FontFamily, Bold, Underline, Italic, Strike, Heading, Link, Color, BulletList, OrderedList, TextAlign, LineHeight, Indent, Blockquote, Image, Table, Iframe, HorizontalRule, Fullscreen, Print, SelectAll, CodeView, CodeBlock, Code } from 'element-tiptap-vue3-fixed'
 import { ElNotification } from 'element-plus';
 import axios from 'axios';
+import codemirror from 'codemirror';
+import 'codemirror/lib/codemirror.css'; // import base style
+import 'codemirror/mode/xml/xml.js'; // language
+import 'codemirror/addon/selection/active-line.js'; // require active-line.js
+import 'codemirror/addon/edit/closetag.js';
 
 const files = ref([])
 // editor extensions
@@ -27,7 +32,15 @@ const extensions = [
             })
         }
     }),
-    Table, Iframe, HorizontalRule, Print, SelectAll, Fullscreen
+    Table, Iframe, HorizontalRule, Print, SelectAll, Fullscreen,
+    CodeView.configure({
+        codemirror,
+        codemirrorOptions: {
+            styleActiveLine: true,
+            autoCloseTags: false,
+        },
+    }),
+    CodeBlock, Code
 ]
 
 const fileImage = ref(null)
