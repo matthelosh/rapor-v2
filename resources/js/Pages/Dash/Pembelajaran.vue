@@ -10,6 +10,7 @@ const page = usePage()
 const formTambah = ref(false)
 const formImpor = ref(false)
 const selectedMapel = ref('')
+const loading = ref(false)
 const mapels = ref([])
 const tambah = (mapel) => {
     selectedMapel.value = mapel
@@ -60,17 +61,20 @@ const onFileTpPicked = async(e) => {
     const ws = wb.Sheets[wb.SheetNames[0]];
     let datas = utils.sheet_to_json(ws)
     await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: datas}, {
+        onStart: () => loading.value = true,
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
             router.reload({only: ['mapels']})
         },
         onError: errs => {
             Object.keys(errs).forEach(k => {
+                const msg = errs[k].toLowerCase().includes('undefined array key') ? 'Kolom ' + errs[k].split('"')[1] + ' Kosong' : errs[k]
                 setTimeout(() => {
-                    ElNotification({title: 'Error', message: errs[k], type:'error'})
+                    ElNotification({title: 'Error', message: msg, type:'error'})
                 }, 500)
             })
-        }
+        },
+        onFinish: () => loading.value = false
     })
 }
 const onFileMapelPicked = async(e) => {
@@ -208,7 +212,7 @@ onBeforeMount(() => {
     <template #header>
         Pembelajaran
     </template>
-    <el-card shadow="never">
+    <el-card shadow="never" v-loading="loading">
         <template #header>
             <span class="title font-bold text-lg">Konten Pembelajaran</span>
         </template>

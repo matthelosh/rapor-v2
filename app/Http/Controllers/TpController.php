@@ -51,7 +51,8 @@ class TpController extends Controller
             }
             return back()->with("message", "Elemen diimpor");
         } catch (\Throwable $th) {
-            throw $th;
+            // throw $th;
+            return back()->withErrors($th->getMessage());
         }
     }
     /**

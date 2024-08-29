@@ -55,14 +55,15 @@ class SiswaService
         }
         $siswa = Siswa::updateOrCreate(
             [
-                'id' => $data['id'] ?? null,
+                'nisn' => $data['nisn'],
             ],
             [
-                'nisn' => $data['nisn'],
                 'nis' => $data['nis'] ?? null,
                 'nik' => $data['nik'] ?? null,
                 'nama' => $data['nama'],
                 'jk' => $data['jk'],
+                'tempat_lahir' => $data['tempat_lahir'] ?? null,
+                'tanggal_lahir' => $data['tanggal_lahir'] ?? null,
                 'alamat' => $data['alamat'],
                 'hp' => $data['hp'] ?? null,
                 'email' => $data['email'] ?? null,

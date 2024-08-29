@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\SiswaRequest;
 use App\Models\Rombel;
 use App\Models\Siswa;
+use App\Models\Tapel;
 use Illuminate\Http\Request;
 use App\Services\SiswaService;
 use Inertia\Inertia;
@@ -64,17 +65,24 @@ class SiswaController extends Controller
     {
         $rombelId = $request->query('rombelId');
         $targetRombel = $request->query('targetRombel');
+        $tapel = $this->tapel()->kode;
         try {
             if (!$targetRombel) {
-                $siswas = Siswa::whereDoesntHave('rombels')
-                    ->orWhereHas(
-                        'rombels',
-                        function ($q) use ($rombelId) {
-                            $q->whereNot('rombels.id', $rombelId);
-                        }
-                    )
+                $siswas = Siswa::whereDoesntHave(
+                    'rombels',
+                    function ($r) use ($tapel) {
+                        $r->whereTapel($tapel);
+                    }
+                )
+                    // ->orWhereHas(
+                    //     'rombels',
+                    //     function ($q) use ($rombelId) {
+                    //         $q->whereNot('rombels.id', $rombelId);
+                    //     }
+                    // )
                     ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
-                    ->with('sekolah')->whereStatus('aktif')->get();
+                    ->with('sekolah')
+                    ->whereStatus('aktif')->get();
             } else {
                 $rombel = Rombel::where('id', $targetRombel)->with('siswas')->first();
                 $siswas = $rombel->siswas;
@@ -117,5 +125,10 @@ class SiswaController extends Controller
         } catch (\Exception $e) {
             return back()->withErrors(["errors", $e->getMessage()]);
         }
+    }
+
+    private function tapel()
+    {
+        return Tapel::whereIsActive(1)->first();
     }
 }

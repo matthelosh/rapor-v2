@@ -66,6 +66,8 @@ const fieldSiswa = ref([
     "nik",
     "nama",
     "jk",
+    "tempat_lahir",
+    "tanggal_lahir",
     "alamat",
     "hp",
     "email",
@@ -216,50 +218,96 @@ const closeFormOrtu = () => {
     formOrtu.value = false;
 };
 
+const unduhFormatSiswa = async () =>  {
+    let data = [
+        {
+            nisn: "",
+            nis: "",
+            nik: "",
+            nama: "",
+            jk: "",
+            tempat_lahir: "",
+            tanggal_lahir: "",
+            alamat: "",
+            hp: "",
+            email: "",
+            agama: "",
+            angkatan: "",
+            sekolah_id: "",
+        }
+    ]
+
+    if (page.props.siswas && page.props.siswas.length > 0 ) {
+        page.props.siswas.forEach(siswa => {
+            data.push({
+                nisn: siswa.nisn,
+                nis: siswa.nis,
+                nik: siswa.nik,
+                nama: siswa.nama,
+                jk: siswa.jk,
+                tempat_lahir: siswa.tempat_lahir,
+                tanggal_lahir: siswa.tanggal_lahir,
+                alamat: siswa.alamat,
+                hp: siswa.hp,
+                email: siswa.email,
+                agama: siswa.agama,
+                angkatan: siswa.angkatan,
+                sekolah_id: siswa.sekolah_id,
+            })
+        })
+    }
+    const ws = utils.json_to_sheet(data)
+    const wb = utils.book_new()
+    utils.book_append_sheet(wb, ws, "SISWA")
+    writeFile(wb, "Format Impor Siswa " + page.props.sekolahs[0].nama + ".xlsx")
+}
+
 const unduhFormat = async () => {
     let data = [];
-    page.props.siswas.forEach((siswa) => {
-        data.push({
-            nisn: siswa.nisn,
-            nama: siswa.nama,
-            nama_ayah:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ayah" ? ortu.nama : "",
-                ) ?? "",
-            alamat_ayah:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ayah" ? ortu.alamat : "",
-                ) ?? "",
-            hp_ayah:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ayah" ? ortu.hp : "",
-                ) ?? "",
-            nama_ibu:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ibu" ? ortu.nama : "",
-                ) ?? "",
-            alamat_ibu:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ibu" ? ortu.alamat : "",
-                ) ?? "",
-            hp_ibu:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Ibu" ? ortu.hp : "",
-                ) ?? "",
-            nama_wali:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Wali" ? ortu.nama : "",
-                ) ?? "",
-            alamat_wali:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Wali" ? ortu.alamat : "",
-                ) ?? "",
-            hp_wali:
-                siswa.ortus.map((ortu) =>
-                    ortu.relasi == "Wali" ? ortu.hp : "",
-                ) ?? "",
+    if (page.props.siswas && page.props.siswas.length > 0 ) {
+        page.props.siswas.forEach((siswa) => {
+            data.push({
+                nisn: siswa.nisn,
+                nama: siswa.nama,
+                nama_ayah:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ayah" ? ortu.nama : "",
+                    ) ?? "",
+                alamat_ayah:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ayah" ? ortu.alamat : "",
+                    ) ?? "",
+                hp_ayah:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ayah" ? ortu.hp : "",
+                    ) ?? "",
+                nama_ibu:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ibu" ? ortu.nama : "",
+                    ) ?? "",
+                alamat_ibu:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ibu" ? ortu.alamat : "",
+                    ) ?? "",
+                hp_ibu:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Ibu" ? ortu.hp : "",
+                    ) ?? "",
+                nama_wali:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Wali" ? ortu.nama : "",
+                    ) ?? "",
+                alamat_wali:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Wali" ? ortu.alamat : "",
+                    ) ?? "",
+                hp_wali:
+                    siswa.ortus.map((ortu) =>
+                        ortu.relasi == "Wali" ? ortu.hp : "",
+                    ) ?? "",
+            });
         });
-    });
+    }
     const ws = utils.json_to_sheet(data);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "ORTU");
@@ -312,7 +360,7 @@ const onSearchChanged = async () => {
                             >
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center justify-end px-2 w-[50%]"
+                            class="card-toolbar--items flex items-center justify-end px-2 w-[60%]"
                         >
                             <el-button-group class="w-[300px]">
                                 <el-button type="success" @click="unduhFormat">
@@ -324,7 +372,7 @@ const onSearchChanged = async () => {
                                     Impor Ortu
                                 </el-button>
                             </el-button-group>
-                            <el-button-group class="w-[200px]">
+                            <el-button-group class="w-[400px]">
                                 <el-button
                                     type="primary"
                                     @click="formSiswa = true"
@@ -332,7 +380,14 @@ const onSearchChanged = async () => {
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="imporSiswa">
+                                <el-button
+                                    type="success"
+                                    @click="unduhFormatSiswa"
+                                >
+                                    <Icon icon="mdi:file-excel-box" />
+                                    Unduh Format
+                                </el-button>
+                                <el-button type="warning" @click="imporSiswa">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -341,7 +396,7 @@ const onSearchChanged = async () => {
                                 v-model="search"
                                 placeholder="Cari Siswa Berdasarkan Nama"
                                 clearable
-                                style="width: 400px"
+                                style="width: 300px"
                                 @change="onSearchChanged"
                             >
                                 <template #suffix>

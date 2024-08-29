@@ -155,4 +155,7 @@ onBeforeMount(() => {
 </template>
 
 <style>
+iframe {
+    width: 100%;
+}
 </style>

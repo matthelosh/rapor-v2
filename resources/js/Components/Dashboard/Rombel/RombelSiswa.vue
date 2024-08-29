@@ -73,6 +73,7 @@ const assignMember = async () => {
         }),
         { siswas: selectedNonMembers.value },
         {
+            onStart: () => loading.value = true,
             onSuccess: (page) => {
                 emit("refresh");
                 selectedNonMembers.value.forEach((siswa) => {
@@ -84,6 +85,7 @@ const assignMember = async () => {
                 });
                 // getNonMember()
             },
+            onFinish: () => loading.value = false
         },
     );
 };
@@ -104,7 +106,9 @@ const getNonMember = async () => {
         .catch((err) => console.log(err));
 };
 
-const kirim = async () => {};
+const kirim = async () => {
+    assignMember()
+};
 
 const onFileSiswaChange = async (e) => {
     const file = e.target.files[0];
@@ -114,7 +118,7 @@ const onFileSiswaChange = async (e) => {
     utils.sheet_to_json(ws).forEach((siswa) => {
         nonMembers.value.forEach((nm) => {
             if (siswa.nisn == nm.nisn) {
-                // members.value.push(nm)
+                members.value.push(nm)
                 // selectionNonMember([nm])
                 selectedNonMembers.value.push(nm);
             }
@@ -160,7 +164,7 @@ onMounted(() => {
             <div class="dialog-body bg-slate-100 py-2">
                 <el-row :gutter="12">
                     <el-col :span="12">
-                        <el-card>
+                        <el-card v-loading="loading">
                             <template #header>
                                 <div class="flex items-center justify-between">
                                     <div class="card-title flex items-center">
@@ -179,7 +183,8 @@ onMounted(() => {
                                             v-if="!selectedMembers.length > 0"
                                         />
                                         <el-button type="primary" size="small"
-                                            >Kirim</el-button
+                                            @click="kirim"
+                                            >Simpan</el-button
                                         >
                                         <el-button
                                             type="danger"
@@ -214,7 +219,7 @@ onMounted(() => {
                         </el-card>
                     </el-col>
                     <el-col :span="12">
-                        <el-card v-loading="nonMembers.length < 1">
+                        <el-card v-loading="loading">
                             <template #header>
                                 <div class="flex items-center justify-between">
                                     <div class="card-title flex items-center">

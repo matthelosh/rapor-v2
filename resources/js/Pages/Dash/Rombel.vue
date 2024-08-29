@@ -317,6 +317,7 @@ onBeforeMount(async () => {
                                             type="primary"
                                             size="small"
                                             @click="mgmSiswa(scope.row)"
+                                            :disabled="page.props.auth.roles[0] !== 'ops'"
                                         >
                                             <Icon
                                                 icon="mdi:account-plus-outline"
