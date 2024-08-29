@@ -5,6 +5,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import { ElNotification } from "element-plus";
 
 const page = usePage();
+const loading = ref(false)
 const props = defineProps({
     open: Boolean,
     fields: Array,
@@ -36,6 +37,7 @@ const kirim = async () => {
             datas: datas.value,
         },
         {
+            onStart: () => loading.value = true,
             onSuccess: (page) => {
                 ElNotification({
                     title: "Info",
@@ -56,6 +58,10 @@ const kirim = async () => {
                     }, 500);
                 });
             },
+            onFinish: () => {
+                loading.value = false
+                emit('close')
+            }
         },
     );
 };
@@ -68,7 +74,7 @@ const closeMe = () => {
 
 <template>
     <!-- <h1>Form Sekolah {{ props.open }}</h1> -->
-    <el-dialog v-model="show" @close="closeMe" :fullscreen="true">
+    <el-dialog v-model="show" @close="closeMe" :fullscreen="true" >
         <template #header>
             <div class="toolbar flex items-center justify-between">
                 <h3 class="title">Impor Data {{ props.title }}</h3>
@@ -82,6 +88,7 @@ const closeMe = () => {
                         type="primary"
                         @click="kirim"
                         v-if="datas.length > 0"
+                        :loading="loading"
                         >Simpan</el-button
                     >
                 </div>
@@ -93,6 +100,7 @@ const closeMe = () => {
                 v-if="datas.length > 0"
                 max-height="78vh"
                 size="small"
+                v-loading="loading"
             >
                 <el-table-column
                     v-for="(field, f) in props.fields"
