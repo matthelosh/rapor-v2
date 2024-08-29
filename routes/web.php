@@ -314,7 +314,7 @@ Route::middleware('auth')->group(
                         Route::get(
                             '/index',
                             [
-                                Rombelcontroller::class,
+                                RombelController::class,
                                 'index'
                             ]
                         )->name('dashboard.rombel.index');
