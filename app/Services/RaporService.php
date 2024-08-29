@@ -35,7 +35,7 @@ class RaporService
                 ['tipe', '=', 'pts'],
                 ['tapel', '=', $queries['tapel']],
             ])->select('tanggal')->first();
-            $nilais['tanggal'] = $tgl->tanggal;
+            $nilais['tanggal'] = $tgl ? $tgl->tanggal : date('Y-M-d');
             return $nilais;
         } catch (\Throwable $th) {
             throw $th;
@@ -131,9 +131,7 @@ class RaporService
         }
     }
 
-    private function deskripsi($nilai)
-    {
-    }
+    private function deskripsi($nilai) {}
 
     public function absensi($queries)
     {

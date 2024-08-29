@@ -4,7 +4,7 @@ import { Head, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue';
 
 const page = usePage()
-const props = defineProps({siswa: Object})
+const props = defineProps({siswa: Object, rombel: Object})
 const emit = defineEmits(['close', 'nextSiswa','prevSiswa'])
 
 const sekolah = computed(() => page.props.sekolahs[0])
@@ -124,12 +124,12 @@ const cetak = async() => {
             <tr>
                 <td class="text-left">Ayah</td>
                 <td class="text-left">:</td>
-                <td class="text-left">{{ ortu.ayah.nama }}</td>
+                <td class="text-left">{{ ortu.ayah?.nama }}</td>
             </tr>
             <tr>
                 <td class="text-left">Ibu</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">{{ ortu.ibu.nama }}</td>
+                <td class="text-left">{{ ortu.ibu?.nama }}</td>
             </tr>
         </table>
         <table class="mt-8  10">
@@ -141,12 +141,12 @@ const cetak = async() => {
             <tr>
                 <td class="text-left">Ayah</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">{{ ortu.ayah.alamat }}</td>
+                <td class="text-left">{{ ortu.ayah?.alamat }}</td>
             </tr>
             <tr>
                 <td class="text-left">Ibu</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">{{ ortu.ibu.alamat }}</td>
+                <td class="text-left">{{ ortu.ibu?.alamat }}</td>
             </tr>
         </table>
         <table class="mt-8  10">
@@ -158,12 +158,12 @@ const cetak = async() => {
             <tr>
                 <td class="text-left">Ayah</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">{{ ortu.ayah.hp }}</td>
+                <td class="text-left">{{ ortu.ayah?.hp }}</td>
             </tr>
             <tr>
                 <td class="text-left">Ibu</td>
                 <td class="text-left px-2">:</td>
-                <td class="text-left">{{ ortu.ibu.hp }}</td>
+                <td class="text-left">{{ ortu.ibu?.hp }}</td>
             </tr>
         </table>
         <table class="mt-8">

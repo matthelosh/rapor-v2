@@ -12,7 +12,7 @@ import RaporPAS from '@/Components/Dashboard/Rapor/RaporPAS.vue'
 const page = usePage()
 const mode = ref('list')
 
-const rombel = page.props.rombels[0]
+const rombel = computed(() => page.props.rombels[0])
 const selectedSiswa = ref({})
 
 const cetak = (laman, siswa) => {
@@ -27,22 +27,22 @@ const closeLaman = () => {
 
 const nextSiswa = () => {
     // alert('halo')
-    let current = rombel.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
-    if(current >= rombel.siswas.length-1 ) {
+    let current = rombel.value.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
+    if(current >= rombel.value.siswas.length-1 ) {
         alert('Ini sudah siswa yang terakhir')
         return false
     } else {
-        selectedSiswa.value = rombel.siswas[current+1]
+        selectedSiswa.value = rombel.value.siswas[current+1]
     }
 }
 const prevSiswa = () => {
     // alert('halo')
-    let current = rombel.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
+    let current = rombel.value.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
     if(current === 0 ) {
         alert('Ini sudah siswa yang pertama')
         return false
     } else {
-        selectedSiswa.value = rombel.siswas[current-1]
+        selectedSiswa.value = rombel.value.siswas[current-1]
     }
 }
 </script>
