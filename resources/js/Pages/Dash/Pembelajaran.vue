@@ -216,7 +216,7 @@ onBeforeMount(() => {
         <template #header>
             <span class="title font-bold text-lg">Konten Pembelajaran</span>
         </template>
-        <div class="card-body ">
+        <div class="card-body">
             <!-- {{ mapels }} -->
             <el-row>
                 <el-col>

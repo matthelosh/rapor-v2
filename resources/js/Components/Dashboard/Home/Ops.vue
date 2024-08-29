@@ -44,7 +44,7 @@ const tesDapodik = async() => {
 
 <template>
 <el-row :gutter="20">
-    <el-col :span="6">
+    <el-col :span="6" :xs="24">
         <el-card>
             <template #header>
                 <span>Data Sekolah</span>
@@ -96,7 +96,7 @@ const tesDapodik = async() => {
             </div>
         </el-card>
     </el-col>
-    <el-col :span="10">
+    <el-col :span="10" :xs="24">
         <el-card>
             <template #header>
                 <span>Data Rombel</span>
@@ -134,7 +134,7 @@ const tesDapodik = async() => {
             </div>
         </el-card> -->
     </el-col>
-    <el-col :span="8">
+    <el-col :span="8" :xs="24">
         <el-card>
             <template #header>
                 <span>Data Guru</span>

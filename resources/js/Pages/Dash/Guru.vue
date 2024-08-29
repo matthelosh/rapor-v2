@@ -175,9 +175,9 @@ const unduhFormat = async () => {
                             >
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center gap-1 px-2 w-[50%]"
+                            class="card-toolbar--items flex items-center gap-1 px-2 md:w-[50%]"
                         >
-                            <el-button-group class="flex-grow w-[500px]">
+                            <el-button-group class="flex-grow md:w-[500px]">
                                 <el-button
                                     type="primary"
                                     @click="formGuru = true"
@@ -185,13 +185,14 @@ const unduhFormat = async () => {
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="warning" @click="unduhFormat">
+                                <el-button type="warning" @click="unduhFormat" class="hidden-sm-and-down">
                                     <Icon icon="mdi-file-download" />
                                     Unduh Format
                                 </el-button>
                                 <el-button
                                     type="success"
                                     @click="formImpor = true"
+                                    class="hidden-sm-and-down"
                                 >
                                     <Icon icon="mdi-file-excel" />
                                     Impor
@@ -202,6 +203,7 @@ const unduhFormat = async () => {
                                 placeholder="Cari Guru Berdasarkan Nama"
                                 clearable
                                 @change="cariGuru"
+                                class="hidden-sm-and-down"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />

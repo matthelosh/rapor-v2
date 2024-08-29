@@ -349,20 +349,19 @@ const onSearchChanged = async () => {
                 <template #header>
                     <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center">
-                            <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase"
                                 >Data Siswa
                                 {{
                                     page.props.auth.roles[0] !== "admin"
-                                        ? page.props.sekolahs[0]?.nama
+                                        ? ""
                                         : "Semua Sekolah"
                                 }}</span
                             >
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center justify-end px-2 w-[60%]"
+                            class="card-toolbar--items flex items-center justify-end px-2 md:w-[60%]"
                         >
-                            <el-button-group class="w-[300px]">
+                            <el-button-group class="md:w-[300px] hidden-sm-and-down">
                                 <el-button type="success" @click="unduhFormat">
                                     <Icon icon="mdi:file-excel" />
                                     Unduh Format
@@ -372,7 +371,7 @@ const onSearchChanged = async () => {
                                     Impor Ortu
                                 </el-button>
                             </el-button-group>
-                            <el-button-group class="w-[400px]">
+                            <el-button-group class="md:w-[400px]">
                                 <el-button
                                     type="primary"
                                     @click="formSiswa = true"
@@ -383,11 +382,12 @@ const onSearchChanged = async () => {
                                 <el-button
                                     type="success"
                                     @click="unduhFormatSiswa"
+                                    class="hidden-sm-and-down"
                                 >
                                     <Icon icon="mdi:file-excel-box" />
                                     Unduh Format
                                 </el-button>
-                                <el-button type="warning" @click="imporSiswa">
+                                <el-button type="warning" @click="imporSiswa" class="hidden-sm-and-down">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -398,6 +398,7 @@ const onSearchChanged = async () => {
                                 clearable
                                 style="width: 300px"
                                 @change="onSearchChanged"
+                                class="hidden-sm-and-down"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />

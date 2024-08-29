@@ -103,17 +103,17 @@ const addOps = async(id) => {
                             <span>Data Sekolah</span>
                         </div>
                         <div class="card-toolbar--items flex items-center gap-1 ">
-                            <el-input v-model="search" placeholder="Cari Sekolah" clearable>
+                            <el-input v-model="search" placeholder="Cari Sekolah" clearable class="hidden-sm-and-down">
                                 <template #suffix>
                                     <Icon icon=mdi:magnify />
                                 </template>
                             </el-input>
-                            <el-button-group class="flex-grow w-[300px]">
+                            <el-button-group class="flex-grow md:w-[300px]">
                                 <el-button type="primary" @click="formSekolah = true" :disabled="!page.props.auth.can.includes('add_school')">
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add_school')">
+                                <el-button type="success" @click="formImpor = true" :disabled="!page.props.auth.can.includes('add_school')" class="hidden-sm-and-down">
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>

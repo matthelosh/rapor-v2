@@ -17,15 +17,24 @@ return new class extends Migration
             $table->string('nis', 16)->nullable();
             $table->string('nik', 16)->nullable();
             $table->string('nama', 175);
-            $table->enum('jk', ['Laki-laki','Perempuan']);
+            $table->enum('jk', ['Laki-laki', 'Perempuan']);
+            $table->string('tempat_lahir', 100)->default('Malng');
+            $table->date('tanggal_lahir')->default('2010-01-01');
             $table->string('alamat', 191);
+            $table->string('rt', 3)->nullable();
+            $table->string('rw', 3)->nullable();
+            $table->string('desa', 60)->nullable();
+            $table->string('kecamatan', 160)->default('Wagir');
+            $table->string('kode_pos', 160)->default('65158');
+            $table->string('kabupaten', 160)->default('Malang');
+            $table->string('Provinsi', 160)->default('Jawa Timur');
             $table->string('hp', 16)->default('-');
             $table->string('email', 120)->nullable();
             $table->text('foto')->nullable();
-            $table->enum('agama', ['Islam', 'Kristen','Katolik','Hindu','Budha', 'Konghuchu']);
+            $table->enum('agama', ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu']);
             $table->string('angkatan', 10)->nullable();
             $table->string('sekolah_id', 10);
-            $table->enum('status', ['aktif','lulus','do','mutasi'])->default('aktif');
+            $table->enum('status', ['aktif', 'lulus', 'do', 'mutasi'])->default('aktif');
             $table->timestamps();
         });
     }

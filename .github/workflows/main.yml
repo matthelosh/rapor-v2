@@ -22,7 +22,7 @@ jobs:
             git status
             php artisan down
             composer install
-            php artisan migrate
+            php artisan migrate:refresh --path=database/migrations/2024_05_12_131934_create_siswas_table.php
             yarn --only=prod
             yarn build
             php artisan up

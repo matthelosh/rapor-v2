@@ -147,12 +147,11 @@ onBeforeMount(async () => {
                 <template #header>
                     <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center">
-                            <Icon icon="mdi:account-tie" class="text-lg" />
                             <span class="uppercase"
                                 >Data Rombel/Kelas
                                 {{
                                     page.props.auth.roles[0] !== "admin"
-                                        ? page.props.sekolahs[0]?.nama
+                                        ? ""
                                         : "Semua Sekolah"
                                 }}</span
                             >
@@ -174,6 +173,7 @@ onBeforeMount(async () => {
                                 v-model="search"
                                 placeholder="Cari Rombel Berdasarkan Label"
                                 clearable
+                                class="hidden-sm-and-down"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />
