@@ -12,8 +12,11 @@ const formImpor = ref(false)
 const selectedMapel = ref('')
 const loading = ref(false)
 const mapels = ref([])
+const formMode = ref('add')
 const tambah = (mapel) => {
     selectedMapel.value = mapel
+    newTps.value[0].mapel_id = mapel.kode
+    formMode.value = 'add'
     formTambah.value = true
 }
 
@@ -60,7 +63,27 @@ const onFileTpPicked = async(e) => {
 
     const ws = wb.Sheets[wb.SheetNames[0]];
     let datas = utils.sheet_to_json(ws)
-    await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: datas}, {
+    imporTp(datas)
+    // await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: datas}, {
+    //     onStart: () => loading.value = true,
+    //     onSuccess: (page) => {
+    //         ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
+    //         router.reload({only: ['mapels']})
+    //     },
+    //     onError: errs => {
+    //         Object.keys(errs).forEach(k => {
+    //             const msg = errs[k].toLowerCase().includes('undefined array key') ? 'Kolom ' + errs[k].split('"')[1] + ' Kosong' : errs[k]
+    //             setTimeout(() => {
+    //                 ElNotification({title: 'Error', message: msg, type:'error'})
+    //             }, 500)
+    //         })
+    //     },
+    //     onFinish: () => loading.value = false
+    // })
+}
+
+const imporTp = async(tps) => {
+    await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: tps}, {
         onStart: () => loading.value = true,
         onSuccess: (page) => {
             ElNotification({title: 'Info', message: page.props.flash.message, type:'success'})
@@ -77,6 +100,7 @@ const onFileTpPicked = async(e) => {
         onFinish: () => loading.value = false
     })
 }
+
 const onFileMapelPicked = async(e) => {
     // console.log(mapel)
     const file = e.target.files[0]
@@ -128,6 +152,7 @@ const editTp = (item, mapel) => {
     selectedMapel.value = mapel
     newTp.value = item
     formTambah.value = true
+    formMode.value = 'edit'
 }
 
 const simpanTp = async() => {
@@ -212,15 +237,16 @@ const newTps = ref([
     }
 ])
 
-const tes = () => {
-    console.log(newTps.value)
-}
+// const tes = () => {
+//     imporTp(newTps.value)
+// }
 
 const addRow = () => {
-    selectedMapel.value.tps.push(
+    newTps.value.push(
         {
             fase: "A",
             tingkat: "1",
+            mapel_id: selectedMapel.value.kode,
             kode: "",
             elemen: "",
             semester: "",
@@ -375,7 +401,7 @@ onBeforeMount(() => {
         </div>
     </el-card>
 
-    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm" width="100%" fullscreen body-class="">
+    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm" :width="formMode == 'edit' ? '60%' : '100%'" :fullscreen="formMode == 'add'" body-class="">
         <template #header="{close}" >
             <span class="flex items-center justify-between" >
                 <h3 class="text-sky-800 text-lg">Tambah <span class="font-black">TP</span> <small>{{ selectedMapel.label }}</small></h3>
@@ -383,7 +409,7 @@ onBeforeMount(() => {
                     <el-button type="primary" @click="addRow">
                         <Icon icon="mdi:plus" />
                     </el-button>
-                    <el-button type="primary" @click="tes">Simpan</el-button>
+                    <el-button type="primary" @click="imporTp(newTps)" :loading="loading">Simpan</el-button>
                     <el-button type="danger" size="small" circle @click="close">
                         <Icon icon="mdi-close"  />
                     </el-button>
@@ -391,7 +417,7 @@ onBeforeMount(() => {
             </span>
         </template>
         <div class="dialog-body">
-            <!-- <el-form v-model="newTp" label-position="top">
+            <el-form v-model="newTp" label-position="top" v-if="formMode == 'edit'">
                 <el-row :gutter="10">
                     <el-col :span="4">
                         <el-form-item label="Kelas">
@@ -437,8 +463,8 @@ onBeforeMount(() => {
                 <el-row align="middle" justify="center" class="mt-4">
                     <el-button type="primary" size="small" @click="simpanTp">Simpan</el-button>
                 </el-row>
-            </el-form> -->
-            <el-scrollbar max-height="90vh">
+            </el-form>
+            <el-scrollbar max-height="90vh" v-if="formMode == 'add'">
                 <table class="w-full">
                     <thead>
                         <tr>
@@ -453,7 +479,7 @@ onBeforeMount(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(tp, t) in selectedMapel.tps" :key="t">
+                        <template v-for="(tp, t) in newTps" :key="t">
                             <tr>
                                 <td class="text-center border px-1 py-2 align-top">{{ t+1 }}</td>
                                 <td class="text-center border px-1 py-2 align-top" v-if="selectedMapel.kode == 'pabp'">
