@@ -121,7 +121,7 @@ const assignPermission = async(user) => {
                     <el-table-column label="Permission">
                         <template #default="scope">
                             <div>
-                                {{ scope.row.permissions }}
+                                {{ scope.row.permissions.map(perm => perm.name) }}
                             </div>
                         </template>
                     </el-table-column>

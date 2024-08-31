@@ -26,6 +26,32 @@ class P5Controller extends Controller
             throw $th;
         }
     }
+
+    public function proyek(Request $request)
+    {
+        try {
+            if ($request->user()->hasRole('ops')) {
+                $proyeks = Proyek::whereTapel($this->tapel()->kode)->with('rombel')
+                    ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
+                    ->get();
+            } else {
+                $rombel = Rombel::where('guru_id', $request->user()->userable->id)
+                    ->where('tapel', $this->tapel()->kode)
+                    ->first();
+                $proyeks = Proyek::whereTapel($this->tapel()->kode)->with('rombel')
+                    ->whereRombelId($rombel->kode)
+                    ->get();
+            }
+            return Inertia::render(
+                'Dash/P5/Proyek',
+                [
+                    'proyeks' => $proyeks,
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
     public function nilai(Request $request)
     {
         try {

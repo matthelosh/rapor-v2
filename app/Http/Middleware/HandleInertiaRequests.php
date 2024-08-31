@@ -67,7 +67,8 @@ class HandleInertiaRequests extends Middleware
 
     private function sekolahs($user)
     {
-        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
+        // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {
+        if (\in_array($user->getRoleNames()[0], ['superadmin', 'admin', 'admin_tp'])) {
             return Sekolah::with('mapels.tps', 'ks', 'ekskuls')->get();
         } elseif ($user->hasRole('ops')) {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', function ($q) {

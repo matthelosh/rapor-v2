@@ -200,6 +200,36 @@ const assignEkskul = () => {
     })
 }
 
+const newTps = ref([
+    {
+        fase: "A",
+        tingkat: "1",
+        kode: "",
+        elemen: "",
+        semester: "",
+        agama: "",
+        teks: ""
+    }
+])
+
+const tes = () => {
+    console.log(newTps.value)
+}
+
+const addRow = () => {
+    selectedMapel.value.tps.push(
+        {
+            fase: "A",
+            tingkat: "1",
+            kode: "",
+            elemen: "",
+            semester: "",
+            agama: "",
+            teks: ""
+        }
+    )
+} 
+
 onBeforeMount(() => {
     mapels.value = page.props.sekolahs[0].mapels ? page.props.sekolahs[0].mapels.map(mapel => mapel.id) : []
     ekskuls.value = page.props.sekolahs[0].ekskuls ? page.props.sekolahs[0].ekskuls.map(ekskul => ekskul.id) : []
@@ -249,8 +279,8 @@ onBeforeMount(() => {
                         </div>
                         <div class="card-body p-2">
                             <!-- {{ page.props.mapels }} -->
-                            <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && role == 'admin')">
-                                <template v-for="(mapel, m) in role == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
+                            <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && ['superadmin', 'admin', 'admin_tp'].includes(role))">
+                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
                                     <el-collapse>
                                         <el-collapse-item>
                                             <template #title>
@@ -260,7 +290,7 @@ onBeforeMount(() => {
                                                 <div class="collapse-body--tile flex justify-between mb-2">
                                                         <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
                                                         <el-button-group>
-                                                            <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="role !== 'admin'">Tambah TP</el-button>
+                                                            <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp'].includes(role)">Tambah TP</el-button>
                                                             
                                                         </el-button-group>
                                                 </div>
@@ -345,17 +375,23 @@ onBeforeMount(() => {
         </div>
     </el-card>
 
-    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm">
-        <template #header="{close}">
-            <span class="flex justify-between">
-                <h3>Tambah <span class="font-black">TP</span> <small>{{ selectedMapel.label }}</small></h3>
-                <el-button type="danger" size="small" circle @click="close">
-                    <Icon icon="mdi-close"  />
-                </el-button>
+    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm" width="100%" fullscreen body-class="">
+        <template #header="{close}" >
+            <span class="flex items-center justify-between" >
+                <h3 class="text-sky-800 text-lg">Tambah <span class="font-black">TP</span> <small>{{ selectedMapel.label }}</small></h3>
+                <div class="flex items-center gap-1">
+                    <el-button type="primary" @click="addRow">
+                        <Icon icon="mdi:plus" />
+                    </el-button>
+                    <el-button type="primary" @click="tes">Simpan</el-button>
+                    <el-button type="danger" size="small" circle @click="close">
+                        <Icon icon="mdi-close"  />
+                    </el-button>
+                </div>
             </span>
         </template>
         <div class="dialog-body">
-            <el-form v-model="newTp" label-position="top">
+            <!-- <el-form v-model="newTp" label-position="top">
                 <el-row :gutter="10">
                     <el-col :span="4">
                         <el-form-item label="Kelas">
@@ -401,8 +437,69 @@ onBeforeMount(() => {
                 <el-row align="middle" justify="center" class="mt-4">
                     <el-button type="primary" size="small" @click="simpanTp">Simpan</el-button>
                 </el-row>
-            </el-form>
+            </el-form> -->
+            <el-scrollbar max-height="90vh">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="border bg-slate-100 py-1 w-[50px]">No</th>
+                            <th class="border bg-slate-100 py-1 w-[150px]" v-if="selectedMapel.kode == 'pabp'">Agama</th>
+                            <th class="border bg-slate-100 py-1 w-[70px]">Fase</th>
+                            <th class="border bg-slate-100 py-1 w-[80px]">Tingkat</th>
+                            <th class="border bg-slate-100 py-1 w-[80px]">Semester</th>
+                            <th class="border bg-slate-100 py-1 w-[300px]">Elemen</th>
+                            <th class="border bg-slate-100 py-1 w-[200px]">Kode</th>
+                            <th class="border bg-slate-100 py-1">Teks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="(tp, t) in selectedMapel.tps" :key="t">
+                            <tr>
+                                <td class="text-center border px-1 py-2 align-top">{{ t+1 }}</td>
+                                <td class="text-center border px-1 py-2 align-top" v-if="selectedMapel.kode == 'pabp'">
+                                    <el-select v-model="tp.agama" placeholder="Pilih Agama">
+                                        <el-option v-for="agama in ['Islam','Kristen','Katolik','Hindu','Budha','Konghuchu']" :key="agama" :value="agama"></el-option>
+                                    </el-select>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-select v-model="tp.fase" placeholder="Fase">
+                                        <el-option v-for="fase in ['A','B','C']" :key="fase" :value="fase"></el-option>
+                                    </el-select>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-select v-model="tp.tingkat" placeholder="Kelas">
+                                        <el-option v-for="t of 6" :key="t" :value="t" :label="`Kelas ${t}`" />
+                                    </el-select>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-select v-model="tp.semester" placeholder="Pilih Semester">
+                                        <el-option v-for="s of 2" :key="`s${s}`" :value="s" :label="`Sem ${s}`" />
+                                    </el-select>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-select v-model="tp.elemen" placeholder="Pilih Elemen">
+                                        <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +' |' : ''} ${elemen.nama}`" />
+                                    </el-select>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-input v-model="tp.kode" placeholder="Kode TP"></el-input>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-input type="textarea" placeholder="Teks Tujuan Pembelajaran" v-model="tp.teks" rows="1" autosize></el-input>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </el-scrollbar>
         </div>
     </el-dialog>
 </DashLayout>
 </template>
+
+<style>
+.el-dialog__header {
+    background: rgb(208, 228, 247);
+    padding: 10px;
+}
+</style>

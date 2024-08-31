@@ -18,8 +18,18 @@ class PembelajaranController extends Controller implements HasMiddleware
 
     public function home(Request $request)
     {
+        // dd(Mapel::with('tps')->get());
+        // dd($request->user()->getDirectPermissions());
+        if ($request->user()->hasRole('admin_tp')) {
+            $permission_name = $request->user()->getPermissionNames();
+            $permission = \explode("_", $permission_name[0]);
+            // dd(end($permission));
+            $mapels = Mapel::with('tps')->get();
+        } else {
+            $mapels = Mapel::with('tps')->get();
+        }
         return Inertia::render('Dash/Pembelajaran', [
-            'mapels' => Mapel::with('tps')->get(),
+            'mapels' => $mapels,
             'elemens' => Elemen::all(),
             'ekskuls' => Ekskul::all()
         ]);
@@ -111,7 +121,7 @@ class PembelajaranController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            'role:admin|ops|guru_kelas',
+            'role:admin|ops|guru_kelas|admin_tp',
         ];
     }
 }

@@ -792,6 +792,7 @@ Route::middleware('auth')->group(
                     function () {
                         Route::get("/", [P5Controller::class, 'home'])->name('dashboard.p5');
                         Route::get("/nilai", [P5Controller::class, 'nilai'])->name('dashboard.p5.nilai');
+                        Route::get("/proyek", [P5Controller::class, 'proyek'])->name('dashboard.p5.proyek');
                         Route::prefix("apd")->group(
                             function () {
                                 Route::post('/impor', [ApdController::class, 'impor'])->name('dashboard.apd.impor');

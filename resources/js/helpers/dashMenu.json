@@ -23,6 +23,7 @@
         "roles": [
             "superadmin",
             "admin",
+            "admin_tp",
             "ops",
             "kepala_sekolah",
             "guru_kelas",
@@ -52,11 +53,7 @@
                     "superadmin",
                     "admin",
                     "ops",
-                    "kepala_sekolah",
-                    "guru_kelas",
-                    "guru_agama",
-                    "guru_pjok",
-                    "guru_inggris"
+                    "kepala_sekolah"
                 ]
             },
             {
@@ -75,7 +72,7 @@
                 "label": "Pembelajaran",
                 "icon": "bookshelf",
                 "url": "/dashboard/pembelajaran",
-                "roles": ["superadmin","admin", "ops"]
+                "roles": ["superadmin","admin", "ops", "admin_tp"]
             }
         ]
     },
@@ -158,13 +155,19 @@
         "label": "P5",
         "icon": "folder",
         "url": "#",
-        "roles": ["superadmin", "admin", "guru_kelas"],
+        "roles": ["superadmin", "admin", "ops", "guru_kelas"],
         "children": [
             {
                 "label" : "Dimensi & Elemen",
                 "icon": "folder",
                 "url": "/dashboard/p5",
                 "roles": ["superadmin", "admin"]
+            },
+            {
+                "label" : "Proyek P5",
+                "icon": "folder",
+                "url": "/dashboard/p5/proyek",
+                "roles": ["superadmin", "admin", "ops", "guru_kelas"]
             },
             {
                 "label" : "Input Nilai",
