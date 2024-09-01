@@ -144,6 +144,54 @@ class FrontController extends Controller
         }
     }
 
+    public function galeri(Request $request)
+    {
+        try {
+            return Inertia::render(
+                'Front/Galeri',
+                [
+                    'canLogin' => Route::has('login'),
+                    'appName' => \env('APP_NAME'),
+                    'galeris' => Galeri::paginate(50),
+                ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'Galeri PKG Kecamatan Wagir',
+                        'description' => 'List Galeri PKG Kecamatan Wagir',
+                        'image' => '/img/tutwuri.png',
+                    ]
+                ]
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function agenda(Request $request)
+    {
+        try {
+            return Inertia::render(
+                'Front/Agenda',
+                [
+                    'canLogin' => Route::has('login'),
+                    'appName' => \env('APP_NAME'),
+                    'agendas' => Agenda::whereTapel($this->tapel()->kode)->orderBy('mulai', 'ASC')->get(),
+                ]
+            )->withViewData(
+                [
+                    'meta' => [
+                        'title' => 'Agenda Kegiatan PKG Kecamatan Wagir',
+                        'description' => 'List Agenda Galeri PKG Kecamatan Wagir',
+                        'image' => '/img/tutwuri.png',
+                    ]
+                ]
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
     private function tapel()
     {
         return Tapel::whereIsActive(1)->first();

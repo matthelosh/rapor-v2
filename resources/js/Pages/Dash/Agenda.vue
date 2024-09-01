@@ -6,8 +6,8 @@ import { Calendar } from 'v-calendar';
 import 'v-calendar/style.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
-import { ElNotification } from 'element-plus';
 dayjs.locale('id')
+import { ElNotification } from 'element-plus';
 
 const props = defineProps({ agendas: Array })
 const mode = ref('calendar')
