@@ -101,8 +101,24 @@ const onDayClicked = async(calendar, $event) => {
             <Footer />
         </div>
     </div>
-    <el-dialog v-model="dialog">
-        {{ agenda }}
+    <el-dialog v-model="dialog" :show-close="false">
+        <template #header="{close}">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg text-sky-600 font-bold tracking-wide">{{ selectedAgenda.nama }}</h3>
+                <el-button type="danger" circle @click="close">
+                    <Icon icon="mdi:close" />
+                </el-button>
+            </div>
+        </template>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <el-image src="https://loremflickr.com/300/600/nature/"></el-image>
+            <article class="col-span-1 md:col-span-3 md:text-lg">
+                <p class="my-4">{{ selectedAgenda.deskripsi }}</p>
+                <p class="my-2">Mulai: {{ dayjs(selectedAgenda.mulai).locale('id').format('DD MMMM YYYY') }}</p>
+                <p class="my-2">Selesai: {{ dayjs(selectedAgenda.selesai).locale('id').format('DD MMMM YYYY') }}</p>
+                <p class="my-2">Pelaksana: {{ selectedAgenda.pelaksana }}</p>
+            </article>
+        </div>
     </el-dialog>
 </template>
 
