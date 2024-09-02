@@ -69,8 +69,21 @@ class PermissionSeeder extends Seeder
             "read_ops",
             "add_ops",
             "update_ops",
-            "delete_ops"
-
+            "delete_ops",
+            "tp_kelas_1",
+            "tp_kelas_2",
+            "tp_kelas_3",
+            "tp_kelas_4",
+            "tp_kelas_5",
+            "tp_kelas_6",
+            "tp_mapel_pjok",
+            "tp_mapel_Inggris",
+            "tp_mapel_Islam",
+            "tp_mapel_Kristen",
+            "tp_mapel_Katolik",
+            "tp_mapel_Hindu",
+            "tp_mapel_Budha",
+            "tp_mapel_Konghuchu"
         ];
         // create permission
         foreach ($permissions as $permission) {

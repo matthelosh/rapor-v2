@@ -22,7 +22,8 @@ jobs:
             git status
             php artisan down
             composer install
-            php artisan migrate
+            php artisan migrate:refresh
+            php artisan db:seed 
             yarn --only=prod
             yarn build
             php artisan up

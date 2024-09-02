@@ -56,6 +56,7 @@ const onFileElemenPicked = async(e) => {
 }
 const onFileTpPicked = async(e) => {
     // console.log(mapel)
+    loading.value = true
     const file = e.target.files[0]
     const ab = await file.arrayBuffer();
 
@@ -63,7 +64,13 @@ const onFileTpPicked = async(e) => {
 
     const ws = wb.Sheets[wb.SheetNames[0]];
     let datas = utils.sheet_to_json(ws)
-    imporTp(datas)
+    if (['superadmin', 'admin'].includes(role.value)) {
+        imporTp(datas)
+    } else if (role.value == 'admin_tp') {
+        newTps.value = datas
+    }
+
+    loading.value = false
     // await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: datas}, {
     //     onStart: () => loading.value = true,
     //     onSuccess: (page) => {
@@ -237,6 +244,18 @@ const newTps = ref([
     }
 ])
 
+const onDialogClosed = () => {
+    newTps.value = [{
+        fase: "A",
+        tingkat: "1",
+        kode: "",
+        elemen: "",
+        semester: "",
+        agama: "",
+        teks: ""
+    }]
+}
+
 // const tes = () => {
 //     imporTp(newTps.value)
 // }
@@ -401,11 +420,12 @@ onBeforeMount(() => {
         </div>
     </el-card>
 
-    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm" :width="formMode == 'edit' ? '60%' : '100%'" :fullscreen="formMode == 'add'" body-class="">
+    <el-dialog class="form-tambah" v-model="formTambah" :show-close="false" @close="closeForm" :width="formMode == 'edit' ? '60%' : '100%'" :fullscreen="formMode == 'add'" body-class="" @closed="onDialogClosed">
         <template #header="{close}" >
             <span class="flex items-center justify-between" >
                 <h3 class="text-sky-800 text-lg">Tambah <span class="font-black">TP</span> <small>{{ selectedMapel.label }}</small></h3>
                 <div class="flex items-center gap-1">
+                    <el-button type="success" @click="$refs.fileTp.click()" :disabled="role !== 'admin_tp'">Impor TP</el-button>
                     <el-button type="primary" @click="addRow">
                         <Icon icon="mdi:plus" />
                     </el-button>
@@ -416,7 +436,7 @@ onBeforeMount(() => {
                 </div>
             </span>
         </template>
-        <div class="dialog-body">
+        <el-card class="dialog-body" v-loading="loading" style="height: 90vh;">
             <el-form v-model="newTp" label-position="top" v-if="formMode == 'edit'">
                 <el-row :gutter="10">
                     <el-col :span="4">
@@ -465,7 +485,7 @@ onBeforeMount(() => {
                 </el-row>
             </el-form>
             <el-scrollbar max-height="90vh" v-if="formMode == 'add'">
-                <table class="w-full">
+                <table class="w-full" >
                     <thead>
                         <tr>
                             <th class="border bg-slate-100 py-1 w-[50px]">No</th>
@@ -494,12 +514,12 @@ onBeforeMount(() => {
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-select v-model="tp.tingkat" placeholder="Kelas">
-                                        <el-option v-for="t of 6" :key="t" :value="t" :label="`Kelas ${t}`" />
+                                        <el-option v-for="t of 6" :key="t" :value="t"  />
                                     </el-select>
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-select v-model="tp.semester" placeholder="Pilih Semester">
-                                        <el-option v-for="s of 2" :key="`s${s}`" :value="s" :label="`Sem ${s}`" />
+                                        <el-option v-for="s of 2" :key="`s${s}`" :value="s"  />
                                     </el-select>
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
@@ -518,7 +538,7 @@ onBeforeMount(() => {
                     </tbody>
                 </table>
             </el-scrollbar>
-        </div>
+        </el-card>
     </el-dialog>
 </DashLayout>
 </template>

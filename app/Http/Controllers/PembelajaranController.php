@@ -38,17 +38,23 @@ class PembelajaranController extends Controller implements HasMiddleware
         if ($request->user()->hasRole('admin_tp')) {
             $permission_name = $request->user()->getPermissionNames();
             $permission = \explode("_", $permission_name[0]);
-            $mapel = \end($permission);
+            $mapel = $permission[1];
             // dd($mapel);
-            if (\strtolower($mapel) == 'islam') {
-                $mapels = Mapel::where('kode', 'pabp')
-                    ->with([
-                        'tps' => function ($t) {
-                            $t->where('agama', 'Islam');
+            if ($mapel == 'mapel') {
+                // Guru Kelas
+                if (in_array(end($permission), ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu'])) {
+                    $agama = end($permission);
+                    $mapels = Mapel::where('kode', 'pabp')->with([
+                        'tps' => function ($t) use ($agama) {
+                            $t->where('agama', $agama);
                         }
                     ])->get();
-            } elseif (\in_array($mapel, ['1', '2', '4', '5', '6'])) {
-                $mapels = Mapel::whereNot('kode', 'pabp')->with('tps')->with([
+                } else {
+                    $mapels = Mapel::where('kode', end($permission))->get();
+                }
+            } else {
+                // Guru Kelas
+                $mapels = Mapel::whereNot('kode', end($permission))->with([
                     'tps' => function ($t) use ($mapel) {
                         $t->where('tingkat', $mapel);
                     }
