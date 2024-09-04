@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\ProfileController;
+use App\Models\p5;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -466,6 +467,25 @@ Route::middleware('auth')->group(
                     }
                 );
 
+                Route::prefix("asesmen")->group(
+                    function () {
+                        Route::get("/", [AsesmenController::class, 'home'])
+                            ->middleware('can:read_asesmen')
+                            ->name('dashboard.asesmen');
+                        Route::post("/store", [AsesmenController::class, 'store'])
+                            ->middleware('can:add_asesmen')
+                            ->name('dashboard.asesmen.store');
+                    }
+                );
+
+                Route::prefix("soal")->group(
+                    function () {
+                        Route::get('/', [SoalController::class, 'home'])
+                            ->middleware('can:add_soal')
+                            ->name('dashboard.soal');
+                    }
+                );
+
                 Route::prefix("nilai")->group(
                     function () {
                         Route::get(
@@ -791,8 +811,19 @@ Route::middleware('auth')->group(
                 Route::prefix("p5")->group(
                     function () {
                         Route::get("/", [P5Controller::class, 'home'])->name('dashboard.p5');
-                        Route::get("/nilai", [P5Controller::class, 'nilai'])->name('dashboard.p5.nilai');
-                        Route::get("/proyek", [P5Controller::class, 'proyek'])->name('dashboard.p5.proyek');
+                        Route::prefix("nilai")->group(
+                            function () {
+                                Route::get("/", [P5Controller::class, 'nilai'])->name('dashboard.p5.nilai');
+                                Route::post("/index", [P5Controller::class, 'indexNilaiP5'])->name('dashboard.p5.nilai.index');
+                                Route::post("/store", [P5Controller::class, 'storeNilai'])->name('dashboard.p5.nilai.store');
+                            }
+                        );
+                        Route::prefix("proyek")->group(
+                            function () {
+                                Route::get("/", [P5Controller::class, 'proyek'])->name('dashboard.p5.proyek');
+                                Route::post("/store", [P5Controller::class, 'storeProyek'])->name('dashboard.p5.proyek.store');
+                            }
+                        );
                         Route::prefix("apd")->group(
                             function () {
                                 Route::post('/impor', [ApdController::class, 'impor'])->name('dashboard.apd.impor');

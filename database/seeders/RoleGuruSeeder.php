@@ -14,7 +14,7 @@ class RoleGuruSeeder extends Seeder
     public function run(): void
     {
         $guru_kelas = Role::where('name', 'guru_kelas')->first();
-        $guru_agama = Role::where('name', 'guru_agama')->first();
+        $guruMapels = Role::whereNot('name', 'guru_kelas')->get();
         $guru_pjok = Role::where('name', 'guru_pjok')->first();
         $guru_inggris = Role::where('name', 'guru_inggris')->first();
         $guru_kelas->givePermissionTo([
@@ -46,82 +46,58 @@ class RoleGuruSeeder extends Seeder
             'read_nilai',
             'add_nilai',
             'update_nilai',
-            'delete_nilai'
+            'delete_nilai',
+            "add_soal",
+            "read_soal",
+            "update_soal",
+            "delete_soal",
+            'add_asesmen',
+            'read_asesmen',
+            'update_asesmen',
+            'delete_asesmen',
+            'add_proyek',
+            'read_proyek',
+            'update_proyek',
+            'delete_proyek',
+            'add_nilai_proyek',
+            'read_nilai_proyek',
+            'update_nilai_proyek',
+            'delete_nilai_proyek',
         ]);
-        $guru_agama->givePermissionTo([
-            'read_user',
-            'update_user',
-            'read_school',
-            'read_guru',
-            'update_guru',
-            'read_siswa',
-            'read_rombel',
-            'read_tp',
-            'add_tp',
-            'update_tp',
-            'delete_tp',
-            'read_atp',
-            'add_atp',
-            'update_atp',
-            'delete_atp',
-            'read_materi',
-            'add_materi',
-            'update_materi',
-            'delete_materi',
-            'read_nilai',
-            'add_nilai',
-            'update_nilai',
-            'delete_nilai'
-        ]);
-        $guru_pjok->givePermissionTo([
-            'read_user',
-            'update_user',
-            'read_school',
-            'read_guru',
-            'update_guru',
-            'read_siswa',
-            'read_rombel',
-            'read_tp',
-            'add_tp',
-            'update_tp',
-            'delete_tp',
-            'read_atp',
-            'add_atp',
-            'update_atp',
-            'delete_atp',
-            'read_materi',
-            'add_materi',
-            'update_materi',
-            'delete_materi',
-            'read_nilai',
-            'add_nilai',
-            'update_nilai',
-            'delete_nilai'
-        ]);
-        $guru_inggris->givePermissionTo([
-            'read_user',
-            'update_user',
-            'read_school',
-            'read_guru',
-            'update_guru',
-            'read_siswa',
-            'read_rombel',
-            'read_tp',
-            'add_tp',
-            'update_tp',
-            'delete_tp',
-            'read_atp',
-            'add_atp',
-            'update_atp',
-            'delete_atp',
-            'read_materi',
-            'add_materi',
-            'update_materi',
-            'delete_materi',
-            'read_nilai',
-            'add_nilai',
-            'update_nilai',
-            'delete_nilai'
-        ]);
+        foreach ($guruMapels as $guru) {
+            $guru->givePermissionTo([
+                'read_user',
+                'update_user',
+                'read_school',
+                'read_guru',
+                'update_guru',
+                'read_siswa',
+                'read_rombel',
+                'read_tp',
+                'add_tp',
+                'update_tp',
+                'delete_tp',
+                'read_atp',
+                'add_atp',
+                'update_atp',
+                'delete_atp',
+                'read_materi',
+                'add_materi',
+                'update_materi',
+                'delete_materi',
+                'read_nilai',
+                'add_nilai',
+                'update_nilai',
+                'delete_nilai',
+                "add_soal",
+                "read_soal",
+                "update_soal",
+                "delete_soal",
+                'add_asesmen',
+                'read_asesmen',
+                'update_asesmen',
+                'delete_asesmen'
+            ]);
+        }
     }
 }

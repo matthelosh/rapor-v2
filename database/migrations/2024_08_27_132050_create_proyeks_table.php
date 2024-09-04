@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('semester', 1);
             $table->string('sekolah_id', 10);
             $table->string('rombel_id', 60);
+            $table->date('tanggal')->nullable();
             $table->string('nama', 191);
             $table->text('deskripsi');
             $table->enum('status', ['rencana', 'progres', 'selesai'])->default('rencana');

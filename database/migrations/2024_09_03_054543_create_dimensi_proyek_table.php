@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nilai_p5_s', function (Blueprint $table) {
+        Schema::create('dimensi_proyek', function (Blueprint $table) {
             $table->id();
-            $table->integer('proyek_id');
-            $table->string('siswa_id', 16);
-            $table->string('rombel_id', 100);
-            $table->string('tapel', 10);
-            $table->string('semester', 1);
             $table->integer('apd_id');
-            $table->enum('nilai', ['BB', 'MB', 'BSH', 'SB'])->default('BB');
-            $table->text('keterangan')->nullable();
+            $table->integer('proyek_id');
             $table->timestamps();
         });
     }
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nilai_p5_s');
+        Schema::dropIfExists('dimensi_proyek');
     }
 };

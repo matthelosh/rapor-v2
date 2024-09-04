@@ -84,6 +84,50 @@
         "children": []
     },
     {
+        "label": "Asesmen",
+        "icon": "folder-question",
+        "url": "#",
+        "roles": [
+            "superadmin",
+            "admin",
+            "guru_kelas",
+            "guru_agama",
+            "guru_pjok",
+            "guru_inggris",
+            "ops"
+        ],
+        "children": [
+            {
+                "label": "Data Asesmen",
+                "url": "/dashboard/asesmen",
+                "icon": "file-question",
+                "roles": [
+                    "superadmin",
+                    "admin",
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris",
+                    "ops"
+                ]
+            },
+            {
+                "label": "Bank Soal",
+                "url": "/dashboard/soal",
+                "icon": "question-network",
+                "roles": [
+                    "superadmin",
+                    "admin",
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris",
+                    "ops"
+                ]
+            }
+        ]
+    },
+    {
         "label": "Data Nilai",
         "icon": "numeric",
         "url": "#",
@@ -167,10 +211,10 @@
                 "label" : "Proyek P5",
                 "icon": "folder",
                 "url": "/dashboard/p5/proyek",
-                "roles": ["superadmin", "admin", "ops", "guru_kelas"]
+                "roles": ["ops", "guru_kelas"]
             },
             {
-                "label" : "Input Nilai",
+                "label" : "Nilai P5",
                 "icon": "pencil-box",
                 "url": "/dashboard/p5/nilai",
                 "roles": ["guru_kelas"]

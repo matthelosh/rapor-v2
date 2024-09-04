@@ -35,7 +35,7 @@ const mode = ref('list')
             </template>
         </el-collapse>
 
-        {{ rombel }}
+        <!-- {{ rombel }} -->
     </el-card>
 </DashLayout>
 </template>

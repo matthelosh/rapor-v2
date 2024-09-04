@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'sa',
                 'email' => 'sa@raporsd.net',
-                'password' => Hash::make('123qweasd')
+                'password' => '$2y$10$AALHMF4qCn50kXkp6XWCPehAoswBxgh8x12cqytEAxHHjZb7G4VGq'
             ]
         );
 

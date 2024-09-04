@@ -32,7 +32,9 @@ class DatabaseSeeder extends Seeder
                 Agendaseeder::class,
                 p5Seeder::class,
                 Elemenp5Seeder::class,
-                GaleriSeeder::class
+                ApdSeeder::class,
+                GaleriSeeder::class,
+                // NilaiP5Seeder::class,
             ]
         );
     }

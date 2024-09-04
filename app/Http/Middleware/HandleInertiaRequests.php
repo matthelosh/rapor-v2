@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user ?? null,
                 'roles' => $user ? $user->getRoleNames() : null,
-                'can' => $user ? $user->getPermissionsViaRoles()->pluck('name') : null,
+                'can' => $user ? $user->getAllPermissions()->pluck('name') : null,
 
 
             ],
@@ -58,6 +58,12 @@ class HandleInertiaRequests extends Middleware
 
                     $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
                 } elseif (in_array($user->getRoleNames()[0], $mapels)) {
+                }
+
+                if ($user->hasRole('ops')) {
+                    $datas['rombels'] = Rombel::where('sekolah_id', $this->sekolahs($user)[0]->npsn)
+                        ->where('tapel', $this->periode()['tapel']['kode'])
+                        ->get();
                 }
             }
         }

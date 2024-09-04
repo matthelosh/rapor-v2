@@ -25,6 +25,10 @@ class NilaiP5 extends Model
         return $this->belongsTo(Siswa::class, 'siswa_id', 'nisn');
     }
 
+    function proyek()
+    {
+        return $this->belongsTo(Proyek::class, 'proyek_id', 'id');
+    }
     function apd()
     {
         return $this->belongsTo(Apd::class, 'apd_id', 'id');

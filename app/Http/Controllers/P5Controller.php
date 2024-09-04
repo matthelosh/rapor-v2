@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Elemenp5;
+use App\Models\NilaiP5;
 use App\Models\p5;
 use App\Models\Proyek;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Tapel;
+use App\P5trait;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class P5Controller extends Controller
 {
+    use P5trait;
+
     public function home(Request $request)
     {
         try {
@@ -31,27 +36,74 @@ class P5Controller extends Controller
     {
         try {
             if ($request->user()->hasRole('ops')) {
-                $proyeks = Proyek::whereTapel($this->tapel()->kode)->with('rombel')
+                $proyeks = Proyek::whereTapel($this->tapel()->kode)
                     ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
+                    ->with('rombel.sekolah')
+                    ->with('apds.elemen.dimensi')
+                    // ->with('dimensis')
                     ->get();
             } else {
                 $rombel = Rombel::where('guru_id', $request->user()->userable->id)
                     ->where('tapel', $this->tapel()->kode)
                     ->first();
-                $proyeks = Proyek::whereTapel($this->tapel()->kode)->with('rombel')
+                $proyeks = Proyek::whereTapel($this->tapel()->kode)
+                    ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
                     ->whereRombelId($rombel->kode)
+                    ->with('rombel.sekolah', 'tapel', 'semester')
+                    ->with('apds.elemen.dimensi')
+                    // ->with('dimensis')
                     ->get();
             }
             return Inertia::render(
                 'Dash/P5/Proyek',
                 [
                     'proyeks' => $proyeks,
+                    'dimensis' => p5::with('elemens.apds')->get()
                 ]
             );
         } catch (\Throwable $th) {
             throw $th;
         }
     }
+
+    public function storeProyek(Request $request)
+    {
+        try {
+            $proyek = Proyek::updateOrCreate(
+                [
+                    'id' => $request->id ?? null,
+                ],
+                [
+                    'tapel' => $this->tapel()->kode,
+                    'semester' => $this->semester()->kode,
+                    'sekolah_id' => $request->query('sekolah'),
+                    'rombel_id' => $request->rombel_id,
+                    'nama' => $request->nama,
+                    'deskripsi' => $request->deskripsi,
+                    'status' => 'rencana'
+                ]
+            );
+
+            $sync_apd = $proyek->apds()->sync($request->apd_ids);
+
+            return back()->with('message', 'Proyek Disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function indexNilaiP5(Request $request)
+    {
+        try {
+            $nilais = $this->getNilai($request->rombel, $request->proyek_id);
+            return \response()->json([
+                'nilais' => $nilais
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function nilai(Request $request)
     {
         try {
@@ -77,12 +129,15 @@ class P5Controller extends Controller
         }
     }
 
-    private function tapel()
+    public function storeNilai(Request $request)
     {
-        return Tapel::whereIsActive(1)->first();
-    }
-    private function semester()
-    {
-        return Semester::whereIsActive(1)->first();
+        try {
+            $datas = $request->datas;
+            $store = $this->store($datas);
+
+            return \back()->with('message', $store);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
