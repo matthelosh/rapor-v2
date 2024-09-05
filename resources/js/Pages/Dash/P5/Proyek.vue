@@ -5,6 +5,7 @@ import { Head, router, usePage } from '@inertiajs/vue3'
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
 const FormNilaiP5 = defineAsyncComponent(() => import('@/Components/Dashboard/P5/FormNilaiP5.vue'))
+const RaporP5 = defineAsyncComponent(() => import('@/Components/Dashboard/P5/RaporP5.vue'))
 
 const mode = ref('list')
 const loading = ref(false)
@@ -41,10 +42,21 @@ const simpanProyek = async() => {
     })
 }
 
+
 const selectedProyek = ref(null)
 const inputNilaiP5 = (item) => {
+    mode.value="input-nilai"
     selectedProyek.value = item
     // console.log(item)
+}
+const cetakRaporP5 = (item) => {
+    mode.value = 'cetak-rapor'
+    selectedProyek.value = item
+    }
+
+const closeMe = () => {
+    mode.value = 'list'
+    selectedProyek.value = null
 }
 </script>
 
@@ -85,7 +97,10 @@ const inputNilaiP5 = (item) => {
                                             <p>Deskripsi: {{ proyek.deskripsi }}</p>
                                         </div>
                                         <div class="items">
-                                            <el-button @click="inputNilaiP5(proyek)">Input Nilai</el-button>
+                                            <el-button-group>
+                                                <el-button @click="inputNilaiP5(proyek)">Input Nilai</el-button>
+                                                <el-button @click="cetakRaporP5(proyek)">Cetak Rapor</el-button>
+                                            </el-button-group>
                                         </div>
                                     </div>
                                     <el-collapse>
@@ -154,6 +169,7 @@ const inputNilaiP5 = (item) => {
             </div>
         </template>
     </el-card>
-   <FormNilaiP5 v-if="selectedProyek !== null" :proyek="selectedProyek" @close="selectedProyek = null" />
+   <FormNilaiP5 v-if="selectedProyek !== null && mode == 'input-nilai'" :proyek="selectedProyek" @close="closeMe" />
+   <RaporP5 v-if="selectedProyek !== null && mode == 'cetak-rapor'" :proyek="selectedProyek" @close="closeMe" />
 </DashLayout>
 </template>

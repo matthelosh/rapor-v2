@@ -13,20 +13,20 @@ const loading = ref({
     nilais: false,
 })
 
-const nilais = ref([])
-const getNilaiP5 = async () => {
-    loading.value.nilais = true
-    axios.post(route('dashboard.p5.nilai.index', {
-        _query: {
-            rombel: props.proyek.rombel_id,
-            proyek_id: props.proyek.id
-        }
-    }))
-    .then(res => {
-        nilais.value = res.data.nilais
-        loading.value.nilais = false
-    }).catch(err => console.log(err))
-}
+    const nilais = ref([])
+    const getNilaiP5 = async () => {
+        loading.value.nilais = true
+        axios.post(route('dashboard.p5.nilai.index', {
+            _query: {
+                rombel: props.proyek.rombel_id,
+                proyek_id: props.proyek.id
+            }
+        }))
+        .then(res => {
+            nilais.value = res.data.nilais
+            loading.value.nilais = false
+        }).catch(err => console.log(err))
+    }
 
 const simpanNilaiP5 = async () => {
     router.post(route('dashboard.p5.nilai.store'), 
@@ -41,6 +41,14 @@ const simpanNilaiP5 = async () => {
         }
     )
 }
+
+const skors = ref([
+        {kode: '-', label: ''},
+        {kode: 'BB', label: 'Belum Berkembang'},
+        {kode: 'MB', label: 'Mulai Berkembang'},
+        {kode: 'BSH', label: 'Berkembang Sesuai Harapan'},
+        {kode: 'SB', label: 'Sangat Berkembang'}
+])
 
 onBeforeMount(() => {
     show.value = props.proyek !== null
@@ -70,7 +78,7 @@ onBeforeMount(() => {
                             <template v-for="(nilai, s) in scope.row.nilais">
                                 <span v-if="nilai.apd_id == apd.id">
                                     <el-select v-model="nilai.skor">
-                                        <el-option v-for="skor in ['BB', 'MB', 'BSH', 'SB']" :value="skor"></el-option>
+                                        <el-option v-for="skor in skors" :value="skor.kode" :label="skor.label"></el-option>
                                     </el-select>
                                 </span>
                             </template>

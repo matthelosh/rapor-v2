@@ -18,7 +18,7 @@ trait P5trait
 
         // if ($nilais->count() < 1) {
         $rombel = Rombel::whereKode($rombel_id)->with('siswas')->first();
-        $proyek = Proyek::whereId($proyek_id)->with('apds')->first();
+        $proyek = Proyek::whereId($proyek_id)->with('apds.elemen.dimensi')->first();
         $results = [];
 
         foreach ($rombel->siswas as $siswa) {
@@ -27,11 +27,13 @@ trait P5trait
                 'nama' => $siswa->nama,
                 'proyek_id' => $proyek->id,
                 'rombel_id' => $rombel->kode,
-                'nilais' => []
+                'nilais' => [],
+                'siswa' => $siswa
             ];
             foreach ($proyek->apds as $apd)
                 array_push($data['nilais'], [
                     'apd_id' => $apd->id,
+                    'apd' => $apd,
                     'skor' => NilaiP5::whereProyekId($proyek_id)->whereApdId($apd->id)->whereSiswaId($siswa->nisn)->value('nilai') ?? ''
                 ]);
 
@@ -58,7 +60,7 @@ trait P5trait
                         'apd_id' => $nilai['apd_id'],
                     ],
                     [
-                        'nilai' => $nilai['skor'] ?? 'BB',
+                        'nilai' => $nilai['skor'] ?? '-',
                         'keterangan' => ''
 
                     ]

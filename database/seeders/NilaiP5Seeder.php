@@ -15,8 +15,8 @@ class NilaiP5Seeder extends Seeder
      */
     public function run(): void
     {
-        $rombel = Rombel::whereKode('20518848-2425-3')->with('siswas')->first();
-        $proyek = Proyek::whereNama('Tes #4')->with('apds')->first();
+        $rombel = Rombel::whereKode('20518848-2425-5')->with('siswas')->first();
+        $proyek = Proyek::whereNama('Tes')->with('apds')->first();
 
 
         foreach ($proyek->apds as $apd) {

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('tapel', 10);
             $table->string('semester', 1);
             $table->integer('apd_id');
-            $table->enum('nilai', ['BB', 'MB', 'BSH', 'SB'])->default('BB');
+            $table->enum('nilai', ['-', 'BB', 'MB', 'BSH', 'SB'])->default('-');
             $table->text('keterangan')->nullable();
             $table->timestamps();
         });
