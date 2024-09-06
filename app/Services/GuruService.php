@@ -64,7 +64,7 @@ class GuruService
         if ($file !== null) {
             $foto_file = $file;
             $foto_name = $data['nip'] . '.' . $foto_file->extension();
-            $store = $foto_file->storeAs('public/sekolah/guru/', $foto_name);
+            $store = $foto_file->storeAs('public/images/guru/', $foto_name);
             $foto = $store ?
                 /**$foto_name **/
                 Storage::url($store) : null;

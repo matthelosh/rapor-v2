@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus'
+import { avatar } from '@/helpers/Gambar.js'
 
 const page = usePage()
 const props = defineProps({open: Boolean, selectedGuru: Object})
@@ -10,6 +11,8 @@ const show = computed(() => props.open)
 const loading = ref(false)
 const fotoUrl = ref('/img/tutwuri.png')
 const fileFoto = ref(null)
+const fileTTD = ref(null)
+const ttdUrl = ref(null)
 const guru = ref({
     nip: '1234556789',
     gelar_depan: '',
@@ -67,6 +70,13 @@ const onFotoPicked = (e) => {
     // console.log(e)
 }
 
+const onTTDPicked = (e) => {
+    const file = e.target.files[0]
+    let url  = URL.createObjectURL(file)
+    fileTTD.value = file
+    ttdUrl.value = url
+}
+
 const closeMe = () => {
     loading.value = false
     emit('close')
@@ -76,6 +86,7 @@ onBeforeMount(() => {
     if (props.selectedGuru !== null) {
         guru.value = props.selectedGuru
         guru.value.sekolahs = props.selectedGuru.sekolahs.map(s => s.id)
+        ttdUrl.value = '/storage/images/ttd/'+props.selectedGuru.nip+'.png'
     } else {
         if (page.props.auth.roles.includes('ops')) {
             guru.value.sekolahs = page.props.sekolahs.map(s => s.id)
@@ -91,9 +102,25 @@ onBeforeMount(() => {
         <el-row :gutter="10">
             <el-col :span="6" class="border-r bg-slate-100 p-2">
                 <h4 class="text-center mb-2">Foto Guru  <br /><small>[Klik untuk mengganti]</small></h4>
-                <div>
-                    <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
+                <div class="flex justify-center">
+                    <!-- <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()"> -->
+                    <el-avatar
+                        :src="guru.foto"
+                        @error="onFotoError"
+                        @click="$refs.fotoInput.click()"
+                        style="margin: 0 auto; cursor: pointer;"
+                        :size="100"
+                    >
+                        <img :src="avatar(guru)" class="mx-auto" />
+                    </el-avatar>
                     <input type="file" placeholder="Pilih Foto Guru" ref="fotoInput" @change="onFotoPicked" class="hidden" accept=".jpg,.JPG,.png,.PNG,.bmp,.BMP,.svg, .SVG,.jpeg, .JPEG, .webp" />
+                </div>
+                <el-divider></el-divider>
+                <h4 class="text-center my-2">TTD Guru  <br /><small>[Klik untuk mengganti]</small></h4>
+                <div class="flex justify-center">
+                    <!-- <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()"> -->
+                     <img :src="ttdUrl" style="cursor:pointer;" @click="$refs.inputTTD.click()" />
+                    <input type="file" placeholder="Pilih Foto Guru" ref="inputTTD" @change="onTTDPicked" class="hidden" accept=".png,.PNG" />
                 </div>
             </el-col>
             <el-col :span="18">

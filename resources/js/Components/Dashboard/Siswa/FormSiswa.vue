@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { ElNotification } from 'element-plus'
 import axios from 'axios'
+import { fotoSiswa } from "@/helpers/Gambar";
 
 const page = usePage()
 const props = defineProps({open: Boolean, selectedSiswa: Object})
@@ -100,8 +101,21 @@ onBeforeMount(() => {
         <el-row :gutter="10">
             <el-col :span="6" class="border-r bg-slate-100 p-2">
                 <h4 class="text-center mb-2">Foto Siswa  <br /><small>[Klik untuk mengganti]</small></h4>
-                <div>
-                    <img class="mx-auto w-24 hover:cursor-pointer" :src="siswa.foto" :on-error="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
+                <div class="flex justify-center pt-4">
+                    <!-- <el-image class="mx-auto w-24 hover:cursor-pointer" :src="siswa.foto" :on-error="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()">
+                        <template #error>
+                            <img :src="fotoSiswa(siswa)" alt="">
+                        </template>
+                    </el-image> -->
+                    <el-avatar
+                        :src="siswa.foto"
+                        @error="onFotoError"
+                        @click="$refs.fotoInput.click()"
+                        style="margin: 0 auto; cursor: pointer;"
+                        :size="120"
+                    >
+                        <img :src="fotoSiswa(siswa)" class="mx-auto" />
+                    </el-avatar>
                     <input type="file" placeholder="Pilih Foto Guru" ref="fotoInput" @change="onFotoPicked" class="hidden" accept=".jpg,.JPG,.png,.PNG,.bmp,.BMP,.svg, .SVG,.jpeg, .JPEG, .webp" />
                 </div>
             </el-col>

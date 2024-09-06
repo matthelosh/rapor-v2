@@ -48,7 +48,7 @@ class SiswaService
         if ($file !== null) {
             $foto_file = $file;
             $foto_name = $data['nisn'] . '.' . $foto_file->extension();
-            $store = $foto_file->storeAs('public/sekolah/siswa/', $foto_name);
+            $store = $foto_file->storeAs('public/images/siswa/', $foto_name);
             $foto = $store ?
                 /**$foto_name **/
                 Storage::url($store) : null;

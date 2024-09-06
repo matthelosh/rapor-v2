@@ -437,7 +437,11 @@ const onSearchChanged = async () => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="NISN" prop="nisn"></el-table-column>
+                    <el-table-column label="NISN">
+                        <template #default="{row}">
+                            <el-button type="primary" text @click="edit(row)">{{ row.nisn }}</el-button>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Foto">
                         <template #default="scope">
                             <el-avatar
