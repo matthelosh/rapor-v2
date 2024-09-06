@@ -8,6 +8,8 @@ const props = defineProps({ proyek: Object })
 const emit = defineEmits(['close'])
 const loading = ref(false)
 const show = ref(false)
+const showTtd = ref(false)
+
 
 const nilais = ref([])
 const getNilaiP5 = async () => {
@@ -48,6 +50,7 @@ const cetak = async() => {
     win.document.write(html)
     setTimeout(() => {
         win.print()
+        win.close()
     }, 1000)
 }
 
@@ -60,35 +63,43 @@ onBeforeMount(() => {
 <template>
 <el-dialog v-model="show" fullscreen :show-close="false">
     <template #header>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between z-40">
             <h3>Rapor P5</h3>
             <el-button circle type="danger" @click="emit('close')">
                 <Icon icon="mdi:close" />
             </el-button>
         </div>
     </template>
-    <template #default>
+    <template #default >
         
         <el-row :gutter="20">
             <el-col :span="16">
-                    <div class="cetak bg-slate-300 p-4 print:p-0 print:bg-white min-h-[80vh] " :class="selectedNilai.length < 1 ? 'flex items-center justify-center' : ''">
+                    <div class="cetak bg-slate-300 p-4 print:p-0 print:bg-white min-h-[80vh] z-30" :class="selectedNilai.length < 1 ? 'flex items-center justify-center' : ''">
                         <h3 class="text-xl font-bold text-sky-800" v-if="selectedNilai.length < 1">
-                            Pilih Siswa di samping
+                            Pilih Siswa di samping 
                         </h3>
+                        
                         <template v-for="(nilai,n) in selectedNilai" :key="n">
                             <div class="page h-[330mm] print:h-[330mm] w-[216mm] bg-white mx-auto break-after-page shadow-md print:shadow-none my-6 cover p-6 relative overflow-hidden">
 
                                 <img src="/img/corner-tr-1.svg" alt="Ornamen-TR" class="absolute w-[50%] -right-28 -top-12">
                                 <img src="/img/corner-bl-1.svg" alt="Ornamen-TR" class="absolute w-[50%] -left-16 -bottom-10">
                                 <div class="content h-[95%] border border-4 border-black border-dashed flex flex-col justify-center gap-8 m-8">
-                                    <img src="/img/tutwuri.png" width="150" class="mx-auto" />
-                                    <h3 class="uppercase font-black text-center text-black  text-xl">RAPOR <br/> PROYEK PENGUATAN PROFIL PELAJAR PANCASILA <br> {{ props.proyek.rombel.sekolah.nama }}</h3>
-                                    <img src="https://pusatinformasi.kolaborasi.kemdikbud.go.id/hc/article_attachments/30787241285145" width="200" class="mx-auto" />
+                                    <img src="/img/tutwuri.png" width="100" class="mx-auto" />
+                                    <h3 class="uppercase font-black text-center text-black mb-20 text-xl">RAPOR <br/> PROYEK PENGUATAN PROFIL PELAJAR PANCASILA <br> {{ props.proyek.rombel.sekolah.nama }}</h3>
+                                    <el-image :src="page.props.sekolahs[0].logo" style="width: 200px; margin: 0 auto;">
+                                        <template #error>
+                                            <img src="https://pusatinformasi.kolaborasi.kemdikbud.go.id/hc/article_attachments/30787241285145" width="200" class="mx-auto" />
+                                        </template>
+                                    </el-image>
+                                    <div class="py-20">
+                                        <p class="text-center text-lg">Nama Peserta Didik</p>
+                                        <h3 class="p-1 border border-black w-[50%] mx-auto text-center text-xl uppercase font-bold">{{ nilai.nama }}</h3>
+                                        <p class="text-center text-lg">NISN</p>
+                                        <h3 class="p-1 border border-black w-[50%] mx-auto text-center text-xl uppercase font-bold">{{ nilai.siswa_id }}</h3>
 
-                                    <p class="text-center text-lg">Nama Peserta Didik</p>
-                                    <h3 class="p-1 border border-black w-[50%] mx-auto text-center text-xl uppercase font-bold">{{ nilai.nama }}</h3>
-                                    <p class="text-center text-lg">NISN</p>
-                                    <h3 class="p-1 border border-black w-[50%] mx-auto text-center text-xl uppercase font-bold">{{ nilai.siswa_id }}</h3>
+                                    </div>
+                                    <h3 class="text-center mt-24 text-xl font-black text-black font-[arial]">TA. {{ page.props.periode.tapel.label }}</h3>
                                 </div>
                             </div>
                             <div class="page  w-[216mm] bg-white mx-auto break-after-page shadow-md print:shadow-none my-6 proyek p-4">
@@ -210,23 +221,24 @@ onBeforeMount(() => {
                                     {{ nilai.proses }}
                                 </p>
 
-                                <div class="grid grid-cols-3 gap-8 mt-8">
-                                    <div>
+                                <div class="grid grid-cols-3 gap-8 mt-16">
+                                    <div class="relative">
                                         <p>Mengetahui:</p>
                                         <p>Orang Tua / Wali,</p>
 
 
                                         <p class="mt-14 underline font-bold uppercase border-b border-black border-dotted">&nbsp;</p>
                                     </div>
-                                    <div>
+                                    <div class="relative">
                                         <p>&nbsp;</p>
                                         <p>Kepala Sekolah,</p>
 
+                                        <img v-if="showTtd" src="/storage/images/ttd/196804222005011004.png" alt="TTD Kepsek" class="absolute w-[100px] translate-x-[15px]">
 
                                         <p class="mt-14 underline font-bold uppercase">{{ page.props.sekolahs[0].ks.nama }}, {{ page.props.sekolahs[0].ks.gelar_belakang }}</p>
                                         <p>NIP. {{ page.props.sekolahs[0].ks.nip }}</p>
                                     </div>
-                                    <div>
+                                    <div class="relative">
                                         <p contenteditable="true" class="bg-yellow-100 print:bg-white">Malang, 17 Agustus 2024</p>
                                         <p>Guru Kelas,</p>
 
@@ -243,8 +255,11 @@ onBeforeMount(() => {
             </el-col>
             <el-col :span="8">
                 <div class="list">
-                    <el-affix :offset="20">
-                        <el-button size="large" type="primary" v-if="selectedNilai.length > 0" @click="cetak">Cetak</el-button>
+                    <el-affix :offset="50">
+                        <div class="toolbox flex items-center justify-between" v-if="selectedNilai.length > 0">
+                            <el-checkbox v-model="showTtd">Tampilkan TTD</el-checkbox>
+                            <el-button size="large" type="primary"  @click="cetak">Cetak</el-button>
+                        </div>
                         <h4 class="text-lg text-sky-700 font-bold mt-8">Data Siswa</h4>
                         <el-table :data="nilais" @selection-change="selectRow">
                             <el-table-column label="#" type="selection"></el-table-column>
