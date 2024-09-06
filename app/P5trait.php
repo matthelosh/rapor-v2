@@ -17,7 +17,6 @@ trait P5trait
             ->where('proyek_id', $proyek_id)
             ->get();
 
-        // if ($nilais->count() < 1) {
         $rombel = Rombel::whereKode($rombel_id)->with('siswas')->first();
         $proyek = Proyek::whereId($proyek_id)->with('apds.elemen.dimensi')->first();
         $results = [];
@@ -41,9 +40,6 @@ trait P5trait
 
             array_push($results, $data);
         }
-        // } else {
-        //     $results = [];
-        // }
         return $results;
     }
 
@@ -67,7 +63,7 @@ trait P5trait
                     ]
                 );
             }
-            ProsesP5::udpateOrCreate(
+            ProsesP5::updateOrCreate(
                 [
                     'siswa_id' => $data['siswa_id'],
                     'proyek_id' => $data['proyek_id'],
