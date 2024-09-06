@@ -818,6 +818,11 @@ Route::middleware('auth')->group(
                                 Route::post("/store", [P5Controller::class, 'storeNilai'])->name('dashboard.p5.nilai.store');
                             }
                         );
+                        Route::prefix('proses')->group(
+                            function () {
+                                Route::post('/index', [P5Controller::class, 'indexProses'])->name('dashbaord.p5.proses.index');
+                            }
+                        );
                         Route::prefix("proyek")->group(
                             function () {
                                 Route::get("/", [P5Controller::class, 'proyek'])->name('dashboard.p5.proyek');

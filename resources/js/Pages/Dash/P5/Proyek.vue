@@ -49,6 +49,8 @@ const inputNilaiP5 = (item) => {
     selectedProyek.value = item
     // console.log(item)
 }
+
+
 const cetakRaporP5 = (item) => {
     mode.value = 'cetak-rapor'
     selectedProyek.value = item

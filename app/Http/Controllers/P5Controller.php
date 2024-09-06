@@ -140,4 +140,16 @@ class P5Controller extends Controller
             throw $th;
         }
     }
+
+    public function indexProses(Request $request)
+    {
+        try {
+            $proseses = $this->getProses($request->rombel, $request->proyek_id);
+            return \response()->json([
+                'proseses' => $proseses
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

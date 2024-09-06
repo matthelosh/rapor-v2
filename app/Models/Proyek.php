@@ -48,6 +48,11 @@ class Proyek extends Model
     {
         return $this->hasMany(NilaiP5::class, 'proyek_id', 'id');
     }
+
+    public function Keterangan()
+    {
+        return $this->hasMany(ProsesP5::class);
+    }
     // function dimensis()
     // {
     //     return $this->hasManyThrough(p5::class, Apd::class, );

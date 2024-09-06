@@ -207,7 +207,7 @@ onBeforeMount(() => {
                                     </table>
                                 <h3 class="font-bold">Catatan proses:</h3>
                                 <p class="border border-black p-2 text-justify">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus illo voluptatum, eligendi asperiores quam nostrum distinctio est inventore nulla esse pariatur! Unde eum incidunt, consequuntur et molestias fugiat tenetur tempore.
+                                    {{ nilai.proses }}
                                 </p>
 
                                 <div class="grid grid-cols-3 gap-8 mt-8">

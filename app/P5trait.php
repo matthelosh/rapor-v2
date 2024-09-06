@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\NilaiP5;
+use App\Models\ProsesP5;
 use App\Models\Proyek;
 use App\Models\Rombel;
 use App\Models\Semester;
@@ -28,7 +29,8 @@ trait P5trait
                 'proyek_id' => $proyek->id,
                 'rombel_id' => $rombel->kode,
                 'nilais' => [],
-                'siswa' => $siswa
+                'siswa' => $siswa,
+                'proses' => ProsesP5::whereProyekId($proyek_id)->whereSiswaId($siswa->nisn)->value('keterangan') ?? 'Tulis Proses parrtisipasi siswa dalam pelaksanaan proyek.'
             ];
             foreach ($proyek->apds as $apd)
                 array_push($data['nilais'], [
@@ -62,16 +64,24 @@ trait P5trait
                     [
                         'nilai' => $nilai['skor'] ?? '-',
                         'keterangan' => ''
-
                     ]
                 );
             }
+            ProsesP5::udpateOrCreate(
+                [
+                    'siswa_id' => $data['siswa_id'],
+                    'proyek_id' => $data['proyek_id'],
+                ],
+                [
+                    'keterangan' => $data['proses']
+                ]
+            );
         }
 
         return "Nilai Disimpan";
     }
 
-
+    public function getProses() {}
 
     private function tapel()
     {
