@@ -22,7 +22,8 @@ class GuruController extends Controller
         ]);
     }
 
-    public function show(Request $request, GuruService $guruService) {
+    public function show(Request $request, GuruService $guruService)
+    {
         $gurus = $guruService->show($request);
         return response()->json(['gurus' => $gurus]);
     }
@@ -46,22 +47,21 @@ class GuruController extends Controller
     public function store(GuruRequest $request, GuruService $guruService)
     {
         try {
-            
-            $store = $guruService->store($request->all(), $request->file('file') ?? null);
+
+            $store = $guruService->store($request->all(), $request->file('file') ?? null, $request->file('file_ttd') ?? null);
 
             return back()->with('data', $store);
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors("errors", $e->getMessage());
         }
     }
 
-    public function impor(Request $request, GuruService $guruService) {
+    public function impor(Request $request, GuruService $guruService)
+    {
         try {
             $guruService->impor($request);
             return back()->with('message', 'Data Guru diimpor');
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }
@@ -70,11 +70,11 @@ class GuruController extends Controller
     /**
      * Update the specified resource in storage.
      */
-        public function update(Request $request, GuruService $guruService) 
-        {
-            $store = $guruService->store($request->all(), $request->file('file') ?? null);
-            return back()->with('message', $store);
-        }
+    public function update(Request $request, GuruService $guruService)
+    {
+        $store = $guruService->store($request->all(), $request->file('file') ?? null, $request->file('file_ttd'));
+        return back()->with('message', $store);
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -84,8 +84,7 @@ class GuruController extends Controller
         try {
             $guruService->destroy($id);
             return back()->with('success', true);
-        } catch(\Exception $e)
-        {
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
         }
     }

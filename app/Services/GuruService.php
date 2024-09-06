@@ -56,7 +56,7 @@ class GuruService
         return $gurus;
     }
 
-    public function store($data, $file)
+    public function store($data, $file, $ttd)
     {
         // dd($data, $file);
         // $data = $request->all();
@@ -69,6 +69,11 @@ class GuruService
                 /**$foto_name **/
                 Storage::url($store) : null;
         }
+
+        if ($ttd !== null) {
+            $store_ttd = $ttd->storeAs('public/images/ttd/', $data['nip'] . '.png');
+        }
+
         $guru = Guru::updateOrCreate(
             [
                 'id' => $data['id'] ?? null,

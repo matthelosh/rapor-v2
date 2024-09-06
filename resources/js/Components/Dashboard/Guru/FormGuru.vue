@@ -37,6 +37,10 @@ const simpan = async() => {
     if (fileFoto.value !== null) {
         fd.append('file', fileFoto.value)
     }
+
+    if( fileTTD.value !== null ) {
+        fd.append("file_ttd", fileTTD.value)
+    }
     Object.keys(guru.value).forEach(k => {
         fd.append(k, guru.value[k])
     })
