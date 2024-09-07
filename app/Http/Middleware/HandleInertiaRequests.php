@@ -51,13 +51,23 @@ class HandleInertiaRequests extends Middleware
             'app_env' => env('APP_ENV')
         ];
         if ($user) { {
-                $mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
+                $guru_mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
                 $datas['sekolahs'] = $this->sekolahs($user);
-
+                $mapels = $this->sekolahs($user)[0]->mapels;
+                // $data['mapels'] = $mapels;
+                // dd($this->sekolahs($user)[0]->mapels->filter(fn($mapel) => $mapel->kode == 'pabp'));
                 if ($user->hasRole('guru_kelas')) {
-
+                    $data['mapels'] = $mapels->filter(fn($mapel) => !\in_array($mapel->kode, ['pabp', 'pjok', 'bing']));
                     $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
-                } elseif (in_array($user->getRoleNames()[0], $mapels)) {
+                } elseif (in_array($user->getRoleNames()[0], $guru_mapels)) {
+                    if ($user->hasRole('guru_agama')) {
+                        // $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pabp');
+                        $data['mapels'] = $mapels;
+                    } elseif ($user->hasRole('guru_pjok')) {
+                        $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pjok');
+                    } elseif ($user->hasRole('guru_inggris')) {
+                        $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'bing');
+                    }
                 }
 
                 if ($user->hasRole('ops')) {
@@ -74,15 +84,43 @@ class HandleInertiaRequests extends Middleware
     private function sekolahs($user)
     {
         // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {
-        if (\in_array($user->getRoleNames()[0], ['superadmin', 'admin', 'admin_tp'])) {
+        $role = $user->getRoleNames()[0];
+        $tapel = $this->periode()['tapel']->kode;
+        if (\in_array($role, ['superadmin', 'admin', 'admin_tp'])) {
             return Sekolah::with('mapels.tps', 'ks', 'ekskuls')->get();
-        } elseif ($user->hasRole('ops')) {
-            return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', function ($q) {
-                $q->orderBy('id', 'ASC');
-                $q->with('tps');
-            })->with('ks', 'ekskuls')->get();
+        } elseif ($role == 'ops') {
+            return Sekolah::where('id', $user->userable->sekolahs[0]->id)
+                ->with('mapels', function ($q) {
+                    $q->orderBy('id', 'ASC');
+                    $q->with('tps');
+                })
+                ->with([
+                    'rombels' => function ($r) use ($tapel) {
+                        $r->whereTapel($tapel);
+                    }
+                ])
+                ->with('ks', 'ekskuls')->get();
         } else {
-            return Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('mapels', 'ks', 'ekskuls')->get() ?? null;
+            return Sekolah::where('id', $user->userable->sekolahs[0]->id)
+                ->with('ks', 'ekskuls')
+                ->with([
+                    'mapels' => function ($m) use ($role) {
+                        if ($role == 'guru_kelas') {
+                            $m->whereNotIn('kode', ['pabp', 'pjok', 'bing']);
+                        } elseif ($role == 'guru_agama') {
+                            $m->where('kode', 'pabp');
+                        } elseif ($role == 'guru_pjok') {
+                            $m->where('kode', 'pjok');
+                        } elseif ($role == 'guru_inggris') {
+                            $m->where('kode', 'bing');
+                        }
+                    },
+                    'rombels' => function ($r) use ($tapel) {
+                        $r->where('tapel', $tapel);
+                    }
+                ])
+                ->get() ??
+                null;
         }
     }
 

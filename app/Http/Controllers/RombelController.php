@@ -36,7 +36,7 @@ class RombelController extends Controller
             $rombels = Rombel::where('sekolah_id', $sekolahId)->whereNot('id', $currentRombel)->get();
 
             return response()->json(['rombels' => $rombels]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw $e;
         }
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('asesmens', function (Blueprint $table) {
             $table->id();
-            $table->string('kode', 30);
+            $table->string('kode', 60);
             $table->string('nama', 191);
             $table->string('deskripsi', 191)->nullable();
             $table->string('mapel_id', 20);

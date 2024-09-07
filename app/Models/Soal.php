@@ -15,6 +15,7 @@ class Soal extends Model
         'semester',
         'mapel_id',
         'agama',
+        'tp_id',
         'pertanyaan',
         'a',
         'b',
@@ -32,6 +33,6 @@ class Soal extends Model
 
     public function asesmen()
     {
-        return $this->belongsToMany(Asesmen::class, 'asesmen_soal', 'id', 'id');
+        return $this->belongsToMany(Asesmen::class, 'asesmen_soal', 'asesmen_id', 'soal_id');
     }
 }

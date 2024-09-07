@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3';
 
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
+
+const LembarSoal = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/LembarSoal.vue'))
 
 const page = usePage()
 const mode = ref('list')
@@ -18,7 +20,12 @@ const addAsesmen = () => {
 }
 
 const simpanAsesmen = async () => {
-    router.post(route('dashboard.asesmen.store'), asesmen.value, {
+    let data = asesmen.value
+    data.sekolah_id = page.props.sekolahs[0].npsn
+    data.tapel = page.props.periode.tapel.kode
+    data.semester = page.props.periode.semester.kode
+    data.guru_id = page.props.auth.user.userable.nip
+    router.post(route('dashboard.asesmen.store'), data, {
         onStart: () => loading.value = true,
         onSuccess: () => {
             router.reload({only: ['asesmens']})
@@ -41,6 +48,17 @@ const rules = ref({
     ]
 })
 
+const selectedAsesmen = ref(null)
+const showLembarSoal = (item) => {
+    selectedAsesmen.value = item
+    mode.value = 'lembar-soal'
+}
+
+const closeLembarSoal = () => {
+    selectedAsesmen.value = null
+    mode.value = 'list'
+}
+
 </script>
 
 <template>
@@ -50,17 +68,19 @@ const rules = ref({
     <el-card>
         <template #header>
             <div class="flex items-center justify-between">
-                <h3>Data Asesmen {{ canAddAsesmen }}</h3>
+                <h3>Data Asesmen</h3>
                 <div class="flex items-center gap-1">
-                    <el-button type="primary" size="small" @click="addAsesmen" :disabled="!canAddAsesmen">Buat Asesmen</el-button>
+                    <el-button type="primary" size="small" @click="addAsesmen" :disabled="!canAddAsesmen" v-if="mode == 'list'">Buat Asesmen</el-button>
+                    <el-button type="danger" size="small" @click="mode = 'list'" :disabled="!canAddAsesmen" v-if="mode == 'form'">Tutup</el-button>
                 </div>
             </div>
         </template>
         <div class="list" v-if="mode == 'list'">
             <el-table :data="asesmens">
                 <el-table-column label="#" type="index"></el-table-column>
+                <el-table-column label="Kode" prop="kode"></el-table-column>
                 <el-table-column label="Nama" prop="nama"></el-table-column>
-                <el-table-column label="Kelas" >
+                <el-table-column label="Kelas" width="100">
                     <template #default="scope">
                         {{ scope.row.rombel.label }}
                     </template>
@@ -70,19 +90,26 @@ const rules = ref({
                         {{ scope.row.mapel.label }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Semester" >
+                <el-table-column label="Semester" width="100">
                     <template #default="scope">
-                        {{ scope.row.semester }}
+                        {{ scope.row.semester.label }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Jml Soal" >
+                <el-table-column label="Jml Soal" width="100">
                     <template #default="scope">
                         {{ scope.row.soals?.length }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Opsi" >
-                    <template #default="scope">
-                        
+                <el-table-column label="Opsi" width="260" fixed="right">
+                    <template #default="{row}">
+                        <div class="flex items-center">
+                            <el-button-group size="small">
+                                <el-button>Edit</el-button>
+                                <el-button @click="showLembarSoal(row)">Input Soal</el-button>
+                                <el-button>Cetak</el-button>
+                                <el-button type="danger">Hapus</el-button>
+                            </el-button-group>
+                        </div>
                     </template>
                 </el-table-column>
             </el-table>
@@ -91,11 +118,11 @@ const rules = ref({
             <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Asesmen</h1>
             <el-form v-model="asesmen" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter="20">
-                    <el-col :span="6" :xs="24">
+                    <!-- <el-col :span="6" :xs="24">
                         <el-form-item label="Kode">
                             <el-input :input-style="{border: 'red', background: '#ffefee', outline: 'red'}" v-model="asesmen.kode" placeholder="Kode Asesmen" :readonly="true"></el-input>
                         </el-form-item>
-                    </el-col>
+                    </el-col> -->
                     <el-col :span="8" :xs="24">
                         <el-form-item label="Nama Asesmen">
                             <el-input v-model="asesmen.nama" placeholder="Nama Asesmen"></el-input>
@@ -106,12 +133,19 @@ const rules = ref({
                             <el-input type="textarea" autosize v-model="asesmen.deskripsi" placeholder="Keterangan" :readonly="false"></el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
-                <el-row :gutter="20">
                     <el-col :span="6" :xs="24">
                         <el-form-item label="Mapel">
                             <el-select v-model="asesmen.mapel_id" placeholder="Mapel" :readonly="false">
-
+                                <el-option v-for="(mapel, m) in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="6" :xs="24">
+                        <el-form-item label="Rombel">
+                            <el-select v-model="asesmen.rombel_id" placeholder="Rombel" :readonly="false">
+                                <el-option v-for="(rombel, r) in page.props.sekolahs[0].rombels" :value="rombel.kode" :label="rombel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -144,5 +178,6 @@ const rules = ref({
             </el-form>
         </div>
     </el-card>
+    <LembarSoal v-if="selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
 </DashLayout>
 </template>

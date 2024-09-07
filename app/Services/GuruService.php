@@ -145,13 +145,13 @@ class GuruService
                     if (isset($data['sekolah'])) {
                         $sekolah = Sekolah::where('npsn', $data['sekolah'])->first();
                         $data['sekolahs'] = $sekolah->id;
-                        $guru = $this->store($data, null);
+                        $guru = $this->store($data, null, null);
                     } else {
                         throw new \Exception("Kolom npsn sekolah kosong");
                     }
                 } else {
                     $data['sekolahs'] = $request->sekolah;
-                    $guru = $this->store($data, null);
+                    $guru = $this->store($data, null, null);
                 }
             }
 

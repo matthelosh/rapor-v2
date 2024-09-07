@@ -10,9 +10,11 @@ import 'codemirror/lib/codemirror.css'; // import base style
 import 'codemirror/mode/xml/xml.js'; // language
 import 'codemirror/addon/selection/active-line.js'; // require active-line.js
 import 'codemirror/addon/edit/closetag.js'; 
+import axios from 'axios';
 const page = usePage()
 const mode = ref('list')
 const loading = ref(false)
+const tps = ref([])
 defineProps({canAddSoal: Boolean})
 
 const extensions = [
@@ -63,7 +65,9 @@ const pilihanextensions = [
 const soals = computed(() => page.props.soals)
 
 const soal = ref({
-    pertanyaan: 'Tulis Pertanyaan'
+    pertanyaan: 'Tulis Pertanyaan',
+    tipe: 'pilihan',
+    level: 'MOT'
 })
 const addSoal = () => {
     mode.value = 'form'
@@ -97,6 +101,24 @@ const rules = ref({
     ]
 })
 
+const getTps = async () => {
+    loading.value = true
+    axios.post(route('dashboard.pembelajaran.tp.index'), {
+        
+        mapelId: soal.value.mapel_id,
+        tingkat: soal.value.tingkat,
+        semester: soal.value.semester,
+        agama: soal.value.mapel_id == 'pabp' ? page.props.auth.user.userable.agama : null
+    
+    }).then(res => {
+        tps.value = res.data.tps
+    }).catch(err => {
+        console.log(err)
+    }).finally(() => loading.value = false)
+}
+
+
+
 </script>
 
 <template>
@@ -116,25 +138,54 @@ const rules = ref({
         <div class="list" v-if="mode == 'list'">
             <el-table :data="soals">
                 <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="Nama" prop="nama"></el-table-column>
-                <el-table-column label="Kelas" >
-                    <template #default="scope">
-                        {{ scope.row.rombel.label }}
+                <el-table-column label="Pertanyaan">
+                    <template #default="{row}">
+                        <div v-html="row.pertanyaan"></div>
                     </template>
                 </el-table-column>
-                <el-table-column label="Mapel" >
-                    <template #default="scope">
-                        {{ scope.row.mapel.label }}
+                <el-table-column label="A" >
+                    <template #default="{row}">
+                        <div v-html="row.a"></div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="B" >
+                    <template #default="{row}">
+                        <div v-html="row.b"></div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="C" >
+                    <template #default="{row}">
+                        <div v-html="row.c"></div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="D" >
+                    <template #default="{row}">
+                        <div v-html="row.d"></div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="Kunci" >
+                    <template #default="{row}">
+                        {{ row.kunci }}
                     </template>
                 </el-table-column>
                 <el-table-column label="Semester" >
-                    <template #default="scope">
-                        {{ scope.row.semester }}
+                    <template #default="{row}">
+                        {{ row.semester }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Jml Soal" >
-                    <template #default="scope">
-                        {{ scope.row.soals?.length }}
+                <el-table-column label="Agama" >
+                    <template #default="{row}">
+                        {{ row.agama }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="Tipe" >
+                    <template #default="{row}">
+                        {{ row.tipe }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="Level" >
+                    <template #default="{row}">
+                        {{ row.level }}
                     </template>
                 </el-table-column>
                 <el-table-column label="Opsi" >
@@ -149,18 +200,46 @@ const rules = ref({
             <el-form v-model="soal" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter=20 justify="center">
                     <el-col :span="4">
+                        <el-form-item label="Mapel">
+                            <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
+                                <el-option v-for="mapel in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item label="Tipe Soal">
+                            <el-select v-model="soal.tipe" placeholder="Pilih Tipe">
+                                <el-option v-for="tipe in ['pilihan','isian', 'uraian']" :value="tipe"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
                         <el-form-item label="Semester">
-                            <el-select v-model="soal.semester" placeholder="Pilih Semester">
+                            <el-select v-model="soal.semester" placeholder="Pilih Semester" :disabled="!soal.mapel_id">
                                 <el-option v-for="sem in ['1','2']" :value="sem" :label="`Semester ${sem}`"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="4">
                         <el-form-item label="Tingkat">
-                            <el-select v-model="soal.tingkat" placeholder="Pilih Kelas">
+                            <el-select :disabled="!soal.semester" v-model="soal.tingkat" placeholder="Pilih Kelas" @change="getTps">
                                 <el-option v-for="tingkat in ['1','2','3','4','5','6']" :value="tingkat" :label="`Kelas ${tingkat}`"></el-option>
                             </el-select>
                         </el-form-item>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-form-item label="Level Soal">
+                            <el-select v-model="soal.level" placeholder="Pilih Level">
+                                <el-option v-for="level in ['LOT', 'MOT', 'HOT']" :value="level"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter=20 justify="center" v-if="tps.length > 0">
+                    <el-col>
+                        <el-select v-model="soal.tp_id" filterable >
+                            <el-option v-for="tp in tps" :value="tp.id" :label="tp.teks"></el-option>
+                        </el-select>
                     </el-col>
                 </el-row>
                 <el-row :gutter=20 justify="center">

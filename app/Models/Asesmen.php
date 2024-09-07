@@ -10,7 +10,7 @@ class Asesmen extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode',
+        'kode', //npsn-rombel-mapel-sem-jenis-unique
         'nama',
         'deskripsi',
         'mapel_id',
@@ -40,7 +40,17 @@ class Asesmen extends Model
 
     public function  soals()
     {
-        return $this->belongsToMany(Soal::class, 'asesmen_soal', 'id', 'id');
+        return $this->belongsToMany(Soal::class, 'asesmen_soal');
+    }
+
+    public function tapel()
+    {
+        return $this->belongsTo(Tapel::class, 'tapel', 'kode');
+    }
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester', 'kode');
     }
 
     public function mapel()

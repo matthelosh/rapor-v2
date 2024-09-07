@@ -22,7 +22,7 @@ class AsesmenRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kode' => 'required|unique:asesmens',
+            'kode' => 'unique:asesmens',
             'nama' => 'required',
             'deskripsi' => 'required',
             'tanggal' => 'required',

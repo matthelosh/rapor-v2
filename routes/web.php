@@ -475,14 +475,22 @@ Route::middleware('auth')->group(
                         Route::post("/store", [AsesmenController::class, 'store'])
                             ->middleware('can:add_asesmen')
                             ->name('dashboard.asesmen.store');
+                        Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->name('dashboard.asesmen.soal.attach');
                     }
                 );
 
                 Route::prefix("soal")->group(
                     function () {
                         Route::get('/', [SoalController::class, 'home'])
-                            ->middleware('can:add_soal')
+                            ->middleware('can:read_soal')
                             ->name('dashboard.soal');
+                        Route::get('/all', [SoalController::class, 'allSoal'])
+                            ->middleware('can:read_soal')
+                            ->name('dashboard.soal.all');
+                        Route::post('/image/upload', [SoalController::class, 'uploadImage'])->name('dashboard.soal.image.upload');
+                        Route::post('/store', [SoalController::class, 'store'])
+                            ->middleware('can:add_soal')
+                            ->name('dashboard.soal.store');
                     }
                 );
 

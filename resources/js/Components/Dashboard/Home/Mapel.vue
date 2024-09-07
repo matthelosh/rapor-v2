@@ -21,7 +21,9 @@ const profil = computed(() => page.props.auth.user.userable)
                 <span>Data Mapel</span>
             </template>
             <div class="card-body">
-                <h3>{{ page.props.auth.roles[0] == 'guru_agama' ? ('Pendidikan Agama ' + profil.agama) : profil.jabatan }}</h3>
+                <ul class="pl-4">
+                    <li v-for="(mapel, m) in page.props.sekolahs[0].mapels" class="list-disc">{{ mapel.label }}</li>
+                </ul>
             </div>
         </el-card>
     </el-col>
