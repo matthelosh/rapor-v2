@@ -476,6 +476,7 @@ Route::middleware('auth')->group(
                             ->middleware('can:add_asesmen')
                             ->name('dashboard.asesmen.store');
                         Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->name('dashboard.asesmen.soal.attach');
+                        Route::delete('/{id}', [AsesmenController::class, 'destroy'])->name('dashboard.asesmen.destroy');
                     }
                 );
 
@@ -491,6 +492,7 @@ Route::middleware('auth')->group(
                         Route::post('/store', [SoalController::class, 'store'])
                             ->middleware('can:add_soal')
                             ->name('dashboard.soal.store');
+                        Route::delete('/{id}', [SoalController::class, 'destroy'])->name('dashboard.soal.destroy');
                     }
                 );
 

@@ -7,6 +7,7 @@ use App\Models\Asesmen;
 use App\Models\Rombel;
 use App\Models\Tapel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -80,6 +81,18 @@ class AsesmenController extends Controller
             $asesmen->soals()->attach($request->soalId);
 
             return back()->with('message', 'Soal Ditambahkan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function destroy(Asesmen $asesmen, $id)
+    {
+        try {
+            DB::table('asesmen_soal')->where('asesmen_id', $id)->delete();
+            $asesmen::findOrFail($id)->delete();
+
+            return back()->with('message', 'Asesmen dihapus');
         } catch (\Throwable $th) {
             throw $th;
         }

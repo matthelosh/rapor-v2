@@ -59,6 +59,31 @@ const closeLembarSoal = () => {
     mode.value = 'list'
 }
 
+const edit = (item) => {
+    asesmen.value = item
+    mode.value = 'form'
+}
+
+const hapus = async(item) => {
+    await router.delete(route('dashboard.asesmen.destroy', {id: item.id}), {
+        onStart: () => loading.value = true,
+        onSuccess: () => {
+            router.reload({only: ['soals']})
+            mode.value = 'list'
+            asesmen.value = {}
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        }, 
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
+                }, 500);
+            })
+        },
+        onFinish: () => loading.value = false
+    })
+}
+
 </script>
 
 <template>
@@ -104,10 +129,14 @@ const closeLembarSoal = () => {
                     <template #default="{row}">
                         <div class="flex items-center">
                             <el-button-group size="small">
-                                <el-button>Edit</el-button>
+                                <el-button @click="edit(row)">Edit</el-button>
                                 <el-button @click="showLembarSoal(row)">Input Soal</el-button>
                                 <el-button>Cetak</el-button>
-                                <el-button type="danger">Hapus</el-button>
+                                <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
+                                    <template #reference>
+                                        <el-button type="danger">Hapus</el-button>
+                                    </template>
+                                </el-popconfirm>
                             </el-button-group>
                         </div>
                     </template>

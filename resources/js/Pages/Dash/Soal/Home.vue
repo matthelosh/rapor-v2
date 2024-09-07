@@ -75,6 +75,7 @@ const addSoal = () => {
 
 const closeForm = () => {
     mode.value = 'list'
+    soal.value = {}
 }
 
 const simpanSoal = async () => {
@@ -82,6 +83,12 @@ const simpanSoal = async () => {
         onStart: () => loading.value = true,
         onSuccess: () => {
             router.reload({only: ['soals']})
+            mode.value = 'list'
+            soal.value = {
+                pertanyaan: 'Tulis Pertanyaan',
+                tipe: 'pilihan',
+                level: 'MOT'
+            }
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
         }, 
         onError: errs => {
@@ -117,7 +124,34 @@ const getTps = async () => {
     }).finally(() => loading.value = false)
 }
 
+const edit = (item) => {
+    soal.value = item
+    mode.value = 'form'
+}
 
+const hapus = async(item) => {
+    await router.delete(route('dashboard.soal.destroy', {id: item.id}), {
+        onStart: () => loading.value = true,
+        onSuccess: () => {
+            router.reload({only: ['soals']})
+            mode.value = 'list'
+            soal.value = {
+                pertanyaan: 'Tulis Pertanyaan',
+                tipe: 'pilihan',
+                level: 'MOT'
+            }
+            ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
+        }, 
+        onError: errs => {
+            Object.keys(errs).forEach(k => {
+                setTimeout(() => {
+                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
+                }, 500);
+            })
+        },
+        onFinish: () => loading.value = false
+    })
+}
 
 </script>
 
@@ -189,8 +223,15 @@ const getTps = async () => {
                     </template>
                 </el-table-column>
                 <el-table-column label="Opsi" >
-                    <template #default="scope">
-                        
+                    <template #default="{row}">
+                        <el-button-group size="small">
+                            <el-button @click="edit(row)">Edit</el-button>
+                            <el-popconfirm title="Hapus soal?" confirm-text="OK" @confirm="hapus(row)">
+                                <template #reference>
+                                    <el-button type="danger">Hapus</el-button>
+                                </template>
+                            </el-popconfirm>
+                        </el-button-group>
                     </template>
                 </el-table-column>
             </el-table>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Soal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -38,9 +39,13 @@ class SoalController extends Controller
     {
         try {
             $asesmen_id = $request->asesmen_id;
-            $soals = Soal::whereDoesntHave('asesmen', function ($a) use ($asesmen_id) {
-                $a->where('asesmens.id', $asesmen_id);
-            })
+            // dd($asesmen_id);
+            $soals = Soal::whereDoesntHave([
+                // 'asesmen',
+                'asesmen' => function ($a) use ($asesmen_id) {
+                    $a->where('asesmen_id', $asesmen_id);
+                }
+            ])
                 ->where([
                     ['tingkat', '=', $request->tingkat],
                     ['mapel_id', '=', $request->mapel_id],
@@ -97,6 +102,18 @@ class SoalController extends Controller
             );
 
             return back()->with('message', 'Soal Disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function destroy(Soal $soal, $id)
+    {
+        try {
+            DB::table('asesmen_soal')->where('soal_id', $id)->delete();
+            $soal::find($id)->delete();
+
+            return back()->with('message', 'Soal dihapus');
         } catch (\Throwable $th) {
             throw $th;
         }
