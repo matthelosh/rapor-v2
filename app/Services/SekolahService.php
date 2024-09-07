@@ -65,7 +65,8 @@ class SekolahService
             'telp' => $data['telp'] ?? null,
             'email' => $data['email'] ?? null,
             'website' => $data['website'] ?? null,
-            'ks_id' => $data['ks_id']
+            'ks_id' => $data['ks_id'],
+            'gugus_id' => $data['gugus_id'] ?? null
         ]);
 
 

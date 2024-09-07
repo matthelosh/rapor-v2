@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->time('mulai');
             $table->time('selesai');
+            $table->enum('jenjang', ['lembaga', 'gurus', 'kecamatan'])->default('lembaga');
             $table->enum('jenis', ['uh', 'pts', 'pas'])->default('uh');
             $table->string('rombel_id', 30);
             $table->string('sekolah_id', 10);

@@ -24,13 +24,14 @@ class Sekolah extends Model
         'email',
         'website',
         'ks_id',
+        'gugus_id'
     ];
 
 
     protected function logo(): Attribute
     {
         return Attribute::make(
-            get: fn ($logo) => url('/storage/sekolah/' . $logo),
+            get: fn($logo) => url('/storage/sekolah/' . $logo),
         );
     }
 
@@ -67,5 +68,10 @@ class Sekolah extends Model
     function ekskuls()
     {
         return $this->belongsToMany(Ekskul::class, 'ekskul_sekolah');
+    }
+
+    function gugus()
+    {
+        return $this->belongsTo(Gugus::class, 'gugus_id', 'id');
     }
 }

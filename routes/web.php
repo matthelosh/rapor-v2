@@ -104,6 +104,15 @@ Route::middleware('auth')->group(
                         'verified'
                     ]
                 )->name('dashboard');
+                // Gugus
+                Route::prefix("gugus")->group(
+                    function () {
+                        Route::get("/", [GugusController::class, 'home'])->name('dashboard.gugus');
+                        Route::post("/store", [GugusController::class, 'store'])->name('dashboard.gugus.store');
+                        Route::delete("/{id}", [GugusController::class, 'destroy'])->name('dashboard.gugus.destroy');
+                    }
+                );
+
                 Route::prefix('operator')->group(
                     function () {
                         Route::get(

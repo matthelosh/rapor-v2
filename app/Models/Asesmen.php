@@ -15,6 +15,7 @@ class Asesmen extends Model
         'deskripsi',
         'mapel_id',
         'tanggal',
+        'jenjang',
         'mulai',
         'selesai',
         'jenis',

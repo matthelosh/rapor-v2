@@ -164,7 +164,14 @@ onBeforeMount(() => {
                 <el-col :span="12">
                     <el-form-item label="Kepala Sekolah">
                         <el-select v-model="sekolah.ks_id" placeholder="Kepala Sekolah" filterable>
-                            <el-option v-for="(guru, g) in gurus" :key="g" :value="guru.id" :label="`${guru.nip}|${guru.nama}`" />
+                            <el-option v-for="(guru, g) in gurus" :key="g" :value="guru.id" :label="`${guru.nip} | ${guru.nama}`" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="Gugus">
+                        <el-select v-model="sekolah.gugus_id" placeholder="Gugus" filterable>
+                            <el-option v-for="(gugus, gu) in page.props.guguses" :key="gu" :value="gugus.id" :label="`${gugus.nama}`" />
                         </el-select>
                     </el-form-item>
                 </el-col>

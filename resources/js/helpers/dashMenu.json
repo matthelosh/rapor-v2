@@ -34,6 +34,12 @@
         ],
         "children": [
             {
+                "label": "Gugus",
+                "icon": "office-building-cog",
+                "url": "/dashboard/gugus",
+                "roles": ["superadmin","admin"]
+            },
+            {
                 "label": "Operator",
                 "icon": "laptop-account",
                 "url": "/dashboard/operator",

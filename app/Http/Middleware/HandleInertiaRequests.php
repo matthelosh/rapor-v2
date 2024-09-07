@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Gugus;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
@@ -48,12 +49,14 @@ class HandleInertiaRequests extends Middleware
                 "message" => fn() => $request->session()->get('message'),
             ],
             'periode' => $this->periode(),
-            'app_env' => env('APP_ENV')
+            'app_env' => env('APP_ENV'),
+            'guguses' => $user ? Gugus::all() : null,
         ];
         if ($user) { {
                 $guru_mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
                 $datas['sekolahs'] = $this->sekolahs($user);
                 $mapels = $this->sekolahs($user)[0]->mapels;
+                // $data['guguses'] = Gugus::all();
                 // $data['mapels'] = $mapels;
                 // dd($this->sekolahs($user)[0]->mapels->filter(fn($mapel) => $mapel->kode == 'pabp'));
                 if ($user->hasRole('guru_kelas')) {
@@ -87,7 +90,7 @@ class HandleInertiaRequests extends Middleware
         $role = $user->getRoleNames()[0];
         $tapel = $this->periode()['tapel']->kode;
         if (\in_array($role, ['superadmin', 'admin', 'admin_tp'])) {
-            return Sekolah::with('mapels.tps', 'ks', 'ekskuls')->get();
+            return Sekolah::with('mapels.tps', 'ks', 'ekskuls', 'gugus')->get();
         } elseif ($role == 'ops') {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)
                 ->with('mapels', function ($q) {
@@ -99,10 +102,10 @@ class HandleInertiaRequests extends Middleware
                         $r->whereTapel($tapel);
                     }
                 ])
-                ->with('ks', 'ekskuls')->get();
+                ->with('ks', 'ekskuls', 'gugus')->get();
         } else {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)
-                ->with('ks', 'ekskuls')
+                ->with('ks', 'ekskuls', 'gugus')
                 ->with([
                     'mapels' => function ($m) use ($role) {
                         if ($role == 'guru_kelas') {
@@ -117,7 +120,8 @@ class HandleInertiaRequests extends Middleware
                     },
                     'rombels' => function ($r) use ($tapel) {
                         $r->where('tapel', $tapel);
-                    }
+                    },
+
                 ])
                 ->get() ??
                 null;
