@@ -199,7 +199,7 @@ const getTps = async () => {
             <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Soal</h1>
             <el-form v-model="soal" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter=20 justify="center">
-                    <el-col :span="4">
+                    <el-col :span="8">
                         <el-form-item label="Mapel">
                             <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
                                 <el-option v-for="mapel in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
@@ -236,7 +236,7 @@ const getTps = async () => {
                     </el-col>
                 </el-row>
                 <el-row :gutter=20 justify="center" v-if="tps.length > 0">
-                    <el-col>
+                    <el-col :span="24">
                         <el-select v-model="soal.tp_id" filterable >
                             <el-option v-for="tp in tps" :value="tp.id" :label="tp.teks"></el-option>
                         </el-select>
@@ -244,7 +244,8 @@ const getTps = async () => {
                 </el-row>
                 <el-row :gutter=20 justify="center">
                     <el-col>
-                        <el-form-item label="Pertanyaan">
+                        <h3 class="mt-6 font-bold text-sky-600">Tulis Pertanyaan</h3>
+                        <el-form-item label="">
                             <element-tiptap v-model:content="soal.pertanyaan" :extensions="extensions" />
                         </el-form-item>
                     </el-col>
