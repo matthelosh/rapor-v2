@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Guru extends Model
 {
@@ -36,9 +35,9 @@ class Guru extends Model
     //     );
     // }
 
-    public function user(): MorphOne
+    public function user(): MorphMany
     {
-        return $this->morphOne(User::class, 'userable');
+        return $this->morphMany(User::class, 'userable');
     }
 
     public function sekolahs()

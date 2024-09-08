@@ -33,6 +33,6 @@ class Soal extends Model
 
     public function asesmen()
     {
-        return $this->belongsToMany(Asesmen::class, 'asesmen_soal', 'asesmen_id', 'soal_id');
+        return $this->belongsToMany(Asesmen::class, 'asesmen_soal');
     }
 }

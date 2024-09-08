@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Siswa extends Model
 {
@@ -54,5 +56,10 @@ class Siswa extends Model
     public function nilaip5()
     {
         return $this->hasMany(NilaiP5::class, 'siswa_id', 'nisn');
+    }
+
+    public function user(): MorphMany
+    {
+        return $this->morphMany(User::class, 'userable');
     }
 }

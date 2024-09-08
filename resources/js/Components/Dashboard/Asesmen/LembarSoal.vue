@@ -1,17 +1,19 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, defineAsyncComponent } from 'vue'
 import { router, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id'
 dayjs.locale('id')
 
+const FormSoal = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/FormSoal.vue'))
 
 const page = usePage()
 const props = defineProps({ selectedAsesmen: Object })
 const emit = defineEmits(['close'])
 const show = ref(false)
 const soals = ref([])
+const showFormSoal = ref(false)
 
 import Kop from '@/Components/Umum/Kop.vue';
 
@@ -53,8 +55,6 @@ const cetakLembarSoal = async () => {
 }
 
 const drag = (ev, item) => {
-    // ev.dataTransfer.set("")
-    // console.log(ev.target)
     ev.dataTransfer.dropEffect = 'move'
     ev.dataTransfer.effectAllowed = 'move'
     ev.dataTransfer.setData('itemId', item.id)
@@ -65,16 +65,45 @@ const dragOver = (ev) => {
 }
 const drop = (ev) => {
     const itemID = ev.dataTransfer.getData('itemID')
-    const item = allSoals.value.find(soal => soal.id == itemID)
-
-    // console.log(item)
-    soals.value.push(item)
-    router.post(route('dashboard.asesmen.soal.attach', {id: props.selectedAsesmen.id}), 
-                {soalId: item.id}, {
-                    onFinish: () => router.reload({only: ['asesmens'], preserveState: true})
-                })
+    attachSoal(itemID)
     const dropZone = document.querySelector(".drop-zone")
-    dropZone.classList.toggle("bg-sky-100")
+    dropZone.classList.remove("bg-sky-100")
+}
+
+const attachSoal = async(soalId) => {
+    router.post(route('dashboard.asesmen.soal.attach', {id: props.selectedAsesmen.id}), 
+                {soalId: soalId}, {
+                    onFinish: () => {   
+                        getAllSoals()
+                        const item = allSoals.value.find(soal => soal.id == soalId)
+                        soals.value.push(item)
+                        router.reload({only: ['asesmens'], preserveState: true})
+                    }
+                })
+}
+
+const jmlPG = computed(() => {
+    return props.selectedAsesmen.soals.filter(soal => soal.tipe == 'pilihan').length
+})
+
+const detachSoal = (item, indexSoal) => {
+    router.post(route('dashboard.asesmen.soal.detach', {id: props.selectedAsesmen.id}), 
+                {soalId: item.id}, {
+                    onFinish: () => {
+                        getAllSoals()
+                        soals.value.splice(indexSoal,1)
+                        router.reload({ preserveState: true})
+                    }
+                })
+}
+
+// Add Soal
+const addSoal = () => {
+    showFormSoal.value = true
+}
+const closeFormSoal = (item) => {
+    showFormSoal.value = false
+    console.log(item)
 }
 
 onBeforeMount(() => {
@@ -103,7 +132,8 @@ onBeforeMount(() => {
         <template #default>
             <el-row :gutter="20">
                 <el-col :span="16">
-                    <div class="cetak">
+                    <FormSoal v-if="showFormSoal" :selectedAsesmen="props.selectedAsesmen" @close="closeFormSoal" @stored="getAllSoals" />
+                    <div class="cetak" v-else>
                         <el-card class="mb-4 break-after-page">
                             <div class="text-black">
                                 <div class="soal">
@@ -138,39 +168,45 @@ onBeforeMount(() => {
                                             <td>{{ props.selectedAsesmen.soals.length }} Butir</td>
                                         </tr>
                                     </table>
-
-                                    <p class="italic mb-4 mt-8 text-md font-serif">Petunjuk: Pilih jawaban yang benar!</p>
                                     <div class="drop-zone" @drop="drop($event)" @dragover.prevent @dragenter.prevent="dragOver($event)">
-                                        <template v-for="(soal, s) in props.selectedAsesmen.soals">
-                                            <ul class="tes">
-                                                <li class="mb-4">
-                                                    <div class="flex gap-2">
-                                                        {{ s+1 }}. 
-                                                        <span v-html="soal.pertanyaan"></span>
-                                                    </div>
-                                                    <!-- <div class="flex">
-                                                        <el-radio :value="'a'">
-                                                            <span v-html="soal.a"></span>
-                                                        </el-radio>
-                                                        <el-radio :value="'b'">
-                                                            <span v-html="soal.b"></span>
-                                                        </el-radio>
-                                                        <el-radio :value="'c'">
-                                                            <span v-html="soal.c"></span>
-                                                        </el-radio>
-                                                        <el-radio :value="'d'">
-                                                            <span v-html="soal.d"></span>
-                                                        </el-radio>
-                                                    </div> -->
-                                                    <span class="flex gap-6 ml-4">
-                                                        <div class="flex gap-1">a. <span v-html="soal.a"></span></div>
-                                                        <div class="flex gap-1">b. <span v-html="soal.b"></span></div>
-                                                        <div class="flex gap-1">c. <span v-html="soal.c"></span></div>
-                                                        <div class="flex gap-1">d. <span v-html="soal.d"></span></div>
-                                                    </span>
-                                                </li>
-                                            </ul>
-                                        </template>
+                                        <p class="italic mb-4 mt-8 text-md font-serif">Petunjuk: Pilih jawaban yang benar!</p>
+                                        <div v-if="props.selectedAsesmen.soals.length < 1" class="w-full h-[300px] bg-sky-50 flex items-center justify-center">
+                                            <p class="font-bold text-lg text-slate-600 font-mono">Seret Soal Ke Sini</p>
+                                        </div>
+                                        <div >
+                                            <template v-for="(soal, s) in props.selectedAsesmen.soals">
+                                                <ul class="tes">
+                                                    <li class="mb-4 hover:bg-slate-100 relative group">
+
+                                                        <Icon icon="mdi:trash-can" class="text-4xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                        <div class="flex gap-2">
+                                                            {{ s+1 }}. 
+                                                            <span v-html="soal.pertanyaan"></span>
+                                                        </div>
+                                                        <!-- <div class="flex">
+                                                            <el-radio :value="'a'">
+                                                                <span v-html="soal.a"></span>
+                                                            </el-radio>
+                                                            <el-radio :value="'b'">
+                                                                <span v-html="soal.b"></span>
+                                                            </el-radio>
+                                                            <el-radio :value="'c'">
+                                                                <span v-html="soal.c"></span>
+                                                            </el-radio>
+                                                            <el-radio :value="'d'">
+                                                                <span v-html="soal.d"></span>
+                                                            </el-radio>
+                                                        </div> -->
+                                                        <span class="flex gap-6 ml-4">
+                                                            <div class="flex gap-1">a. <span v-html="soal.a"></span></div>
+                                                            <div class="flex gap-1">b. <span v-html="soal.b"></span></div>
+                                                            <div class="flex gap-1">c. <span v-html="soal.c"></span></div>
+                                                            <div class="flex gap-1">d. <span v-html="soal.d"></span></div>
+                                                        </span>
+                                                    </li>
+                                                </ul>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -219,18 +255,18 @@ onBeforeMount(() => {
                             </div>
                             <h3 class="text-center bg-slate-500 uppercase text-white py-2 font-bold mt-2">Jawaban</h3>
                             <p class="text-center">Beri tanda silang (X) pada pilihan jawaban yang benar!</p>
-                            <div class="grid grid-cols-4 gap-6">
-                                <div>
+                            <div class="grid grid-cols-6 gap-6 print:gap-3">
+                                <div v-for="c in 6">
                                     <table class="border w-full">
                                         <thead>
                                             <tr>
-                                                <th class="bg-slate-400 border border-black print:w-[50px] w-[80px]">No.</th>
+                                                <th class="bg-slate-400 border border-black print:w-[25px] w-[50px]">No</th>
                                                 <th class="bg-slate-400 border border-black text-center" colspan="4">Pilhan</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="i of 5">
-                                                <td class="border border-black text-center bg-slate-300">{{ i }}.</td>
+                                            <tr v-for="i of 5" :class="(i + ((20/4)*(c-1)) > jmlPG) ? 'bg-slate-600 text-slate-600' : ''">
+                                                <td class="border border-black text-center bg-slate-300" :class="(i + ((20/4)*(c-1)) > jmlPG) ? 'bg-slate-600 text-slate-600' : ''">{{  i + ((20/4)*(c-1)) }}.</td>
                                                 <td class="border border-black text-center">a</td>
                                                 <td class="border border-black text-center">b</td>
                                                 <td class="border border-black text-center">c</td>
@@ -239,7 +275,7 @@ onBeforeMount(() => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     <table class="border w-full">
                                         <thead>
                                             <tr>
@@ -276,26 +312,7 @@ onBeforeMount(() => {
                                             </tr>
                                         </tbody>
                                     </table>
-                                </div>
-                                <div>
-                                    <table class="border w-full">
-                                        <thead>
-                                            <tr>
-                                                <th class="bg-slate-400 border border-black print:w-[50px] w-[80px]">No.</th>
-                                                <th class="bg-slate-400 border border-black text-center" colspan="4">Pilhan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="i of 5">
-                                                <td class="border border-black text-center bg-slate-300">{{ i+15 }}.</td>
-                                                <td class="border border-black text-center">a</td>
-                                                <td class="border border-black text-center">b</td>
-                                                <td class="border border-black text-center">c</td>
-                                                <td class="border border-black text-center">d</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                </div> -->
                             </div>
 
                             <h3 class="text-center bg-slate-500 uppercase text-white py-2 font-bold mt-6 my-4">Jawaban Isian</h3>
@@ -315,13 +332,24 @@ onBeforeMount(() => {
                 </el-col>
                 <el-col :span="8">
                     <el-affix :offset="70">
+                        <el-card class="mb-4">
+                            <div class="flex gap-2">
+                                <!-- <el-form-item label="Jumlah Soal" class="w-[150px]">
+                                    <el-input v-model="jmlPG" type="number"></el-input>
+                                </el-form-item> -->
+                                <el-button type="primary" @click="addSoal">Buat Soal Baru</el-button>
+                            </div>
+                        </el-card>
                         <el-card>
                             <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.rombel.tingkat }}</h3>
 
                             <ul>
-                                <li v-for="(soal, s) in allSoals" class="flex gap-1 mb-1 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
-                                    {{ s+1 }}. 
-                                    <span v-html="soal.pertanyaan"></span>
+                                <li v-for="(soal, s) in allSoals" class="flex gap-1 justify-between group mb-1 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                    <span class="flex items-center gap-1">
+                                        {{ s+1 }}. 
+                                        <span v-html="soal.pertanyaan"></span>
+                                    </span>
+                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
                                 </li>
                             </ul>
                         </el-card>

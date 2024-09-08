@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
@@ -47,7 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    function userable() {
-        return $this->morphTo();
+    function userable()
+    {
+        return $this->morphTo(__FUNCTION__, 'userable_type', 'userable_id');
     }
 }

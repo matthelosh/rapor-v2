@@ -6,6 +6,7 @@ use App\Models\Gugus;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
+use App\Models\Siswa;
 use App\Models\Tapel;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -42,8 +43,6 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user ?? null,
                 'roles' => $user ? $user->getRoleNames() : null,
                 'can' => $user ? $user->getAllPermissions()->pluck('name') : null,
-
-
             ],
             'flash' => [
                 "message" => fn() => $request->session()->get('message'),
@@ -78,6 +77,11 @@ class HandleInertiaRequests extends Middleware
                         ->where('tapel', $this->periode()['tapel']['kode'])
                         ->get();
                 }
+
+                if ($user->hasRole('siswa')) {
+                    // $datas['auth']['user']['userable'] = Siswa::where('id', $user->userable_id)->first();
+                    $datas['auth']['user'] = User::whereId($user->id)->with('userable')->first();
+                }
             }
         }
 
@@ -103,6 +107,8 @@ class HandleInertiaRequests extends Middleware
                     }
                 ])
                 ->with('ks', 'ekskuls', 'gugus')->get();
+        } elseif ($role == 'siswa') {
+            return Sekolah::whereNpsn('20518848')->get();
         } else {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)
                 ->with('ks', 'ekskuls', 'gugus')

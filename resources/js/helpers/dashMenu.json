@@ -94,8 +94,6 @@
         "icon": "folder-question",
         "url": "#",
         "roles": [
-            "superadmin",
-            "admin",
             "guru_kelas",
             "guru_agama",
             "guru_pjok",
@@ -108,8 +106,6 @@
                 "url": "/dashboard/asesmen",
                 "icon": "file-question",
                 "roles": [
-                    "superadmin",
-                    "admin",
                     "guru_kelas",
                     "guru_agama",
                     "guru_pjok",
@@ -122,8 +118,6 @@
                 "url": "/dashboard/soal",
                 "icon": "question-network",
                 "roles": [
-                    "superadmin",
-                    "admin",
                     "guru_kelas",
                     "guru_agama",
                     "guru_pjok",

@@ -7,11 +7,12 @@ const Admin = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Adm
 const Ops = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Ops.vue'))
 const Wali = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Wali.vue'))
 const Mapel = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Mapel.vue'))
+const Siswa = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Siswa.vue'))
 
 const page = usePage()
 const role = page.props.auth.roles[0]
 const comp = computed(() => {
-    return (['superadmin', 'admin', 'admin_tp'].includes(role)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : Mapel))
+    return (['superadmin', 'admin', 'admin_tp'].includes(role)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
 })
 
 const sekolahs = page.props.sekolahs

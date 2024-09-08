@@ -22,7 +22,7 @@ jobs:
             git status
             php artisan down
             composer install
-            php artisan migrate:refresh --path=database/migrations/2024_09_02_121228_create_asesmens_table.php
+            php artisan migrate
             yarn --only=prod
             yarn build
             php artisan up

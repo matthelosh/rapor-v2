@@ -86,6 +86,18 @@ class AsesmenController extends Controller
         }
     }
 
+    public function detachSoal(Request $request, $id)
+    {
+        try {
+            $asesmen = Asesmen::findOrFail($id);
+            $asesmen->soals()->detach($request->soalId);
+
+            return back()->with('message', 'Soal Dikeluarkan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function destroy(Asesmen $asesmen, $id)
     {
         try {
@@ -93,6 +105,23 @@ class AsesmenController extends Controller
             $asesmen::findOrFail($id)->delete();
 
             return back()->with('message', 'Asesmen dihapus');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
+    // Asesmen Siswa
+    public function siswaAsesmen(Request $request)
+    {
+        try {
+            $asesmens = Asesmen::all();
+            return Inertia::render(
+                'Dash/Asesmen/Siswa/Home',
+                [
+                    'asesmens' => $asesmens,
+                ]
+            );
         } catch (\Throwable $th) {
             throw $th;
         }

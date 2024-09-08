@@ -130,7 +130,7 @@ const hapus = async(item) => {
                         <div class="flex items-center">
                             <el-button-group size="small">
                                 <el-button @click="edit(row)">Edit</el-button>
-                                <el-button @click="showLembarSoal(row)">Input Soal</el-button>
+                                <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
                                 <el-button>Cetak</el-button>
                                 <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
                                     <template #reference>

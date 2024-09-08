@@ -6,8 +6,10 @@ use App\Http\Requests\SiswaRequest;
 use App\Models\Rombel;
 use App\Models\Siswa;
 use App\Models\Tapel;
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Services\SiswaService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class SiswaController extends Controller
@@ -96,9 +98,26 @@ class SiswaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Siswa $siswa)
+    public function addAccount(Request $request)
     {
-        //
+        try {
+            $siswa = Siswa::findorFail($request->id);
+            $user = User::updateOrCreate(
+                [
+                    'name' => $siswa->nisn,
+                ],
+                [
+                    'password' => Hash::make($siswa->nisn),
+                    'email' => $siswa->email,
+                    'userable_id' => $siswa->id,
+                    'userable_type' => 'App\Models\Siswa'
+                ]
+            );
+            $user->assignRole('siswa');
+            return back()->with('message', 'Akun Siswa dibuat');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     /**

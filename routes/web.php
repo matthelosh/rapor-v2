@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\SekolahController;
-use App\Http\Controllers\ProfileController;
-use App\Models\p5;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::prefix("")->group(
     function () {
@@ -256,6 +252,7 @@ Route::middleware('auth')->group(
                                 'store'
                             ]
                         )->name('dashboard.siswa.store');
+                        Route::post('/account/add', [SiswaController::class, 'addAccount'])->name('dashboard.siswa.account.add');
                         Route::post(
                             "/nonmember",
                             [
@@ -485,6 +482,7 @@ Route::middleware('auth')->group(
                             ->middleware('can:add_asesmen')
                             ->name('dashboard.asesmen.store');
                         Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->name('dashboard.asesmen.soal.attach');
+                        Route::post('/detach/{id}', [AsesmenController::class, 'detachSoal'])->name('dashboard.asesmen.soal.detach');
                         Route::delete('/{id}', [AsesmenController::class, 'destroy'])->name('dashboard.asesmen.destroy');
                     }
                 );
@@ -862,3 +860,4 @@ Route::middleware('auth')->group(
 );
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/siswa.php';

@@ -5,9 +5,8 @@ import { ElContainer, ElHeader, ElAside, ElMain } from "element-plus";
 import { Icon } from "@iconify/vue";
 // import 'element-plus/es/components/button/style/css'
 import SideItem from "@/Layouts/SideMenu.vue";
-
 const contentTrigger = ref(false);
-
+const page = usePage()
 const logout = () => {
     router.post(route("logout"));
 };
@@ -26,7 +25,7 @@ onMounted(() => (contentTrigger.value = true));
 <template>
     <div class="common-layout h-screen w-screen">
         <el-container class="h-full w-full">
-            <el-aside width="15%" class="max-h-screen hidden-sm-and-down">
+            <el-aside width="15%" class="max-h-screen hidden-sm-and-down" v-if="page.props.auth.roles[0] !== 'siswa'">
                 <div class="side-content h-full bg-slate-100">
                     <el-scrollbar max-height="100vh">
                         <SideItem />
