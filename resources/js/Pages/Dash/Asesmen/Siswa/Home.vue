@@ -22,7 +22,7 @@ const page = usePage()
                     <el-card class="mb-3" shadow="hover">
                         <div class="flex items-center justify-between">
                             <h3 class="uppercase">
-                                <Link :href="route('asesmen.siswa.kerjakan', {_query: {asesmenId: asesmen.id}})">
+                                <Link :href="route('asesmen.siswa.kerjakan', {_query: {kode: asesmen.kode, siswaId: page.props.auth.user.userable.nisn}})">
                                 {{ asesmen.nama }}
                                 </Link>
                             </h3>

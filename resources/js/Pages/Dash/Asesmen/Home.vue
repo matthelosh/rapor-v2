@@ -157,7 +157,7 @@ const hapus = async(item) => {
                         </el-form-item>
                     </el-col>
                     <el-col :span="10" :xs="24">
-                        <el-form-item label="Deskripsi Asesmen">
+                        <el-form-item label="Petunjuk Pengerjaan">
                             <el-input type="textarea" autosize v-model="asesmen.deskripsi" placeholder="Keterangan" :readonly="false"></el-input>
                         </el-form-item>
                     </el-col>

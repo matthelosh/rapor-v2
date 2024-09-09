@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Periode;
 use App\Http\Requests\AsesmenRequest;
 use App\Models\Asesmen;
 use App\Models\Rombel;
+use App\Models\Sekolah;
+use App\Models\Siswa;
 use App\Models\Tapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +41,31 @@ class AsesmenController extends Controller
                 [
                     'asesmens' => $asesmens,
                     'canAddAsesmen' => $request->user()->can('add_asesmen'),
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function kerjakanAsesmen(Request $request)
+    {
+        try {
+            $asesmen = Asesmen::whereKode($request->kode)
+                ->with('soals')
+                ->first();
+            // dd($asesmen);
+            $tapel = Periode::tapel()->kode;
+            return Inertia::render(
+                'Dash/Asesmen/Siswa/LembarSoal',
+                [
+                    'asesmen' => $asesmen,
+                    'siswa' => Siswa::whereNisn($request->siswaId)->with([
+                        'rombels' => function ($r) use ($tapel) {
+                            $r->whereTapel($tapel);
+                        },
+                        'sekolah'
+                    ])->first(),
                 ]
             );
         } catch (\Throwable $th) {
