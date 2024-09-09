@@ -35,24 +35,19 @@ onMounted(() => (contentTrigger.value = true));
             <el-container>
                 <el-header class="px-8 z-40 bg-white">
                     <div
-                        class="content mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md"
+                        class="content bg-white mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md"
                     >
                         <div class="head-title flex items-center gap-2">
-                            <Icon icon="mdi:menu" class="text-xl hidden-md-and-up" @click="toggleSide" />
+                            <span>
+                                <Icon v-if="page.props.auth.roles[0] !== 'siswa'" icon="mdi:menu" class="text-xl hidden-md-and-up" @click="toggleSide" />
+                                <Link v-else :href="route('dashboard')" >
+                                    <Icon icon="mdi:home" />
+                                </Link>
+                            </span>
                             <img src="/img/tutwuri.png" class="w-10 hidden-md-and-down" />
                             <slot name="header"></slot>
                         </div>
                         <div class="header-items flex items-center">
-                            <Link
-                                :href="route('home')"
-                                class="flex gap-1 items-center"
-                            >
-                                <Icon
-                                    icon="mdi:home"
-                                    class="text-sky-500 text-lg"
-                                />
-                                <!-- Beranda -->
-                            </Link>
                             <el-popconfirm
                                 title="Yakin Keluar?"
                                 @confirm="logout"

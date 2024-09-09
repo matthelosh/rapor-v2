@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'role:siswa'])->group(
     function () {
-        Route::get('asesmen', [AsesmenController::class, 'siswaAsesmen'])->name('asesmen.siswa');
+        Route::prefix('asesmen')->group(
+            function () {
+
+                Route::get('/', [AsesmenController::class, 'siswaAsesmen'])->name('asesmen.siswa');
+                Route::get('/kerjakan', [AsesmenController::class, 'kerjakanAsesmen'])->name('asesmen.siswa.kerjakan');
+            }
+        );
     }
 );

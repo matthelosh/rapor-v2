@@ -125,13 +125,12 @@ const hapus = async(item) => {
                         {{ scope.row.soals?.length }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Opsi" width="260" fixed="right">
+                <el-table-column label="Opsi" width="208" fixed="right">
                     <template #default="{row}">
                         <div class="flex items-center">
                             <el-button-group size="small">
                                 <el-button @click="edit(row)">Edit</el-button>
                                 <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
-                                <el-button>Cetak</el-button>
                                 <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
                                     <template #reference>
                                         <el-button type="danger">Hapus</el-button>
@@ -143,7 +142,7 @@ const hapus = async(item) => {
                 </el-table-column>
             </el-table>
         </div>
-        <div class="form w-[60%] bg-slate-100 shadow p-4 mx-auto" v-if="mode == 'form'">
+        <div class="form md:w-[60%] bg-slate-100 shadow p-2 md:p-4 mx-auto" v-if="mode == 'form'">
             <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Asesmen</h1>
             <el-form v-model="asesmen" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter="20">
@@ -210,3 +209,15 @@ const hapus = async(item) => {
     <LembarSoal v-if="selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
 </DashLayout>
 </template>
+
+<style>
+.el-card__body {
+    padding: 0!important;
+}
+
+@media screen and(min-width: 414px) {
+    .el-card__body {
+        padding: 20px;
+    }
+}
+</style>

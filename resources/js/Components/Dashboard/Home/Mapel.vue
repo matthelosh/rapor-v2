@@ -15,7 +15,7 @@ const profil = computed(() => page.props.auth.user.userable)
 
 <template>
 <el-row :gutter="20">
-    <el-col :span="6">
+    <el-col :span="6" :xs="24" class="mb-4">
         <el-card>
             <template #header>
                 <span>Data Mapel</span>
@@ -27,7 +27,7 @@ const profil = computed(() => page.props.auth.user.userable)
             </div>
         </el-card>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="12" :xs="24" class="mb-4">
         <el-card>
             <template #header>
                 <span>Data Rombel</span>
@@ -50,7 +50,7 @@ const profil = computed(() => page.props.auth.user.userable)
             </div>
         </el-card>
     </el-col>
-    <el-col :span="6">
+    <el-col :span="6" :xs="24" class="mb-4">
         <el-card>
             <template #header>
                 <span>Profil Guru</span>

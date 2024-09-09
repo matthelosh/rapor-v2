@@ -170,9 +170,9 @@ const hapus = async(item) => {
             </div>
         </template>
         <div class="list" v-if="mode == 'list'">
-            <el-table :data="soals">
+            <el-table :data="soals" max-height="100vh">
                 <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="Pertanyaan">
+                <el-table-column label="Pertanyaan" width="300">
                     <template #default="{row}">
                         <div v-html="row.pertanyaan"></div>
                     </template>
@@ -222,7 +222,7 @@ const hapus = async(item) => {
                         {{ row.level }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Opsi" >
+                <el-table-column label="Opsi" fixed="right" width="130">
                     <template #default="{row}">
                         <el-button-group size="small">
                             <el-button @click="edit(row)">Edit</el-button>
@@ -236,39 +236,39 @@ const hapus = async(item) => {
                 </el-table-column>
             </el-table>
         </div>
-        <div class="form w-[60%] bg-slate-100 shadow p-4 mx-auto" v-if="mode == 'form'">
+        <div class="form md:w-[60%] bg-slate-100 shadow p-4 mx-auto" v-if="mode == 'form'">
             <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Soal</h1>
             <el-form v-model="soal" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter=20 justify="center">
-                    <el-col :span="8">
+                    <el-col :span="8" :xs="24">
                         <el-form-item label="Mapel">
                             <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
                                 <el-option v-for="mapel in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="4" :xs="12">
                         <el-form-item label="Tipe Soal">
                             <el-select v-model="soal.tipe" placeholder="Pilih Tipe">
                                 <el-option v-for="tipe in ['pilihan','isian', 'uraian']" :value="tipe"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="4" :xs="12">
                         <el-form-item label="Semester">
                             <el-select v-model="soal.semester" placeholder="Pilih Semester" :disabled="!soal.mapel_id">
                                 <el-option v-for="sem in ['1','2']" :value="sem" :label="`Semester ${sem}`"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="4" :xs="24">
                         <el-form-item label="Tingkat">
                             <el-select :disabled="!soal.semester" v-model="soal.tingkat" placeholder="Pilih Kelas" @change="getTps">
                                 <el-option v-for="tingkat in ['1','2','3','4','5','6']" :value="tingkat" :label="`Kelas ${tingkat}`"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="4">
+                    <el-col :span="4" :xs="24">
                         <el-form-item label="Level Soal">
                             <el-select v-model="soal.level" placeholder="Pilih Level">
                                 <el-option v-for="level in ['LOT', 'MOT', 'HOT']" :value="level"></el-option>
@@ -322,9 +322,8 @@ const hapus = async(item) => {
                 </el-row>
                 <el-row :gutter=20 justify="center">
                     <el-col>
-                        
                         <el-form-item label="Kunci Jawaban" justify="center">
-                            <el-radio-group v-model="soal.kunci">
+                            <el-radio-group v-model="soal.kunci" size="small">
                                 <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
                             </el-radio-group>
                         </el-form-item>
@@ -338,3 +337,15 @@ const hapus = async(item) => {
     </el-card>
 </DashLayout>
 </template>
+
+<style>
+.el-card__body {
+    padding: 0;
+}
+
+@media screen and(min-width: 414px) {
+    .el-card__body {
+        padding: 0;
+    }
+}
+</style>
