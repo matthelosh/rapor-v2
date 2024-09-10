@@ -217,45 +217,56 @@ onBeforeMount(async () => {
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <h3 class="text-lg font-bold">Pilihan Jawaban:</h3>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        <el-form-item label="Pilihan A">
-                            <element-tiptap v-model:content="soal.a" :extensions="pilihanextensions" />
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        <el-form-item label="Pilihan B">
-                            <element-tiptap v-model:content="soal.b" :extensions="pilihanextensions" />
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        <el-form-item label="Pilihan C">
-                            <element-tiptap v-model:content="soal.c" :extensions="pilihanextensions" />
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        <el-form-item label="Pilihan D">
-                            <element-tiptap v-model:content="soal.d" :extensions="pilihanextensions" />
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        
-                        <el-form-item label="Kunci Jawaban" justify="center">
-                            <el-radio-group v-model="soal.kunci">
-                                <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
-                            </el-radio-group>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
+                <div  v-if="soal.tipe == 'pilihan'">
+                    <h3 class="text-lg font-bold">Pilihan Jawaban:</h3>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            <el-form-item label="Pilihan A">
+                                <element-tiptap v-model:content="soal.a" :extensions="pilihanextensions" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            <el-form-item label="Pilihan B">
+                                <element-tiptap v-model:content="soal.b" :extensions="pilihanextensions" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            <el-form-item label="Pilihan C">
+                                <element-tiptap v-model:content="soal.c" :extensions="pilihanextensions" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            <el-form-item label="Pilihan D">
+                                <element-tiptap v-model:content="soal.d" :extensions="pilihanextensions" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            
+                            <el-form-item label="Kunci Jawaban" justify="center">
+                                <el-radio-group v-model="soal.kunci">
+                                    <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </div>
+                <div v-else>
+                    <el-row :gutter=20 justify="center">
+                        <el-col>
+                            <el-form-item label="Kunci Jawaban">
+                                <element-tiptap v-model:content="soal.kunci" :extensions="pilihanextensions" />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                </div>
                 <el-row :gutter=20 justify="center">
                     <el-button type="primary" @click="simpanSoal">Simpan</el-button>
                 </el-row>

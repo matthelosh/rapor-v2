@@ -103,7 +103,7 @@ const addSoal = () => {
 }
 const closeFormSoal = (item) => {
     showFormSoal.value = false
-    console.log(item)
+    // console.log(item)
 }
 
 onBeforeMount(() => {
@@ -169,43 +169,59 @@ onBeforeMount(() => {
                                         </tr>
                                     </table>
                                     <div class="drop-zone" @drop="drop($event)" @dragover.prevent @dragenter.prevent="dragOver($event)">
-                                        <p class="italic mb-4 mt-8 text-md font-serif">Petunjuk: Pilih jawaban yang benar!</p>
                                         <div v-if="props.selectedAsesmen.soals.length < 1" class="w-full h-[300px] bg-sky-50 flex items-center justify-center">
                                             <p class="font-bold text-lg text-slate-600 font-mono">Seret Soal Ke Sini</p>
                                         </div>
-                                        <div >
-                                            <template v-for="(soal, s) in props.selectedAsesmen.soals">
-                                                <ul class="tes">
-                                                    <li class="mb-4 hover:bg-slate-100 relative group">
+                                        <div v-if="soals.length > 0">
+                                            <div class="pilihan">
+                                                <h1 class="font-bold text-lg mb-2  mt-8">I. Pilihan Ganda</h1>
+                                                <p class="italic mb-4 text-md font-serif">Petunjuk: Pilih jawaban yang benar!</p>
+                                                <template v-for="(soal, s) in soals.filter(soal => soal.tipe == 'pilihan')">
+                                                    <ul class="tes">
+                                                        <li class="mb-4 hover:bg-slate-100 relative group">
 
-                                                        <Icon icon="mdi:trash-can" class="text-4xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                            <Icon icon="mdi:trash-can" class="text-4xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                            <div class="flex gap-2">
+                                                                {{ s+1 }}. 
+                                                                <span v-html="soal.pertanyaan"></span>
+                                                            </div>
+                                                            <span class="flex gap-6 ml-4">
+                                                                <div class="flex gap-1">a. <span v-html="soal.a"></span></div>
+                                                                <div class="flex gap-1">b. <span v-html="soal.b"></span></div>
+                                                                <div class="flex gap-1">c. <span v-html="soal.c"></span></div>
+                                                                <div class="flex gap-1">d. <span v-html="soal.d"></span></div>
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                </template>
+                                            </div>
+                                            <div class="isian" v-if="soals.filter(soal => soal.tipe == 'isian').length > 0">
+                                                <h1 class="font-bold text-lg mb-2  mt-8">II. Soal Isian</h1>
+                                                <p class="italic mb-4 text-md font-serif">Petunjuk: Jawab dengan singkat!</p>
+                                                <ul class="list-decimal pl-4">
+                                                    <li v-for="(soal, s) in soals.filter(soal => soal.tipe == 'isian')" class="group relative my-2 hover:bg-sky-50">
+                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
                                                         <div class="flex gap-2">
-                                                            {{ s+1 }}. 
                                                             <span v-html="soal.pertanyaan"></span>
+                                                            <p>..........................................................................................</p>
                                                         </div>
-                                                        <!-- <div class="flex">
-                                                            <el-radio :value="'a'">
-                                                                <span v-html="soal.a"></span>
-                                                            </el-radio>
-                                                            <el-radio :value="'b'">
-                                                                <span v-html="soal.b"></span>
-                                                            </el-radio>
-                                                            <el-radio :value="'c'">
-                                                                <span v-html="soal.c"></span>
-                                                            </el-radio>
-                                                            <el-radio :value="'d'">
-                                                                <span v-html="soal.d"></span>
-                                                            </el-radio>
-                                                        </div> -->
-                                                        <span class="flex gap-6 ml-4">
-                                                            <div class="flex gap-1">a. <span v-html="soal.a"></span></div>
-                                                            <div class="flex gap-1">b. <span v-html="soal.b"></span></div>
-                                                            <div class="flex gap-1">c. <span v-html="soal.c"></span></div>
-                                                            <div class="flex gap-1">d. <span v-html="soal.d"></span></div>
-                                                        </span>
                                                     </li>
                                                 </ul>
-                                            </template>
+                                            </div>
+                                            <div class="uraian" v-if="soals.filter(soal => soal.tipe == 'uraian').length > 0">
+                                                <h1 class="font-bold text-lg mb-2  mt-8">III. Soal Uraian / Esay</h1>
+                                                <p class="italic mb-4 text-md font-serif">Petunjuk: Jawab pertanyaan dengan benar!</p>
+                                                <ul class="list-decimal pl-4">
+                                                    <li v-for="(soal, s) in soals.filter(soal => soal.tipe == 'uraian')" class="group relative">
+                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                        <div>
+                                                            <span v-html="soal.pertanyaan"></span>
+                                                            <p class="border-b border-black border-dotted border-b-2 mr-8 mt-4 mb-2">&nbsp;</p>
+                                                            <p class="border-b border-black border-dotted border-b-2 mr-8 mt-4 mb-2">&nbsp;</p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -213,12 +229,30 @@ onBeforeMount(() => {
                         </el-card>
                         <el-card class="mb-4 break-after-page">
                             <h3>Kunci Jawaban {{ props.selectedAsesmen.nama }}</h3>
-                            <div class="columns-4">
-                                <div v-for="(soal,s) in props.selectedAsesmen.soals">
-                                    {{ s+1 }}. {{ soal.kunci }}
+                            <div class="pilihan">
+                                <h3 class="font-bold">I. Pilihan Ganda</h3>
+                                <div class="columns-6 p-2">
+                                    <div v-for="(soal,s) in soals.filter(soal => soal.tipe == 'pilihan')" >
+                                        {{ s+1 }}. {{ soal.kunci }}
+                                    </div>
                                 </div>
                             </div>
-
+                            <div class="isian my-4">
+                                <h3 class="font-bold">II. Isian (Kebijaksanaan Guru)</h3>
+                                <ul class="pl-6 list-decimal">
+                                    <li v-for="(soal,s) in soals.filter(soal => soal.tipe == 'isian')">
+                                        <span v-html="soal.kunci"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="Uraian my-4">
+                                <h3 class="font-bold">III. Uraian (Kebijaksanaan Guru)</h3>
+                                <ul class="pl-6 list-decimal">
+                                    <li v-for="(soal,s) in soals.filter(soal => soal.tipe == 'uraian')">
+                                        <span v-html="soal.kunci"></span>
+                                    </li>
+                                </ul>
+                            </div>
                         </el-card>
                         <el-card class="mb-4 break-after-page relative">
                             <Kop />
@@ -275,56 +309,18 @@ onBeforeMount(() => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <!-- <div>
-                                    <table class="border w-full">
-                                        <thead>
-                                            <tr>
-                                                <th class="bg-slate-400 border border-black print:w-[50px] w-[80px]">No.</th>
-                                                <th class="bg-slate-400 border border-black text-center" colspan="4">Pilhan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="i of 5">
-                                                <td class="border border-black text-center bg-slate-300">{{ i+5 }}.</td>
-                                                <td class="border border-black text-center">a</td>
-                                                <td class="border border-black text-center">b</td>
-                                                <td class="border border-black text-center">c</td>
-                                                <td class="border border-black text-center">d</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div>
-                                    <table class="border w-full">
-                                        <thead>
-                                            <tr>
-                                                <th class="bg-slate-400 border border-black print:w-[50px] w-[80px]">No.</th>
-                                                <th class="bg-slate-400 border border-black text-center" colspan="4">Pilhan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="i of 5">
-                                                <td class="border border-black text-center bg-slate-300">{{ i+10 }}.</td>
-                                                <td class="border border-black text-center">a</td>
-                                                <td class="border border-black text-center">b</td>
-                                                <td class="border border-black text-center">c</td>
-                                                <td class="border border-black text-center">d</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div> -->
                             </div>
 
                             <h3 class="text-center bg-slate-500 uppercase text-white py-2 font-bold mt-6 my-4">Jawaban Isian</h3>
 
-                            <ul class="list-decimal list-inside">
-                                <li v-for="item of 5" class="w-full border-b border-b-slate-600 border-dotted mb-4">
+                            <ul class="list-decimal pl-4">
+                                <li v-for="item of soals.filter(soal => soal.tipe == 'isian').length" class="w-full border-b border-b-slate-600 border-dotted mb-2">
                                 </li>
                             </ul>
 
                             <h3 class="text-center bg-slate-500 uppercase text-white py-2 font-bold mt-8">Jawaban Uraian (Essay)</h3>
-                            <ul class="list-decimal list-inside mt-10">
-                                <li v-for="item of 5" class="w-full border-b border-b-slate-600 border-dotted mb-4">
+                            <ul class="list-decimal pl-4 mt-4">
+                                <li v-for="item of soals.filter(soal => soal.tipe == 'isian').length" class="w-full border-b border-b-slate-600 border-dotted mb-4">
                                 </li>
                             </ul>
                         </el-card>
@@ -334,24 +330,55 @@ onBeforeMount(() => {
                     <el-affix :offset="70">
                         <el-card class="mb-4">
                             <div class="flex gap-2">
-                                <!-- <el-form-item label="Jumlah Soal" class="w-[150px]">
-                                    <el-input v-model="jmlPG" type="number"></el-input>
-                                </el-form-item> -->
                                 <el-button type="primary" @click="addSoal">Buat Soal Baru</el-button>
                             </div>
                         </el-card>
                         <el-card>
-                            <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.rombel.tingkat }}</h3>
-
-                            <ul>
-                                <li v-for="(soal, s) in allSoals" class="flex gap-1 justify-between group mb-1 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
-                                    <span class="flex items-center gap-1">
-                                        {{ s+1 }}. 
-                                        <span v-html="soal.pertanyaan"></span>
-                                    </span>
-                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
-                                </li>
-                            </ul>
+                            <div class="content p-2">
+                                <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.rombel.tingkat }}</h3>
+                                <el-scrollbar max-height="85vh">
+                                    <el-divider>
+                                        <h3 class="font-bold text-sky-700">
+                                            Pilihan Ganda
+                                        </h3>
+                                    </el-divider>
+                                    <ul class="pl-4">
+                                        <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'pilihan')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                            <span class="flex items-start gap-2">
+                                                {{ s+1 }}. 
+                                                <span v-html="soal.pertanyaan"></span>
+                                            </span>
+                                                <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                        </li>
+                                    </ul>
+                                    <el-divider>
+                                        <h3 class="font-bold text-sky-700">Isian</h3>
+                                    </el-divider>
+                                    <ul>
+                                        <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'isian')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                            <span class="flex items-start gap-2">
+                                                {{ s+1 }}. 
+                                                <span v-html="soal.pertanyaan"></span>
+                                            </span>
+                                                <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                        </li>
+                                    </ul>
+                                    <el-divider>
+                                        <h3 class="font-bold text-sky-700">
+                                            Uraian
+                                        </h3>
+                                    </el-divider>
+                                    <ul>
+                                        <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'uraian')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                            <span class="flex items-start gap-2">
+                                                {{ s+1 }}. 
+                                                <span v-html="soal.pertanyaan"></span>
+                                            </span>
+                                                <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                        </li>
+                                    </ul>
+                                </el-scrollbar>
+                            </div>
                         </el-card>
                     </el-affix>
                 </el-col>
@@ -360,7 +387,7 @@ onBeforeMount(() => {
     </el-dialog>
 </template>
 
-<style>
+<style scoped>
 header.el-dialog__header {
     background: rgb(249, 251, 252);
     position: sticky;
