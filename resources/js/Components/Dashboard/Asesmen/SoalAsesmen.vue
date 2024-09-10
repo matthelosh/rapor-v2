@@ -18,6 +18,29 @@ const totalSkor = computed(() => {
     })
     return total
 })
+const minutes = ref(1)
+const seconds = ref(60)
+let runTImer = setInterval(() => {
+    if (seconds.value <= 0) {
+        if (minutes.value === 0 && seconds.value === 0) {
+            timesUp()
+        }
+        minutes.value--
+        seconds.value = 60
+    }
+    seconds.value--
+    }, 1000)
+
+
+const timesUp = () => {
+    clearInterval(runTImer)
+    ElMessageBox.alert('Maaf! Waktu habis. Jawaban kamu akan dikirim,', 'Info', {
+        confirmButtonText: 'Ya',
+        callback: (action) => {
+            kirim()
+        }
+    })
+}
 
 const currentCard = ref(0)
 
@@ -41,6 +64,8 @@ onBeforeMount(() => {
         is_benar: false,
         proses_id: null,
     }))
+
+    // runTImer()
 })
 </script>
 
@@ -59,49 +84,61 @@ onBeforeMount(() => {
                 <div class="toolbar flex items-center justify-between py-4 bg-white">
                     <Icon v-if="mode == 'card'" icon="mdi:list-box-outline" class="text-xl text-black" @click="mode = 'list'" />
                     <Icon v-if="mode == 'list'" icon="mdi:card-bulleted-outline" class="text-xl text-black" @click="mode = 'card'" />
-                    <h3>Jumlah Soal: {{ props.asesmen.soals.length }} </h3>
+                    <div class="flex items-center">
+                        <h3>
+                            Jumlah Soal: {{ props.asesmen.soals.length }} |
+                            {{ minutes }}:{{ seconds }}
+                        </h3>
+                    </div>
                     <Icon icon="hugeicons:menu-11" class="text-xl text-black" @click="showSide = true" />
                 </div>
             </el-affix>
-            <el-card class="border rounded p-2" shadow="never">
-                <ul class="list-[numeric] pl-4" v-if="mode == 'list'">
-                    <template v-for="(soal, s) in props.asesmen.soals">
-                        <li>
-                            <!-- {{ soal.level }} -->
-                            <div v-html="soal.pertanyaan"></div>
+            <el-card class="border rounded" shadow="never"  :body-style="{padding: 0, minHeight: '70vh'}">
+                <div v-if="mode == 'list'">
+                    <el-divider>Pilihan Ganda</el-divider>
+                    <h3 class="font-bold text-sky-700 mb-4">Pilih jawaban yang tepat!</h3>
+                    <ul class="list-[numeric] pl-6" >
+                        <template v-for="(soal, s) in props.asesmen.soals">
+                            <li class="mb-4">
+                                <div v-html="soal.pertanyaan"></div>
 
-                            <ul class="flex flex-wrap gap-2">
-                                <li v-for="j in ['a','b','c','d']" class="flex items-center gap-2 justify-between m-2">
-                                <!-- <el-radio-group v-model="hasil[s].jawaban"> -->
-                                    <label class="flex gap-1 items-center">
-                                        <input type="radio"  v-model="hasil[s].teks" :value="j">
-                                        </input>
-                                        <span v-html="soal[j]"></span>
+                                <ul class="flex flex-wrap gap-2" v-if="soal.tipe == 'pilihan'">
+                                    <li v-for="j in ['a','b','c','d']" class="flex items-center gap-2 justify-between m-2">
+                                        <label class="flex gap-1 items-center">
+                                            <input type="radio"  v-model="hasil[s].teks" :value="j">
+                                            </input>
+                                            <span v-html="soal[j]"></span>
 
-                                    </label>
-                                <!-- </el-radio-group> -->
-                                </li>
-                            </ul>
-                        </li>
-                    </template>
-                </ul>
+                                        </label>
+                                    </li>
+                                </ul>
+                                <el-input v-else autosize type="textarea" placeholder="Isikan jawabanmu" v-model="hasil[s].teks"></el-input>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
                 <div v-if="mode == 'card'">
                     <Transition name="soal" ease-in-out>
                         <el-card>
-                            <p>No. {{ currentCard +1 }}</p>
-                            <p v-html="props.asesmen.soals[currentCard].pertanyaan"></p>
-                            <ul class="mt-4">
+                            <el-divider >
+                                <span class="font-bold text-sky-700 text-lg text-center border border-sky-700 py-1 px-4">
+                                    No. {{ currentCard +1 }}
+                                </span>
+                            </el-divider>
+                            <p class="my-4 pt-4" v-html="props.asesmen.soals[currentCard].pertanyaan"></p>
+                            <span>
+                            <ul class="mt-4" v-if="props.asesmen.soals[currentCard].tipe == 'pilihan'">
                                 <li v-for="j in ['a','b','c','d']" class="flex items-center gap-2 justify-between m-2">
-                                <!-- <el-radio-group v-model="hasil[s].jawaban"> -->
                                     <label class="flex gap-1 items-center">
                                         <input type="radio"  v-model="hasil[currentCard].teks" :value="j">
                                         </input>
                                         <span v-html="props.asesmen.soals[currentCard][j]"></span>
 
                                     </label>
-                                <!-- </el-radio-group> -->
                                 </li>
                             </ul>
+                            <el-input autosize type="textarea" placeholder="Isikan jawabanmu" v-model="hasil[currentCard].teks" v-else></el-input>
+                        </span>
                             <template #footer>
                                 <div class="flex justify-between">
                                     <el-button @click="currentCard--" :disabled="currentCard === 0">
@@ -133,3 +170,11 @@ onBeforeMount(() => {
         </template>
     </el-drawer>
 </template>
+
+<style scope>
+.soal-leave-to {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all .35s ease-out;
+}
+</style>

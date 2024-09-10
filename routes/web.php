@@ -476,14 +476,14 @@ Route::middleware('auth')->group(
                 Route::prefix("asesmen")->group(
                     function () {
                         Route::get("/", [AsesmenController::class, 'home'])
-                            ->middleware('can:read_asesmen')
+                            ->middleware(['role:superademin|admin|guru_kelas|guru_pjok|guru_agama|guru_inggris', 'can:read_asesmen'])
                             ->name('dashboard.asesmen');
                         Route::post("/store", [AsesmenController::class, 'store'])
                             ->middleware('can:add_asesmen')
                             ->name('dashboard.asesmen.store');
-                        Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->name('dashboard.asesmen.soal.attach');
-                        Route::post('/detach/{id}', [AsesmenController::class, 'detachSoal'])->name('dashboard.asesmen.soal.detach');
-                        Route::delete('/{id}', [AsesmenController::class, 'destroy'])->name('dashboard.asesmen.destroy');
+                        Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.attach');
+                        Route::post('/detach/{id}', [AsesmenController::class, 'detachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.detach');
+                        Route::delete('/{id}', [AsesmenController::class, 'destroy'])->middleware('can:delete_asesmen')->name('dashboard.asesmen.destroy');
                     }
                 );
 
