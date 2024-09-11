@@ -97,6 +97,10 @@ const detachSoal = (item, indexSoal) => {
                 })
 }
 
+const showMiniBankSoal = ref(false)
+const showBank = () => {
+    showMiniBankSoal.value = true
+}
 // Add Soal
 const addSoal = () => {
     showFormSoal.value = true
@@ -131,17 +135,22 @@ onBeforeMount(() => {
         </template>
         <template #default>
             <el-row :gutter="20">
-                <el-col :span="16">
+                <el-col :span="16" :xs="24">
+                    <el-affix :offset="0">
+                        <div class="flex w-full border shadow-md items-center mb-2 p-2 bg-white h-12 justify-end hidden-sm-and-up">
+                            <Icon icon="mdi:menu" class="text-xl hover:cursor-pointer" @click="showBank" />
+                        </div>
+                    </el-affix>
                     <FormSoal v-if="showFormSoal" :selectedAsesmen="props.selectedAsesmen" @close="closeFormSoal" @stored="getAllSoals" />
                     <div class="cetak" v-else>
                         <el-card class="mb-4 break-after-page">
                             <div class="text-black">
                                 <div class="soal">
-                                    <Kop />
-                                    <h3 class="text-center text-lg print:text-md print:leading-5 font-bold font-serif mt-8">Lembar Soal {{ props.selectedAsesmen.nama }}</h3>
-                                    <h3 class="text-center text-lg print:text-md print:leading-5 font-bold font-serif">Semester {{ props.selectedAsesmen.semester.label }} {{ props.selectedAsesmen.tapel.deskripsi }}</h3>
+                                    <Kop class="hidden-sm-and-down" />
+                                    <h3 class="text-center md:text-lg print:text-md print:leading-5 font-bold font-serif mt-8">Lembar Soal {{ props.selectedAsesmen.nama }}</h3>
+                                    <h3 class="text-center md:text-lg print:text-md print:leading-5 font-bold font-serif">Semester {{ props.selectedAsesmen.semester.label }} {{ props.selectedAsesmen.tapel.deskripsi }}</h3>
 
-                                    <table class="w-[40%] print:w-[60%] border mx-auto my-4">
+                                    <table class="md:w-[40%] print:w-[60%] border mx-auto my-4">
                                         <tr>
                                             <td>Mata Pelajaran</td>
                                             <td>:</td>
@@ -185,11 +194,11 @@ onBeforeMount(() => {
                                                                 {{ s+1 }}. 
                                                                 <span v-html="soal.pertanyaan"></span>
                                                             </div>
-                                                            <span class="flex gap-6 ml-4">
-                                                                <div class="flex gap-1">a. <span v-html="soal.a"></span></div>
-                                                                <div class="flex gap-1">b. <span v-html="soal.b"></span></div>
-                                                                <div class="flex gap-1">c. <span v-html="soal.c"></span></div>
-                                                                <div class="flex gap-1">d. <span v-html="soal.d"></span></div>
+                                                            <span class="md:flex gap-6 ml-4 ">
+                                                                <div class="flex gap-1 ml-4 mb-2">a. <span v-html="soal.a"></span></div>
+                                                                <div class="flex gap-1 ml-4 mb-2">b. <span v-html="soal.b"></span></div>
+                                                                <div class="flex gap-1 ml-4 mb-2">c. <span v-html="soal.c"></span></div>
+                                                                <div class="flex gap-1 ml-4 mb-2">d. <span v-html="soal.d"></span></div>
                                                             </span>
                                                         </li>
                                                     </ul>
@@ -254,7 +263,7 @@ onBeforeMount(() => {
                                 </ul>
                             </div>
                         </el-card>
-                        <el-card class="mb-4 break-after-page relative">
+                        <el-card class="mb-4 break-after-page relative hidden-sm-and-down">
                             <Kop />
                             
                             <h3 class="text-center uppercase mt-4 font-bold">Lembar Jawaban</h3>
@@ -326,7 +335,7 @@ onBeforeMount(() => {
                         </el-card>
                     </div>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="8" :xs="24" class="hidden-sm-and-down">
                     <el-affix :offset="70">
                         <el-card class="mb-4">
                             <div class="flex gap-2">
@@ -383,6 +392,60 @@ onBeforeMount(() => {
                     </el-affix>
                 </el-col>
             </el-row>
+            <el-drawer size="90%" v-model="showMiniBankSoal" class="hidden-md-and-up">
+                <el-card class="mb-4">
+                    <div class="flex gap-2">
+                        <el-button type="primary" @click="addSoal">Buat Soal Baru</el-button>
+                    </div>
+                </el-card>
+                <el-card>
+                    <div class="content p-2">
+                        <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.rombel.tingkat }}</h3>
+                        <el-scrollbar max-height="85vh">
+                            <el-divider>
+                                <h3 class="font-bold text-sky-700">
+                                    Pilihan Ganda
+                                </h3>
+                            </el-divider>
+                            <ul class="pl-4">
+                                <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'pilihan')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                    <span class="flex items-start gap-2">
+                                        {{ s+1 }}. 
+                                        <span v-html="soal.pertanyaan"></span>
+                                    </span>
+                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                </li>
+                            </ul>
+                            <el-divider>
+                                <h3 class="font-bold text-sky-700">Isian</h3>
+                            </el-divider>
+                            <ul>
+                                <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'isian')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                    <span class="flex items-start gap-2">
+                                        {{ s+1 }}. 
+                                        <span v-html="soal.pertanyaan"></span>
+                                    </span>
+                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                </li>
+                            </ul>
+                            <el-divider>
+                                <h3 class="font-bold text-sky-700">
+                                    Uraian
+                                </h3>
+                            </el-divider>
+                            <ul>
+                                <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'uraian')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
+                                    <span class="flex items-start gap-2">
+                                        {{ s+1 }}. 
+                                        <span v-html="soal.pertanyaan"></span>
+                                    </span>
+                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                </li>
+                            </ul>
+                        </el-scrollbar>
+                    </div>
+                </el-card>
+            </el-drawer>
         </template>
     </el-dialog>
 </template>
