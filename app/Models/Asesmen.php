@@ -58,4 +58,14 @@ class Asesmen extends Model
     {
         return $this->belongsTo(Mapel::class, 'mapel_id', 'kode');
     }
+
+    public function proses()
+    {
+        return $this->hasOne(ProsesAsesmen::class, 'asesmen_id', 'kode');
+    }
+
+    public function jawabans()
+    {
+        return $this->hasMany(Jawaban::class, 'proses_id', 'id');
+    }
 }

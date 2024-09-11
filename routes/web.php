@@ -483,6 +483,7 @@ Route::middleware('auth')->group(
                             ->name('dashboard.asesmen.store');
                         Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.attach');
                         Route::post('/detach/{id}', [AsesmenController::class, 'detachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.detach');
+                        Route::put('/{id}', [AsesmenController::class, 'update'])->middleware('can:update_asesmen')->name('dashboard.asesmen.update');
                         Route::delete('/{id}', [AsesmenController::class, 'destroy'])->middleware('can:delete_asesmen')->name('dashboard.asesmen.destroy');
                     }
                 );

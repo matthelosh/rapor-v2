@@ -25,7 +25,10 @@ const simpanAsesmen = async () => {
     data.tapel = page.props.periode.tapel.kode
     data.semester = page.props.periode.semester.kode
     data.guru_id = page.props.auth.user.userable.nip
-    router.post(route('dashboard.asesmen.store'), data, {
+    data._method = asesmen.value.id ? 'PUT' : 'POST'
+    router.post(route(`dashboard.asesmen.${data.id ? 'update': 'store'}`, {
+        id: data.id ?? null
+    }), data, {
         onStart: () => loading.value = true,
         onSuccess: () => {
             router.reload({only: ['asesmens']})
@@ -170,26 +173,26 @@ const hapus = async(item) => {
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="6" :xs="24">
+                    <el-col :span="3" :xs="24">
                         <el-form-item label="Rombel">
                             <el-select v-model="asesmen.rombel_id" placeholder="Rombel" :readonly="false">
                                 <el-option v-for="(rombel, r) in page.props.sekolahs[0].rombels" :value="rombel.kode" :label="rombel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :xs="24">
+                    <el-col :span="5" :xs="24">
                         <el-form-item label="Tanggal">
                             <el-date-picker v-model="asesmen.tanggal" placeholder="Tanggal Pelaksanaan" :value-format="'YYYY-MM-DD'" ></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="2" :xs="24">
+                    <el-col :span="6" :xs="24">
                         <el-form-item label="Mulai">
-                            <el-input type="time" v-model="asesmen.mulai" placeholder="Mulai" ></el-input>
+                            <el-date-picker type="datetime" v-model="asesmen.mulai" placeholder="Mulai" value-format="YYYY-MM-DD h:m:s"></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="2" :xs="24">
+                    <el-col :span="6" :xs="24">
                         <el-form-item label="Selesai">
-                            <el-input type="time" v-model="asesmen.selesai" placeholder="Selesai"  ></el-input>
+                            <el-date-picker type="datetime" v-model="asesmen.selesai" placeholder="Selesai"  value-format="YYYY-MM-DD h:m:s"></el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="4" :xs="24">
@@ -210,7 +213,7 @@ const hapus = async(item) => {
 </DashLayout>
 </template>
 
-<style>
+<style scoped>
 .el-card__body {
     padding: 0!important;
 }

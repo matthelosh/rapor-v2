@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Periode;
 use App\Http\Requests\AsesmenRequest;
 use App\Models\Asesmen;
+use App\Models\Jawaban;
+use App\Models\ProsesAsesmen;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Siswa;
@@ -48,40 +50,17 @@ class AsesmenController extends Controller
         }
     }
 
-    public function kerjakanAsesmen(Request $request)
-    {
-        try {
-            $asesmen = Asesmen::whereKode($request->kode)
-                ->with('soals')
-                ->first();
-            // dd($asesmen);
-            $tapel = Periode::tapel()->kode;
-            return Inertia::render(
-                'Dash/Asesmen/Siswa/LembarSoal',
-                [
-                    'asesmen' => $asesmen,
-                    'siswa' => Siswa::whereNisn($request->siswaId)->with([
-                        'rombels' => function ($r) use ($tapel) {
-                            $r->whereTapel($tapel);
-                        },
-                        'sekolah'
-                    ])->first(),
-                ]
-            );
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
+
 
     public function store(AsesmenRequest $request)
     {
         try {
             Asesmen::updateOrCreate(
                 [
-                    'id' => $request->id ?? null
+                    // 'id' => $request->id ?? null,
+                    'kode' => $request->kode ?? $request->rombel_id . $request->mapel_id . $request->semester . $request->jenis . Str::random(6),
                 ],
                 [
-                    'kode' => $request->kode ?? $request->rombel_id . $request->mapel_id . $request->semester . $request->jenis . Str::random(6),
                     'nama' => $request->nama,
                     'deskripsi' => $request->deskripsi,
                     'tanggal' => $request->tanggal,
@@ -138,18 +117,112 @@ class AsesmenController extends Controller
         }
     }
 
+    public function update(Asesmen $asesmen, Request $request, $id)
+    {
+        $asesmen = $asesmen::findOrFail($id);
+        $asesmen->update($request->all());
+    }
 
     // Asesmen Siswa
     public function siswaAsesmen(Request $request)
     {
         try {
-            $asesmens = Asesmen::all();
+            $siswa_id = $request->query('siswaId');
+            $asesmens = Asesmen::with('proses')->with([
+                'jawabans' => function ($j) use ($siswa_id) {
+                    $j->where('siswa_id', $siswa_id);
+                }
+            ])->get();
             return Inertia::render(
                 'Dash/Asesmen/Siswa/Home',
                 [
                     'asesmens' => $asesmens,
                 ]
             );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function kerjakanAsesmen(Request $request)
+    {
+        try {
+            $siswa_id = $request->query('siswaId');
+            $asesmen = Asesmen::whereKode($request->kode)
+                ->with('soals', 'proses')
+                ->with([
+                    'jawabans' => function ($j) use ($siswa_id) {
+                        $j->where('siswa_id', $siswa_id);
+                    }
+                ])
+                ->first();
+            // dd($asesmen);
+            $tapel = Periode::tapel()->kode;
+            return Inertia::render(
+                'Dash/Asesmen/Siswa/LembarSoal',
+                [
+                    'asesmen' => $asesmen,
+                    'siswa' => Siswa::whereNisn($request->siswaId)->with([
+                        'rombels' => function ($r) use ($tapel) {
+                            $r->whereTapel($tapel);
+                        },
+                        'sekolah'
+                    ])->first(),
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function mulaiKerjakan(Request $request, $kode)
+    {
+        try {
+            $siswa_id = $request->query('siswaId');
+            if ($request->query('prosesId')) {
+                $currentProses = ProsesAsesmen::whereId($request->query('prosesId'))
+                    ->with([
+                        'jawabans' => function ($j) use ($siswa_id) {
+                            $j->whereSiswaId($siswa_id);
+                        }
+                    ])->first();
+            } else {
+                $proses = ProsesAsesmen::create([
+                    'asesmen_id' => $kode,
+                    'siswa_id' => $siswa_id,
+                    'mulai' => now(),
+                    'status' => 'progres',
+                ]);
+                $currentProses = ProsesAsesmen::whereId($proses->id)
+                    ->with([
+                        'jawabans' => function ($j) use ($siswa_id) {
+                            $j->whereSiswaId($siswa_id);
+                        }
+                    ])->first();
+            }
+            return response()->json([
+                'proses' => $currentProses
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function saveTemp(Request $request)
+    {
+        try {
+            $jawaban = Jawaban::updateOrCreate(
+                [
+                    'asesmen_id' => $request->asesmen_id,
+                    'siswa_id' => $request->siswa_id,
+                    'soal_id' => $request->soal_id,
+                    'is_benar' =>  false,
+                    'proses_id' => $request->proses_id,
+                ],
+                [
+                    'teks' =>  $request->teks,
+                ]
+            );
+            return back()->with('message', 'Jawaban disimpan sementara');
         } catch (\Throwable $th) {
             throw $th;
         }
