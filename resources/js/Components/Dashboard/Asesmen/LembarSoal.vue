@@ -189,7 +189,7 @@ onBeforeMount(() => {
                                                     <ul class="tes">
                                                         <li class="mb-4 hover:bg-slate-100 relative group">
 
-                                                            <Icon icon="mdi:trash-can" class="text-4xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                            <Icon icon="mdi:trash-can" class="text-4xl text-red-400 absolute right-4 hover:cursor-pointer md:hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
                                                             <div class="flex gap-2">
                                                                 {{ s+1 }}. 
                                                                 <span v-html="soal.pertanyaan"></span>
@@ -209,7 +209,7 @@ onBeforeMount(() => {
                                                 <p class="italic mb-4 text-md font-serif">Petunjuk: Jawab dengan singkat!</p>
                                                 <ul class="list-decimal pl-4">
                                                     <li v-for="(soal, s) in soals.filter(soal => soal.tipe == 'isian')" class="group relative my-2 hover:bg-sky-50">
-                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer md:hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
                                                         <div class="flex gap-2">
                                                             <span v-html="soal.pertanyaan"></span>
                                                             <p>..........................................................................................</p>
@@ -222,7 +222,7 @@ onBeforeMount(() => {
                                                 <p class="italic mb-4 text-md font-serif">Petunjuk: Jawab pertanyaan dengan benar!</p>
                                                 <ul class="list-decimal pl-4">
                                                     <li v-for="(soal, s) in soals.filter(soal => soal.tipe == 'uraian')" class="group relative">
-                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
+                                                        <Icon icon="mdi:trash-can" class="text-2xl text-red-400 absolute right-4 hover:cursor-pointer md:hidden group-hover:block transition-all ease-in-out top-2" @click="detachSoal(soal,s)" />
                                                         <div>
                                                             <span v-html="soal.pertanyaan"></span>
                                                             <p class="border-b border-black border-dotted border-b-2 mr-8 mt-4 mb-2">&nbsp;</p>
@@ -413,7 +413,7 @@ onBeforeMount(() => {
                                         {{ s+1 }}. 
                                         <span v-html="soal.pertanyaan"></span>
                                     </span>
-                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                        <Icon icon="mdi:plus" class="text-lg" @click="attachSoal(soal.id)" />
                                 </li>
                             </ul>
                             <el-divider>
@@ -425,7 +425,7 @@ onBeforeMount(() => {
                                         {{ s+1 }}. 
                                         <span v-html="soal.pertanyaan"></span>
                                     </span>
-                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                        <Icon icon="mdi:plus" class="text-lg" @click="attachSoal(soal.id)" />
                                 </li>
                             </ul>
                             <el-divider>
@@ -435,11 +435,11 @@ onBeforeMount(() => {
                             </el-divider>
                             <ul>
                                 <li v-for="(soal, s) in allSoals.filter(soal => soal.tipe == 'uraian')" class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50" draggable="true" @dragstart="drag($event, soal)">
-                                    <span class="flex items-start gap-2">
+                                    <span class="flex items-start gap-2 w-[90%]">
                                         {{ s+1 }}. 
                                         <span v-html="soal.pertanyaan"></span>
                                     </span>
-                                        <Icon icon="mdi:plus" class="text-lg hidden group-hover:block" @click="attachSoal(soal.id)" />
+                                    <Icon icon="mdi:plus" class="text-lg z-30" @click="attachSoal(soal.id)" />
                                 </li>
                             </ul>
                         </el-scrollbar>
