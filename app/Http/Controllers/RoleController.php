@@ -16,7 +16,9 @@ class RoleController extends Controller
             return Inertia::render('Dash/Role', [
                 'roles' => Role::with('permissions')->get(),
                 'permissions' => Permission::all(),
-                'users' => User::with('roles', 'permissions', 'userable.sekolahs')->get()
+                'users' => User::with('roles', 'permissions')
+                    ->with('userable')
+                    ->get()
             ]);
         } catch (\Throwable $th) {
             throw $th;

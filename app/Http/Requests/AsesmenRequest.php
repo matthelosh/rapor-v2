@@ -29,7 +29,6 @@ class AsesmenRequest extends FormRequest
             'mulai' => 'required',
             'selesai' => 'required',
             'jenis' => 'required',
-            'rombel_id' => 'required',
             'sekolah_id' => 'required',
             'semester' => 'required',
             'tapel' => 'required',

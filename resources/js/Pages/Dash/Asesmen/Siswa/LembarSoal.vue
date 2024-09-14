@@ -5,6 +5,9 @@ import { Icon } from '@iconify/vue';
 import { fotoSiswa } from '@/helpers/Gambar';
 import DashLayout from '@/Layouts/DashLayout.vue';
 import axios from 'axios';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id')
 const SoalAsesmen = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/SoalAsesmen.vue'))
 const page = usePage()
 const props = defineProps({asesmen: Object, siswa: Object})
@@ -13,13 +16,13 @@ const showSoalAsesmen = ref(false)
 const proses = ref(null)
 
 const kerjakan = () => {
-    axios.post(route('asesmen.siswa.kerjakan.mulai', {kode: props.asesmen.kode, _query:{siswaId: props.siswa.nisn, prosesId: props.asesmen.proses?.id ?? null}}), 
+    axios.post(route('asesmen.siswa.kerjakan.mulai', {kode: props.asesmen.kode, _query:{siswaId: props.siswa.nisn, prosesId: props.asesmen.proses[0]?.id ?? null}}), 
     { siswaId: props.siswa.nisn })
     .then(res => {
         proses.value = res.data.proses
         showSoalAsesmen.value = true
         const elem = document.documentElement
-        elem.requestFullscreen()
+        // elem.requestFullscreen()
     }).catch(err => {
         console.log(err)
     })
@@ -28,7 +31,7 @@ const kerjakan = () => {
 const closeSoalAsesmen = () => {
     // const elem = document.documentElement
     showSoalAsesmen.value = false
-    document.exitFullscreen()
+    // document.exitFullscreen()
 }
 </script>
 
@@ -53,8 +56,12 @@ const closeSoalAsesmen = () => {
                 <h3 class="text-center md:text-2xl font-bold text-sky-600 mb-4">Pastikan data kamu sudah benar!</h3>
                 <el-divider></el-divider>
                 <h3 class="font-bold text-center">SOAL: {{ props.asesmen.nama }}</h3>
-                <h3 class="font-bold text-center">Proses ID: {{ props.asesmen.proses?.id }}</h3>
-                <h3 class="font-bold text-center mb-4">Soal Terjawab: {{ props.asesmen.jawabans?.length }}</h3>
+                <h3 class="font-bold text-center">Proses ID: {{ props.asesmen.proses[0]?.id }}</h3>
+                <h3 class="font-bold text-center mb-4">Soal Terjawab: {{ props.asesmen.proses[0]?.jawabans?.length }}</h3>
+                <h3 class="font-bold text-center mb-4">Mulai: {{ props.asesmen.mulai }}</h3>
+                <h3 class="font-bold text-center mb-4">Selesai: {{ props.asesmen.selesai }}</h3>
+                <!-- <h3 class="font-bold text-center mb-4">Melanjutkan: {{ dayjs(props.asesmen.proses.jawabans[0].created_at).locale('Asia/Jakarta').format('H:m:s') }}</h3>
+                <h3 class="font-bold text-center mb-4">Melanjutkan: {{ dayjs(props.asesmen.proses.jawabans[props.asesmen.proses.jawabans.length-1].created_at).locale('Asia/Jakarta').format('H:m:s') }}</h3> -->
                 <div class="flex justify-center">
                     <el-avatar :src="page.props.auth.user.userable.foto" :size="100">
                         <template #error>

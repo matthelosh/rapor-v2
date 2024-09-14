@@ -5,7 +5,7 @@ import { ElContainer, ElHeader, ElAside, ElMain } from "element-plus";
 import { Icon } from "@iconify/vue";
 // import 'element-plus/es/components/button/style/css'
 import SideItem from "@/Layouts/SideMenu.vue";
-const contentTrigger = ref(false);
+const contentTrigger = ref(true);
 const page = usePage()
 const logout = () => {
     router.post(route("logout"));
@@ -20,7 +20,10 @@ const toggleSide = () => {
     side.style.width = '50%'
     side.classList.toggle("hidden-sm-and-down")
 }
-onMounted(() => (contentTrigger.value = true));
+
+onMounted(() => {
+    (contentTrigger.value = true)
+});
 </script>
 <template>
     <div class="common-layout h-screen w-screen">

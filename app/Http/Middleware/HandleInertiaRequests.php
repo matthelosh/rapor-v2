@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\Periode;
 use App\Models\Gugus;
+use App\Models\Mapel;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
@@ -36,7 +38,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = $request->user() ? User::whereId($request->user()->id)->first() : null;
         $datas = [
             ...parent::share($request),
             'auth' => [
@@ -50,44 +52,52 @@ class HandleInertiaRequests extends Middleware
             'periode' => $this->periode(),
             'app_env' => env('APP_ENV'),
             'guguses' => $user ? Gugus::all() : null,
+            'mapels' => $user ? ($user->hasRole('admin') ? Mapel::all() : $this->mapels($user)) : null,
         ];
         if ($user) { {
-                $guru_mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
+
                 $datas['sekolahs'] = $this->sekolahs($user);
-                $mapels = $this->sekolahs($user)[0]->mapels;
-                // $data['guguses'] = Gugus::all();
-                // $data['mapels'] = $mapels;
-                // dd($this->sekolahs($user)[0]->mapels->filter(fn($mapel) => $mapel->kode == 'pabp'));
-                if ($user->hasRole('guru_kelas')) {
-                    $data['mapels'] = $mapels->filter(fn($mapel) => !\in_array($mapel->kode, ['pabp', 'pjok', 'bing']));
-                    $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
-                } elseif (in_array($user->getRoleNames()[0], $guru_mapels)) {
-                    if ($user->hasRole('guru_agama')) {
-                        // $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pabp');
-                        $data['mapels'] = $mapels;
-                    } elseif ($user->hasRole('guru_pjok')) {
-                        $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pjok');
-                    } elseif ($user->hasRole('guru_inggris')) {
-                        $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'bing');
-                    }
-                }
+                $datas['rombels'] = $user->hasRole('admin') ? Rombel::whereTapel(Periode::tapel()->kode)->get() : Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
+            }
 
-                if ($user->hasRole('ops')) {
-                    $datas['rombels'] = Rombel::where('sekolah_id', $this->sekolahs($user)[0]->npsn)
-                        ->where('tapel', $this->periode()['tapel']['kode'])
-                        ->get();
-                }
+            if ($user->hasRole('siswa')) {
+                // $datas['auth']['user']['userable'] = Siswa::where('id', $user->userable_id)->first();
+                $datas['auth']['user'] = User::whereId($user->id)->with('userable')->first();
+            }
 
-                if ($user->hasRole('siswa')) {
-                    // $datas['auth']['user']['userable'] = Siswa::where('id', $user->userable_id)->first();
-                    $datas['auth']['user'] = User::whereId($user->id)->with('userable')->first();
-                }
+            if ($user->hasRole('ops')) {
+                $datas['rombels'] = Rombel::where('sekolah_id', $this->sekolahs($user)[0]->npsn)
+                    ->where('tapel', $this->periode()['tapel']['kode'])
+                    ->get();
             }
         }
 
         return $datas;
     }
 
+    private function mapels($user)
+    {
+        $guru_mapels = ['guru_agama', 'guru_pjok', 'guru_inggris'];
+        $mapels = $this->sekolahs($user)[0]->mapels;
+        // $data['guguses'] = Gugus::all();
+        // $data['mapels'] = $mapels;
+        // dd($this->sekolahs($user)[0]->mapels->filter(fn($mapel) => $mapel->kode == 'pabp'));
+        if ($user->hasRole('guru_kelas')) {
+            $data['mapels'] = $mapels->filter(fn($mapel) => !\in_array($mapel->kode, ['pabp', 'pjok', 'bing']));
+            $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
+        } elseif (in_array($user->getRoleNames()[0], $guru_mapels)) {
+            if ($user->hasRole('guru_agama')) {
+                // $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pabp');
+                $data['mapels'] = $mapels;
+            } elseif ($user->hasRole('guru_pjok')) {
+                $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pjok');
+            } elseif ($user->hasRole('guru_inggris')) {
+                $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'bing');
+            }
+        }
+
+        return $mapels;
+    }
     private function sekolahs($user)
     {
         // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {

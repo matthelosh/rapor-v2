@@ -1,9 +1,11 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { usePage, Head, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { dataAgama, dataJk } from "@/helpers/data";
 import { useTransition } from "@vueuse/core";
+
+import Tiptap from "@/Components/Tiptap.vue";
 
 import { Doughnut } from "vue-chartjs";
 import {
@@ -74,10 +76,24 @@ const byJk = computed(() => {
     };
 });
 
+const content = ref('<strong>Halo</strong>')
+
 const jml = (total) => {
     return useTransition(total, { duration: 1500 });
 };
 // const jmlSiswa = computed(() => sekolahs.value[selectedSekolah.value].siswas.length)
+
+const tes = () => {
+    router.post(route('dashboard.home.tes'))
+}
+onMounted(() => {
+    // console.log(import.meta.env.VITE_REVERB_HOST)
+    window.Echo.channel('tes')
+        .listen('JawabanReceived', (e) => {
+            console.log(e)
+        })
+    
+})
 </script>
 
 <template>
@@ -151,6 +167,12 @@ const jml = (total) => {
                 <template #default>
                 </template>
             </el-card>
+        </el-col>
+    </el-row>
+    <el-row style="margin-top: 20px;">
+        <el-col>
+            <!-- <Tiptap v-model="content" /> -->
+             <el-button @click="tes">Tes Reverb</el-button>
         </el-col>
     </el-row>
 </template>

@@ -92,6 +92,7 @@ const simpanSoal = async () => {
                 mapel_id: props.selectedAsesmen.mapel_id,
                 semester: props.selectedAsesmen.semester.kode,
                 tingkat: props.selectedAsesmen.rombel.tingkat,
+                agama: props.selectedAsesmen.agama ?? null,
                 pertanyaan: 'Tulis Pertanyaan',
                 tipe: 'pilihan',
                 level: 'LOT',
@@ -126,7 +127,7 @@ const getTps = async () => {
         mapelId: soal.value.mapel_id,
         tingkat: soal.value.tingkat,
         semester: soal.value.semester,
-        agama: soal.value.mapel_id == 'pabp' ? page.props.auth.user.userable.agama : null
+        agama: soal.value.mapel_id == 'pabp' ? props.selectedAsesmen.agama : null
     
     }).then(res => {
         tps.value = res.data.tps
@@ -140,7 +141,7 @@ onBeforeMount(async () => {
         asesmenId: props.selectedAsesmen.id,
         mapel_id: props.selectedAsesmen.mapel_id,
         semester: props.selectedAsesmen.semester.kode,
-        tingkat: props.selectedAsesmen.rombel.tingkat,
+        tingkat: props.selectedAsesmen.kelas,
         pertanyaan: 'Tulis Pertanyaan',
         tipe: 'pilihan',
         level: 'LOT'
@@ -167,7 +168,7 @@ onBeforeMount(async () => {
                     <el-col :span="8">
                         <el-form-item label="Mapel">
                             <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
-                                <el-option v-for="mapel in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
+                                <el-option v-for="mapel in page.props.auth.roles[0] == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>

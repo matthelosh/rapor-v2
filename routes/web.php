@@ -88,6 +88,7 @@ Route::middleware('auth')->group(
 
         Route::prefix('dashboard')->group(
             function () {
+                Route::post('/tes-reverb', [DashboardController::class, 'tesReverb'])->name('dashboard.home.tes');
                 Route::get(
                     '/',
                     [
@@ -481,6 +482,7 @@ Route::middleware('auth')->group(
                         Route::post("/store", [AsesmenController::class, 'store'])
                             ->middleware('can:add_asesmen')
                             ->name('dashboard.asesmen.store');
+                        Route::post('/monitor/reload', [AsesmenController::class, 'reloadASesmen'])->name('dashboard.asesmen.monitor.reload');
                         Route::post('/attach/{id}', [AsesmenController::class, 'attachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.attach');
                         Route::post('/detach/{id}', [AsesmenController::class, 'detachSoal'])->middleware('can:update_asesmen')->name('dashboard.asesmen.soal.detach');
                         Route::put('/{id}', [AsesmenController::class, 'update'])->middleware('can:update_asesmen')->name('dashboard.asesmen.update');

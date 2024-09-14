@@ -97,13 +97,6 @@ const assignPermission = async(user) => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Lembaga">
-                        <template #default="scope">
-                            <div>
-                                {{ scope.row.userable?.sekolahs[0]?.nama }}
-                            </div>
-                        </template>
-                    </el-table-column>
                     <el-table-column label="Jabatan">
                         <template #default="scope">
                             <div>

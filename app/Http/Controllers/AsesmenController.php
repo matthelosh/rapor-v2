@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\JawabanReceived;
 use App\Helpers\Periode;
 use App\Http\Requests\AsesmenRequest;
 use App\Models\Asesmen;
@@ -11,6 +12,7 @@ use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Siswa;
 use App\Models\Tapel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -32,6 +34,15 @@ class AsesmenController extends Controller
                     ->whereTapel($tapel)
                     ->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
                     ->get();
+            } elseif ($request->user()->hasRole('admin')) {
+                $asesmens = Asesmen::whereGuruId($request->user()->id)->with('soals', 'mapel', 'semester')
+                    ->with([
+                        'proses' => function ($p) {
+                            $p->with('siswa');
+                            $p->with('jawabans');
+                        }
+                    ])
+                    ->get();
             } else {
                 $rombel = $request->query('rombel');
                 // dd($rombel);
@@ -50,7 +61,24 @@ class AsesmenController extends Controller
         }
     }
 
+    public function reloadASesmen(Request $request)
+    {
+        try {
+            $asesmen = Asesmen::whereId($request->query('asesmenId'))
+                ->with([
+                    'proses' => function ($p) {
+                        $p->with('jawabans', 'siswa');
+                    }
+                ])
+                ->first();
 
+            return response()->json([
+                'asesmen' => $asesmen,
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 
     public function store(AsesmenRequest $request)
     {
@@ -68,11 +96,13 @@ class AsesmenController extends Controller
                     'mulai' => $request->mulai,
                     'selesai' => $request->selesai,
                     'jenis' => $request->jenis,
+                    'agama' => $request->agama ?? null,
+                    'kelas' => $request->kelas,
                     'rombel_id' => $request->rombel_id,
                     'sekolah_id' => $request->sekolah_id,
                     'semester' => $request->semester,
                     'tapel' => $request->tapel,
-                    'guru_id' => $request->guru_id
+                    'guru_id' => $request->guru_id ?? $request->user()->id
                 ]
             );
             return back()->with('message', 'Asesmen Disimpan');
@@ -128,9 +158,10 @@ class AsesmenController extends Controller
     {
         try {
             $siswa_id = $request->query('siswaId');
-            $asesmens = Asesmen::with('proses')->with([
-                'jawabans' => function ($j) use ($siswa_id) {
-                    $j->where('siswa_id', $siswa_id);
+            $asesmens = Asesmen::with([
+                'proses' => function ($p) use ($siswa_id) {
+                    $p->whereSiswaId($siswa_id);
+                    $p->with('jawabans');
                 }
             ])->get();
             return Inertia::render(
@@ -148,11 +179,13 @@ class AsesmenController extends Controller
     {
         try {
             $siswa_id = $request->query('siswaId');
+            $proses_id = $request->query('prosesId');
             $asesmen = Asesmen::whereKode($request->kode)
-                ->with('soals', 'proses')
+                ->with('soals')
                 ->with([
-                    'jawabans' => function ($j) use ($siswa_id) {
-                        $j->where('siswa_id', $siswa_id);
+                    'proses' => function ($j) use ($proses_id) {
+                        $j->where('id', $proses_id);
+                        $j->with('jawabans');
                     }
                 ])
                 ->first();
@@ -177,6 +210,7 @@ class AsesmenController extends Controller
     public function mulaiKerjakan(Request $request, $kode)
     {
         try {
+            // dd($request->query('prosesId'));
             $siswa_id = $request->query('siswaId');
             if ($request->query('prosesId')) {
                 $currentProses = ProsesAsesmen::whereId($request->query('prosesId'))
@@ -210,6 +244,8 @@ class AsesmenController extends Controller
     public function saveTemp(Request $request)
     {
         try {
+            $proses = ProsesAsesmen::findOrFail($request->proses_id);
+            $proses->update(['updated_at' => now(), 'selesai' => now()]);
             $jawaban = Jawaban::updateOrCreate(
                 [
                     'asesmen_id' => $request->asesmen_id,
@@ -222,6 +258,10 @@ class AsesmenController extends Controller
                     'teks' =>  $request->teks,
                 ]
             );
+
+            $guru = User::where('userable_id', 41)->with('userable')->first();
+            $siswa = Siswa::where('nisn', $request->siswa_id)->first();
+            \event(new JawabanReceived('Ananda ' . $siswa->nama . ' Menjawab soal.'));
             return back()->with('message', 'Jawaban disimpan sementara');
         } catch (\Throwable $th) {
             throw $th;

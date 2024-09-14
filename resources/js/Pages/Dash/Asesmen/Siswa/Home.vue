@@ -22,13 +22,15 @@ const page = usePage()
                     <el-card class="mb-3" shadow="hover">
                         <div class="flex items-center justify-between">
                             <h3 class="uppercase w-full px-2">
-                                <Link :href="route('asesmen.siswa.kerjakan', {_query: {kode: asesmen.kode, siswaId: page.props.auth.user.userable.nisn}})" class="block">
-                                {{ asesmen.nama }} <br> <small class="text-sky-500"> Proses ID: {{ asesmen.proses?.id }}</small>
+                                <Link :href="route('asesmen.siswa.kerjakan', {_query: {kode: asesmen.kode, siswaId: page.props.auth.user.userable.nisn, prosesId: asesmen.proses[0]?.id}})" class="block">
+                                {{ asesmen.nama }} <br> <small class="text-sky-500"> Proses ID: {{ asesmen.proses[0]?.id }}</small>
                                 </Link>
                             </h3>
                         </div>
+
                     </el-card>
                 </template>
+                <!-- {{ page.props.asesmens }} -->
         </el-card>
         
     </DashLayout>

@@ -98,7 +98,8 @@
             "guru_agama",
             "guru_pjok",
             "guru_inggris",
-            "ops"
+            "ops",
+            "admin"
         ],
         "children": [
             {
@@ -106,6 +107,7 @@
                 "url": "/dashboard/asesmen",
                 "icon": "file-question",
                 "roles": [
+                    "admin",
                     "guru_kelas",
                     "guru_agama",
                     "guru_pjok",

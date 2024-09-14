@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\JawabanReceived;
 use App\Models\Guru;
 use App\Models\Sekolah;
 use App\Models\Tapel;
@@ -11,8 +12,15 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+
+    public function tesReverb()
+    {
+        \event(new JawabanReceived("Ini Hanya Tes"));
+    }
+
     public function index(Request $request)
     {
+        // \event(new JawabanReceived('Ini Jawaban'));
         $user = $request->user();
         $tapel = Tapel::whereIsActive(true)->pluck('kode')->first();
         $data = [];

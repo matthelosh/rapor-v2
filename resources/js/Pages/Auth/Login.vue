@@ -1,4 +1,5 @@
 <script setup>
+import { computed, ref } from 'vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -6,8 +7,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-// import { ElButton } from 'element-plus'
-// import 'element-plus/es/components/button/style/css'
+
 
 defineProps({
     canResetPassword: {
@@ -29,6 +29,8 @@ const submit = () => {
         onFinish: () => form.reset('password'),
     });
 };
+const respose = ref('')
+
 </script>
 
 <template>
@@ -77,7 +79,6 @@ const submit = () => {
                     <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
             </div>
-
             <div class="flex items-center justify-end mt-4">
                 <Link
                     v-if="canResetPassword"

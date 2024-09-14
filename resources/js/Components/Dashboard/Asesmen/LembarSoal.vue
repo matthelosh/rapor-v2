@@ -20,9 +20,9 @@ import Kop from '@/Components/Umum/Kop.vue';
 const allSoals = ref([])
 const getAllSoals = async () => {
     await axios.get(route('dashboard.soal.all', {
-        tingkat: props.selectedAsesmen.rombel.tingkat,
+        tingkat: props.selectedAsesmen.kelas,
         mapel_id: props.selectedAsesmen.mapel_id,
-        agama: props.selectedAsesmen.mapel_id == 'pabp' ? page.props.auth.user.userable.agama : null,
+        agama: props.selectedAsesmen.mapel_id == 'pabp' ? props.selectedAsesmen.agama : null,
         asesmen_id : props.selectedAsesmen.id
     })).then(res => {
         allSoals.value = res.data.soals
@@ -159,7 +159,7 @@ onBeforeMount(() => {
                                         <tr>
                                             <td>Kelas</td>
                                             <td>:</td>
-                                            <td>{{ props.selectedAsesmen.rombel.label }}</td>
+                                            <td>{{ props.selectedAsesmen.rombel ? props.selectedAsesmen.rombel.label : props.selectedAsesmen.kelas   }}</td>
                                         </tr>
                                         <tr>
                                             <td>Tanggal</td>
@@ -344,7 +344,7 @@ onBeforeMount(() => {
                         </el-card>
                         <el-card>
                             <div class="content p-2">
-                                <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.rombel.tingkat }}</h3>
+                                <h3 class="font-black text-sky-800">Bank Soal Kelas {{ props.selectedAsesmen.kelas }}</h3>
                                 <el-scrollbar max-height="85vh">
                                     <el-divider>
                                         <h3 class="font-bold text-sky-700">

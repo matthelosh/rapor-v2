@@ -6,6 +6,7 @@ import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
 
 const LembarSoal = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/LembarSoal.vue'))
+const Monitor = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/Monitor.vue'))
 
 const page = usePage()
 const mode = ref('list')
@@ -21,10 +22,11 @@ const addAsesmen = () => {
 
 const simpanAsesmen = async () => {
     let data = asesmen.value
+    console.log(asesmen.value)
     data.sekolah_id = page.props.sekolahs[0].npsn
     data.tapel = page.props.periode.tapel.kode
     data.semester = page.props.periode.semester.kode
-    data.guru_id = page.props.auth.user.userable.nip
+    data.guru_id = page.props.auth.roles[0] !== 'admin' ? page.props.auth.user.userable.nip : page.props.auth.user.id
     data._method = asesmen.value.id ? 'PUT' : 'POST'
     router.post(route(`dashboard.asesmen.${data.id ? 'update': 'store'}`, {
         id: data.id ?? null
@@ -67,6 +69,11 @@ const edit = (item) => {
     mode.value = 'form'
 }
 
+const mapels = computed(() => {
+    return page.props.auth.roles[0] == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels
+})
+
+
 const hapus = async(item) => {
     await router.delete(route('dashboard.asesmen.destroy', {id: item.id}), {
         onStart: () => loading.value = true,
@@ -87,13 +94,21 @@ const hapus = async(item) => {
     })
 }
 
+const reloadData = async () => {
+    router.reload()
+}
+const showMonitor = (item) => {
+    selectedAsesmen.value = item
+    mode.value = 'monitor'
+}
+
 </script>
 
 <template>
 <Head title="Asesmen" />
 <DashLayout title="Asesmen">
     <template #header>Asesmen</template>
-    <el-card>
+    <el-card v-if="mode == 'list'">
         <template #header>
             <div class="flex items-center justify-between">
                 <h3>Data Asesmen</h3>
@@ -104,13 +119,14 @@ const hapus = async(item) => {
             </div>
         </template>
         <div class="list" v-if="mode == 'list'">
+            <!-- {{ page.props.mapels }} -->
             <el-table :data="asesmens">
                 <el-table-column label="#" type="index"></el-table-column>
                 <el-table-column label="Kode" prop="kode"></el-table-column>
                 <el-table-column label="Nama" prop="nama"></el-table-column>
                 <el-table-column label="Kelas" width="100">
                     <template #default="scope">
-                        {{ scope.row.rombel.label }}
+                        {{ scope.row.rombel ? scope.row.rombel?.label : scope.row.kelas }}
                     </template>
                 </el-table-column>
                 <el-table-column label="Mapel" >
@@ -128,12 +144,13 @@ const hapus = async(item) => {
                         {{ scope.row.soals?.length }}
                     </template>
                 </el-table-column>
-                <el-table-column label="Opsi" width="208" fixed="right">
+                <el-table-column label="Opsi" width="275" fixed="right">
                     <template #default="{row}">
                         <div class="flex items-center">
                             <el-button-group size="small">
                                 <el-button @click="edit(row)">Edit</el-button>
                                 <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
+                                <el-button type="success" @click="showMonitor(row)">Monitor</el-button>
                                 <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
                                     <template #reference>
                                         <el-button type="danger">Hapus</el-button>
@@ -167,20 +184,41 @@ const hapus = async(item) => {
                     <el-col :span="6" :xs="24">
                         <el-form-item label="Mapel">
                             <el-select v-model="asesmen.mapel_id" placeholder="Mapel" :readonly="false">
-                                <el-option v-for="(mapel, m) in page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
+                                <el-option v-for="(mapel, m) in mapels" :value="mapel.kode" :label="mapel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :span="3" :xs="24">
+                    <el-col :span="3" :xs="24" v-if="asesmen.mapel_id == 'pabp'">
+                        <el-form-item label="Agama">
+                            <el-select v-model="asesmen.agama" placeholder="Agama" :readonly="false">
+                                <el-option v-for="(agama, a) in ['Islam','Kristen','Katolik','Hindu','Budha', 'Konghuchu']" :value="agama"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3" :xs="24" v-if="page.props.auth.roles[0] !== 'admin'">
                         <el-form-item label="Rombel">
                             <el-select v-model="asesmen.rombel_id" placeholder="Rombel" :readonly="false">
                                 <el-option v-for="(rombel, r) in page.props.sekolahs[0].rombels" :value="rombel.kode" :label="rombel.label"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="5" :xs="24">
+                    <el-col :span="3" :xs="24">
+                        <el-form-item label="Kelas">
+                            <el-select v-model="asesmen.kelas" placeholder="Kelas" :readonly="false">
+                                <el-option v-for="(kelas, t) in ['1','2','3','4','5','6']" :value="kelas" :label="`Kelas ${kelas}`"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3" :xs="24">
+                        <el-form-item label="Tingkat">
+                            <el-select v-model="asesmen.tingkat" placeholder="Tingkat" :readonly="false">
+                                <el-option v-for="(tingkat, t) in ['lembaga','gugus', 'kecamatan']" :value="tingkat" :label="`${tingkat[0].toUpperCase()+tingkat.substring(1)}`"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3" :xs="24">
                         <el-form-item label="Tanggal">
                             <el-date-picker v-model="asesmen.tanggal" placeholder="Tanggal Pelaksanaan" :value-format="'YYYY-MM-DD'" ></el-date-picker>
                         </el-form-item>
@@ -198,7 +236,7 @@ const hapus = async(item) => {
                     <el-col :span="4" :xs="24">
                         <el-form-item label="Jenis Asesmen">
                             <el-select v-model="asesmen.jenis" placeholder="Jenis Asesmen">
-                                <el-option v-for="jenis in ['uh', 'pts', 'pas']" :value="jenis" :label="jenis.toUpperCase()"></el-option>
+                                <el-option v-for="jenis in ['uh', 'pts', 'pas', 'lainnya']" :value="jenis" :label="jenis.toUpperCase()"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -209,7 +247,8 @@ const hapus = async(item) => {
             </el-form>
         </div>
     </el-card>
-    <LembarSoal v-if="selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
+    <LembarSoal v-if="mode == 'lembar-soal' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
+    <Monitor v-if="mode == 'monitor' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" @update-data="reloadData" />
 </DashLayout>
 </template>
 

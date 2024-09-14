@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Jawaban extends Model
 {
@@ -17,6 +18,11 @@ class Jawaban extends Model
         'is_benar',
         'proses_id'
     ];
+
+    public function getCreatedAtAttribute($date)
+    {
+        return Carbon::parse($date)->setTimezone("Asia/Jakarta");
+    }
 
     public function proses()
     {

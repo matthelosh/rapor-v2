@@ -25,25 +25,31 @@ const totalSkor = computed(() => {
 })
 const minutes = ref(1)
 const seconds = ref(60)
-let runTImer = setInterval(() => {
-    if (durasi.seconds <= 0) {
-        if (durasi.minutes === 0 && durasi.seconds === 0) {
-            if (durasi.hours > 0 ) {
-                durasi.hours--
-                durasi.minutes = 60
-            } else {
-                if (durasi.hours === 0 && durasi.minutes === 0 && durasi.seconds === 0) {
-                    timesUp()
+const runTimer = () => {
+    setInterval(() => {
+        if (durasi.seconds <= 0) {
+            if (durasi.minutes === 0 && durasi.seconds === 0) {
+                if (durasi.hours > 0 ) {
+                    durasi.hours--
+                    durasi.minutes = 60
+                } else {
+                    if (durasi.hours === 0 && durasi.minutes === 0 && durasi.seconds === 0) {
+                        if (localStorage.getItem("durasi")) 
+                            timesUp()
+                    }
                 }
             }
+            if (durasi.minutes > 0) {
+                durasi.minutes--
+                durasi.seconds = 60
+            }
         }
-        if (durasi.minutes > 0) {
-            durasi.minutes--
-            durasi.seconds = 60
+        if (durasi.seconds > 0) {
+            durasi.seconds--
+            localStorage.setItem('durasi', JSON.stringify(durasi))
         }
-    }
-    if (durasi.seconds > 0) durasi.seconds--
-    }, 1000)
+        }, 1000)
+}
 
 const durasi = reactive({
     totalMinutes: 0,
@@ -51,14 +57,25 @@ const durasi = reactive({
     minutes: 0,
     seconds: 0
 })
-const initDurasi = () => {
-    const start = dayjs(props.asesmen.mulai)
-    const end = dayjs(props.asesmen.selesai)
-    let diff = end.diff(start) / 1000
-    let totalMinutes = diff / 60
-    durasi.totalMinutes = totalMinutes
-    durasi.hours = Math.floor(totalMinutes / 60)
-    durasi.minutes = totalMinutes % 60
+const initDurasi = async() => {
+    if (localStorage.getItem("durasi")) {
+        const dur = JSON.parse(localStorage.getItem("durasi"))
+        // durasi.totalMinutes = localStorage.getItem("hours")
+        durasi.hours = dur.hours
+        durasi.minutes = dur.minutes
+        durasi.seconds = dur.seconds
+        // durasi.minutes = localStorage.getItem("minutes")
+    } else {
+        const start = props.asesmen.proses?.jawabans.length > 0 ? dayjs(props.asesmen.proses.updated_at).locale('Asia/Jakarta') :dayjs(props.asesmen.mulai)
+        const end = dayjs(props.asesmen.selesai)
+        let diff = end.diff(start) / 1000
+        let totalMinutes = diff / 60
+        durasi.totalMinutes = totalMinutes
+        durasi.hours = Math.floor(totalMinutes / 60)
+        localStorage.setItem("hours", durasi.hours)
+        durasi.minutes = Math.floor(totalMinutes % 60)
+    }
+    runTimer()
 }
 const timesUp = () => {
     clearInterval(runTImer)
@@ -95,10 +112,12 @@ const onStickyToolbar = (fixed) => {
 }
 
 const onJawab = (jawaban) => {
+    const soal = props.asesmen.soals.find(soal => soal.id === jawaban.soal_id)
+    jawaban.is_benar = soal.tipe == 'pilihan' ? (jawaban.teks == soal.kunci) : false
     // console.log(jawaban)
     router.post(route('asesmen.siswa.jawaban.savetemp'), jawaban, {
         onSuccess: () => {
-            router.reload({only: ['asesmen'], preserveState: true})
+            router.reload()
             ElNotification({ title: 'Info', message: page.props.flash.message, type: 'success'})
         }, onError: errs => console.log(errs)
     })
@@ -108,9 +127,9 @@ onBeforeMount(() => {
         asesmen_id: props.asesmen.kode,
         siswa_id: props.siswa.nisn,
         soal_id: soal.id,
-        teks: props.asesmen.jawabans.find(j => j.soal_id == soal.id) ? props.asesmen.jawabans.find(j => j.soal_id == soal.id).teks : '',
+        teks: !props.asesmen.proses[0]?.jawabans ? '' : ( props.asesmen.proses[0].jawabans.find(j => j.soal_id == soal.id) ? props.asesmen.proses[0].jawabans.find(j => j.soal_id == soal.id).teks : ''),
         is_benar: false,
-        proses_id: props.asesmen.proses.id,
+        proses_id: props.proses.id,
     }))
 
     initDurasi()

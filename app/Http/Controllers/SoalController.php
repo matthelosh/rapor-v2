@@ -49,21 +49,6 @@ class SoalController extends Controller
                     ['agama', '=', $request->agama],
 
                 ])->get();
-            // ->get();
-            // dd($soals);
-            // $soals = Soal::whereDoesntHave([
-            //     'asesmen',
-            //     // 'asesmen' => function ($a) use ($asesmen_id) {
-            //     //     $a->where('asesmens.id', $asesmen_id);
-            //     // }
-            // ])
-            //     ->where([
-            //         ['tingkat', '=', $request->tingkat],
-            //         ['mapel_id', '=', $request->mapel_id],
-            //         ['agama', '=', $request->agama],
-
-            //     ])
-            //     ->get();
             return response()->json([
                 'soals' => $soals
             ]);
@@ -95,12 +80,12 @@ class SoalController extends Controller
                     'id' => $request->id ?? null,
                 ],
                 [
-                    'guru_id' => $request->user()->userable->nip,
+                    'guru_id' => $request->user()->hasRole('admin') ? $request->user()->id : $request->user()->userable->nip,
                     'tp_id' => $request->tp_id,
                     'tingkat' => $request->tingkat,
                     'semester' => $request->semester,
                     'mapel_id' => $request->mapel_id,
-                    'agama' => $request->mapel_id == 'pabp' ? $request->user()->userable->agama : null,
+                    'agama' => $request->mapel_id == 'pabp' ? $request->agama : null,
                     'pertanyaan' => $request->pertanyaan,
                     'a' => $request->a,
                     'b' => $request->b,
