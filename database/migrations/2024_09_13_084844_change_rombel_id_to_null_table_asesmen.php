@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('asesmens', function (Blueprint $table) {
             $table->string('rombel_id', 40)->nullable()->change();
             $table->enum('jenis', ['uh', 'pts', 'pas', 'lainnya'])->change();
-            $table->enum('kelas', ['1', '2', '3', '4', '5', '6'])->change();
+            $table->enum('kelas', ['1', '2', '3', '4', '5', '6']);
             $table->enum('tingkat', ['lembaga', 'gugus', 'kecamatan'])->default('lembaga')->change();
             $table->string('agama', 15)->nullable();
         });
