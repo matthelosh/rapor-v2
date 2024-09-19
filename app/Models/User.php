@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Helpers\UserState;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'userable_id'
     ];
 
+    protected $appends = ['is_online'];
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -51,5 +53,10 @@ class User extends Authenticatable
     function userable()
     {
         return $this->morphTo(__FUNCTION__, 'userable_type', 'userable_id');
+    }
+
+    function getIsOnlineAttribute()
+    {
+        return UserState::isOnline($this->id);
     }
 }

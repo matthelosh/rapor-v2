@@ -1,17 +1,48 @@
 <template>
     <div class="toolbar flex">
         <el-button-group>
-            <el-button @click="tools.addYt()">Youtube</el-button>
+            <el-button size="small" @click="tools.addYt()">
+              <Icon icon="mdi:youtube" />
+            </el-button>
         </el-button-group>
     </div>
+    <bubble-menu v-if="editor" :editor="editor" class="p-2 bg-slate-50 rounded-tl-lg rounded-br-lg rounded-tr-lg shadow-lg">
+      <el-button-group class="bubble-menu">
+        <el-button size="small" @click="editor.chain().focus().toggleBold().run()" :class="{ 'is-active': editor.isActive('bold') }">
+          <Icon icon="mdi:format-bold" />
+        </el-button>
+        <el-button size="small" @click="editor.chain().focus().toggleItalic().run()" :class="{ 'is-active': editor.isActive('italic') }">
+          <Icon icon="mdi:format-italic" />
+        </el-button>
+        <el-button size="small" @click="editor.chain().focus().toggleStrike().run()" :class="{ 'is-active': editor.isActive('strike') }">
+          <Icon icon="mdi:format-strikethrough" />
+        </el-button>
+      <!-- </el-button-group> -->
+      <!-- <el-button-group> -->
+        <el-button size="small" @click="editor.chain().focus().setTextAlign('left').run()" :class="{ 'is-active': editor.isActive('bold') }">
+          <Icon icon="mdi:format-align-left" />
+        </el-button>
+        <el-button size="small" @click="editor.chain().focus().setTextAlign('center').run()" :class="{ 'is-active': editor.isActive('bold') }">
+          <Icon icon="mdi:format-align-center" />
+        </el-button>
+        <el-button size="small" @click="editor.chain().focus().setTextAlign('right').run()" :class="{ 'is-active': editor.isActive('bold') }">
+          <Icon icon="mdi:format-align-right" />
+        </el-button>
+        <el-button size="small" @click="editor.chain().focus().setTextAlign('justify').run()" :class="{ 'is-active': editor.isActive('bold') }">
+          <Icon icon="mdi:format-align-justify" />
+        </el-button>
+      </el-button-group>
+    </bubble-menu>
     <editor-content :editor="editor" :extensions="extensions" />
   </template>
   
   <script setup>
   import { ref, watch, onMounted, onBeforeUnmount, reactive } from 'vue'
   import StarterKit from '@tiptap/starter-kit'
-  import { Editor, EditorContent } from '@tiptap/vue-3'
+  import { Editor, EditorContent, BubbleMenu } from '@tiptap/vue-3'
   import Youtube from '@tiptap/extension-youtube';
+  import TextAlign from '@tiptap/extension-text-align'
+  import { Icon } from '@iconify/vue';
   
   const props = defineProps({
     modelValue: {
@@ -25,10 +56,13 @@
   const editor = ref(null)
 
   const extensions = [
+    BubbleMenu,
+    TextAlign,
     StarterKit.configure({
         heading: {
-            levels: [1,2,3]
-        }
+            levels: [1,2,3],
+            
+        },
     }),
     Youtube,
   ]

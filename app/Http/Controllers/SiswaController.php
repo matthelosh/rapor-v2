@@ -108,7 +108,7 @@ class SiswaController extends Controller
                 ],
                 [
                     'password' => Hash::make($siswa->nisn),
-                    'email' => $siswa->email,
+                    'email' => $siswa->email ?? $siswa->nisn . '@e.mail',
                     'userable_id' => $siswa->id,
                     'userable_type' => 'App\Models\Siswa'
                 ]

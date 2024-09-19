@@ -11,6 +11,7 @@
         "inertiajs/inertia-laravel": "^1.0",
         "laravel/fortify": "^1.21",
         "laravel/framework": "^11.0",
+        "laravel/prompts": "^0.1.25",
         "laravel/reverb": "@beta",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -36,6 +37,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
+        },
+        "files.associations": {
+            "*.php": "php"
+
         }
     },
     "autoload-dev": {

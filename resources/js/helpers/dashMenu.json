@@ -226,8 +226,8 @@
     {
         "label": "SPN",
         "icon": "religion-islamic",
-        "url": "#",
-        "roles": ["superadmin", "admin", "guru_kelas"],
+        "url": "/dashboard/spn",
+        "roles": ["superadmin", "admin", "guru_kelas", "guru_agama"],
         "children": []
     },
     {

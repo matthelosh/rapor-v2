@@ -20,6 +20,7 @@ class Asesmen extends Model
         'selesai',
         'agama',
         'kelas',
+        'tingkat',
         'jenis',
         'rombel_id',
         'sekolah_id',
@@ -65,13 +66,18 @@ class Asesmen extends Model
     {
         return $this->hasMany(ProsesAsesmen::class, 'asesmen_id', 'kode');
     }
-    // public function siswaProses()
-    // {
-    //     return $this->hasOne(ProsesAsesmen::class, 'asesmen_id', 'kode')->latest();
-    // }
+    public function proses_siswa()
+    {
+        return $this->hasOne(ProsesAsesmen::class, 'asesmen_id', 'kode')->latest();
+    }
 
     public function jawabans()
     {
         return $this->hasMany(Jawaban::class, 'proses_id', 'id');
+    }
+
+    public function pesertas()
+    {
+        return $this->belongsToMany(Siswa::class, 'asesmen_siswa');
     }
 }

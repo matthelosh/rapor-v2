@@ -54,11 +54,16 @@ class HandleInertiaRequests extends Middleware
             'guguses' => $user ? Gugus::all() : null,
             'mapels' => $user ? ($user->hasRole('admin') ? Mapel::all() : $this->mapels($user)) : null,
         ];
-        if ($user) { {
+        if ($user) {
 
-                $datas['sekolahs'] = $this->sekolahs($user);
-                $datas['rombels'] = $user->hasRole('admin') ? Rombel::whereTapel(Periode::tapel()->kode)->get() : Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
-            }
+            $datas['sekolahs'] = $this->sekolahs($user);
+            $datas['rombels'] = ($user->hasRole('admin') || $user->hasRole('superadmin'))
+                ? Rombel::whereTapel(Periode::tapel()->kode)->get()
+                : (
+                    $user->hasRole('guru_kelas')
+                    ? Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get()
+                    : Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)->with('siswas')->get()
+                );
 
             if ($user->hasRole('siswa')) {
                 // $datas['auth']['user']['userable'] = Siswa::where('id', $user->userable_id)->first();
@@ -83,8 +88,9 @@ class HandleInertiaRequests extends Middleware
         // $data['mapels'] = $mapels;
         // dd($this->sekolahs($user)[0]->mapels->filter(fn($mapel) => $mapel->kode == 'pabp'));
         if ($user->hasRole('guru_kelas')) {
-            $data['mapels'] = $mapels->filter(fn($mapel) => !\in_array($mapel->kode, ['pabp', 'pjok', 'bing']));
-            $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
+            $mapels = $mapels->filter(fn($mapel) => !\in_array($mapel->kode, ['pabp', 'pjok', 'bing']));
+            // dd($mapels);
+            // $datas['rombels'] = Rombel::where('guru_id', $user->userable->id)->with('siswas.ortus', 'sekolah')->get();
         } elseif (in_array($user->getRoleNames()[0], $guru_mapels)) {
             if ($user->hasRole('guru_agama')) {
                 // $data['mapels'] = $mapels->filter(fn($mapel) => $mapel->kode == 'pabp');

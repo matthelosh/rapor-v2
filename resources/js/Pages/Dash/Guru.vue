@@ -270,6 +270,11 @@ const unduhFormat = async () => {
                             {{ scope.row.jabatan }}
                         </template>
                     </el-table-column>
+                    <el-table-column label="Akun" width="100">
+                        <template #default="scope">
+                            {{ scope.row.user?.name }}
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="hp" label="Nomor HP" width="150" />
                     <el-table-column label="Opsi" width="80">
                         <template #default="scope">
@@ -335,8 +340,7 @@ const unduhFormat = async () => {
                     <Pagination :data="page.props.gurus" dataName="gurus" />
                 </template>
             </el-card>
-
-            <!-- p>lorem*10 -->
+            <!-- <p>{{ gurus }}</p> -->
         </div>
         <FormGuru
             :open="formGuru"

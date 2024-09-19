@@ -28,19 +28,23 @@ const percentage = (total) => {
     return Math.round(total / props.selectedAsesmen.soals.length * 100)
 }
 
+function handleEvent(notif) {
+    ElNotification({title: 'Info', message: notif.message, type: 'info'})
+    reloadData()
+}
+
 onBeforeMount(() => {
     processes.value = props.selectedAsesmen.proses
-    window.Echo.channel("tes")
-            .listen("JawabanReceived", (notif) => {
-                ElNotification({title: 'Info', message: notif.data, type: 'info'})
-                // emit('update-data')
-                reloadData()
-            })
+    window.Echo.private(`asesmen.${page.props.auth.user.id}`)
+            .listen("SiswaMulaiAsesmen", handleEvent)
+            .listen("SiswaMenjawab", handleEvent)
+            .listen("SiswaLoggedOut", handleEvent)
+            
 })
 </script>
 
 <template>
-    <el-card>
+    <el-card shadow="never">
         <template #header>
             <div class="flex items-center justify-between">
                 <h3>Monitoring Asesmen {{ props.selectedAsesmen.nama }}</h3>
@@ -55,26 +59,46 @@ onBeforeMount(() => {
             </div>
         </template>
         <!-- {{ processes }} -->
-        <table>
+        <table class="w-full border border-sky-200">
             <thead>
                 <tr>
-                    <th class="border border-black p-2 bg-slate-100">No</th>
-                    <th class="border border-black p-2 bg-slate-100">Siswa</th>
-                    <th class="border border-black p-2 bg-slate-100">Jawaban</th>
-                    <th class="border border-black p-2 bg-slate-100">Progress</th>
-                    <th class="border border-black p-2 bg-slate-100">Skor</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">No</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Kode Proses</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Siswa</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Status</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Jawaban</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Progress</th>
+                    <th class="border border-sky-500 p-2 bg-sky-700 text-white">Skor</th>
                 </tr>
             </thead>
             <tbody>
                 <template v-for="(proses, p) in processes" :key="p">
-                    <tr>
-                        <td class="border border-black p-2">{{ p+1 }}</td>
-                        <td class="border border-black p-2">{{ proses.siswa?.nama }}</td>
-                        <td class="border border-black p-2">{{ proses.jawabans?.length }}</td>
-                        <td class="border border-black p-2">
-                            <el-progress type="circle" :width="80" :stroke-width="10" :percentage="percentage(proses.jawabans.length)" :color="colors" :type="'success'" />
+                    <tr class="odd:bg-sky-50">
+                        <td class="border-x border-sky-200 p-2 text-center w-[50px]">{{ p+1 }}</td>
+                        <td class="border-x border-sky-200 p-2 text-center w-[60px]">{{ proses.id }}</td>
+                        <td class="border-x border-sky-200 p-2">
+                            <div class="flex items-center gap-2">
+                                {{ proses.siswa?.nama }} 
+                            </div>
                         </td>
-                        <td class="border border-black p-2">{{ proses.jawabans.length > 0 ? proses.jawabans.reduce((a,c) => a+=c.is_benar,0) : 0 }}</td>
+                        <td class="border-x border-sky-200 p-2 text-center w-[100px]">
+                            <div class="flex items-center gap-2 justify-center">
+                                <div class="indicator w-[10px] h-[10px] rounded-full " :class="proses.siswa.user[0].is_online  ? 'bg-green-500 animate-pulse' : 'bg-slate-300'">
+                                </div>
+                                <p class="text-sky-500"v-if="proses.siswa.user[0].is_online">Online</p>
+                                <p class="text-slate-400" v-if="!proses.siswa.user[0].is_online">Offline</p>
+                            </div>
+                        </td>
+                        <td class="border-x border-sky-200 p-2 text-center w-[100px]">{{ proses.jawabans?.length }}</td>
+                        <td class="border-x border-sky-200 p-2 text-center">
+                            <el-progress type="circle" :width="80" :stroke-width="10" :percentage="percentage(proses.jawabans.length)" :color="colors" :type="'success'">
+                                <template #default="{ percentage }">
+                                    <div class="percentage-value">{{ percentage }}%</div>
+                                    <div class="percentage-label">{{ proses.status }}</div>
+                                </template>
+                            </el-progress>
+                        </td>
+                        <td class="border-x border-sky-200 p-2 text-center w-[150px]">{{ proses.jawabans.length > 0 ? proses.jawabans.reduce((a,c) => a+=c.is_benar,0) : 0 }}</td>
                     </tr>
                 </template>
             </tbody>

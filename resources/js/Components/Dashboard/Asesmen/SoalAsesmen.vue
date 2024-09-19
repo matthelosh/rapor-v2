@@ -66,7 +66,7 @@ const initDurasi = async() => {
         durasi.seconds = dur.seconds
         // durasi.minutes = localStorage.getItem("minutes")
     } else {
-        const start = props.asesmen.proses?.jawabans.length > 0 ? dayjs(props.asesmen.proses.updated_at).locale('Asia/Jakarta') :dayjs(props.asesmen.mulai)
+        const start = props.asesmen.proses?.jawabans?.length > 0 ? dayjs(props.asesmen.proses.updated_at).locale('Asia/Jakarta') :dayjs(props.asesmen.mulai)
         const end = dayjs(props.asesmen.selesai)
         let diff = end.diff(start) / 1000
         let totalMinutes = diff / 60
@@ -78,7 +78,8 @@ const initDurasi = async() => {
     runTimer()
 }
 const timesUp = () => {
-    clearInterval(runTImer)
+    clearInterval(runTimer)
+    localStorage.removeItem("durasi")
     ElMessageBox.alert('Maaf! Waktu habis. Jawaban kamu akan dikirim,', 'Info', {
         confirmButtonText: 'Ya',
         callback: (action) => {

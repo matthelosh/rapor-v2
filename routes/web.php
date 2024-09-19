@@ -477,7 +477,7 @@ Route::middleware('auth')->group(
                 Route::prefix("asesmen")->group(
                     function () {
                         Route::get("/", [AsesmenController::class, 'home'])
-                            ->middleware(['role:superademin|admin|guru_kelas|guru_pjok|guru_agama|guru_inggris', 'can:read_asesmen'])
+                            ->middleware(['role:superadmin|admin|guru_kelas|guru_pjok|guru_agama|guru_inggris|ops', 'can:read_asesmen'])
                             ->name('dashboard.asesmen');
                         Route::post("/store", [AsesmenController::class, 'store'])
                             ->middleware('can:add_asesmen')
@@ -856,6 +856,15 @@ Route::middleware('auth')->group(
                         );
                     }
 
+                );
+
+                // Sekolah Olus Ngaji
+                Route::prefix("spn")->group(
+                    function () {
+                        Route::get("/", [SpnController::class, 'home'])->name('dashboard.spn.home');
+                        Route::post("/pretes/siswa", [SpnController::class, "getSiswa"])->name('dashboard.spn.pretes.siswa');
+                        Route::post("/pretes/siswa/store", [SpnController::class, "storePretes"])->name('dashboard.spn.pretes.store');
+                    }
                 );
             }
         );

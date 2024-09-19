@@ -4,7 +4,9 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
-
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+dayjs.locale('id');
 const LembarSoal = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/LembarSoal.vue'))
 const Monitor = defineAsyncComponent(() => import('@/Components/Dashboard/Asesmen/Monitor.vue'))
 
@@ -22,12 +24,16 @@ const addAsesmen = () => {
 
 const simpanAsesmen = async () => {
     let data = asesmen.value
-    console.log(asesmen.value)
+    // console.log(asesmen.value)
     data.sekolah_id = page.props.sekolahs[0].npsn
     data.tapel = page.props.periode.tapel.kode
     data.semester = page.props.periode.semester.kode
+    data.mulai = data.durasi[0]
+    data.selesai = data.durasi[1]
+    data.tanggal = dayjs(data.durasi[0]).format('YYYY-MM-DD')
     data.guru_id = page.props.auth.roles[0] !== 'admin' ? page.props.auth.user.userable.nip : page.props.auth.user.id
     data._method = asesmen.value.id ? 'PUT' : 'POST'
+    // console.log(data)
     router.post(route(`dashboard.asesmen.${data.id ? 'update': 'store'}`, {
         id: data.id ?? null
     }), data, {
@@ -65,6 +71,7 @@ const closeLembarSoal = () => {
 }
 
 const edit = (item) => {
+    item.durasi = [item.mulai, item.selesai]
     asesmen.value = item
     mode.value = 'form'
 }
@@ -108,7 +115,7 @@ const showMonitor = (item) => {
 <Head title="Asesmen" />
 <DashLayout title="Asesmen">
     <template #header>Asesmen</template>
-    <el-card v-if="mode == 'list'">
+    <el-card>
         <template #header>
             <div class="flex items-center justify-between">
                 <h3>Data Asesmen</h3>
@@ -119,50 +126,152 @@ const showMonitor = (item) => {
             </div>
         </template>
         <div class="list" v-if="mode == 'list'">
-            <!-- {{ page.props.mapels }} -->
-            <el-table :data="asesmens">
-                <el-table-column label="#" type="index"></el-table-column>
-                <el-table-column label="Kode" prop="kode"></el-table-column>
-                <el-table-column label="Nama" prop="nama"></el-table-column>
-                <el-table-column label="Kelas" width="100">
-                    <template #default="scope">
-                        {{ scope.row.rombel ? scope.row.rombel?.label : scope.row.kelas }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="Mapel" >
-                    <template #default="scope">
-                        {{ scope.row.mapel.label }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="Semester" width="100">
-                    <template #default="scope">
-                        {{ scope.row.semester.label }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="Jml Soal" width="100">
-                    <template #default="scope">
-                        {{ scope.row.soals?.length }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="Opsi" width="275" fixed="right">
-                    <template #default="{row}">
-                        <div class="flex items-center">
-                            <el-button-group size="small">
-                                <el-button @click="edit(row)">Edit</el-button>
-                                <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
-                                <el-button type="success" @click="showMonitor(row)">Monitor</el-button>
-                                <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
-                                    <template #reference>
-                                        <el-button type="danger">Hapus</el-button>
-                                    </template>
-                                </el-popconfirm>
-                            </el-button-group>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>
+            <el-card shadow="never" class=" mb-4">
+                <h3 class="text-blue-700 font-bold mb-4">Tingkat Lembaga</h3>
+                <el-table :data="asesmens.filter(ases => ases.tingkat == 'lembaga')" border>
+                    <el-table-column label="#" type="index" align="center"></el-table-column>
+                    <el-table-column label="Nama" prop="nama"></el-table-column>
+                    <el-table-column label="Kelas" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.rombel ? scope.row.rombel?.label : scope.row.kelas }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Mapel" >
+                        <template #default="scope">
+                            {{ scope.row.mapel.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Peserta" width="100" v-if="page.props.auth.roles[0] == 'admin'" align="center">
+                        <template #default="scope">
+                            {{ scope.row.pesertas?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Semester" width="100">
+                        <template #default="scope">
+                            {{ scope.row.semester.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Jml Soal" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.soals?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Opsi" width="275" fixed="right">
+                        <template #default="{row}">
+                            <div class="flex items-center">
+                                <el-button-group size="small">
+                                    <el-button @click="edit(row)" >Edit</el-button>
+                                    <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
+                                    <el-button type="success" @click="showMonitor(row)">Monitor</el-button>
+                                    <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
+                                        <template #reference>
+                                            <el-button type="danger">Hapus</el-button>
+                                        </template>
+                                    </el-popconfirm>
+                                </el-button-group>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+            <el-card shadow="never" class=" mb-4">
+                <h3 class="text-blue-700 font-bold mb-4">Tingkat Gugus</h3>
+                <el-table :data="asesmens.filter(ases => ases.tingkat == 'gugus')" border>
+                    <el-table-column label="#" type="index" align="center"></el-table-column>
+                    <el-table-column label="Nama" prop="nama"></el-table-column>
+                    <el-table-column label="Kelas" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.rombel ? scope.row.rombel?.label : scope.row.kelas }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Mapel" >
+                        <template #default="scope">
+                            {{ scope.row.mapel.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Peserta" width="100" v-if="page.props.auth.roles[0] == 'admin'" align="center">
+                        <template #default="scope">
+                            {{ scope.row.pesertas?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Semester" width="100">
+                        <template #default="scope">
+                            {{ scope.row.semester.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Jml Soal" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.soals?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Opsi" width="275" fixed="right">
+                        <template #default="{row}">
+                            <div class="flex items-center">
+                                <el-button-group size="small">
+                                    <el-button @click="edit(row)" :disabled="row.guru_id !== page.props.auth.user.id">Edit</el-button>
+                                    <el-button @click="showLembarSoal(row)">Atur Soal</el-button>
+                                    <el-button type="success" @click="showMonitor(row)">Monitor</el-button>
+                                    <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)">
+                                        <template #reference>
+                                            <el-button type="danger">Hapus</el-button>
+                                        </template>
+                                    </el-popconfirm>
+                                </el-button-group>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
+            <el-card shadow="never" class=" mb-4">
+                <h3 class="text-blue-700 font-bold mb-4">Tingkat Kecamatan</h3>
+                <el-table :data="asesmens.filter(ases => ases.tingkat == 'kecamatan')" border>
+                    <el-table-column label="#" type="index" align="center"></el-table-column>
+                    <el-table-column label="Nama" prop="nama"></el-table-column>
+                    <el-table-column label="Kelas" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.rombel ? scope.row.rombel?.label : scope.row.kelas }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Mapel" >
+                        <template #default="scope">
+                            {{ scope.row.mapel.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Peserta" width="100" v-if="page.props.auth.roles[0] == 'admin'" align="center">
+                        <template #default="scope">
+                            {{ scope.row.pesertas?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Semester" width="100">
+                        <template #default="scope">
+                            {{ scope.row.semester.label }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Jml Soal" width="100" align="center">
+                        <template #default="scope">
+                            {{ scope.row.soals?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Opsi" width="275" fixed="right">
+                        <template #default="{row}">
+                            <div class="flex items-center">
+                                <el-button-group size="small">
+                                    <el-button @click="edit(row)" :disabled="parseInt(row.guru_id) !== parseInt(page.props.auth.user.id)">Edit</el-button>
+                                    <el-button @click="showLembarSoal(row)" :disabled="parseInt(row.guru_id) !== parseInt(page.props.auth.user.id)">Atur Soal</el-button>
+                                    <el-button type="success" @click="showMonitor(row)">Monitor</el-button>
+                                    <el-popconfirm title="Hapus Asesmen?" confirm-text="OK" @confirm="hapus(row)" >
+                                        <template #reference>
+                                            <el-button type="danger" :disabled="parseInt(row.guru_id) !== parseInt(page.props.auth.user.id)">Hapus</el-button>
+                                        </template>
+                                    </el-popconfirm>
+                                </el-button-group>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-card>
         </div>
-        <div class="form md:w-[60%] bg-slate-100 shadow p-2 md:p-4 mx-auto" v-if="mode == 'form'">
+        <div class="form w-full lg:w-[90%] bg-slate-100 shadow p-2 md:p-4 mx-auto" v-if="mode == 'form'">
             <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Asesmen</h1>
             <el-form v-model="asesmen" label-position="top" v-loading="loading" :rules="rules">
                 <el-row :gutter="20">
@@ -218,21 +327,21 @@ const showMonitor = (item) => {
                             </el-select>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="3" :xs="24">
+                    <!-- <el-col :span="3" :xs="24">
                         <el-form-item label="Tanggal">
                             <el-date-picker v-model="asesmen.tanggal" placeholder="Tanggal Pelaksanaan" :value-format="'YYYY-MM-DD'" ></el-date-picker>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="6" :xs="24">
-                        <el-form-item label="Mulai">
-                            <el-date-picker type="datetime" v-model="asesmen.mulai" placeholder="Mulai" value-format="YYYY-MM-DD h:m:s"></el-date-picker>
+                    </el-col> -->
+                    <el-col :span="10" :xs="24">
+                        <el-form-item label="Waktu Pelaksanaan">
+                            <el-date-picker type="datetimerange" range-separator="s/d" start-placeholder="Mulai" end-placeholder="Selesai" v-model="asesmen.durasi" placeholder="Mulai" value-format="YYYY-MM-DD h:m:s"></el-date-picker>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="6" :xs="24">
+                    <!-- <el-col :span="6" :xs="24">
                         <el-form-item label="Selesai">
                             <el-date-picker type="datetime" v-model="asesmen.selesai" placeholder="Selesai"  value-format="YYYY-MM-DD h:m:s"></el-date-picker>
                         </el-form-item>
-                    </el-col>
+                    </el-col> -->
                     <el-col :span="4" :xs="24">
                         <el-form-item label="Jenis Asesmen">
                             <el-select v-model="asesmen.jenis" placeholder="Jenis Asesmen">
@@ -246,9 +355,9 @@ const showMonitor = (item) => {
                 </el-row>
             </el-form>
         </div>
+        <LembarSoal v-if="mode == 'lembar-soal' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
+        <Monitor v-if="mode == 'monitor' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" @update-data="reloadData" />
     </el-card>
-    <LembarSoal v-if="mode == 'lembar-soal' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" />
-    <Monitor v-if="mode == 'monitor' && selectedAsesmen !== null" :selectedAsesmen="selectedAsesmen" @close="closeLembarSoal" @update-data="reloadData" />
 </DashLayout>
 </template>
 

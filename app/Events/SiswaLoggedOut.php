@@ -2,25 +2,22 @@
 
 namespace App\Events;
 
-use App\Models\Jawaban;
-use App\Models\Siswa;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class JawabanReceived implements ShouldBroadcastNow
+class SiswaLoggedOut implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public $jawaban)
+    public function __construct(public $user, public $message)
     {
         //
     }
@@ -30,17 +27,8 @@ class JawabanReceived implements ShouldBroadcastNow
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn(): Channel
     {
-        return [
-            new Channel("tes"),
-        ];
-    }
-
-    public function broadCastWith(): array
-    {
-        return [
-            'data' => $this->jawaban,
-        ];
+        return new PrivateChannel("asesmen.{$this->user->id}");
     }
 }

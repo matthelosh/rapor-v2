@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\JawabanReceived;
+use App\Events\SiswaMenjawab;
+use App\Events\SiswaMulaiAsesmen;
 use App\Helpers\Periode;
 use App\Http\Requests\AsesmenRequest;
 use App\Models\Asesmen;
 use App\Models\Jawaban;
 use App\Models\ProsesAsesmen;
 use App\Models\Rombel;
-use App\Models\Sekolah;
 use App\Models\Siswa;
 use App\Models\Tapel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -25,23 +26,31 @@ class AsesmenController extends Controller
         try {
             $tapel = $this->tapel()->kode;
             if ($request->user()->hasRole('guru_kelas')) {
-                $rombel = Rombel::where('tapel', $tapel)->first();
-                $asesmens = Asesmen::where('rombel_id', $rombel->kode)
+                // dd($request->user()->userable->nip);
+                $rombel = Rombel::where('guru_id', $request->user()->userable->id)->first();
+                // dd($rombel);
+                $asesmens = Asesmen::where('tingkat', 'kecamatan')
+                    ->orWhere([
+                        ['sekolah_id', '=', $request->user()->userable->sekolahs[0]->npsn],
+                        ['rombel_id', '=', $rombel->kode]
+                    ])
                     ->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
                     ->get();
             } elseif ($request->user()->hasRole('ops')) {
-                $asesmens = Asesmen::whereSekolahId($request->user()->userable->sekolahs[0]->npsn)
-                    ->whereTapel($tapel)
-                    ->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
+                $asesmens = Asesmen::whereTapel($tapel)
+                    ->whereIn('tingkat', ['gugus', 'kecamatan'])
+                    ->with('soals', 'rombel', 'guru', 'mapel', 'semester', 'tapel')
                     ->get();
+                // $canEdit = 
             } elseif ($request->user()->hasRole('admin')) {
                 $asesmens = Asesmen::whereGuruId($request->user()->id)->with('soals', 'mapel', 'semester')
                     ->with([
                         'proses' => function ($p) {
-                            $p->with('siswa');
+                            $p->with('siswa.user');
                             $p->with('jawabans');
                         }
                     ])
+                    ->with('pesertas')
                     ->get();
             } else {
                 $rombel = $request->query('rombel');
@@ -67,7 +76,7 @@ class AsesmenController extends Controller
             $asesmen = Asesmen::whereId($request->query('asesmenId'))
                 ->with([
                     'proses' => function ($p) {
-                        $p->with('jawabans', 'siswa');
+                        $p->with('jawabans', 'siswa.user');
                     }
                 ])
                 ->first();
@@ -98,6 +107,7 @@ class AsesmenController extends Controller
                     'jenis' => $request->jenis,
                     'agama' => $request->agama ?? null,
                     'kelas' => $request->kelas,
+                    'tingkat' => $request->tingkat,
                     'rombel_id' => $request->rombel_id,
                     'sekolah_id' => $request->sekolah_id,
                     'semester' => $request->semester,
@@ -157,13 +167,17 @@ class AsesmenController extends Controller
     public function siswaAsesmen(Request $request)
     {
         try {
-            $siswa_id = $request->query('siswaId');
-            $asesmens = Asesmen::with([
-                'proses' => function ($p) use ($siswa_id) {
-                    $p->whereSiswaId($siswa_id);
-                    $p->with('jawabans');
-                }
-            ])->get();
+            $siswa_id = $request->user()->userable->nisn;
+            $asesmens = Asesmen::whereSekolahId($request->user()->userable->sekolah_id)
+                ->orWhere('tingkat', 'kecamatan')
+                ->with([
+                    'proses_siswa' => function ($p) use ($siswa_id) {
+                        $p->where('siswa_id', $siswa_id);
+                        $p->with('jawabans', function ($j) use ($siswa_id) {
+                            $j->where('siswa_id', $siswa_id);
+                        });
+                    }
+                ])->get();
             return Inertia::render(
                 'Dash/Asesmen/Siswa/Home',
                 [
@@ -189,8 +203,8 @@ class AsesmenController extends Controller
                     }
                 ])
                 ->first();
-            // dd($asesmen);
             $tapel = Periode::tapel()->kode;
+
             return Inertia::render(
                 'Dash/Asesmen/Siswa/LembarSoal',
                 [
@@ -210,7 +224,6 @@ class AsesmenController extends Controller
     public function mulaiKerjakan(Request $request, $kode)
     {
         try {
-            // dd($request->query('prosesId'));
             $siswa_id = $request->query('siswaId');
             if ($request->query('prosesId')) {
                 $currentProses = ProsesAsesmen::whereId($request->query('prosesId'))
@@ -233,6 +246,10 @@ class AsesmenController extends Controller
                         }
                     ])->first();
             }
+            $asesmen = Asesmen::whereKode($kode)->first();
+            $admin = User::whereName('admin')->first();
+            // dd($ev);
+            SiswaMulaiAsesmen::dispatch($admin, "Peserta mulai mengerjakan asesmen: " . $asesmen->nama);
             return response()->json([
                 'proses' => $currentProses
             ]);
@@ -259,9 +276,10 @@ class AsesmenController extends Controller
                 ]
             );
 
-            $guru = User::where('userable_id', 41)->with('userable')->first();
-            $siswa = Siswa::where('nisn', $request->siswa_id)->first();
-            \event(new JawabanReceived('Ananda ' . $siswa->nama . ' Menjawab soal.'));
+            $admin = User::whereName('admin')->first();
+            $siswa = Siswa::whereNisn($jawaban->siswa_id)->first();
+
+            SiswaMenjawab::dispatch($admin, $siswa->nama . " siswa menjawab soal");
             return back()->with('message', 'Jawaban disimpan sementara');
         } catch (\Throwable $th) {
             throw $th;
