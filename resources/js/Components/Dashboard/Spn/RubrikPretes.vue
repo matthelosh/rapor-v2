@@ -18,7 +18,7 @@ const getData = async() => {
                 datas.push({
                     nisn: siswa.nisn,
                     nama: siswa.nama,
-                    jilid: siswa.jilid?.id ?? 1
+                    jilid: siswa.jilids[0]?.id ?? 1
                 })
             siswas.value = datas
         })

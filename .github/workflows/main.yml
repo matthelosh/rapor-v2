@@ -23,7 +23,6 @@ jobs:
             php artisan down
             composer install
             php artisan migrate
-            php artisan db:seed JilidSeeder
             yarn --only=prod
             yarn build
             php artisan up

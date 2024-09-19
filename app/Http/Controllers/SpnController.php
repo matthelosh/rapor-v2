@@ -29,7 +29,7 @@ class SpnController extends Controller
     public function getSiswa(Request $request)
     {
         $rombelId = $request->query('rombelId');
-        $rombel = Rombel::whereKode($rombelId)->with('siswas.jilid')->first();
+        $rombel = Rombel::whereKode($rombelId)->with('siswas.jilids')->first();
         return response()->json([
             'siswas' => $rombel->siswas,
         ]);
@@ -42,7 +42,7 @@ class SpnController extends Controller
             // dd($siswas);
             foreach ($siswas as $sis) {
                 $siswa = Siswa::whereNisn($sis['nisn'])->first();
-                $siswa->jilid()->attach($sis['jilid']);
+                $siswa->jilids()->attach($sis['jilid']);
                 // DB::table('jilid_siswa')->insert([
                 //     'siswa_id' => $siswa->id,
                 //     'jilid_id' => 

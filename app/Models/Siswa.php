@@ -63,7 +63,7 @@ class Siswa extends Model
         return $this->morphMany(User::class, 'userable');
     }
 
-    public function jilid()
+    public function jilids()
     {
         return $this->belongsToMany(Jilid::class, 'jilid_siswa');
     }
