@@ -6,11 +6,17 @@ import DashLayout from '@/Layouts/DashLayout.vue';
 const page = usePage()
 const props = defineProps({ jilids: Array})
 const RubrikPretes = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/RubrikPretes.vue'))
+const JurnalSpn = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/JurnalSpn.vue'))
 
 const rombels = computed(() => page.props.rombels)
 const selectedRombel = ref(null)
+const selectedJilid = ref(null)
 const openRubrik = (rombel) => {
     selectedRombel.value = rombel
+}
+
+const openJurnal = (jilid) => {
+    selectedJilid.value = jilid
 }
 
 </script>
@@ -56,20 +62,31 @@ const openRubrik = (rombel) => {
                     </el-table-column>
                 </el-table>
             </el-collapse-item>
-            <el-collapse-item title="2. Seleksi">
+            <el-collapse-item title="2. Pelaksanaan">
+                <h3 class="font-bold text-sky-700">Jurnal Pelaksanaan SPN</h3>
+                <el-table :data="props.jilids">
+                    <el-table-column label="Nama" prop="nama"></el-table-column>
+                    <el-table-column label="Peserta">
+                        <template #default="{row}">
+                            {{ row.siswas?.length }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Opsi">
+                        <template #default="{row}">
+                            <el-button size="small" @click="openJurnal(row)">Isi Jurnal</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </el-collapse-item>
+            <el-collapse-item title="3. Evaluasi">
 
             </el-collapse-item>
-            <el-collapse-item title="3. Pelaksanaan">
-
-            </el-collapse-item>
-            <el-collapse-item title="4. Evaluasi">
-
-            </el-collapse-item>
-            <el-collapse-item title="5. Pelaporan">
+            <el-collapse-item title="4. Pelaporan">
 
             </el-collapse-item>
         </el-collapse>
     </el-card>
-    <RubrikPretes v-if="selectedRombel !== null" @close="selectedRombel = null" :rombel="selectedRombel" /> 
+    <RubrikPretes v-if="selectedRombel !== null" @close="selectedRombel = null" :rombel="selectedRombel" :jilids="props.jilids" /> 
+    <JurnalSpn v-if="selectedJilid !== null" @close="selectedJilid = null" :jilid="selectedJilid" /> 
 </DashLayout>
 </template>

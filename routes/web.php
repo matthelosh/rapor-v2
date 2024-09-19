@@ -862,8 +862,20 @@ Route::middleware('auth')->group(
                 Route::prefix("spn")->group(
                     function () {
                         Route::get("/", [SpnController::class, 'home'])->name('dashboard.spn.home');
-                        Route::post("/pretes/siswa", [SpnController::class, "getSiswa"])->name('dashboard.spn.pretes.siswa');
-                        Route::post("/pretes/siswa/store", [SpnController::class, "storePretes"])->name('dashboard.spn.pretes.store');
+
+                        Route::prefix("pretes")->group(
+                            function () {
+                                Route::post("/siswa", [SpnController::class, "getSiswa"])->name('dashboard.spn.pretes.siswa');
+                                Route::post("/siswa/attach-all", [SpnController::class, "storePretes"])->name('dashboard.spn.pretes.siswa.attach-all');
+                                Route::post("/siswa/attach/{siswaId}", [SpnController::class, "attachSiswa"])->name('dashboard.spn.pretes.siswa.attach');
+                            }
+                        );
+
+                        Route::prefix('jurnal')->group(
+                            function () {
+                                Route::post('/store', [SpnController::class, 'storeJurnal'])->name('dashboard.spn.jurnal.store');
+                            }
+                        );
                     }
                 );
             }

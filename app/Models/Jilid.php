@@ -24,4 +24,9 @@ class Jilid extends Model
     {
         return $this->belongsToMany(Siswa::class, 'jilid_siswa');
     }
+
+    public function jurnals()
+    {
+        return $this->hasMany(JurnalSpn::class);
+    }
 }
