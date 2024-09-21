@@ -6,6 +6,7 @@ import 'dayjs/locale/id';
 dayjs.locale('id')
 import { WebCamUI } from 'vue-camera-lib';
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 
 const props = defineProps({jilid: Object})
 const emit = defineEmits(['close'])
@@ -16,8 +17,10 @@ const photos = ref([])
 const loading = ref(false)
 const filePhotos = ref([])
 const jurnal = ref({
-    absensi: []
+    absensi: [],
 })
+
+const materis = ref(['BTQ', 'Budi Pekerti', 'Ritual Keagamaan', 'Surat Pilihan', 'Hafalan Surat Pendek', 'Shalat Dhuha', 'Shalat Dhuhur'])
 
 const photoTaken = (data) => 
 {
@@ -42,10 +45,14 @@ const simpan = async() => {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
+    }).then(res => {
+        ElNotification({title: 'Info', message: res.data.message, type: 'success'})
+        emit('close')
     })
 }
 
 onBeforeMount(() => {
+    // console.log(props.jilid)
     show.value = props.jilid !== null
     siswas.value = props.jilid !== null ? props.jilid.siswas : []
 })
@@ -67,7 +74,9 @@ onBeforeMount(() => {
         <el-scrollbar max-height="75vh">
             <el-form v-model="jurnal" label-position="top" v-loading="loading">
                 <el-form-item label="Materi">
-                    <el-input v-model="jurnal.materi" type="textarea" placeholder="Isikan materi" autosize :rows="3"></el-input>
+                    <el-select v-model="jurnal.materi" placeholder="Pilih materi">
+                        <el-option v-for="materi in materis" :value="materi"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="Absensi">
                     <el-select v-model="jurnal.absensi" placeholder="Absensi Peserta" filterable clearable multiple>

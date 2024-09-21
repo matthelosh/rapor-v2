@@ -42,7 +42,7 @@ const cetak = async() => {
 
 				</html>
 	`
-	let win = window.open(host+'/print',"_blank","height=600,width=1500")
+	let win = window.open(host+'/print',"_blank","height=2000,width=1500")
 	await win.document.write(html)
     setTimeout(() => {
         win.print();

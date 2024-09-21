@@ -7,16 +7,32 @@ const page = usePage()
 const props = defineProps({ jilids: Array})
 const RubrikPretes = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/RubrikPretes.vue'))
 const JurnalSpn = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/JurnalSpn.vue'))
+const CetakJurnalSpn = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/CetakJurnalSpn.vue'))
 
 const rombels = computed(() => page.props.rombels)
 const selectedRombel = ref(null)
 const selectedJilid = ref(null)
+
+const mode = ref('list')
+
 const openRubrik = (rombel) => {
     selectedRombel.value = rombel
 }
 
 const openJurnal = (jilid) => {
+    // alert('tes')
     selectedJilid.value = jilid
+    mode.value = 'isi-jurnal'
+}
+
+const printJurnal = (jilid) => {
+    mode.value = 'cetak-jurnal'
+    selectedJilid.value = jilid
+}
+const close = () => {
+    selectedJilid.value = null
+    mode.value = 'list'
+    router.reload({only: ['jilids']})
 }
 
 </script>
@@ -27,7 +43,7 @@ const openJurnal = (jilid) => {
     <template #header>
         Sekolah Plus Ngaji
     </template>
-    <el-card>
+    <el-card v-if="mode == 'list'">
         <h3 class="mb-4 font-bold text-sky-700">Alur Pelaksanaan</h3>
         
         <el-collapse>
@@ -71,9 +87,17 @@ const openJurnal = (jilid) => {
                             {{ row.siswas?.length }}
                         </template>
                     </el-table-column>
+                    <el-table-column label="Jurnal">
+                        <template #default="{row}">
+                            {{ row.jurnals?.length }}
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Opsi">
                         <template #default="{row}">
-                            <el-button size="small" @click="openJurnal(row)">Isi Jurnal</el-button>
+                            <el-button-group size="small">
+                                <el-button size="small" @click="openJurnal(row)">Isi Jurnal</el-button>
+                                <el-button size="small" @click="printJurnal(row)" type="success" :disabled="row.jurnals.length < 1">Cetak Jurnal</el-button>
+                            </el-button-group>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -87,6 +111,7 @@ const openJurnal = (jilid) => {
         </el-collapse>
     </el-card>
     <RubrikPretes v-if="selectedRombel !== null" @close="selectedRombel = null" :rombel="selectedRombel" :jilids="props.jilids" /> 
-    <JurnalSpn v-if="selectedJilid !== null" @close="selectedJilid = null" :jilid="selectedJilid" /> 
+    <JurnalSpn v-if="selectedJilid !== null && mode == 'isi-jurnal'" @close="close" :jilid="selectedJilid" /> 
+    <CetakJurnalSpn v-if="selectedJilid !== null && mode == 'cetak-jurnal'" @close="close" :jilid="selectedJilid" /> 
 </DashLayout>
 </template>

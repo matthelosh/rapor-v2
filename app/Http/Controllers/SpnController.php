@@ -16,8 +16,14 @@ class SpnController extends Controller
     public function home(Request $request)
     {
         try {
+            $guruId = $request->user()->userable->nip;
             $jilids = Jilid::whereSekolahId($request->user()->userable->sekolahs[0]->npsn)
-                ->with('siswas')
+                ->with([
+                    'jurnals' => function ($j) use ($guruId) {
+                        $j->where('guru_id', $guruId);
+                    }
+                ])
+                ->with('siswas.rombels')
                 ->get();
             // dd($jilids);$jili
             return Inertia::render(
@@ -103,7 +109,7 @@ class SpnController extends Controller
                     'materi' => $data->materi,
                     'fotos' => count($urls) > 0 ?  \implode(",", $urls) : null,
                     'absensis' => $data->absensi ? \implode(",", $data->absensi) : \null,
-                    'keterangan' => $data->keterangan ?? null
+                    'keterangan' => $data->keterangan ?? null,
                 ]
             );
 
