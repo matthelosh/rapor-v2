@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Org;
 use App\Models\Semester;
 use App\Models\Tapel;
 use Illuminate\Http\Request;
@@ -12,13 +13,30 @@ class AgendaController extends Controller
 {
     public function home(Request $request)
     {
-        $agendas = Agenda::whereTapel($this->periode()['tapel']->kode)->orderBy('mulai', 'ASC')->get();
+        $agendas = Agenda::whereTapel($this->periode()['tapel']->kode)->with('pesertas')->orderBy('mulai', 'ASC')->get();
         return Inertia::render(
             'Dash/Agenda',
             [
                 'agendas' => $agendas,
+                'orgs' => Org::all()
             ]
         );
+    }
+
+    public function daftar(Request $request, $id)
+    {
+        try {
+            $agenda = Agenda::whereId($id)->first();
+            return Inertia::render(
+                'Front/DaftarAgenda',
+                [
+                    'agenda' => $agenda,
+                    'appName' => \config('app.name'),
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function store(Request $request)
@@ -33,10 +51,11 @@ class AgendaController extends Controller
                     'nama' => $data['nama'],
                     'pelaksana' => $data['pelaksana'],
                     'mulai' => $data['mulai'],
+                    'tipe' => $data['tipe'],
                     'selesai' => $data['selesai'],
                     'deskripsi' => $data['deskripsi'],
-                    'is_libur' => \true,
-                    'warna' => 'red',
+                    'is_libur' => $data['tipe'] == 'libur',
+                    'warna' => $data['tipe'] == 'libur' ? 'red' : 'blue',
                     'tapel' => $this->periode()['tapel']->kode
                 ]
             );

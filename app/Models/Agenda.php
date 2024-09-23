@@ -17,6 +17,12 @@ class Agenda extends Model
         'deskripsi',
         'is_libur',
         'warna',
-        'tapel'
+        'tapel',
+        'tipe'
     ];
+
+    public function pesertas()
+    {
+        return $this->belongsToMany(Guru::class, 'agenda_guru');
+    }
 }

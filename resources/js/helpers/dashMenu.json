@@ -40,6 +40,12 @@
                 "roles": ["superadmin","admin"]
             },
             {
+                "label": "Organisasi",
+                "icon": "account-group",
+                "url": "/dashboard/organisasi",
+                "roles": ["superadmin","admin"]
+            },
+            {
                 "label": "Operator",
                 "icon": "laptop-account",
                 "url": "/dashboard/operator",

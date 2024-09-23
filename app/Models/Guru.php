@@ -45,4 +45,14 @@ class Guru extends Model
     {
         return $this->belongsToMany(Sekolah::class, 'guru_sekolah');
     }
+
+    public function workhops()
+    {
+        return $this->belongsToMany(Workshop::class, 'guru_workshop');
+    }
+
+    public function sertifikats()
+    {
+        return $this->hasMany(Sertifikat::class, 'guru_id', 'nip');
+    }
 }

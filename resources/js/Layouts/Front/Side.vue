@@ -26,6 +26,13 @@ const searchPost = () => {
             </el-button>
         </template>
     </el-input>
+    <el-divider>Pelatihan & Workshop</el-divider>
+    <ol>
+        <li v-for="keg in agendas.filter(agenda => agenda.tipe == 'kegiatan')">
+            <Link :href="`/agenda/${keg.id}/daftar`">{{ keg.nama }}</Link>
+        </li>
+    </ol>
+    <!-- {{ agendas }} -->
     <el-divider>Pengumuman</el-divider>
     <ol class="pl-6">
         <li v-for="(info, i) in infos" :key="i" class="list-disc">

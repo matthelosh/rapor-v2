@@ -9,7 +9,7 @@ import 'dayjs/locale/id';
 dayjs.locale('id')
 import { ElNotification } from 'element-plus';
 
-const props = defineProps({ agendas: Array })
+const props = defineProps({ agendas: Array, orgs: Array })
 const mode = ref('calendar')
 
 const DashLayout = defineAsyncComponent(() => import('@/Layouts/DashLayout.vue'))
@@ -81,6 +81,7 @@ const simpan = async() => {
         },
         onSuccess: (page) => {
             ElNotification({ title: 'Info', message: page.props.flash.message, type: 'success'})
+            router.reload({only: ['agendas']})
         },
         onError: errs => {
             Object.keys(errs).forEach(k => {
@@ -117,7 +118,32 @@ const simpan = async() => {
         </template>
         <template #default>
             <el-scrollbar max-height="80vh">
-                <Calendar v-if="mode == 'calendar'" min-date="2024-07-01" max-date="2025-06-30" :rows="layout.rows" :columns="layout.cols" expanded :attributes="attributes" @dayclick="onDayClicked" />
+                <div class="agenda" v-if="mode == 'calendar'">
+                    <Calendar  min-date="2024-07-01" max-date="2025-06-30" :rows="layout.rows" :columns="layout.cols" expanded :attributes="attributes" @dayclick="onDayClicked" />
+                    <el-card class="mt-4">
+                    <h3 class="mb-4">Detail Agenda</h3>
+                        <el-table :data="props.agendas">
+                            <el-table-column label="#" type="index"></el-table-column>
+                            <el-table-column label="Nama" prop="nama"></el-table-column>
+                            <el-table-column label="Tipe" prop="tipe"></el-table-column>
+                            <el-table-column label="Pelaksana" prop="pelaksana"></el-table-column>
+                            <el-table-column label="Peserta">
+                                <template #default="{row}">
+                                    {{ row.pesertas?.length }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="Opsi">
+                                <template #default="{row}">
+                                    <el-button-group size="small">
+                                        <el-button>Daftar Hadir</el-button>
+                                        <el-button>Kartu Peserta</el-button>
+                                        <el-button>Sertifikat</el-button>
+                                    </el-button-group>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-card>
+                </div>
                 <el-timeline v-if="mode == 'timeline'">
                     <el-timeline-item
                         v-for="(agenda, a) in props.agendas" :key="a"
@@ -145,8 +171,15 @@ const simpan = async() => {
             <el-form-item label="Nama">
                 <el-input v-model="agenda.nama" placeholder="Nama Kegiatan"></el-input>
             </el-form-item>
+            <el-form-item label="Tipe Agenda">
+                <el-select v-model="agenda.tipe" placeholder="Tipe Kegiatan">
+                    <el-option v-for="tipe in ['libur', 'kegiatan']" :value="tipe" :label="tipe[0].toUpperCase()+tipe.substring(1)"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="Pelaksana">
-                <el-input v-model="agenda.pelaksana" placeholder="Pelaksana Kegiatan"></el-input>
+                <el-select v-model="agenda.pelaksana" placeholder="Pelaksana Kegiatan">
+                    <el-option v-for="org in props.orgs" :value="org.nama"></el-option>
+                </el-select>
             </el-form-item>
             <div class="flex items-center gap-2">
                 <el-form-item label="Mulai">

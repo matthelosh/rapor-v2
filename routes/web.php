@@ -58,6 +58,35 @@ Route::prefix("")->group(
                 'agenda'
             ]
         )->name('front.agenda');
+        Route::get(
+            '/agenda/{id}/daftar',
+            [
+                AgendaController::class,
+                'daftar'
+            ]
+        )->name('front.agenda.daftar');
+
+        // Workshop
+        Route::prefix('workshop')->group(
+            function () {
+                Route::get('/', [WorkshopController::class, 'home'])->name('workshop');
+            }
+        );
+
+
+        Route::prefix('sertifikat')->group(
+            function () {
+                Route::get('/', [SertifikatController::class, 'home'])->name('sertifikat.front');
+                Route::get('/cetak', [SertifikatController::class, 'cetak'])->name('sertifikat.cetak');
+            }
+        );
+
+        // Captcha
+        Route::prefix('/captcha')->group(
+            function () {
+                Route::get('/new', [CaptchaController::class, 'new'])->name('captcha.new');
+            }
+        );
     }
 );
 
@@ -858,8 +887,8 @@ Route::middleware('auth')->group(
 
                 );
 
-                // Sekolah Olus Ngaji
-                Route::prefix("spn")->group(
+                // Sekolah Plus Ngaji
+                Route::prefix("spn")->middleware('role:guru_agama')->group(
                     function () {
                         Route::get("/", [SpnController::class, 'home'])->name('dashboard.spn.home');
 
@@ -876,6 +905,13 @@ Route::middleware('auth')->group(
                                 Route::post('/store', [SpnController::class, 'storeJurnal'])->name('dashboard.spn.jurnal.store');
                             }
                         );
+                    }
+                );
+
+                // Organisasi 
+                Route::prefix('organisasi')->group(
+                    function () {
+                        Route::get('/', [OrgController::class, 'home'])->name('dashboard.org');
                     }
                 );
             }
