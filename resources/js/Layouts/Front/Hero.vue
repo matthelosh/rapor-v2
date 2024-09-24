@@ -102,6 +102,7 @@ const page = usePage()
                         <div class="md:hidden">
                             <h3 class="font-bold text-sky-700 pl-4">Data Guru</h3>
                             <table class="mx-4 w-[90%]">
+                                <tbody>
                                 <tr>
                                     <td class="border-y w-20">Jumlah</td>
                                     <td class="border-y w-2">:</td>
@@ -137,44 +138,47 @@ const page = usePage()
                                     <td class="border-y w-2">:</td>
                                     <td class="border-y">{{ sekolah.gurus.filter(guru => guru.agama == 'Konghuchu').length }}</td>
                                 </tr>
+                            </tbody>
                             </table>
                             <h3 class="font-bold text-sky-700 pl-4 mt-6">Data Siswa</h3>
                             <table class="mx-4 w-[90%]">
-                                <tr>
-                                    <td class="border-y w-20">Jumlah</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Islam</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Islam').length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Kristen</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Kristen').length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Katolik</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Katolik').length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Hindu</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Hindu').length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Budha</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Budha').length }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="border-y w-20">Konghuchu</td>
-                                    <td class="border-y w-2">:</td>
-                                    <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Konghuchu').length }}</td>
-                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-y w-20">Jumlah</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Islam</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Islam').length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Kristen</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Kristen').length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Katolik</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Katolik').length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Hindu</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Hindu').length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Budha</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Budha').length }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-y w-20">Konghuchu</td>
+                                        <td class="border-y w-2">:</td>
+                                        <td class="border-y">{{ sekolah.siswas.filter(siswa => siswa.agama == 'Konghuchu').length }}</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </el-collapse-item>

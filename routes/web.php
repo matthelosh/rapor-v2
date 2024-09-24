@@ -632,7 +632,7 @@ Route::middleware('auth')->group(
                                 "home"
                             ]
                         )->name('dashboard.ledger')
-                            ->middleware('role:guru_kelas|guru_agama|guru_pjok|guru_inggris');
+                            ->middleware('role:guru_kelas');
                     }
                 );
 

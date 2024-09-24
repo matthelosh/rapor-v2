@@ -13,7 +13,6 @@ import 'element-plus/theme-chalk/display.css'
 // import ElementTiptap's styles
 import 'element-tiptap-vue3-fixed/lib/style.css';
 import { setupCalendar } from 'v-calendar';
-import VueQrcode from '@chenfengyuan/vue-qrcode';
 
 
 
@@ -33,7 +32,6 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(ElementTiptapPlugin)
             .use(setupCalendar, {})
-            .component(VueQrcode.name, VueQrcode)
             .mount(el);
     },
     progress: {

@@ -163,10 +163,7 @@
                 "icon": "spreadsheet",
                 "url": "/dashboard/ledger",
                 "roles": [
-                    "guru_kelas",
-                    "guru_agama",
-                    "guru_pjok",
-                    "guru_inggris"
+                    "guru_kelas"
                 ]
             }
         ]

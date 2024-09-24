@@ -7,6 +7,7 @@ use App\Events\SiswaMulaiAsesmen;
 use App\Helpers\Periode;
 use App\Http\Requests\AsesmenRequest;
 use App\Models\Asesmen;
+use App\Models\Guru;
 use App\Models\Jawaban;
 use App\Models\ProsesAsesmen;
 use App\Models\Rombel;
@@ -56,6 +57,13 @@ class AsesmenController extends Controller
                 $rombel = $request->query('rombel');
                 // dd($rombel);
                 $asesmens = Asesmen::whereGuruId($request->user()->userable->nip)->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
+                    ->with([
+                        'proses' => function ($p) {
+                            $p->with('siswa.user');
+                            $p->with('jawabans');
+                        }
+                    ])
+                    ->with('pesertas')
                     ->get();
             }
             return Inertia::render(
@@ -247,7 +255,8 @@ class AsesmenController extends Controller
                     ])->first();
             }
             $asesmen = Asesmen::whereKode($kode)->first();
-            $admin = User::whereName('admin')->first();
+            $guru = Guru::whereNip($asesmen->guru_id)->first();
+            $admin = $asesmen->tingkat == 'lembaga' ? User::where('userable_id', $guru->id)->where('userable_type', 'App\Models\Guru')->first() : User::whereName('admin')->first();
             // dd($ev);
             SiswaMulaiAsesmen::dispatch($admin, "Peserta mulai mengerjakan asesmen: " . $asesmen->nama);
             return response()->json([
@@ -263,6 +272,8 @@ class AsesmenController extends Controller
         try {
             $proses = ProsesAsesmen::findOrFail($request->proses_id);
             $proses->update(['updated_at' => now(), 'selesai' => now()]);
+            $asesmen = Asesmen::whereKode($request->asesmen_id)->first();
+            // dd($request->asesmen_id);
             $jawaban = Jawaban::updateOrCreate(
                 [
                     'asesmen_id' => $request->asesmen_id,
@@ -275,8 +286,9 @@ class AsesmenController extends Controller
                     'teks' =>  $request->teks,
                 ]
             );
-
-            $admin = User::whereName('admin')->first();
+            $guru = Guru::whereNip($asesmen->guru_id)->first();
+            $admin = $asesmen->tingkat == 'lembaga' ? User::where('userable_id', $guru->id)->where('userable_type', 'App\Models\Guru')->first() : User::whereName('admin')->first();
+            // dd($ev);
             $siswa = Siswa::whereNisn($jawaban->siswa_id)->first();
 
             SiswaMenjawab::dispatch($admin, $siswa->nama . " siswa menjawab soal");

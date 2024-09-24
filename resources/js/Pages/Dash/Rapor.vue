@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import { Icon } from '@iconify/vue'
 
@@ -12,7 +12,7 @@ import RaporPAS from '@/Components/Dashboard/Rapor/RaporPAS.vue'
 const page = usePage()
 const mode = ref('list')
 
-const rombel = computed(() => page.props.rombels[0])
+const rombel = ref(null)
 const selectedSiswa = ref({})
 
 const cetak = (laman, siswa) => {
@@ -45,6 +45,9 @@ const prevSiswa = () => {
         selectedSiswa.value = rombel.value.siswas[current-1]
     }
 }
+onBeforeMount(() => {
+    rombel.value = page.props.rombels[0]
+})
 </script>
 
 <template>

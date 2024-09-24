@@ -50,7 +50,7 @@ const close = () => {
             <el-collapse-item title="1. Pretes">
                 <p class="text-justify">Pretes dilakukan untuk memetakan siapa saja peserta didik yang masuk pada jilid 1, 2 atau 3. Ada kemungkinan peserta didik Fase C yang belum bisa sama sekali membaca Al-Quran, bahkan belum mengenal huruf hijaiah. Maka seyogyanya ia harus masuk ke jilid 1.</p>
                 <p class="text-justify">Guru dapat menggunakan metode yang sesuai untuk melakukan pretes ini. Kita bisa menggunakan halaman ebta di kitab Iqra, karena Iqra umum digunakan di berbagai TPQ. Guru memberikan tes kemudian mengkategorikan peserta didik sesuai kemampuannya di Jilid yang ditentukan. Unduh instrumen pretes untuk masing-masing rombel di bawah ini.</p>
-                <div class="lembar-ebta md:flex gap-4 hidden">
+                <!-- <div class="lembar-ebta md:flex gap-4 hidden">
                     <div class="juz-2 text-center">
                         <h3>Pretes Jilid 1</h3>
                         <el-image src="/img/ebta-juz-2.png"></el-image>
@@ -65,7 +65,7 @@ const close = () => {
                         <el-image src="/img/ebta-juz-6-b.png"></el-image>
                         <el-image src="/img/ebta-juz-6-c.png"></el-image>
                     </div>
-                </div>
+                </div> -->
                 <el-table :data="rombels">
                     <el-table-column label="Kelas" prop="label"></el-table-column>
                     <el-table-column label="Opsi">

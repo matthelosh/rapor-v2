@@ -151,31 +151,33 @@ onBeforeMount(() => {
                                     <h3 class="text-center md:text-lg print:text-md print:leading-5 font-bold font-serif">Semester {{ props.selectedAsesmen.semester.label }} {{ props.selectedAsesmen.tapel.deskripsi }}</h3>
 
                                     <table class="md:w-[40%] print:w-[60%] border mx-auto my-4">
-                                        <tr>
-                                            <td>Mata Pelajaran</td>
-                                            <td>:</td>
-                                            <td>{{ props.selectedAsesmen.mapel.label }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kelas</td>
-                                            <td>:</td>
-                                            <td>{{ props.selectedAsesmen.rombel ? props.selectedAsesmen.rombel.label : props.selectedAsesmen.kelas   }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tanggal</td>
-                                            <td>:</td>
-                                            <td>{{ dayjs(props.selectedAsesmen.tanggal).format('DD MMM YYYY')}} </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Alokasi Waktu</td>
-                                            <td>:</td>
-                                            <td>{{ props.selectedAsesmen.mulai }} s/d {{ props.selectedAsesmen.selesai }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Jumlah Soal</td>
-                                            <td>:</td>
-                                            <td>{{ props.selectedAsesmen.soals.length }} Butir</td>
-                                        </tr>
+                                        <tbody>
+                                            <tr>
+                                                <td>Mata Pelajaran</td>
+                                                <td>:</td>
+                                                <td>{{ props.selectedAsesmen.mapel.label }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kelas</td>
+                                                <td>:</td>
+                                                <td>{{ props.selectedAsesmen.rombel ? props.selectedAsesmen.rombel.label : props.selectedAsesmen.kelas   }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Tanggal</td>
+                                                <td>:</td>
+                                                <td>{{ dayjs(props.selectedAsesmen.tanggal).format('DD MMM YYYY')}} </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Alokasi Waktu</td>
+                                                <td>:</td>
+                                                <td>{{ props.selectedAsesmen.mulai }} s/d {{ props.selectedAsesmen.selesai }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Jumlah Soal</td>
+                                                <td>:</td>
+                                                <td>{{ props.selectedAsesmen.soals.length }} Butir</td>
+                                            </tr>
+                                        </tbody>
                                     </table>
                                     <div class="drop-zone" @drop="drop($event)" @dragover.prevent @dragenter.prevent="dragOver($event)">
                                         <div v-if="props.selectedAsesmen.soals.length < 1" class="w-full h-[300px] bg-sky-50 flex items-center justify-center">
@@ -271,6 +273,7 @@ onBeforeMount(() => {
                             <h3 class="text-center uppercase font-bold">Mata Pelajaran: {{ props.selectedAsesmen.mapel.label }} </h3>
                             <div class="flex justify-between mt-4">
                                 <table>
+                                    <tbody>
                                     <tr>
                                         <td class="py-1">No. Absen</td>
                                         <td class="py-1">:</td>
@@ -286,6 +289,7 @@ onBeforeMount(() => {
                                         <td class="py-1">:</td>
                                         <td class="py-1">..............................................</td>
                                     </tr>
+                                    </tbody>
                                 </table>
                                 <div class="nilai w-[300px] grid grid-cols-2 h-[100px]">
                                     <div class="border border-black skor col-span-1">

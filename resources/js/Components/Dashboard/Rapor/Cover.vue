@@ -25,7 +25,7 @@ const showPrev = () => {
 const cetak = async() => {
     let host = window.location.host
 	let el = document.querySelector(".cetak")
-	let cssUrl = page.props.app_env == 'local' ? 'http://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
+	let cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
 	let html = `<!doctype html>
 				<html>
 					<head>
@@ -49,6 +49,7 @@ const cetak = async() => {
 </script>
 
 <template>
+    <div>
 <Head title="Sampul Rapor" />
 <div class="toolbar h-12 bg-slate-200 w-full flex items-center justify-between print:hidden px-4">
     <span>
@@ -90,7 +91,6 @@ const cetak = async() => {
         <h1 class="mt-20 text-center text-2xl font-black" >{{ sekolah.nama }}</h1>
         <h1 class="text-center" >{{ sekolah.alamat }}</h1>
     </div>
-    <div>
-        <!-- {{ sekolah }} -->
-    </div>
+    
+</div>
 </template>

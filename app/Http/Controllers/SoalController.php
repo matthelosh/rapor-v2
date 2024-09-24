@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asesmen;
 use App\Models\Soal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,14 +40,17 @@ class SoalController extends Controller
     {
         try {
             $asesmen_id = $request->asesmen_id;
+            $asesmen = Asesmen::whereId($asesmen_id)->first();
             // dd($asesmen_id);
+            $agama = $request->agama ? $request->agama : ($asesmen->mapel_id == 'pabp' ? $request->user()->userable->agama : null);
             $soals = Soal::whereDoesntHave('asesmen', function ($a) use ($asesmen_id) {
                 $a->where('asesmen_id', $asesmen_id);
             })
                 ->where([
                     ['tingkat', '=', $request->tingkat],
+                    ['semester', '=', $asesmen->semester],
                     ['mapel_id', '=', $request->mapel_id],
-                    ['agama', '=', $request->agama],
+                    ['agama', '=', $agama ?? "%"],
 
                 ])->get();
             return response()->json([

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\Periode;
 use App\Models\Absensi;
 use App\Models\Catatan;
 use App\Models\Kktp;
@@ -10,7 +11,9 @@ use App\Models\Nilai;
 use App\Models\NilaiEkskul;
 use App\Models\Rombel;
 use App\Models\Sekolah;
+use App\Models\Siswa;
 use App\Models\TanggalRapor;
+use Illuminate\Support\Facades\Auth;
 
 class RaporService
 {
@@ -18,18 +21,54 @@ class RaporService
     {
         try {
             $sekolahId = $queries['sekolahId'];
-            $nilais = [
-                'pts' => Nilai::where([
+            $sekolah = Sekolah::whereNpsn($sekolahId)->with('mapels', 'ekskuls')->first();
+            $mapels = $sekolah->mapels;
+            $siswa = Siswa::whereNisn($queries['siswaId'])->first();
+            $nilais = ['pts' => []];
+            foreach ($mapels as $mapel) {
+                $npts = Nilai::where([
                     ['siswa_id', '=', $queries['siswaId']],
                     ['rombel_id', '=', $queries['rombelId']],
+                    ['tapel', '=', $queries['tapel']],
                     ['semester', '=', $queries['semester']],
+                    ['mapel_id', '=', $mapel['kode']],
                     ['tipe', '=', 'ts']
-                ])->select('nilais.*')
+                ])
                     ->with('mapel')
-                    ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
-                    ->orderBy('mapels.id')
-                    ->get(),
-            ];
+                    ->first();
+
+                \array_push(
+                    $nilais['pts'],
+                    $npts ??
+                        [
+                            'tapel' => Periode::tapel(),
+                            'semester' => Periode::semester(),
+                            'siswa_id' => $queries['siswaId'],
+                            'guru_id' => Auth::user()->userable->nip,
+                            'rombel_id' => $queries['rombelId'],
+                            'mapel_id' => $mapel->kode,
+                            'agama' => $mapel->kode == 'pabp' ? $siswa->agama : null,
+                            'tipe' => 'ts',
+                            'skor' => 0,
+                            'mapel' => $mapel
+                        ]
+                );
+            }
+
+
+
+            // $nilais = [
+            //     'pts' => Nilai::where([
+            //         ['siswa_id', '=', $queries['siswaId']],
+            //         ['rombel_id', '=', $queries['rombelId']],
+            //         ['semester', '=', $queries['semester']],
+            //         ['tipe', '=', 'ts']
+            //     ])->select('nilais.*')
+            //         ->with('mapel')
+            //         ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
+            //         ->orderBy('mapels.id')
+            //         ->get(),
+            // ];
             $tgl = TanggalRapor::where([
                 ['semester', '=', $queries['semester']],
                 ['tipe', '=', 'pts'],

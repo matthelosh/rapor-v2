@@ -30,7 +30,7 @@ const showPrev = () => {
 const cetak = async() => {
     let host = window.location.host
 	let el = document.querySelector(".cetak")
-	let cssUrl = page.props.app_env == 'local' ? 'http://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
+	let cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
 	let html = `<!doctype html>
 				<html>
 					<head>
@@ -47,7 +47,7 @@ const cetak = async() => {
 	await win.document.write(html)
     setTimeout(() => {
         win.print();
-        // win.close();
+        win.close();
     }, 1500);
 
 }
@@ -100,6 +100,7 @@ onBeforeMount(async() => {
     <div class="cetak bg-slate-100 print:bg-white w-full bg-cover p-4 print:p-0 text-center font-serif">
         <div class="page w-[80%] print:w-full bg-white mx-auto shadow-lg print:shadow-none">
             <Kop />
+            <!-- {{ nilais }} -->
             <div class="meta my-6">
                 <h3 class="text-center font-bold text-xl uppercase ">Laporan Hasil Sumatif Tengah Semester (STS)</h3>
                 <div class="grid grid-cols-6 text-left px-8 my-8">
@@ -153,21 +154,27 @@ onBeforeMount(async() => {
                         <template v-for="(nilai, m) in nilais.pts" :key="nilai.id">
                             <tr>
                                 <td class="border border-black p-2">{{ m+1 }}</td>
-                                <td class="border border-black p-2 text-left">{{ nilai.mapel.label }}</td>
+                                <td class="border border-black p-2 text-left">{{ nilai.mapel?.label }}</td>
                                 <td class="border border-black p-2">{{ nilai.skor }}</td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
             </div>
-            <div class="ttd grid grid-cols-3 mt-24">
-                <div></div>
-                <div></div>
-                <div>
+            <div class="ttd grid grid-cols-7 mt-24">
+                <div class="col-span-3">
+                    <p>&nbsp;</p>
+                    <p>Orang tua / Wali Murid</p>
+
+                    <p class="font-bold uppercase underline leading-4 mt-20 border-b border-dotted border-b-2 border-black w-[80%] mx-auto">&nbsp;</p>
+                    <p class="leading-4 mb-8">NIP. {{ page.props.auth.user.userable.nip }}</p>
+                </div>
+                <div class="col-span-1"></div>
+                <div class="col-span-3">
                     <p>{{ capitalize(sekolah.desa) }}, {{ dayjs(nilais.tanggal).locale('id').format('DD MMMM YYYY') }}</p>
                     <p>Wali Kelas {{ rombel.label }}</p>
 
-                    <p class="font-bold uppercase underline leading-4 mt-20">{{ page.props.auth.user.userable.nama }}, {{ page.props.auth.user.userable.gelar_belakang }}</p>
+                    <p class="font-bold  underline leading-4 mt-20"><span class="uppercase">{{ page.props.auth.user.userable.nama }}</span>, {{ page.props.auth.user.userable.gelar_belakang }}</p>
                     <p class="leading-4 mb-8">NIP. {{ page.props.auth.user.userable.nip }}</p>
                 </div>
             </div>

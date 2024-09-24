@@ -33,7 +33,7 @@ const selectRow = (val) => {
 
 const cetak = async() => {
     const element = document.querySelector(".cetak")
-    const cssUrl = page.props.app_env == 'local' ? 'http://localhost:5173/resources/css/app.css' : '/assets/css/app.css'
+    const cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : '/assets/css/app.css'
     let win = window.open("","_blank", "width=800,height=1024")
     let html = `
         <!doctype html>
@@ -102,7 +102,7 @@ onBeforeMount(() => {
                                     <h3 class="text-center mt-24 text-xl font-black text-black font-[arial]">TA. {{ page.props.periode.tapel.label }}</h3>
                                 </div>
                             </div>
-                            <div class="page  w-[216mm] bg-white mx-auto break-after-page shadow-md print:shadow-none my-6 proyek p-4">
+                            <div class="page  w-[216mm] bg-white mx-auto break-after-page shadow-md print:shadow-none my-6 proyek p-4 relative">
                                 <div class="content h-full text-black">
                                     <h3 class="font-bold text-lg text-center mb-4 uppercase">Rapor Proyek Penguatan Profil Pelajar pancasila</h3>
                                     <table class="w-full border-b border-double border-10 border-black">
@@ -164,7 +164,6 @@ onBeforeMount(() => {
                                     </table>
 
                                     <el-divider></el-divider>
-                                    
                                 </div>
                             </div>
                             <div class="page  w-[216mm] bg-white mx-auto break-after-page shadow-md print:shadow-none my-6 nilai p-8 text-black">
@@ -218,7 +217,7 @@ onBeforeMount(() => {
                                     </table>
                                 <h3 class="font-bold">Catatan proses:</h3>
                                 <p class="border border-black p-2 text-justify">
-                                    {{ nilai.proses }}
+                                    Ananda <span class="capitalize fotn-bold">{{ nilai.nama }}</span> {{ nilai.proses }}
                                 </p>
 
                                 <div class="grid grid-cols-3 gap-8 mt-16">

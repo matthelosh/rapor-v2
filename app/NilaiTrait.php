@@ -85,7 +85,8 @@ trait NilaiTrait
 
     public function ledger($request)
     {
-        if ($request->user()->hasRole('guru_kelas')) {
+        $user = $request->user();
+        if ($user->hasRole('guru_kelas')) {
             $rombel = Rombel::where('guru_id', $request->user()->userable->id)->whereTapel($this->periode()['tapel']['kode'])->with('siswas')->first();
             $nilais = Nilai::where([
                 ['tapel', '=', $this->periode()['tapel']['kode']],
@@ -160,6 +161,8 @@ trait NilaiTrait
 
                 array_push($datas, $data);
             }
+        } else {
+            $datas = [];
         }
 
         return $datas;
