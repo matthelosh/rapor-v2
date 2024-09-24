@@ -31,7 +31,7 @@ const getAllSoals = async () => {
 
 const cetakLembarSoal = async () => {
     let win = window.open("", "_blank", "width=1024,height=1080")
-    const cssUrl = page.props.app_env == 'local' ? 'http://localhost:5173/resources/css/app.css' : '/assets/css/app.css'
+    const cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : '/assets/css/app.css'
     let elemen = document.querySelector(".cetak")
 
     let html = `

@@ -195,7 +195,7 @@ onBeforeMount(async() => {
                 <el-table :data="props.rombel.siswas" height="90vh" size="small">
                     <el-table-column type="index" label="#" width="50" fixed></el-table-column>
                     <el-table-column label="NISN" prop="nisn" width="120" fixed />
-                    <el-table-column label="Nama" prop="nama" fixed />
+                    <el-table-column label="Nama" prop="nama" fixed  width="230"/>
                     <el-table-column label="JK" width="60">
                         <template #default="scope">
                             {{ scope.row.jk.substring(0,1) }}

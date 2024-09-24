@@ -316,7 +316,7 @@ onBeforeMount(() => {
                                 </el-popover>
                                 <el-button size="small" type="primary" @click="$refs.fileMapel.click()" :disabled="role !== 'admin'">Impor Mapel</el-button>
                                 <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
-                                <el-button type="success" size="small" @click="$refs.fileTp.click()" :disabled="role !== 'admin'">Impor TP</el-button>
+                                <el-button type="success" size="small" @click="$refs.fileTp.click()">Impor TP</el-button>
                                 <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileElemenPicked" />
                                 <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileTpPicked" />
                                 <input type="file" ref="fileMapel" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileMapelPicked" />
@@ -324,8 +324,9 @@ onBeforeMount(() => {
                         </div>
                         <div class="card-body p-2">
                             <!-- {{ page.props.mapels }} -->
+                              <!-- {{ page.props.sekolahs[0].mapels }} -->
                             <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && ['superadmin', 'admin', 'admin_tp'].includes(role))">
-                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
+                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.mapels" :key="m">
                                     <el-collapse>
                                         <el-collapse-item>
                                             <template #title>
@@ -335,7 +336,7 @@ onBeforeMount(() => {
                                                 <div class="collapse-body--tile flex justify-between mb-2">
                                                         <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
                                                         <el-button-group>
-                                                            <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp'].includes(role)">Tambah TP</el-button>
+                                                            <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp', 'guru_agama','guru_kelas','guru_pjok', 'guru_inggris'].includes(role)">Tambah TP</el-button>
                                                             
                                                         </el-button-group>
                                                 </div>
@@ -354,7 +355,7 @@ onBeforeMount(() => {
                                                     <el-table-column label="Opsi" width="100">
                                                         <template #default="scope">
                                                             <span>
-                                                                <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id )" :disabled="role !== 'admin'">
+                                                                <el-button circle type="danger" size="small" @click="hapusTp(scope.row.id )" >
                                                                     <Icon icon="mdi-close" />
                                                                 </el-button>
                                                             </span>

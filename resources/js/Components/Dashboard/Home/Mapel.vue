@@ -15,7 +15,7 @@ const profil = computed(() => page.props.auth.user.userable)
 
 <template>
 <el-row :gutter="20">
-    <el-col :span="6" :xs="24" class="mb-4">
+    <el-col :span="24" :lg="8" :xl="6" class="mb-4">
         <el-card>
             <template #header>
                 <span>Data Mapel</span>
@@ -27,7 +27,7 @@ const profil = computed(() => page.props.auth.user.userable)
             </div>
         </el-card>
     </el-col>
-    <el-col :span="12" :xs="24" class="mb-4">
+    <el-col :span="24" :lg="16" :xl="12 " class="mb-4">
         <el-card>
             <template #header>
                 <span>Data Rombel</span>
@@ -50,7 +50,7 @@ const profil = computed(() => page.props.auth.user.userable)
             </div>
         </el-card>
     </el-col>
-    <el-col :span="6" :xs="24" class="mb-4">
+    <el-col :span="24" :xl="6" class="mb-4">
         <el-card>
             <template #header>
                 <span>Profil Guru</span>
@@ -59,61 +59,63 @@ const profil = computed(() => page.props.auth.user.userable)
                 <img :src="avatar(profil)" alt="Foto Profil" class="rounded-full w-[60%] mx-auto mb-4">
                 <el-divider>Biodata</el-divider>
                 <table>
-                    <tr>
-                        <td>Gelar Depan</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.gelar_depan ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Nama</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.nama }}</td>
-                    </tr>
-                    <tr>
-                        <td>Gelar Belakang</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.gelar_belakang ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>NIP</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.nip }}</td>
-                    </tr>
-                    <tr>
-                        <td>NUPTK</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.nuptk ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Jenis Kelamin</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.jk }}</td>
-                    </tr>
-                    <tr>
-                        <td>Agama</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.agama }}</td>
-                    </tr>
-                    <tr>
-                        <td>Alamat</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.alamat }}</td>
-                    </tr>
-                    <tr>
-                        <td>Status Kepegawaian</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.status.toUpperCase() }}</td>
-                    </tr>
-                    <tr>
-                        <td>Pangkat</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.pangkat ?? '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Jabatan</td>
-                        <td class="px-1">:</td>
-                        <td >{{ profil.jabatan }}</td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>Gelar Depan</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.gelar_depan ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Nama</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.nama }}</td>
+                        </tr>
+                        <tr>
+                            <td>Gelar Belakang</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.gelar_belakang ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>NIP</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.nip }}</td>
+                        </tr>
+                        <tr>
+                            <td>NUPTK</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.nuptk ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.jk }}</td>
+                        </tr>
+                        <tr>
+                            <td>Agama</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.agama }}</td>
+                        </tr>
+                        <tr>
+                            <td>Alamat</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.alamat }}</td>
+                        </tr>
+                        <tr>
+                            <td>Status Kepegawaian</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.status.toUpperCase() }}</td>
+                        </tr>
+                        <tr>
+                            <td>Pangkat</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.pangkat ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jabatan</td>
+                            <td class="px-1">:</td>
+                            <td >{{ profil.jabatan }}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </el-card>

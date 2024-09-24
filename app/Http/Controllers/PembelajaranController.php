@@ -18,24 +18,8 @@ class PembelajaranController extends Controller implements HasMiddleware
 
     public function home(Request $request)
     {
-        // dd(Mapel::with('tps')->get());
-        // dd($request->user()->getDirectPermissions());
-        // $mapel = [
-        //     'Islam',
-        //     'kristen',
-        //     'Katolik',
-        //     'Hindu',
-        //     'Budha',
-        //     'Konghuchu',
-        //     'inggris',
-        //     'pjok',
-        //     '1',
-        //     '2',
-        //     '3',
-        //     '4',
-        //     '5'
-        // ];
         if ($request->user()->hasRole('admin_tp')) {
+            // dd('Mapel');
             $permission_name = $request->user()->getPermissionNames();
             $permission = \explode("_", $permission_name[0]);
             $mapel = $permission[1];
@@ -60,8 +44,25 @@ class PembelajaranController extends Controller implements HasMiddleware
                     }
                 ])->get();
             }
-        } else {
+        } elseif ($request->user()->hasRole(['admin', 'superadmin'])) {
             $mapels = Mapel::with('tps')->get();
+        } elseif ($request->user()->hasRole('guru_kelas')) {
+            $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
+            $guruId = $request->user()->userable->nip;
+            $mapels = Mapel::whereHas('sekolahs', function ($s) use ($sekolahId) {
+                $s->where('npsn', $sekolahId);
+            })->with('mapels', function ($m) use ($guruId) {
+                $m->with('tps', function ($t) use ($guruId) {
+                    $t->whereGuruId($guruId);
+                });
+            })->get();
+        } else {
+            $mapelId = $request->user()->hasRole('guru_agama') ? 'pabp' : ($request->user()->hasRole('guru_pjok') ? 'pjok' : 'bing');
+            // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
+            $guruId = $request->user()->userable->nip;
+            $mapels = Mapel::whereKode($mapelId)->with('tps', function ($t) use ($guruId) {
+                $t->whereGuruId($guruId);
+            })->get();
         }
         return Inertia::render('Dash/Pembelajaran', [
             'mapels' => $mapels,
@@ -156,7 +157,7 @@ class PembelajaranController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            'role:admin|ops|guru_kelas|admin_tp',
+            'role:admin|ops|guru_kelas|admin_tp|guru_agama|guru_pjok|guru_inggris',
         ];
     }
 }

@@ -84,7 +84,7 @@
                 "label": "Pembelajaran",
                 "icon": "bookshelf",
                 "url": "/dashboard/pembelajaran",
-                "roles": ["superadmin","admin", "ops", "admin_tp"]
+                "roles": ["superadmin","admin", "ops", "admin_tp", "guru_agama", "guru_inggris", "guru_kelas", "guru_pjok"]
             }
         ]
     },

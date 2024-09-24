@@ -18,6 +18,11 @@ class Tp extends Model
         'tingkat',
         'semester',
         'agama',
+        'guru_id'
     ];
 
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'guru_id', 'nip');
+    }
 }

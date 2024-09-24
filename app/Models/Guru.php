@@ -55,4 +55,9 @@ class Guru extends Model
     {
         return $this->hasMany(Sertifikat::class, 'guru_id', 'nip');
     }
+
+    public function tps()
+    {
+        return $this->hasMany(Tp::class, 'guru_id', 'nip');
+    }
 }

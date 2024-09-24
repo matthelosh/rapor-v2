@@ -241,12 +241,16 @@ class AsesmenController extends Controller
                         }
                     ])->first();
             } else {
-                $proses = ProsesAsesmen::create([
-                    'asesmen_id' => $kode,
-                    'siswa_id' => $siswa_id,
-                    'mulai' => now(),
-                    'status' => 'progres',
-                ]);
+                $proses = ProsesAsesmen::updateOrCreate(
+                    [
+                        'asesmen_id' => $kode,
+                        'siswa_id' => $siswa_id,
+                    ],
+                    [
+                        'mulai' => now(),
+                        'status' => 'progres',
+                    ]
+                );
                 $currentProses = ProsesAsesmen::whereId($proses->id)
                     ->with([
                         'jawabans' => function ($j) use ($siswa_id) {

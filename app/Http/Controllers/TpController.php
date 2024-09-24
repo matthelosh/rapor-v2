@@ -34,6 +34,7 @@ class TpController extends Controller
     {
         try {
             foreach ($request->tps as $tp) {
+                $guruId = $tp['guru_id'] ?? ($request->user()->hasRole(['guru_kelas', 'guru_agama', 'guru_pjok', 'guru_inggris']) ? $request->user()->userable->nip : null);
                 Tp::updateOrCreate(
                     [
                         'kode' => $tp['kode'],
@@ -46,6 +47,7 @@ class TpController extends Controller
                         'tingkat' => $tp['tingkat'],
                         'semester' => $tp['semester'],
                         'agama' => $tp['agama'] ?? null,
+                        'guru_id' => $guruId
                     ]
                 );
             }

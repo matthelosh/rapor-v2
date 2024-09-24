@@ -7,6 +7,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Icon } from '@iconify/vue';
 
 
 defineProps({
@@ -36,7 +37,9 @@ const respose = ref('')
 <template>
     <GuestLayout>
         <Head title="Log in" />
-
+        <Link href="/" class="fixed top-4 right-4">
+            <Icon icon="mdi:close" class="text-xl text-red-500" />
+        </Link>
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>

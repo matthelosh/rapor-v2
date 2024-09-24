@@ -19,7 +19,7 @@ const searchPost = () => {
 
 <template>
 <div>
-    <el-input placeholder="Cari Tulisan" v-model="search" >
+    <el-input placeholder="Cari Tulisan" v-model="search" class="hidden-sm-and-down">
         <template #suffix>
             <el-button text size="small" @click="searchPost">
                 <Icon icon="mdi:magnify" />

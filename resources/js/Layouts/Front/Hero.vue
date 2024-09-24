@@ -6,13 +6,8 @@ const page = usePage()
 </script>
 
 <template>
-    <div class="h-[500px] w-full bg-sky-50 mb-4 flex items-center justify-center overflow-hidden caompaign" :class="`bg-[url('/img/logo-hutri-79.webp')] bg-no-repeat bg-cover`">
-        <!-- <el-carousel height="500px" motion-blur>
-            <el-carousel-item v-for="item in 4" :key="item">
-                <h3 class="small justify-center" text="2xl">{{ item }}</h3>
-            </el-carousel-item>
-        </el-carousel> -->
-        <!-- <el-image src="/img/logo-hutri-79.webp" style="width: 100%;"></el-image> -->
+    <div>
+    <div class="h-[500px] w-full bg-sky-50 mb-4 flex items-center justify-center overflow-hidden campaign" :class="`bg-[url('/img/logo-hutri-79.webp')] bg-no-repeat bg-cover`">
     </div>
     <div class="w-full h-full p-4 shadow bg-sky-50 border border-sky-300 rounded">
         <h3 class="text-sky-700 uppercase font-bold mb-3">Data Sekolah SD di Kecamatan Wagir</h3>
@@ -186,4 +181,5 @@ const page = usePage()
             </el-collapse>
         </el-scrollbar>
     </div>
+</div>
 </template>
