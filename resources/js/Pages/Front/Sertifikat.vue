@@ -45,7 +45,7 @@ onMounted(() => {
     <Head title="Selamat Datang" />
     <div class="common-layout">
         <div class="wrapper h-screen bg-slate-200">
-            <Header :appName="appName" />
+            <Header :appName="'Sertifikat Workkshop'" />
             <el-main style="height: 90vh;">
                 <!-- {{ data }} -->
                 <div class="h-full  flex items-center justify-center " v-if="mode == 'list'">

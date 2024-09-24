@@ -48,6 +48,20 @@ class SertifikatController extends Controller
         }
     }
 
+    public function verify(Request $request)
+    {
+        try {
+            // return 'halo';
+            return Inertia::render(
+                'Front/VerifySertifikat',
+                [
+                    'sertifikat' => ($request->query('nomor')) ? Sertifikat::whereNomor($request->query('nomor'))->with('penerima', 'workshop')->first() : null,
+                ]
+            );
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
     // public function cetak(Request $request)
     // {
     //     try {

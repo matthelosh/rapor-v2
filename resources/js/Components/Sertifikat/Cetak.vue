@@ -94,9 +94,9 @@ const unduh = () => {
             <!-- <vue-qrcode value="Halo" class="absolute" /> -->
             <div class="qr absolute p-3 bg-white rounded print:-left-[50px]">
              <QRCodeVue3 
-                :height="80" 
-                :width="80" 
-                :value="sertifikat.nomor"  />
+                :height="100" 
+                :width="100" 
+                :value="route('sertifikat.verify', {_query: {nomor: sertifikat.nomor}})"  />
             </div>
             <img src="/img/tutwuri.png" alt="Tutwuri" class="w-[80px] mx-auto">
 

@@ -78,6 +78,7 @@ Route::prefix("")->group(
             function () {
                 Route::get('/', [SertifikatController::class, 'home'])->name('sertifikat.front');
                 Route::get('/cetak', [SertifikatController::class, 'cetak'])->name('sertifikat.cetak');
+                Route::get('/verifikasi', [SertifikatController::class, 'verify'])->name('sertifikat.verify');
             }
         );
 
