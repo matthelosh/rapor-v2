@@ -23,5 +23,21 @@
         "label": "Agenda",
         "url": "/agenda",
         "children": []
+    },
+    {
+        "label": "Sertifikat",
+        "url": "#",
+        "children": [
+            {
+                "label": "Cari Sertifikat",
+                "url": "/sertifikat",
+                "children": []
+            },
+            {
+                "label": "Cek Sertifikat",
+                "url": "/sertifikat/verifikasi",
+                "children": []
+            }
+        ]
     }
 ]

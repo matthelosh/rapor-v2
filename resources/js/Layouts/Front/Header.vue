@@ -29,9 +29,21 @@ const showDrawer = ref(false)
             </h3>
             <nav class="gap-4 uppercase hidden md:flex">
                 <template v-for="(menu, m) in menus" :key="m">
-                    <Link :href="menu.url">
+                    <Link :href="menu.url" v-if="menu.children.length < 1">
                         {{ menu.label }}
                     </Link>
+                    <el-popover v-if="menu.children.length > 0" trigger="click" class="hover:cursor-pointer" width="160">
+                        <template #reference>
+                            <a href="#">
+                                {{ menu.label }}
+                            </a>
+                        </template>
+                        <ul >
+                            <li v-for="sub in menu.children" class="px-2 py-3 hover:bg-sky-100 uppercase">
+                                <Link :href="sub.url">{{ sub.label }}</Link>
+                            </li>
+                        </ul>
+                    </el-popover>
                 </template>
                 <Link href="/login" class="flex items-center">
                     <Icon icon="mdi:application-import"  />
