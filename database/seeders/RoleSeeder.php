@@ -25,7 +25,8 @@ class RoleSeeder extends Seeder
             'guru_pjok',
             'guru_inggris',
             'siswa',
-            'korwil'
+            'korwil',
+            'org'
         ];
 
         foreach ($role_names as $role) {
@@ -78,6 +79,22 @@ class RoleSeeder extends Seeder
                         "add_ops",
                         "update_ops",
                         "delete_ops",
+                        'add_workshop',
+                        'read_workshop',
+                        'update_workshop',
+                        'delete_workshop',
+                        'add_workshop_member',
+                        'update_workshop_member',
+                        'read_workshop_member',
+                        'delete_workshop_member',
+                        "add_soal",
+                        "read_soal",
+                        "update_soal",
+                        "delete_soal",
+                        'add_asesmen',
+                        'read_asesmen',
+                        'update_asesmen',
+                        'delete_asesmen',
                     ]);
                     break;
                 case "admin_tp":
@@ -96,6 +113,25 @@ class RoleSeeder extends Seeder
                         "delete_materi",
                     ]);
                     break;
+                case "org";
+                    $role->givePermissionTo([
+                        'add_workshop',
+                        'read_workshop',
+                        'update_workshop',
+                        'delete_workshop',
+                        'add_workshop_member',
+                        'update_workshop_member',
+                        'read_workshop_member',
+                        'delete_workshop_member',
+                        "add_soal",
+                        "read_soal",
+                        "update_soal",
+                        "delete_soal",
+                        'add_asesmen',
+                        'read_asesmen',
+                        'update_asesmen',
+                        'delete_asesmen',
+                    ]);
                 default:
                     break;
             }

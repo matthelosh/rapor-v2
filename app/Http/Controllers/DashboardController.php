@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\JawabanReceived;
 use App\Models\Guru;
+use App\Models\Org;
 use App\Models\Sekolah;
 use App\Models\Tapel;
 use Illuminate\Http\Request;
@@ -13,10 +14,10 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
 
-    public function tesReverb()
-    {
-        \event(new JawabanReceived("Ini Hanya Tes"));
-    }
+    // public function tesReverb()
+    // {
+    //     \event(new JawabanReceived("Ini Hanya Tes"));
+    // }
 
     public function index(Request $request)
     {
@@ -66,6 +67,8 @@ class DashboardController extends Controller
             })
                 ->with('rombels.siswas')
                 ->get();
+        } elseif ($user->hasRole('org')) {
+            // $data['org'] = Org::where
         }
         return Inertia::render('Dashboard', [
             'data' => $data,

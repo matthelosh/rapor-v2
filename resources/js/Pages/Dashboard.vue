@@ -7,12 +7,33 @@ const Admin = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Adm
 const Ops = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Ops.vue'))
 const Wali = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Wali.vue'))
 const Mapel = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Mapel.vue'))
+const Org = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Org.vue'))
 const Siswa = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Siswa.vue'))
 
 const page = usePage()
 const role = page.props.auth.roles[0]
 const comp = computed(() => {
-    return (['superadmin', 'admin', 'admin_tp'].includes(role)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
+    // return (['superadmin', 'admin', 'admin_tp'].includes(role)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
+    switch(role) {
+        case ['superadmin', 'admin', 'admin_tp'].includes(role) :
+            return Admin
+            break;
+        case 'ops':
+            return Ops
+            break
+        case 'guru_kelas':
+            return Wali
+            break
+        case "org":
+            return Org
+            break
+        case "siswa":
+            return Siswa
+            break
+        default:
+            return Mapel
+            break
+    }
 })
 
 const sekolahs = page.props.sekolahs

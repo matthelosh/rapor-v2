@@ -11,6 +11,28 @@ const data = computed(() => page.props.data)
 
 const profil = computed(() => page.props.auth.user.userable)
 
+const code = ref('')
+const output = ref(null)
+
+const runCode = () => {
+    const worker = new Worker(new URL('../../../helpers/worker.js', import.meta.url))
+
+    worker.onmessage = (e) => {
+        if (e.data.success) {
+            output.value =e.data.data
+        } else {
+            output.value = `Error: ${e.data.error}`
+        }
+    }
+
+    worker.getMessage({
+        url: 'https://catfact.ninja/fact',
+        options: {
+            method: 'GET',
+        }
+    })
+}
+
 </script>
 
 <template>
@@ -21,6 +43,8 @@ const profil = computed(() => page.props.auth.user.userable)
                 <span>Data Mapel</span>
             </template>
             <div class="card-body">
+                <el-input type="textarea" v-model="code" placeholder="Ketikkan script JS"> </el-input>
+                <el-button @click="runCode">Tes</el-button>
                 <ul class="pl-4">
                     <li v-for="(mapel, m) in page.props.sekolahs[0].mapels" class="list-disc">{{ mapel.label }}</li>
                 </ul>

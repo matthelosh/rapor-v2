@@ -65,6 +65,7 @@ onBeforeMount(() => {
 
     <div class="content">
         <el-table :data="siswas" v-loading="loading" height="80vh" max-height="80vh">
+            <el-table-column label="No" type="index" width="50"></el-table-column>
             <el-table-column label="NISN" prop="nisn"></el-table-column>
             <el-table-column label="Nama" prop="nama"></el-table-column>
             <el-table-column label="Jilid">

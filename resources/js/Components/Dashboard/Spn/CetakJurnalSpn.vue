@@ -22,32 +22,32 @@ const  addJurnal = (index) => {
     savedJurnals.value.splice(index,1)
 }
 
-// const cetak = () => {
-//     const el = document.querySelector(".cetak")
-//     let cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
-//     let html = `
-//         <!doctype html>
-//         <html>
-//             <head>
-//                 <title>Jurnal SPN</title>  
-//                 <link rel="stylesheet" href="${cssUrl}" />  
-//             </head>
-//             <body>
-//                 ${el.outerHTML}
-//             </body>
-//         </html>
-
-//     `
-//     let win = window.open("", "_blank", "width=800,height=1200")
-//     win.document.write(html)
-
-//     setTimeout(() => {
-//         win.print()
-//         // win.close()
-//     }, 1000)
-// }
-
 const cetak = () => {
+    const el = document.querySelector(".cetak")
+    let cssUrl = page.props.app_env == 'local' ? 'https://localhost:5173/resources/css/app.css' : `/build/assets/app.css`
+    let html = `
+        <!doctype html>
+        <html>
+            <head>
+                <title>Jurnal SPN</title>  
+                <link rel="stylesheet" href="${cssUrl}" />  
+            </head>
+            <body>
+                ${el.outerHTML}
+            </body>
+        </html>
+
+    `
+    let win = window.open("", "_blank", "width=800,height=1200")
+    win.document.write(html)
+
+    setTimeout(() => {
+        win.print()
+        // win.close()
+    }, 1000)
+}
+
+const unduhPdf = () => {
     const element = document.querySelector(".cetak")
     const optios = {
         filename: 'Testing html2pdf',
@@ -171,11 +171,12 @@ onBeforeMount(() => {
                                                     <h3 >:</h3>    
                                                 </td>
                                                 <td class="p-2 border border-black" >
-                                                    <ul class="list-decimal pl-4">
+                                                    <ul class="list-decimal pl-4" v-if="jurnal.absensis">
                                                         <template v-for="nisn in jurnal.absensis.split(',')">
                                                             <li>{{jilid.siswas.find(siswa => siswa.nisn == nisn).nama}} ({{jilid.siswas.find(siswa => siswa.nisn == nisn).rombels[0].label}})</li>
                                                         </template>
-                                                    </ul>    
+                                                    </ul>
+                                                    <p v-else>Nihil</p>    
                                                     <!-- {{jurnal.absensis.split(',')}} -->
                                                 </td>
                                             </tr>
@@ -184,7 +185,7 @@ onBeforeMount(() => {
                                                     <h3 class="text-center">Bukti Foto:</h3>
                                                     <div :class="`grid grid-cols-${jurnal.fotos.split(',').length}`" class="gap-4 p-2">  
                                                         <template v-for="foto in jurnal.fotos.split(',')">
-                                                            <el-image :src="foto"></el-image>
+                                                            <el-image :src="foto" fit="cover"></el-image>
                                                         </template>
                                                     </div>
                                                 </td>

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, reactive, defineAsyncComponent } from 'vue'
 import { Head, usePage, router } from '@inertiajs/vue3'
 import { ElCard, ElCollapse, ElNotification, ElCollapseItem } from 'element-plus';
 import { Icon } from '@iconify/vue';
@@ -7,6 +7,18 @@ import { read, utils } from 'xlsx'
 import DashLayout from '@/Layouts/DashLayout.vue';
 const page = usePage()
 
+const FormCp = defineAsyncComponent(() => import('@/Components/Dashboard/Pembelajaran/FormCp.vue'))
+const formCp = reactive({
+    show: false,
+    mapel: null,
+    elemens: null
+})
+const addCp = (mapel) => {
+    // alert('tes')
+    // console.log(mapel)
+    formCp.show = true
+    formCp.mapel = mapel
+}
 const formTambah = ref(false)
 const formImpor = ref(false)
 const selectedMapel = ref('')
@@ -336,6 +348,7 @@ onBeforeMount(() => {
                                                 <div class="collapse-body--tile flex justify-between mb-2">
                                                         <h4 class="font-bold text-slate-600">Data Tujuan Pembelajaran</h4>
                                                         <el-button-group>
+                                                            <el-button type="success" size="small" @click="addCp(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp', 'guru_agama','guru_kelas','guru_pjok', 'guru_inggris'].includes(role)">Tambah CP</el-button>
                                                             <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp', 'guru_agama','guru_kelas','guru_pjok', 'guru_inggris'].includes(role)">Tambah TP</el-button>
                                                             
                                                         </el-button-group>
@@ -541,6 +554,7 @@ onBeforeMount(() => {
             </el-scrollbar>
         </el-card>
     </el-dialog>
+    <FormCp v-if="formCp.show" :mapel="formCp.mapel" :show="formCp.show" @close="formCp.show = false" />
 </DashLayout>
 </template>
 

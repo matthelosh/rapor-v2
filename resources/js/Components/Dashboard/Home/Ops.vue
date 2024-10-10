@@ -8,11 +8,6 @@ const page = usePage()
 
 const data = computed(() => page.props.data)
 
-// curl -v \
-// 	GET \
-// 	-H "User-Agent: HTTPBot-iOS/2024.0.1" \
-// 	-H "Authorization: Bearer QteRgcGaC8TGojF" \
-// 	"http://192.168.1.14:5774/WebService/getPengguna?npsn=20518848&access_token="
 
 const results = ref(null)
 
@@ -51,6 +46,7 @@ const tesDapodik = async() => {
             </template>
             <div class="card-body">
                 <table>
+                    <tbody>
                     <tr>
                         <td>Nama Sekolah</td>
                         <td class="px-1">:</td>
@@ -81,6 +77,7 @@ const tesDapodik = async() => {
                         <td class="px-1">:</td>
                         <td>{{ data.sekolah.website }}</td>
                     </tr>
+                </tbody>
                 </table>
             </div>
         </el-card>
@@ -121,18 +118,6 @@ const tesDapodik = async() => {
             </div>
         </el-card>
 
-        <!-- <el-card class="my-4">
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <h3>Tes Dapodik</h3>
-
-                    <el-button @click="tesDapodik">Tes</el-button>
-                </div>
-            </template>
-            <div class="card-body">
-                {{ results }}
-            </div>
-        </el-card> -->
     </el-col>
     <el-col :span="8" :xs="24">
         <el-card>

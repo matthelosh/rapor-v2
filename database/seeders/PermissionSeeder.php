@@ -100,6 +100,14 @@ class PermissionSeeder extends Seeder
             'read_nilai_proyek',
             'update_nilai_proyek',
             'delete_nilai_proyek',
+            'add_workshop',
+            'read_workshop',
+            'update_workshop',
+            'delete_workshop',
+            'add_workshop_member',
+            'update_workshop_member',
+            'read_workshop_member',
+            'delete_workshop_member'
         ];
         // create permission
         foreach ($permissions as $permission) {

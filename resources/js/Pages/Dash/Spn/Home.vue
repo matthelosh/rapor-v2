@@ -6,6 +6,7 @@ import DashLayout from '@/Layouts/DashLayout.vue';
 const page = usePage()
 const props = defineProps({ jilids: Array})
 const RubrikPretes = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/RubrikPretes.vue'))
+const CetakPretes = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/CetakPretes.vue'))
 const JurnalSpn = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/JurnalSpn.vue'))
 const CetakJurnalSpn = defineAsyncComponent(() => import('@/Components/Dashboard/Spn/CetakJurnalSpn.vue'))
 
@@ -17,6 +18,13 @@ const mode = ref('list')
 
 const openRubrik = (rombel) => {
     selectedRombel.value = rombel
+    mode.value = 'input-pretes'
+}
+
+const cetakPretes = (rombel) => {
+    selectedRombel.value = rombel
+    mode.value = 'cetak-pretes'
+    // console.log
 }
 
 const openJurnal = (jilid) => {
@@ -72,7 +80,7 @@ const close = () => {
                         <template #default="{row}">
                             <el-button-group size="small">
                                 <el-button size="small" @click="openRubrik(row)">Buka</el-button>
-                                <el-button size="small">Cetak</el-button>
+                                <el-button size="small" @click="cetakPretes(row)">Cetak</el-button>
                             </el-button-group>
                         </template>
                     </el-table-column>
@@ -110,7 +118,8 @@ const close = () => {
             </el-collapse-item>
         </el-collapse>
     </el-card>
-    <RubrikPretes v-if="selectedRombel !== null" @close="selectedRombel = null" :rombel="selectedRombel" :jilids="props.jilids" /> 
+    <RubrikPretes v-if="selectedRombel !== null && mode == 'input-pretes'" @close="close" :rombel="selectedRombel" :jilids="props.jilids" /> 
+    <CetakPretes v-if="selectedRombel !== null && mode == 'cetak-pretes'" @close="close" :rombel="selectedRombel" :jilids="props.jilids" /> 
     <JurnalSpn v-if="selectedJilid !== null && mode == 'isi-jurnal'" @close="close" :jilid="selectedJilid" /> 
     <CetakJurnalSpn v-if="selectedJilid !== null && mode == 'cetak-jurnal'" @close="close" :jilid="selectedJilid" /> 
 </DashLayout>

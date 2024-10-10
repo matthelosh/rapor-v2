@@ -66,7 +66,7 @@ class SekolahService
             'email' => $data['email'] ?? null,
             'website' => $data['website'] ?? null,
             'ks_id' => $data['ks_id'],
-            'gugus_id' => $data['gugus_id'] ?? null
+            'gugus_id' => $data['gugus_id'] === 'null' ? null : ($data['gugus_id'] ?? null)
         ]);
 
 

@@ -28,6 +28,19 @@ const photoTaken = (data) =>
     filePhotos.value.push(data.blob)
 }
 
+const onFotoPicked = (e) => {
+    const files = e.target.files
+    // filePhotos.value = files
+
+    for(let f=0;f<files.length;f++) {
+            filePhotos.value.push(files[f])
+            photos.value.push(URL.createObjectURL(files[f]))
+
+    }
+    // files(file => {
+
+    // })
+}
 const simpan = async() => {
     // loading.value = true
     // let data = jurnal.value
@@ -87,11 +100,18 @@ onBeforeMount(() => {
                     <el-input v-model="jurnal.keterangan" type="textarea" placeholder="Isikan keterangan pelaksanaan" autosize :rows="3"></el-input>
                 </el-form-item>
                 <div class="text-center mb-4">
-                    <el-button icon @click="showCamera = !showCamera" :type="showCamera ? 'danger': ''" text>
-                        <h3 class="text-center text-xs " :class="showCamera ? 'text-red-500' :'text-sky-500'">{{ showCamera ? 'Tutup Kamera' : 'Buka Kamera' }}</h3>
-                        <Icon :icon="`mdi:${showCamera ? 'camera-off' : 'camera'}`" class="ml-2 text-lg" :class="showCamera ? 'text-red-500' :'text-sky-500'" />
-                    </el-button>
+                    <el-button-group>
+                        <el-button icon @click="$refs.fotoInput.click()" type="success" text>
+                            <h3 class="text-center text-xs ">Ambil Foto</h3>
+                            <Icon icon="mdi:image" class="ml-2 text-lg" />
+                        </el-button>
+                        <el-button icon @click="showCamera = !showCamera" :type="showCamera ? 'danger': ''" text>
+                            <h3 class="text-center text-xs " :class="showCamera ? 'text-red-500' :'text-sky-500'">{{ showCamera ? 'Tutup Kamera' : 'Buka Kamera' }}</h3>
+                            <Icon :icon="`mdi:${showCamera ? 'camera-off' : 'camera'}`" class="ml-2 text-lg" :class="showCamera ? 'text-red-500' :'text-sky-500'" />
+                        </el-button>
+                    </el-button-group>
                 </div>
+                <input type="file" multiple @change="onFotoPicked" accept=".jpg, .jpeg, .png, .JPG, .JPEG, .PNG" class="hidden" ref="fotoInput">
                 <WebCamUI :fullscreen="true" v-if="showCamera" class="transition-all duration-300 ease-in-out" @photoTaken="photoTaken" />
                 <div class="photos">
                     <div class="columns-2">

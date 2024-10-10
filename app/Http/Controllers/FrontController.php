@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DapodikHelper;
 use App\Models\Agenda;
 use App\Models\Galeri;
 use App\Models\Post;
@@ -9,6 +10,7 @@ use App\Models\Sekolah;
 use App\Models\Tapel;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -189,6 +191,17 @@ class FrontController extends Controller
             );
         } catch (\Throwable $th) {
             //throw $th;
+        }
+    }
+
+
+    public function tesdapodik()
+    {
+        try {
+            $users = DapodikHelper::sekolah();
+            return $users;
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

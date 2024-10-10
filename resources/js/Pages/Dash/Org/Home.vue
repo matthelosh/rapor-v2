@@ -1,12 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
 import { Head, router, usePage } from '@inertiajs/vue3';
 
 import DashLayout from '@/Layouts/DashLayout.vue';
 
+const AnggotaOrganisasi = defineAsyncComponent(() => import('@/Components/Dashboard/Organisasi/AnggotaOrganisasi.vue'))
+
 const page = usePage()
 const props = defineProps({orgs: Array})
 const pageTitle = ref('Data Organisasi')
+
+const showFormAnggota = ref(false)
+const selectedOrg = ref(null)
+
+const closeFormAnggota = () => {
+    selectedOrg.value = null
+    showFormAnggota.value = false
+}
+
+const openFormAnggota = (org) => {
+    selectedOrg.value = org
+    showFormAnggota.value = true
+}
 
 </script>
 
@@ -36,7 +51,7 @@ const pageTitle = ref('Data Organisasi')
                     <template #default="{row}">
                         <el-button-group size="small">
                             <el-button>Edit</el-button>
-                            <el-button>Anggota</el-button>
+                            <el-button @click="openFormAnggota(row)">Anggota</el-button>
                             <el-button type="danger">Hapus</el-button>
                         </el-button-group>
                     </template>
@@ -44,5 +59,6 @@ const pageTitle = ref('Data Organisasi')
             </el-table>
         </div>
     </el-card>
+    <AnggotaOrganisasi v-if="showFormAnggota" :open="showFormAnggota" :org="selectedOrg" @close="closeFormAnggota" />
 </DashLayout>
 </template>

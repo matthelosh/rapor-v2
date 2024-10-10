@@ -14,6 +14,8 @@ Route::prefix("")->group(
             ]
         )->name('home');
 
+        Route::get('/tes-dapodik', [FrontController::class, 'tesdapodik']);
+
         Route::get(
             '/baca/{slug}',
             [
@@ -337,6 +339,8 @@ Route::middleware('auth')->group(
                                 )->name('dashboard.siswa.ortu.pekerjaan.index');
                             }
                         );
+
+                        Route::post('/impor/dapodik', [SiswaController::class, 'imporDapodik'])->name('dashboard.siswa.impor.dapodik');
                     }
                 );
 
@@ -436,34 +440,46 @@ Route::middleware('auth')->group(
                                 'imporMapel'
                             ]
                         )->name('dashboard.pembelajaran.mapel.impor');
-                        Route::post(
-                            '/tp',
-                            [
-                                TpController::class,
-                                'index'
-                            ]
-                        )->name('dashboard.pembelajaran.tp.index');
-                        Route::post(
-                            '/tp/impor',
-                            [
-                                TpController::class,
-                                'impor'
-                            ]
-                        )->name('dashboard.pembelajaran.tp.impor');
-                        Route::post(
-                            '/tp/store',
-                            [
-                                TpController::class,
-                                'store'
-                            ]
-                        )->name('dashboard.pembelajaran.tp.store');
-                        Route::delete(
-                            '/tp/{id}',
-                            [
-                                TpController::class,
-                                'destroy'
-                            ]
-                        )->name('dashboard.pembelajaran.tp.destroy');
+
+                        Route::prefix("cp")->group(
+                            function () {
+                                Route::post('/store', [CpController::class, 'store'])->name('dashboard.cp.store');
+                            }
+                        );
+
+                        Route::prefix('tp')->group(
+                            function () {
+
+                                Route::post(
+                                    '/',
+                                    [
+                                        TpController::class,
+                                        'index'
+                                    ]
+                                )->name('dashboard.pembelajaran.tp.index');
+                                Route::post(
+                                    '/impor',
+                                    [
+                                        TpController::class,
+                                        'impor'
+                                    ]
+                                )->name('dashboard.pembelajaran.tp.impor');
+                                Route::post(
+                                    '/store',
+                                    [
+                                        TpController::class,
+                                        'store'
+                                    ]
+                                )->name('dashboard.pembelajaran.tp.store');
+                                Route::delete(
+                                    '/{id}',
+                                    [
+                                        TpController::class,
+                                        'destroy'
+                                    ]
+                                )->name('dashboard.pembelajaran.tp.destroy');
+                            }
+                        );
 
                         Route::prefix('ekskul')->group(
                             function () {
@@ -913,6 +929,8 @@ Route::middleware('auth')->group(
                 Route::prefix('organisasi')->group(
                     function () {
                         Route::get('/', [OrgController::class, 'home'])->name('dashboard.org');
+                        Route::get('/nonmember', [OrgController::class, 'nonMember'])->name('dashboard.organisasi.nonmember');
+                        Route::post('/member/store', [OrgController::class, 'storeMember'])->name('dashboard.organisasi.member.store');
                     }
                 );
             }

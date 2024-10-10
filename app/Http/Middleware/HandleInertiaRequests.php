@@ -57,7 +57,7 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
 
             $datas['sekolahs'] = $this->sekolahs($user);
-            $datas['rombels'] = ($user->hasRole('admin') || $user->hasRole('superadmin'))
+            $datas['rombels'] = ($user->hasRole(['admin', 'superadmin', 'org']))
                 ? Rombel::whereTapel(Periode::tapel()->kode)->get()
                 : (
                     $user->hasRole('guru_kelas')
@@ -111,7 +111,7 @@ class HandleInertiaRequests extends Middleware
         // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {
         $role = $user->getRoleNames()[0];
         $tapel = $this->periode()['tapel']->kode;
-        if (\in_array($role, ['superadmin', 'admin', 'admin_tp'])) {
+        if (\in_array($role, ['superadmin', 'admin', 'admin_tp', 'org'])) {
             return Sekolah::with('mapels.tps', 'ks', 'ekskuls', 'gugus')->get();
         } elseif ($role == 'ops') {
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)

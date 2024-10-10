@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Elemen extends Model
+class Cp extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'mapel_id',
+        'elemen_id',
         'fase',
-        'nama',
-        'agama',
+        'mapel_id',
+        'teks'
     ];
 
-    public function cp()
+    public function mapel()
     {
-        return $this->belongsTo(Cp::class);
+        return $this->belongsTo(Mapel::class, 'mapel_id', 'kode');
     }
 }

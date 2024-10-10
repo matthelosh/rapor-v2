@@ -15,7 +15,7 @@ const loading = ref(false)
 const tps = ref([])
 const props = defineProps({selectedAsesmen: Object})
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'stored'])
 
 const extensions = [
     Doc, Text, History, Dropcursor,
@@ -91,7 +91,7 @@ const simpanSoal = async () => {
                 asesmenId: props.selectedAsesmen.id,
                 mapel_id: props.selectedAsesmen.mapel_id,
                 semester: props.selectedAsesmen.semester.kode,
-                tingkat: props.selectedAsesmen.rombel.tingkat,
+                tingkat: props.selectedAsesmen.tingkat,
                 agama: props.selectedAsesmen.agama ?? null,
                 pertanyaan: 'Tulis Pertanyaan',
                 tipe: 'pilihan',
@@ -142,6 +142,7 @@ onBeforeMount(async () => {
         mapel_id: props.selectedAsesmen.mapel_id,
         semester: props.selectedAsesmen.semester.kode,
         tingkat: props.selectedAsesmen.kelas,
+        agama: props.selectedAsesmen.agama ?? null,
         pertanyaan: 'Tulis Pertanyaan',
         tipe: 'pilihan',
         level: 'LOT'
@@ -151,129 +152,131 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-<Head title="Form Soal" />
-    <el-card>
-        <template #header>
-            <div class="flex items-center justify-between">
-                <h3>Data Soal </h3>
-                <div class="flex items-center gap-1">
-                    <el-button type="danger" size="small" @click="closeForm">Batal</el-button>
+    <div>
+            <Head title="Form Soal" />
+            <el-card>
+                <template #header>
+                    <div class="flex items-center justify-between">
+                        <h3>Data Soal </h3>
+                        <div class="flex items-center gap-1">
+                            <el-button type="danger" size="small" @click="closeForm">Batal</el-button>
+                        </div>
+                    </div>
+                </template>
+                <div class="form  bg-slate-100 shadow p-4 mx-auto">
+                    <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Soal</h1>
+                    <el-form v-model="soal" label-position="top" v-loading="loading" :rules="rules">
+                        <el-row :gutter=20 justify="center">
+                            <el-col :span="8">
+                                <el-form-item label="Mapel">
+                                    <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
+                                        <el-option v-for="mapel in page.props.auth.roles[0] == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-form-item label="Tipe Soal">
+                                    <el-select v-model="soal.tipe" placeholder="Pilih Tipe">
+                                        <el-option v-for="tipe in ['pilihan','isian', 'uraian']" :value="tipe"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-form-item label="Semester">
+                                    <el-select v-model="soal.semester" placeholder="Pilih Semester" :disabled="!soal.mapel_id">
+                                        <el-option v-for="sem in ['1','2']" :value="sem" :label="`Semester ${sem}`"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-form-item label="Tingkat">
+                                    <el-select :disabled="!soal.semester" v-model="soal.tingkat" placeholder="Pilih Kelas" @change="getTps">
+                                        <el-option v-for="tingkat in ['1','2','3','4','5','6']" :value="tingkat" :label="`Kelas ${tingkat}`"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="4">
+                                <el-form-item label="Level Soal">
+                                    <el-select v-model="soal.level" placeholder="Pilih Level">
+                                        <el-option v-for="level in ['LOT', 'MOT', 'HOT']" :value="level"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter=20 justify="center" v-if="tps.length > 0">
+                            <el-col :span="24">
+                                <el-select v-model="soal.tp_id" filterable fit-input-width >
+                                    <el-option v-for="tp in tps" :value="tp.id" :label="tp.teks">
+                                        
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                        </el-row>
+                        <el-row :gutter=20 justify="center">
+                            <el-col>
+                                <h3 class="mt-6 font-bold text-sky-600">Tulis Pertanyaan</h3>
+                                <el-form-item label="">
+                                    <element-tiptap v-model:content="soal.pertanyaan" :extensions="extensions" />
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <div  v-if="soal.tipe == 'pilihan'">
+                            <h3 class="text-lg font-bold">Pilihan Jawaban:</h3>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    <el-form-item label="Pilihan A">
+                                        <element-tiptap v-model:content="soal.a" :extensions="pilihanextensions" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    <el-form-item label="Pilihan B">
+                                        <element-tiptap v-model:content="soal.b" :extensions="pilihanextensions" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    <el-form-item label="Pilihan C">
+                                        <element-tiptap v-model:content="soal.c" :extensions="pilihanextensions" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    <el-form-item label="Pilihan D">
+                                        <element-tiptap v-model:content="soal.d" :extensions="pilihanextensions" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    
+                                    <el-form-item label="Kunci Jawaban" justify="center">
+                                        <el-radio-group v-model="soal.kunci">
+                                            <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
+                                        </el-radio-group>
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <div v-else>
+                            <el-row :gutter=20 justify="center">
+                                <el-col>
+                                    <el-form-item label="Kunci Jawaban">
+                                        <element-tiptap v-model:content="soal.kunci" :extensions="pilihanextensions" />
+                                    </el-form-item>
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <el-row :gutter=20 justify="center">
+                            <el-button type="primary" @click="simpanSoal">Simpan</el-button>
+                        </el-row>
+                    </el-form>
                 </div>
-            </div>
-        </template>
-        <div class="form  bg-slate-100 shadow p-4 mx-auto">
-            <h1 class="text-lg font-bold text-sky-700 text-center uppercase mb-4">Formulir Soal</h1>
-            <el-form v-model="soal" label-position="top" v-loading="loading" :rules="rules">
-                <el-row :gutter=20 justify="center">
-                    <el-col :span="8">
-                        <el-form-item label="Mapel">
-                            <el-select v-model="soal.mapel_id" placeholder="Pilih Mapel">
-                                <el-option v-for="mapel in page.props.auth.roles[0] == 'admin' ? page.props.mapels : page.props.sekolahs[0].mapels" :value="mapel.kode" :label="mapel.label"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item label="Tipe Soal">
-                            <el-select v-model="soal.tipe" placeholder="Pilih Tipe">
-                                <el-option v-for="tipe in ['pilihan','isian', 'uraian']" :value="tipe"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item label="Semester">
-                            <el-select v-model="soal.semester" placeholder="Pilih Semester" :disabled="!soal.mapel_id">
-                                <el-option v-for="sem in ['1','2']" :value="sem" :label="`Semester ${sem}`"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item label="Tingkat">
-                            <el-select :disabled="!soal.semester" v-model="soal.tingkat" placeholder="Pilih Kelas" @change="getTps">
-                                <el-option v-for="tingkat in ['1','2','3','4','5','6']" :value="tingkat" :label="`Kelas ${tingkat}`"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="4">
-                        <el-form-item label="Level Soal">
-                            <el-select v-model="soal.level" placeholder="Pilih Level">
-                                <el-option v-for="level in ['LOT', 'MOT', 'HOT']" :value="level"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center" v-if="tps.length > 0">
-                    <el-col :span="24">
-                        <el-select v-model="soal.tp_id" filterable fit-input-width >
-                            <el-option v-for="tp in tps" :value="tp.id" :label="tp.teks">
-                                
-                            </el-option>
-                        </el-select>
-                    </el-col>
-                </el-row>
-                <el-row :gutter=20 justify="center">
-                    <el-col>
-                        <h3 class="mt-6 font-bold text-sky-600">Tulis Pertanyaan</h3>
-                        <el-form-item label="">
-                            <element-tiptap v-model:content="soal.pertanyaan" :extensions="extensions" />
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <div  v-if="soal.tipe == 'pilihan'">
-                    <h3 class="text-lg font-bold">Pilihan Jawaban:</h3>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            <el-form-item label="Pilihan A">
-                                <element-tiptap v-model:content="soal.a" :extensions="pilihanextensions" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            <el-form-item label="Pilihan B">
-                                <element-tiptap v-model:content="soal.b" :extensions="pilihanextensions" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            <el-form-item label="Pilihan C">
-                                <element-tiptap v-model:content="soal.c" :extensions="pilihanextensions" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            <el-form-item label="Pilihan D">
-                                <element-tiptap v-model:content="soal.d" :extensions="pilihanextensions" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            
-                            <el-form-item label="Kunci Jawaban" justify="center">
-                                <el-radio-group v-model="soal.kunci">
-                                    <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </div>
-                <div v-else>
-                    <el-row :gutter=20 justify="center">
-                        <el-col>
-                            <el-form-item label="Kunci Jawaban">
-                                <element-tiptap v-model:content="soal.kunci" :extensions="pilihanextensions" />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                </div>
-                <el-row :gutter=20 justify="center">
-                    <el-button type="primary" @click="simpanSoal">Simpan</el-button>
-                </el-row>
-            </el-form>
-        </div>
-    </el-card>
+            </el-card>
+    </div>
 </template>
 
 <style>

@@ -40,7 +40,13 @@ class SpnController extends Controller
     public function getSiswa(Request $request)
     {
         $rombelId = $request->query('rombelId');
-        $rombel = Rombel::whereKode($rombelId)->with('siswas.jilids')->first();
+        $rombel = Rombel::whereKode($rombelId)->with(
+            'siswas',
+            function ($s) {
+                $s->orderBy('nama', 'ASC');
+                $s->with('jilids');
+            }
+        )->first();
         return response()->json([
             'siswas' => $rombel->siswas,
         ]);
@@ -67,8 +73,11 @@ class SpnController extends Controller
             $siswas = $request->siswas;
             // dd($siswas);
             foreach ($siswas as $sis) {
-                $siswa = Siswa::whereNisn($sis['nisn'])->first();
-                $siswa->jilids()->attach($sis['jilid']);
+                $siswa = Siswa::whereDoesntHave('jilids')->whereNisn($sis['nisn'])->first();
+                if ($siswa) {
+
+                    $siswa->jilids()->attach($sis['jilid']);
+                }
                 // DB::table('jilid_siswa')->insert([
                 //     'siswa_id' => $siswa->id,
                 //     'jilid_id' => 

@@ -27,6 +27,9 @@ const formImpor = ref({
 const FormImpor = defineAsyncComponent(
     () => import("@/Components/Dashboard/FormImpor.vue"),
 );
+const SiswaDapodik = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Siswa/SiswaDapodik.vue"),
+);
 const formSiswa = ref(false);
 const FormSiswa = defineAsyncComponent(
     () => import("@/Components/Dashboard/Siswa/FormSiswa.vue"),
@@ -342,6 +345,11 @@ const onSearchChanged = async () => {
         preserveState: true,
     });
 };
+
+const siswaDapodik = ref(false)
+const closeSiswaDapodik = () => {
+    siswaDapodik.value = false
+}
 </script>
 <template>
     <Head title="Data Siswa" />
@@ -375,7 +383,7 @@ const onSearchChanged = async () => {
                         <div
                             class="card-toolbar--items flex items-center justify-end px-2 md:w-[60%]"
                         >
-                            <el-button-group class="md:w-[300px] hidden-sm-and-down">
+                            <el-button-group class="hidden-sm-and-down" size="small">
                                 <el-button type="success" @click="unduhFormat">
                                     <Icon icon="mdi:file-excel" />
                                     Unduh Format
@@ -385,13 +393,20 @@ const onSearchChanged = async () => {
                                     Impor Ortu
                                 </el-button>
                             </el-button-group>
-                            <el-button-group class="md:w-[400px]">
+                            <el-button-group class="mx-2" size="small">
                                 <el-button
                                     type="primary"
                                     @click="formSiswa = true"
                                 >
                                     <Icon icon="mdi-plus" />
                                     Baru
+                                </el-button>
+                                <el-button
+                                    type="danger"
+                                    @click="siswaDapodik = true"
+                                >
+                                    <Icon icon="mdi:web-sync" />
+                                    Impor Dapodik
                                 </el-button>
                                 <el-button
                                     type="success"
@@ -413,6 +428,7 @@ const onSearchChanged = async () => {
                                 style="width: 300px"
                                 @change="onSearchChanged"
                                 class="hidden-sm-and-down"
+                                size="small"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />
@@ -645,5 +661,6 @@ const onSearchChanged = async () => {
             v-if="formOrtu"
             :siswa="selectedSiswa"
         />
+        <SiswaDapodik v-if="siswaDapodik" :show="siswaDapodik" @close="closeSiswaDapodik" />
     </DashLayout>
 </template>

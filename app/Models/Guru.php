@@ -60,4 +60,9 @@ class Guru extends Model
     {
         return $this->hasMany(Tp::class, 'guru_id', 'nip');
     }
+
+    public function orgs()
+    {
+        return $this->belongsToMany(Org::class, 'guru_org');
+    }
 }

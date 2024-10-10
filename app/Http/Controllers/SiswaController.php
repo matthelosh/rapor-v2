@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DapodikHelper;
 use App\Http\Requests\SiswaRequest;
 use App\Models\Rombel;
 use App\Models\Siswa;
@@ -42,6 +43,18 @@ class SiswaController extends Controller
             return back()->with('status', 'Data Siswa diimpor');
         } catch (\Exception $e) {
             return back()->withErrors(['errors' => $e->getMessage()]);
+        }
+    }
+
+    public function imporDapodik(Request $request)
+    {
+        try {
+            $siswas = DapodikHelper::siswas($request->all());
+            return response()->json([
+                'siswas' => $siswas
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 

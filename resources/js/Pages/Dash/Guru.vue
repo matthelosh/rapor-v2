@@ -162,7 +162,7 @@ const unduhFormat = async () => {
         <div class="page">
             <el-card>
                 <template #header>
-                    <div class="card-toolbar flex items-center justify-between">
+                    <div class="card-toolbar flex items-center  justify-between">
                         <div class="card-title flex items-center">
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
                             <span class="uppercase"
@@ -175,9 +175,9 @@ const unduhFormat = async () => {
                             >
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center gap-1 px-2 md:w-[50%]"
+                            class="card-toolbar--items flex items-center gap-1 px-2 bg-slate-100"
                         >
-                            <el-button-group class="flex-grow md:w-[500px]">
+                            <el-button-group size="small" class="flex-grow-1 ">
                                 <el-button
                                     type="primary"
                                     @click="formGuru = true"
@@ -199,11 +199,13 @@ const unduhFormat = async () => {
                                 </el-button>
                             </el-button-group>
                             <el-input
+                            size="small"
                                 v-model="search"
                                 placeholder="Cari Guru Berdasarkan Nama"
                                 clearable
                                 @change="cariGuru"
                                 class="hidden-sm-and-down"
+                                style="max-width: 35%"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />
@@ -216,6 +218,7 @@ const unduhFormat = async () => {
                     :data="gurus"
                     size="small"
                     :default-sort="{ prop: 'sekolahs', order: 'descending' }"
+                    max-height="70vh"
                 >
                     <el-table-column label="Foto" width="60">
                         <template #default="scope">
