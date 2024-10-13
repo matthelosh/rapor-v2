@@ -167,7 +167,7 @@ onBeforeMount(async() => {
                     <p>Orang tua / Wali Murid</p>
 
                     <p class="font-bold uppercase underline leading-4 mt-20 border-b border-dotted border-b-2 border-black w-[80%] mx-auto">&nbsp;</p>
-                    <p class="leading-4 mb-8">NIP. {{ page.props.auth.user.userable.nip }}</p>
+                    <p class="leading-4 mb-8"></p>
                 </div>
                 <div class="col-span-1"></div>
                 <div class="col-span-3">
