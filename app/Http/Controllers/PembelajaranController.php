@@ -44,7 +44,7 @@ class PembelajaranController extends Controller implements HasMiddleware
                     }
                 ])->get();
             }
-        } elseif ($request->user()->hasRole(['admin', 'superadmin'])) {
+        } elseif ($request->user()->hasRole(['admin', 'superadmin', 'ops'])) {
             $mapels = Mapel::with('tps')->get();
         } elseif ($request->user()->hasRole('guru_kelas')) {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
