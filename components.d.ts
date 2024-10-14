@@ -17,6 +17,7 @@ declare module 'vue' {
     ElCarousel: typeof import('element-plus/es')['ElCarousel']
     ElCarouselItem: typeof import('element-plus/es')['ElCarouselItem']
     ElChecbox: typeof import('element-plus/es')['ElChecbox']
+    ElChecboxGroup: typeof import('element-plus/es')['ElChecboxGroup']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCheckBoxGroup: typeof import('element-plus/es')['ElCheckBoxGroup']

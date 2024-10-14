@@ -304,7 +304,6 @@ onBeforeMount(() => {
             <span class="title font-bold text-lg">Konten Pembelajaran</span>
         </template>
         <div class="card-body">
-            <!-- {{ mapels }} -->
             <el-row>
                 <el-col>
                     <div class="card border">
@@ -319,9 +318,11 @@ onBeforeMount(() => {
                                     <template #default>
                                         <h3 class="text-sky-600 font-bold">Pilih Mapel</h3>
                                         <ol>
-                                            <li v-for="(mapel,m) in page.props.mapels" :key="mapel.id">
-                                                <el-checkbox :label="mapel.label" v-model="mapels[m]" :true-value="mapel.id">{{ mapel.label }}</el-checkbox>
-                                            </li>
+                                            <el-checkbox-group v-model="mapels">
+                                                <li v-for="(mapel,m) in page.props.mapels" :key="mapel.id">
+                                                    <el-checkbox :value="mapel.id">{{ mapel.id }}. {{ mapel.label }}</el-checkbox>
+                                                </li>
+                                            </el-checkbox-group>
                                         </ol>
                                         <el-button type="success" @click="assignMapel" >Simpan</el-button>
                                     </template>
