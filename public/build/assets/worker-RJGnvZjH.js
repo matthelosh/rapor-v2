@@ -1,0 +1,1 @@
+(function(){"use strict";self.onmessage=async function(e){const{url:t,options:a}=e.data;try{const c=await(await fetch(t,a)).json();self.getData({success:!0,data:c})}catch(s){self.getData({success:!1,error:s.message})}}})();
