@@ -73,6 +73,8 @@ const closeLembarSoal = () => {
 const edit = (item) => {
     item.durasi = [item.mulai, item.selesai]
     asesmen.value = item
+    asesmen.value.semester = item.semester.kode
+    // console.log(item)
     mode.value = 'form'
 }
 
@@ -109,6 +111,11 @@ const showMonitor = (item) => {
     mode.value = 'monitor'
 }
 
+const closeForm = () => {
+    router.reload({only: ['soals']})
+    mode.value = 'list'
+}
+
 </script>
 
 <template>
@@ -121,7 +128,7 @@ const showMonitor = (item) => {
                 <h3>Data Asesmen</h3>
                 <div class="flex items-center gap-1">
                     <el-button type="primary" size="small" @click="addAsesmen" :disabled="!canAddAsesmen" v-if="mode == 'list'">Buat Asesmen</el-button>
-                    <el-button type="danger" size="small" @click="mode = 'list'" :disabled="!canAddAsesmen" v-if="mode == 'form'">Tutup</el-button>
+                    <el-button type="danger" size="small" @click="closeForm" :disabled="!canAddAsesmen" v-if="mode == 'form'">Tutup</el-button>
                 </div>
             </div>
         </template>
@@ -317,6 +324,13 @@ const showMonitor = (item) => {
                         <el-form-item label="Kelas">
                             <el-select v-model="asesmen.kelas" placeholder="Kelas" :readonly="false">
                                 <el-option v-for="(kelas, t) in ['1','2','3','4','5','6']" :value="kelas" :label="`Kelas ${kelas}`"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="3" :xs="24">
+                        <el-form-item label="Semester">
+                            <el-select v-model="asesmen.semester" placeholder="Semester" :readonly="false">
+                                <el-option v-for="(sem) in ['1','2']" :value="sem" :label="`Semester ${sem}`"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
