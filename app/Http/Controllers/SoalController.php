@@ -42,8 +42,8 @@ class SoalController extends Controller
             $asesmen_id = $request->asesmen_id;
             $asesmen = Asesmen::whereId($asesmen_id)->first();
             // dd($asesmen);
-            $agama = $request->agama ? $request->agama : ($asesmen->mapel_id == 'pabp' ? $request->user()->userable->agama : null);
-            // dd($agama);
+            $agama = $request->agama ? $request->agama : ($asesmen->mapel_id == 'pabp' ? $request->user()->userable->agama : '%');
+            // dd($agama);  
             $soals = Soal::whereDoesntHave('asesmen', function ($a) use ($asesmen_id) {
                 $a->where('asesmen_id', $asesmen_id);
             })

@@ -23,7 +23,8 @@ const getAllSoals = async () => {
         tingkat: props.selectedAsesmen.kelas,
         mapel_id: props.selectedAsesmen.mapel_id,
         agama: props.selectedAsesmen.mapel_id == 'pabp' ? props.selectedAsesmen.agama : null,
-        asesmen_id : props.selectedAsesmen.id
+        asesmen_id : props.selectedAsesmen.id,
+        semester: props.selectedAsesmen.semester.kode
     })).then(res => {
         allSoals.value = res.data.soals
     })

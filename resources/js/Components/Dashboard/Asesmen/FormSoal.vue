@@ -137,6 +137,7 @@ const getTps = async () => {
 }
 
 onBeforeMount(async () => {
+    console.log(props.selectedAsesmen)
     soal.value = {
         asesmenId: props.selectedAsesmen.id,
         mapel_id: props.selectedAsesmen.mapel_id,

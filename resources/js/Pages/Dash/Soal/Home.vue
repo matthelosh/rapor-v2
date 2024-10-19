@@ -79,6 +79,8 @@ const closeForm = () => {
 }
 
 const simpanSoal = async () => {
+    soal.value.mapel_id == 'pabp' ? soal.value.agama = page.props.auth.user.userable.agama : null
+    // console.log(soal.value)
     router.post(route('dashboard.soal.store'), soal.value, {
         onStart: () => loading.value = true,
         onSuccess: () => {
