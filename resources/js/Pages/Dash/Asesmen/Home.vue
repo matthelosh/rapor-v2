@@ -27,7 +27,6 @@ const simpanAsesmen = async () => {
     // console.log(asesmen.value)
     data.sekolah_id = page.props.sekolahs[0].npsn
     data.tapel = page.props.periode.tapel.kode
-    data.semester = page.props.periode.semester.kode
     data.mulai = data.durasi[0]
     data.selesai = data.durasi[1]
     data.tanggal = dayjs(data.durasi[0]).format('YYYY-MM-DD')
@@ -74,7 +73,7 @@ const edit = (item) => {
     item.durasi = [item.mulai, item.selesai]
     asesmen.value = item
     asesmen.value.semester = item.semester.kode
-    // console.log(item)
+    // console.log(asesmen.value)
     mode.value = 'form'
 }
 
