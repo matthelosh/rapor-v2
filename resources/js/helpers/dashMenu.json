@@ -172,7 +172,7 @@
         "label": "Rapor",
         "icon": "report",
         "url": "#",
-        "roles": ["guru_kelas", "ops"],
+        "roles": ["guru_kelas", "ops", "admin"],
         "children": [
             {
                 "label": "Data Periodik",
