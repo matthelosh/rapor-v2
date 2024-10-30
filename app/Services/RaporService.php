@@ -21,7 +21,13 @@ class RaporService
     {
         try {
             $sekolahId = $queries['sekolahId'];
-            $sekolah = Sekolah::whereNpsn($sekolahId)->with('mapels', 'ekskuls')->first();
+            $sekolah = Sekolah::whereNpsn($sekolahId)
+                ->with(
+                    [
+                        'ekskuls',
+                        'mapels' => fn($m) => $m->orderBy('id', 'ASC'),
+                    ]
+                )->first();
             $mapels = $sekolah->mapels;
             $siswa = Siswa::whereNisn($queries['siswaId'])->first();
             $nilais = ['pts' => []];
