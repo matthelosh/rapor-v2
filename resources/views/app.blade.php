@@ -8,7 +8,7 @@
     <title inertia>{{ config('app.name', 'Rapor SD Kecamatan Wagir') }}</title>
 
     <link rel="icon" href="/img/tutwuri.png" type="image/png" />
-    <meta name="description" content="{{$meta['description'] ?? 'Website Resmi Desa Samar' }}">
+    <meta name="description" content="{{$meta['description'] ?? 'Website Resmi PKG SD Kecamatan Wagir' }}">
     <!-- Opengraph meta -->
     <meta property="og:url" content="{{ $meta['url'] ?? 'https://raporsd.alsya.my.id' }}">
     <meta property="og:type" content="website">
