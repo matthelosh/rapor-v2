@@ -40,4 +40,9 @@ class Rombel extends Model
     {
         return $this->hasMany(Kktp::class, 'rombel_id', 'kode');
     }
+
+    public function nilais()
+    {
+        return $this->hasMany(Nilai::class, 'rombel_id', 'kode');
+    }
 }

@@ -24,19 +24,19 @@ const formImpor = ref({
     url: "",
     fields: [],
 });
-const FormImpor = defineAsyncComponent(
-    () => import("@/Components/Dashboard/FormImpor.vue"),
+const FormImpor = defineAsyncComponent(() =>
+    import("@/Components/Dashboard/FormImpor.vue")
 );
-const SiswaDapodik = defineAsyncComponent(
-    () => import("@/Components/Dashboard/Siswa/SiswaDapodik.vue"),
+const SiswaDapodik = defineAsyncComponent(() =>
+    import("@/Components/Dashboard/Siswa/SiswaDapodik.vue")
 );
 const formSiswa = ref(false);
-const FormSiswa = defineAsyncComponent(
-    () => import("@/Components/Dashboard/Siswa/FormSiswa.vue"),
+const FormSiswa = defineAsyncComponent(() =>
+    import("@/Components/Dashboard/Siswa/FormSiswa.vue")
 );
 const formOrtu = ref(false);
-const FormOrtu = defineAsyncComponent(
-    () => import("@/Components/Dashboard/Siswa/FormOrtu.vue"),
+const FormOrtu = defineAsyncComponent(() =>
+    import("@/Components/Dashboard/Siswa/FormOrtu.vue")
 );
 const search = ref(null);
 const siswas = computed(() => {
@@ -133,10 +133,10 @@ const fotoUrl = (item) => {
     let foto = item.foto
         ? item.foto
         : item.jk == "Perempuan"
-          ? item.agama == "Islam"
-              ? "/img/siswi-is.png"
-              : "/img/siswi.png"
-          : "/img/siswa.png";
+        ? item.agama == "Islam"
+            ? "/img/siswi-is.png"
+            : "/img/siswi.png"
+        : "/img/siswa.png";
     return foto;
 };
 
@@ -186,7 +186,7 @@ const createAccount = async (id) => {
                     }, 500);
                 });
             },
-        },
+        }
     );
 };
 
@@ -228,7 +228,7 @@ const closeFormOrtu = () => {
     formOrtu.value = false;
 };
 
-const unduhFormatSiswa = async () =>  {
+const unduhFormatSiswa = async () => {
     let data = [
         {
             nisn: "",
@@ -251,11 +251,11 @@ const unduhFormatSiswa = async () =>  {
             agama: "",
             angkatan: "",
             sekolah_id: "",
-        }
-    ]
+        },
+    ];
 
-    if (page.props.siswas && page.props.siswas.length > 0 ) {
-        page.props.siswas.forEach(siswa => {
+    if (page.props.siswas && page.props.siswas.length > 0) {
+        page.props.siswas.forEach((siswa) => {
             data.push({
                 nisn: siswa.nisn,
                 nis: siswa.nis,
@@ -270,64 +270,67 @@ const unduhFormatSiswa = async () =>  {
                 agama: siswa.agama,
                 angkatan: siswa.angkatan,
                 sekolah_id: siswa.sekolah_id,
-            })
-        })
+            });
+        });
     }
-    const ws = utils.json_to_sheet(data)
-    const wb = utils.book_new()
-    utils.book_append_sheet(wb, ws, "SISWA")
-    writeFile(wb, "Format Impor Siswa " + page.props.sekolahs[0].nama + ".xlsx")
-}
+    const ws = utils.json_to_sheet(data);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "SISWA");
+    writeFile(
+        wb,
+        "Format Impor Siswa " + page.props.sekolahs[0].nama + ".xlsx"
+    );
+};
 
 const unduhFormat = async () => {
     let data = [];
-    if (page.props.siswas && page.props.siswas.length > 0 ) {
+    if (page.props.siswas && page.props.siswas.length > 0) {
         page.props.siswas.forEach((siswa) => {
             data.push({
                 nisn: siswa.nisn,
                 nama: siswa.nama,
                 nama_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.nama : "",
+                        ortu.relasi == "Ayah" ? ortu.nama : ""
                     ) ?? "",
                 alamat_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.alamat : "",
+                        ortu.relasi == "Ayah" ? ortu.alamat : ""
                     ) ?? "",
                 hp_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.hp : "",
+                        ortu.relasi == "Ayah" ? ortu.hp : ""
                     ) ?? "",
                 nama_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.nama : "",
+                        ortu.relasi == "Ibu" ? ortu.nama : ""
                     ) ?? "",
                 alamat_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.alamat : "",
+                        ortu.relasi == "Ibu" ? ortu.alamat : ""
                     ) ?? "",
                 hp_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.hp : "",
+                        ortu.relasi == "Ibu" ? ortu.hp : ""
                     ) ?? "",
                 nama_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.nama : "",
+                        ortu.relasi == "Wali" ? ortu.nama : ""
                     ) ?? "",
                 alamat_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.alamat : "",
+                        ortu.relasi == "Wali" ? ortu.alamat : ""
                     ) ?? "",
                 hp_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.hp : "",
+                        ortu.relasi == "Wali" ? ortu.hp : ""
                     ) ?? "",
             });
         });
     }
-    const ws = utils.json_to_sheet(data);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "ORTU");
+    const ws = await utils.json_to_sheet(data);
+    const wb = await utils.book_new();
+    await utils.book_append_sheet(wb, ws, "ORTU");
     writeFile(wb, "Format Impor Ortu " + page.props.sekolahs[0].nama + ".xlsx");
 };
 
@@ -346,10 +349,10 @@ const onSearchChanged = async () => {
     });
 };
 
-const siswaDapodik = ref(false)
+const siswaDapodik = ref(false);
 const closeSiswaDapodik = () => {
-    siswaDapodik.value = false
-}
+    siswaDapodik.value = false;
+};
 </script>
 <template>
     <Head title="Data Siswa" />
@@ -383,7 +386,10 @@ const closeSiswaDapodik = () => {
                         <div
                             class="card-toolbar--items flex items-center justify-end px-2 md:w-[60%]"
                         >
-                            <el-button-group class="hidden-sm-and-down" size="small">
+                            <el-button-group
+                                class="hidden-sm-and-down"
+                                size="small"
+                            >
                                 <el-button type="success" @click="unduhFormat">
                                     <Icon icon="mdi:file-excel" />
                                     Unduh Format
@@ -416,7 +422,11 @@ const closeSiswaDapodik = () => {
                                     <Icon icon="mdi:file-excel-box" />
                                     Unduh Format
                                 </el-button>
-                                <el-button type="warning" @click="imporSiswa" class="hidden-sm-and-down">
+                                <el-button
+                                    type="warning"
+                                    @click="imporSiswa"
+                                    class="hidden-sm-and-down"
+                                >
                                     <Icon icon="mdi-file-excel" />
                                     Impor
                                 </el-button>
@@ -454,8 +464,10 @@ const closeSiswaDapodik = () => {
                         </template>
                     </el-table-column>
                     <el-table-column label="NISN">
-                        <template #default="{row}">
-                            <el-button type="primary" text @click="edit(row)">{{ row.nisn }}</el-button>
+                        <template #default="{ row }">
+                            <el-button type="primary" text @click="edit(row)">{{
+                                row.nisn
+                            }}</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column label="Foto">
@@ -502,7 +514,7 @@ const closeSiswaDapodik = () => {
                                     Ayah:
                                     {{
                                         scope.row.ortus.filter(
-                                            (ayah) => ayah.relasi == "Ayah",
+                                            (ayah) => ayah.relasi == "Ayah"
                                         )[0]?.nama
                                     }}
                                 </p>
@@ -510,21 +522,21 @@ const closeSiswaDapodik = () => {
                                     Ibu:
                                     {{
                                         scope.row.ortus.filter(
-                                            (ibu) => ibu.relasi == "Ibu",
+                                            (ibu) => ibu.relasi == "Ibu"
                                         )[0]?.nama
                                     }}
                                 </p>
                                 <p
                                     v-if="
                                         scope.row.ortus.filter(
-                                            (ortu) => ortu.relasi == 'Wali',
+                                            (ortu) => ortu.relasi == 'Wali'
                                         ).length > 0
                                     "
                                 >
                                     Wali:
                                     {{
                                         scope.row.ortus.filter(
-                                            (wali) => wali.relasi == "Wali",
+                                            (wali) => wali.relasi == "Wali"
                                         )[0]?.nama
                                     }}
                                 </p>
@@ -661,6 +673,10 @@ const closeSiswaDapodik = () => {
             v-if="formOrtu"
             :siswa="selectedSiswa"
         />
-        <SiswaDapodik v-if="siswaDapodik" :show="siswaDapodik" @close="closeSiswaDapodik" />
+        <SiswaDapodik
+            v-if="siswaDapodik"
+            :show="siswaDapodik"
+            @close="closeSiswaDapodik"
+        />
     </DashLayout>
 </template>

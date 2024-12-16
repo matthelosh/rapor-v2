@@ -67,4 +67,9 @@ class Siswa extends Model
     {
         return $this->belongsToMany(Jilid::class, 'jilid_siswa');
     }
+
+    public function nilais()
+    {
+        return $this->hasMany(Nilai::class, 'siswa_id', 'nisn');
+    }
 }

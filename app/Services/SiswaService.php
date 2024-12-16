@@ -72,7 +72,7 @@ class SiswaService
                 'kode_pos' => $data['kode_pos'] ?? '65158',
                 'kabupaten' => $data['kabupaten'] ?? 'Malang',
                 'provinsi' => $data['provinsi'] ?? 'Jawa Timur',
-                'hp' => $data['hp'] ?? null,
+                'hp' => $data['hp'] ?? '-',
                 'email' => $data['email'] ?? null,
                 'foto' => $foto ?? null,
                 'agama' => $data['agama'],

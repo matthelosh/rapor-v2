@@ -38,13 +38,24 @@ class NilaiService
             })->with('ks')->with('rombels.siswas', function ($q) use ($agama) {
                 $q->where('siswas.agama', $agama);
             })->get();
-            // foreach($user->userable->sekolahs as $sekolah) {
-            //     $rombels = Rombel::where('sekolah_id', $sekolah->npsn)->with('siswas')->get();
-            //     foreach($rombels as $rombel) {
-            //         array_push($datas, $rombel);
-            //     }
-            // }
-
+            /**
+             * datas => [
+             *  rombels => [
+             *      [
+             *          'kode' => '1',
+             *          'siswas' => [...]
+             *          'nilais' => [
+             *                  'uh' => '50%',
+             *                  'pts' => '70%',
+             *                  'pas' => '100%'
+             *            ]
+             *       ]
+             *  ]
+             * ]
+             *
+             * 
+             * 
+             */
         } elseif ($user->hasRole('ops')) {
             $datas = Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('rombels.siswas', 'rombels.guru')->first();
         } elseif ($user->hasRole('admin')) {
