@@ -302,9 +302,15 @@ onBeforeUnmount(() => {
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div
+                class="page w-[60%] print:w-full bg-white mx-auto shadow-lg print:shadow-none pb-6 pt-4 print:pt-0 mt-4"
+                style="page-break-before: always !important"
+            >
                 <div
                     class="nilai-ekskul px-8 w-full my-8 break-after-avoid break-inside-avoid"
                 >
+                    <h3 class="text-left font-bold">Ekstrakurikuler</h3>
                     <table class="border" width="100%">
                         <thead>
                             <tr>
