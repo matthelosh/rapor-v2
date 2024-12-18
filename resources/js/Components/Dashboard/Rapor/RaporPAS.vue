@@ -302,7 +302,9 @@ onBeforeUnmount(() => {
                         </tbody>
                     </table>
                 </div>
-                <div class="nilai-ekskul px-8 w-full my-8">
+                <div
+                    class="nilai-ekskul px-8 w-full my-8 break-after-avoid break-inside-avoid"
+                >
                     <table class="border" width="100%">
                         <thead>
                             <tr>
