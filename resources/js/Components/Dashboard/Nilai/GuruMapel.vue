@@ -126,6 +126,9 @@ const open = (rombel, komponen, sekolah) => {
                     </template>
                 </el-collapse>
             </div>
+            <p>
+                {{ page.props.nilais }}
+            </p>
         </el-card>
         <FormNilaiHarian
             v-if="mode == 'harian'"

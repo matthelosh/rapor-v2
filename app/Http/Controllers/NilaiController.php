@@ -8,17 +8,19 @@ use App\NilaiTrait;
 use App\Services\NilaiService;
 use Illuminate\Http\Request;
 
-class NilaiController extends Controller 
+class NilaiController extends Controller
 {
     use NilaiTrait;
 
-    public function home(Request $request, NilaiService $nilaiService) {
-        
+    public function home(Request $request, NilaiService $nilaiService)
+    {
+
         return Inertia::render('Dash/Nilai', [
             'datas' => $nilaiService->home(),
+            'nilais' => $this->prosentase($request->user())
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -45,9 +47,8 @@ class NilaiController extends Controller
             $store = $this->simpanNilai($request);
 
             return back()->with('message', $store);
-        } catch (\Throwable $th)
-        {
-            throw($th);
+        } catch (\Throwable $th) {
+            throw ($th);
         }
     }
 

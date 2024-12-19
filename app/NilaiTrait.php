@@ -2,12 +2,15 @@
 
 namespace App;
 
+use App\Models\Guru;
 use App\Models\Mapel;
 use App\Models\Nilai;
 use App\Models\Tapel;
 use App\Models\Rombel;
+use App\Models\Sekolah;
 use App\Models\Semester;
 use App\Models\Tp;
+use Illuminate\Support\Facades\DB;
 
 trait NilaiTrait
 {
@@ -168,6 +171,43 @@ trait NilaiTrait
         }
 
         return $datas;
+    }
+
+    public function prosentase($user)
+    {
+        $userId = $user->id;
+        $guruId = $user->userable->id;
+        $tapel = $this->periode()['tapel']->kode;
+        try {
+            // If Guru !== Guru Kelas dan MErangkap
+            $res = [];
+            if (!$user->hasRole('guru_kelas')) {
+                $sekolahs = Sekolah::whereHas('gurus', function ($g) use ($guruId) {
+                    $g->where('gurus.id', $guruId);
+                })->with('rombels', function ($r) use ($tapel) {
+                    $r->where('tapel', $tapel);
+                    $r->with('siswas');
+                })->get();
+
+                foreach ($sekolahs[0]->rombels as $rombel) {
+                    \array_push($res, [
+                        'rombel' => $rombel->kode,
+                        'nilais' => [
+                            'pts' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'ts')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
+                            'uhs' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'uh')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
+                            'pas' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'as')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
+                        ]
+                    ]);
+                }
+            }
+            // Else Guru KElas
+            else {
+            }
+
+            return $res;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     private function mapels($user, $rombel)
