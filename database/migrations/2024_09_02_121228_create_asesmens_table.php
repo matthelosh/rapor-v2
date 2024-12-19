@@ -21,12 +21,14 @@ return new class extends Migration
             $table->time('mulai');
             $table->time('selesai');
             $table->enum('jenjang', ['lembaga', 'gurus', 'kecamatan'])->default('lembaga');
-            $table->enum('jenis', ['uh', 'pts', 'pas'])->default('uh');
-            $table->string('rombel_id', 30);
-            $table->string('sekolah_id', 10);
+            $table->enum('jenis', ['uh', 'pts', 'pas', 'lainnya'])->default('uh');
+            $table->enum('kelas', ['1', '2', '3', '4', '5', '6']);
+            $table->string('rombel_id', 30)->nullable();
+            $table->string('sekolah_id', 10)->nullable();
             $table->string('semester', 1);
             $table->string('tapel', 10);
             $table->string('guru_id', 30);
+            $table->string('agama', 15)->nullable();
             $table->timestamps();
         });
     }

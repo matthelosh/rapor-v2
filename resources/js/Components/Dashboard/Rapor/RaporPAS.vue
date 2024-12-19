@@ -45,8 +45,9 @@ const cetak = async () => {
 						<title class="uppercase">Laporan Hasil Belajar ${props.siswa.nama}</title>
 						<link rel="stylesheet" href="${cssUrl}" />
 					</head>
-					<body>
+					<body style="position:relative;">
 						${el.outerHTML}
+
 					</body>
 
 				</html>
@@ -455,7 +456,12 @@ onBeforeUnmount(() => {
                             {{ page.props.auth.user.userable.nama }},
                             {{ page.props.auth.user.userable.gelar_belakang }}
                         </p>
-                        <p class="leading-4">
+                        <p
+                            class="leading-4"
+                            v-if="
+                                page.props.auth.user.userable.status !== 'gtt'
+                            "
+                        >
                             NIP. {{ page.props.auth.user.userable.nip }}
                         </p>
                     </div>
@@ -467,7 +473,10 @@ onBeforeUnmount(() => {
                         {{ page.props.sekolahs[0].ks.nama }},
                         {{ page.props.sekolahs[0].ks.gelar_belakang }}
                     </p>
-                    <p class="leading-4">
+                    <p
+                        class="leading-4"
+                        v-if="page.props.auth.user.userable.status !== 'gtt'"
+                    >
                         NIP. {{ page.props.sekolahs[0].ks.nip }}
                     </p>
                 </div>
