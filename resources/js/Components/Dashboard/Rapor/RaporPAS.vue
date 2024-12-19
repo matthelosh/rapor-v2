@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import axios from "axios";
 
+const loading = ref(false);
 const page = usePage();
 const props = defineProps({
     siswa: Object,
@@ -65,6 +66,7 @@ const cetak = async () => {
 };
 
 const getNilaiPAS = async () => {
+    loading.value = true;
     await axios
         .post(
             route("dashboard.rapor.pas", {
@@ -86,7 +88,8 @@ const getNilaiPAS = async () => {
         })
         .catch((err) => {
             console.log(err);
-        });
+        })
+        .finally(() => (loading.value = false));
 };
 
 onBeforeMount(() => {
@@ -287,13 +290,13 @@ onBeforeUnmount(() => {
                                                 Ananda
                                                 {{ props.siswa.nama }}
                                                 menunjukkan penguasaan dalam
-                                                {{ nilai.maxu?.tp.teks }}
+                                                {{ nilai.maxu?.tp?.teks }}
                                             </li>
                                             <li class="text-justify">
                                                 Ananda
                                                 {{ props.siswa.nama }} perlu
                                                 bantuan dalam
-                                                {{ nilai.minu?.tp.teks }}
+                                                {{ nilai.minu?.tp?.teks }}
                                             </li>
                                         </ul>
                                     </td>
@@ -483,4 +486,12 @@ onBeforeUnmount(() => {
             </div>
         </div>
     </el-scrollbar>
+    <Teleport to="body">
+        <div
+            class="z-[999999] backdrop-blur fixed top-0 right-0 bottom-0 left-0 bg-slate-700 bg-opacity-30 flex items-center justify-center"
+            v-if="loading"
+        >
+            <Icon icon="mdi:loading" class="animate-spin text-8xl text-white" />
+        </div>
+    </Teleport>
 </template>
