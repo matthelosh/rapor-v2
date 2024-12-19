@@ -478,7 +478,7 @@ onBeforeUnmount(() => {
                     </p>
                     <p
                         class="leading-4"
-                        v-if="page.props.auth.user.userable.status !== 'gtt'"
+                        v-if="page.props.sekolahs[0].ks.status !== 'gtt'"
                     >
                         NIP. {{ page.props.sekolahs[0].ks.nip }}
                     </p>

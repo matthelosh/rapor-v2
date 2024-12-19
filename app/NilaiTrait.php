@@ -7,6 +7,7 @@ use App\Models\Nilai;
 use App\Models\Tapel;
 use App\Models\Rombel;
 use App\Models\Semester;
+use App\Models\Tp;
 
 trait NilaiTrait
 {
@@ -19,7 +20,8 @@ trait NilaiTrait
             foreach ($siswas as $siswa) {
                 if ($query['tipe'] == 'uh') {
                     foreach ($siswa['nilais'] as $k => $v) {
-                        if ($v !== null) {
+                        $tp = Tp::whereKode($k)->first();
+                        if ($v !== null || $tp) {
                             $store = Nilai::updateOrCreate(
                                 [
                                     'tapel' => $query['tapel'],
