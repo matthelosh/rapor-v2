@@ -58,7 +58,7 @@ const rankMe = (nilai, sem) => {
     const list = page.props.nilais.lists[sem - 1];
     let sorted = list.sort((a, b) => b - a);
     let index = sorted.findIndex((n) => n == parseInt(nilai));
-    return index;
+    return [...list].reduce((a, c) => a + c, 0) > 0 ? index + 1 : index;
 };
 
 onBeforeMount(async () => {});
