@@ -22,12 +22,12 @@ const close = () => {
     emit("close");
 };
 
-const showNext = () => {
-    emit("nextSiswa");
+const showNext = async () => {
+    await emit("nextSiswa");
     getNilaiPTS();
 };
-const showPrev = () => {
-    emit("prevSiswa");
+const showPrev = async () => {
+    await emit("prevSiswa");
     getNilaiPTS();
 };
 const cetak = async () => {
@@ -74,11 +74,13 @@ const getNilaiPTS = async () => {
         .then((res) => {
             console.log(res);
             nilais.value = res.data;
+            setTimeout(() => {
+                loading.value = false;
+            }, 1000);
         })
         .catch((err) => {
             console.log(err);
-        })
-        .finally(() => (loading.value = false));
+        });
 };
 
 onBeforeMount(async () => {
