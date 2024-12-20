@@ -134,6 +134,8 @@ trait NilaiTrait
             //          'pabp' => ['sem1' => 90, 'sem2' => 98]
             //      ]
             // ]
+            $list1 = [];
+            $list2 = [];
             foreach ($rombel->siswas as $siswa) {
                 $data = [];
                 $data['nisn'] = $siswa->nisn;
@@ -189,13 +191,15 @@ trait NilaiTrait
                 }
                 $data['sum1'] = $sum1;
                 $data['sum2'] = $sum2;
+                \array_push($list1, $sum1);
+                \array_push($list2, $sum2);
                 array_push($datas, $data);
             }
         } else {
             $datas = [];
         }
 
-        return $datas;
+        return ['datas' => $datas, 'lists' => [$list1, $list2]];
     }
 
     public function prosentase($user)

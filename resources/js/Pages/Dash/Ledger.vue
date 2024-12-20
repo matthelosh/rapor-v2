@@ -54,6 +54,13 @@ const cetak = async (target) => {
     }, 1500);
 };
 
+const rankMe = (nilai, sem) => {
+    const list = page.props.nilais.lists[sem - 1];
+    let sorted = list.sort((a, b) => b - a);
+    let index = sorted.findIndex((n) => n == parseInt(nilai));
+    return index;
+};
+
 onBeforeMount(async () => {});
 </script>
 
@@ -172,6 +179,12 @@ onBeforeMount(async () => {});
                                             >
                                                 Total
                                             </th>
+                                            <th
+                                                class="bg-slate-300 border border-black p-1 text-xs"
+                                                colspan="2"
+                                            >
+                                                Rangking
+                                            </th>
                                         </tr>
                                         <tr>
                                             <template
@@ -186,6 +199,12 @@ onBeforeMount(async () => {});
                                                     Semester
                                                 </th>
                                             </template>
+                                            <th
+                                                class="bg-slate-300 border border-black"
+                                                colspan="2"
+                                            >
+                                                Semester
+                                            </th>
                                             <th
                                                 class="bg-slate-300 border border-black"
                                                 colspan="2"
@@ -216,12 +235,22 @@ onBeforeMount(async () => {});
                                             >
                                                 2
                                             </th>
+                                            <th
+                                                class="bg-slate-300 border border-black"
+                                            >
+                                                1
+                                            </th>
+                                            <th
+                                                class="bg-slate-300 border border-black"
+                                            >
+                                                2
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <template
                                             v-for="(nilai, n) in page.props
-                                                .nilais"
+                                                .nilais.datas"
                                             :key="n"
                                         >
                                             <tr>
@@ -271,6 +300,20 @@ onBeforeMount(async () => {});
                                                     class="bg-slate-300 border border-black text-center w-[50px]"
                                                 >
                                                     {{ nilai["sum2"] }}
+                                                </td>
+                                                <td
+                                                    class="bg-slate-300 border border-black text-center w-[50px]"
+                                                >
+                                                    {{
+                                                        rankMe(nilai["sum1"], 1)
+                                                    }}
+                                                </td>
+                                                <td
+                                                    class="bg-slate-300 border border-black text-center w-[50px]"
+                                                >
+                                                    {{
+                                                        rankMe(nilai["sum2"], 2)
+                                                    }}
                                                 </td>
                                             </tr>
                                         </template>
