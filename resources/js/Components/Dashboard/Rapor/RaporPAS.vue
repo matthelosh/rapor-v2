@@ -469,19 +469,32 @@ onBeforeUnmount(() => {
                         </p>
                     </div>
                 </div>
-                <div>
-                    <p class="mt-20">Mengetahui,</p>
-                    <p>Kepala {{ namaSekolah(page.props.sekolahs[0].nama) }}</p>
-                    <p class="font-bold uppercase underline leading-4 mt-20">
-                        {{ page.props.sekolahs[0].ks.nama }},
-                        {{ page.props.sekolahs[0].ks.gelar_belakang }}
-                    </p>
-                    <p
-                        class="leading-4"
-                        v-if="page.props.sekolahs[0].ks.status !== 'gtt'"
-                    >
-                        NIP. {{ page.props.sekolahs[0].ks.nip }}
-                    </p>
+                <div class="flex justify-center">
+                    <div class="relative">
+                        <p class="mt-20">Mengetahui,</p>
+                        <p>
+                            Kepala
+                            {{ namaSekolah(page.props.sekolahs[0].nama) }}
+                        </p>
+
+                        <img
+                            :src="`/storage/images/ttd/${page.props.sekolahs[0].ks.nip}.png`"
+                            alt=""
+                            class="absolute left-[50%] -translate-x-[50%] -translate-y-2"
+                        />
+                        <p
+                            class="font-bold uppercase underline leading-4 mt-20"
+                        >
+                            {{ page.props.sekolahs[0].ks.nama }},
+                            {{ page.props.sekolahs[0].ks.gelar_belakang }}
+                        </p>
+                        <p
+                            class="leading-4"
+                            v-if="page.props.sekolahs[0].ks.status !== 'gtt'"
+                        >
+                            NIP. {{ page.props.sekolahs[0].ks.nip }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
