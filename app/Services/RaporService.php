@@ -21,11 +21,16 @@ class RaporService
     {
         try {
             $sekolahId = $queries['sekolahId'];
+            $fase = Rombel::where('kode', $queries['rombelId'])->value('fase');
             $sekolah = Sekolah::whereNpsn($sekolahId)
                 ->with(
                     [
                         'ekskuls',
-                        'mapels' => fn($m) => $m->orderBy('id', 'ASC'),
+                        'mapels' => function ($m) use ($fase) {
+                            $m->where('mapels.fase', 'LIKE', '%' . $fase . '%');
+                            $m->orderBy('id', 'ASC');
+                        }
+                        // fn($m, $fase) => $m->where('fase', $fase)->orderBy('id', 'ASC'),
                     ]
                 )->first();
             $mapels = $sekolah->mapels;

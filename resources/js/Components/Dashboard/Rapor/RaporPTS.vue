@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 import axios from "axios";
 
+const loading = ref(false);
 const page = usePage();
 const props = defineProps({ siswa: Object, rombel: Object });
 
@@ -57,6 +58,7 @@ const cetak = async () => {
 };
 
 const getNilaiPTS = async () => {
+    loading.value = true;
     await axios
         .post(
             route("dashboard.rapor.pts", {
@@ -75,7 +77,8 @@ const getNilaiPTS = async () => {
         })
         .catch((err) => {
             console.log(err);
-        });
+        })
+        .finally(() => (loading.value = false));
 };
 
 onBeforeMount(async () => {
@@ -242,4 +245,12 @@ onBeforeMount(async () => {
             </div>
         </div>
     </div>
+    <Teleport to="body">
+        <div
+            class="z-[999999] backdrop-blur fixed top-0 right-0 bottom-0 left-0 bg-slate-700 bg-opacity-30 flex items-center justify-center"
+            v-if="loading"
+        >
+            <Icon icon="mdi:loading" class="animate-spin text-8xl text-white" />
+        </div>
+    </Teleport>
 </template>
