@@ -91,7 +91,7 @@ onBeforeMount(async () => {});
                                 </div>
                             </template>
                             <div
-                                class="collapse-body border-t border-black print:border-none pt-4"
+                                class="collapse-body relative border-t border-black print:border-none pt-4"
                                 :class="`cetak-${rombel.kode}`"
                             >
                                 <div
@@ -141,7 +141,7 @@ onBeforeMount(async () => {});
                                     width="100%"
                                     class="uppercase print:text-[10pt]"
                                 >
-                                    <thead>
+                                    <thead class="sticky top-30">
                                         <tr>
                                             <th
                                                 rowspan="3"

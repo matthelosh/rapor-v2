@@ -238,6 +238,8 @@ const unduhFormat = async () => {
         Object.keys(siswa.nilais).forEach((k) => {
             item[k] = siswa.nilais[k];
         });
+        item.ts = siswa.nilais["ts"];
+        item.as = siswa.nilais["as"];
         data.push(item);
         // console.log(siswa.nilais)
     });
@@ -260,10 +262,6 @@ const unduhFormat = async () => {
 
 onBeforeMount(async () => {
     loading.value = true;
-    // props.rombel.siswas.forEach((siswa, s) => {
-    //     siswas.value[s].nilais["ts"] = 0;
-    //     siswas.value[s].nilais["as"] = 0;
-    // });
     await getTps();
     await getNilaiUh();
     await getNilaiTs();
