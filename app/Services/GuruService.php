@@ -81,9 +81,9 @@ class GuruService
             ],
             [
                 'nuptk' => $data['nuptk'] ?? null,
-                'gelar_depan' => $data['gelar_depan'] ?? null,
+                'gelar_depan' => $data['gelar_depan'] !== 'null' ?  $data['gelar_depan'] : null,
                 'nama' => $data['nama'],
-                'gelar_belakang' => $data['gelar_belakang'] ?? null,
+                'gelar_belakang' => $data['gelar_belakang'] !== 'null' ? $data['gelar_belakang'] : null,
                 'jk' => $data['jk'],
                 'alamat' => $data['alamat'] ?? null,
                 'hp' => $data['hp'] ?? '-',
