@@ -453,10 +453,10 @@ onBeforeUnmount(() => {
                         </p>
                         <p>Wali Kelas {{ rombel.label }}</p>
 
-                        <p
-                            class="font-bold uppercase underline leading-4 mt-20"
-                        >
-                            {{ page.props.auth.user.userable.nama }},
+                        <p class="font-bold underline leading-4 mt-20">
+                            <span class="uppercase">
+                                {{ page.props.auth.user.userable.nama }},
+                            </span>
                             {{ page.props.auth.user.userable.gelar_belakang }}
                         </p>
                         <p
@@ -482,10 +482,10 @@ onBeforeUnmount(() => {
                             alt=""
                             class="absolute left-[50%] -translate-x-[50%] -translate-y-2"
                         />
-                        <p
-                            class="font-bold uppercase underline leading-4 mt-20"
-                        >
-                            {{ page.props.sekolahs[0].ks.nama }},
+                        <p class="font-bold underline leading-4 mt-20">
+                            <span class="uppercase">
+                                {{ page.props.sekolahs[0].ks.nama }},
+                            </span>
                             {{ page.props.sekolahs[0].ks.gelar_belakang }}
                         </p>
                         <p
