@@ -6,7 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\ApiClient;
-use Illuminate\Support\Facades\Hash;
 
 class ApiKeyVerified
 {
@@ -17,11 +16,18 @@ class ApiKeyVerified
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $clientId = $request->header('X-CLIENT-ID');
-        $client = ApiClient::where('client_id', $clientId)->first();
-        $apiKey = $request->header('X-CLIENT-SECRET');
-        if (!$client || ! Hash::check($apiKey, $client->secrete)) {
-            return response()->json(['error' => 'Unauthorized'], 400);
+        $clientId = $request->header('X-CLIENT-TOKEN');
+        // $client = ApiClient::where('client_id', $clientId)->first();
+        if ($clientId !== env('CLIENT_TOKEN')) {
+            return response()->json(
+                [
+                    'error' => 'Unauthorized',
+                    // 'token' => env('CLIENT_TOKEN'),
+                    // 'x-header-token' => $clientId,
+                    // 'same' => $clientId === env('CLIENT_TOKEN')
+                ],
+                401
+            );
         }
 
         return $next($request);
