@@ -25,18 +25,20 @@ class ClientController extends Controller
     }
     public function getTp(Request $request)
     {
-        $tingkat = $request->query('tingkat');
-        $mapel = $request->query('mapel');
-        $agama = $request->query('agama');
-        $semester = $request->query('semester');
+        $fase = $request->query('fase');
+        $tingkat = $fase == 'A' ? ['1','2'] : ($fase == 'B' ? ['3','4'] : ['5','6']);
+
+        $mapel = $request->query('mapel') ?? 'pabp';
+        $agama = $request->query('agama') ?? 'Islam';
+        $semester = $request->query('semester') ? ['semester','=', $request->query('semester')  ] : ['semester', 'LIKE', '%'];
         try {
             return response()->json([
                 'tps' => Tp::where([
-                    ['tingkat', '=', $tingkat],
+
                     ['mapel_id', '=', $mapel],
                     ['agama', '=', $agama && $agama != 'null' ? $agama : null],
-                    ['semester', '=', $semester]
-                ])->get(['id', 'kode', 'teks', 'mapel_id']),
+                    $semester
+                ])->whereIn('tingkat', $tingkat)->get(['id', 'kode', 'teks', 'mapel_id', 'elemen']),
                 'agama' => $agama == 'null'
             ], 200);
         } catch (\Throwable $th) {
