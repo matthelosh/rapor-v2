@@ -23,8 +23,11 @@ Route::get('/tps', [ClientController::class, 'getTp'])->middleware('verify_api_k
 Route::get('/asesmens', [ClientController::class, 'getAsesmen'])->middleware('verify_api_key');
 Route::get('/kaldik', [ClientController::class, 'getKaldik'])->middleware('verify_api_key');
 
-Route::prefix('dapo')->group(
+Route::middleware('verify_api_key')->prefix('dapo')->group(
     function () {
         Route::post('/sekolah/sync', [DaposyncController::class, 'syncSekolah']);
+        Route::post('/guru/sync', [DaposyncController::class, 'syncGuru']);
+        Route::post('/rombel/sync', [DaposyncController::class, 'syncRombel']);
+        Route::post('/siswa/sync', [DaposyncController::class, 'syncSiswa']);
     }
 );

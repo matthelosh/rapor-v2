@@ -12,6 +12,7 @@ class Siswa extends Model
     use HasFactory;
 
     protected $fillable = [
+        'dapo_id',
         'nisn',
         'nis',
         'nik',

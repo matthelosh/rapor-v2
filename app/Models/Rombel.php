@@ -11,6 +11,7 @@ class Rombel extends Model
 
     protected $fillable = [
         'tapel',
+        'dapo_id',
         'pararel',
         'kode',
         'label',
