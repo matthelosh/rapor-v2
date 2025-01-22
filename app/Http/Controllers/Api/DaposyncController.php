@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Guru;
+use App\Models\Ortu;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Siswa;
@@ -155,8 +156,55 @@ class DaposyncController extends Controller
                         'status' => 'aktif'
                     ]
                 );
+                $siswa->rombels()->syncWithoutDetaching([$rombel->id]);
+                $newAyah = [
+                    'siswa_id' => $siswa->nisn,
+                    'nama' => $data['nama_ayah'] ?? '-',
+                    'relasi' => 'Ayah',
+                    'alamat' => '-',
+                    'hp' => $data['nomor_telepon_seluler'] ?? '-',
+                    'pekerjaan' => $data['pekerjaan_ayah_id_str'] ?? 'Tidak Bekerja'
+                ];
+                $ayah = Ortu::where('relasi', 'Ayah')->where('siswa_id', $siswa->nisn)->first();
+                if ($ayah) {
+                    $ayah->update($newAyah);
+                } else {
+                    $ayah = new Ortu($newAyah);
+                    $ayah->save();
+                }
+                $newIbu = [
+                    'siswa_id' => $siswa->nisn,
+                    'nama' => $data['nama_ibu'] ?? '-',
+                    'relasi' => 'Ibu',
+                    'alamat' => '-',
+                    'hp' => $data['nomor_telepon_seluler'] ?? '-',
+                    'pekerjaan' => $data['pekerjaan_ibu_id_str'] ?? 'Tidak Bekerja'
+                ];
 
-                $siswa->rombels()->attach($rombel->id);
+                $ibu = Ortu::where('relasi', 'Ibu')->where('siswa_id', $siswa->nisn)->first();
+                if ($ibu) {
+                    $ibu->update($newIbu);
+                } else {
+                    $ibu = new Ortu($newIbu);
+                    $ibu->save();
+                }
+                if ($data['nama_wali']) {
+                    $newWali = [
+                        'siswa_id' => $siswa->nisn,
+                        'nama' => $data['nama_wali'],
+                        'relasi' => 'Wali',
+                        'alamat' => '-',
+                        'hp' => $data['nomor_telepon_seluler'] ?? '-',
+                        'pekerjaan' => $data['pekerjaan_wali_id_str'] ?? 'Tidak Bekerja'
+                    ];
+                    $wali = Ortu::where('relasi', 'Wali')->where('siswa_id', $siswa->nisn)->first();
+                    if ($wali) {
+                        $wali->update($newWali);
+                    } else {
+                        $wali = new Ortu($newWali);
+                        $wali->save();
+                    }
+                }
             }
 
             return response()->json([
