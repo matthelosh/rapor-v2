@@ -15,17 +15,17 @@ class SpnController extends Controller
 {
     public function home(Request $request)
     {
+        // dd($request->user()->userable->sekolahs[0]);
         try {
             $guruId = $request->user()->userable->nip;
-            $jilids = Jilid::whereSekolahId($request->user()->userable->sekolahs[0]->npsn)
-                ->with([
-                    'jurnals' => function ($j) use ($guruId) {
-                        $j->where('guru_id', $guruId);
-                    }
-                ])
+            $jilids = Jilid::with([
+                'jurnals' => function ($j) use ($guruId) {
+                    $j->where('guru_id', $guruId);
+                }
+            ])
                 ->with('siswas.rombels')
                 ->get();
-            // dd($jilids);$jili
+            // dd($jilids);
             return Inertia::render(
                 'Dash/Spn/Home',
                 [

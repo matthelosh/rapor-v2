@@ -128,6 +128,7 @@ class HandleInertiaRequests extends Middleware
         } elseif ($role == 'siswa') {
             return Sekolah::whereNpsn('20518848')->get();
         } else {
+            // dd($user);
             return Sekolah::where('id', $user->userable->sekolahs[0]->id)
                 ->with('ks', 'ekskuls', 'gugus')
                 ->with([
