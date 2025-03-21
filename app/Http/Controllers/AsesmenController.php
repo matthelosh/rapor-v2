@@ -39,7 +39,7 @@ class AsesmenController extends Controller
                     ->get();
             } elseif ($request->user()->hasRole('ops')) {
                 $asesmens = Asesmen::whereTapel($tapel)
-                    ->whereIn('tingkat', ['gugus', 'kecamatan'])
+                    ->whereIn('tingkat', ['lembaga', 'gugus', 'kecamatan'])
                     ->with('soals', 'rombel', 'guru', 'mapel', 'semester', 'tapel')
                     ->get();
                 // $canEdit = 

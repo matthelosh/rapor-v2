@@ -3,6 +3,7 @@ export const  capitalize = (str) => {
        let res = ''
        arr.forEach((word,index) => {
         res += word.charAt(0).toUpperCase() + word.substring(1).toLowerCase()+ " "
+        // res += [...word[0].toUpperCase(), word.slice(1).toLowerCase()].join("")
        })
 
        return res

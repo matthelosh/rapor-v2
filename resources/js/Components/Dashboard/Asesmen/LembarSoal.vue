@@ -42,9 +42,9 @@ const getAllSoals = async () => {
 const cetakLembarSoal = async () => {
     let win = window.open("", "_blank", "width=1024,height=1080");
     const cssUrl =
-        page.props.app_env == "local"
+        page.props.app_env !== "local"
             ? "https://raporsd.test:5173/resources/css/app.css"
-            : "/build/assets/css/app.css";
+            : "/build/assets/app.css";
     let elemen = document.querySelector(".cetak");
 
     let html = `
@@ -63,7 +63,7 @@ const cetakLembarSoal = async () => {
     win.document.write(html);
     setTimeout(() => {
         win.print();
-        win.close();
+        // win.close();
     }, 1000);
 };
 
@@ -183,7 +183,9 @@ onBeforeMount(() => {
                             @stored="getAllSoals"
                         />
                         <div class="cetak" v-else>
-                            <el-card class="mb-4 break-after-page">
+                            <div
+                                class="mb-4 break-after-page px-4 border print:border-none"
+                            >
                                 <div class="text-black">
                                     <div class="soal">
                                         <Kop class="hidden-sm-and-down" />
@@ -528,8 +530,10 @@ onBeforeMount(() => {
                                         </div>
                                     </div>
                                 </div>
-                            </el-card>
-                            <el-card class="mb-4 break-after-page">
+                            </div>
+                            <div
+                                class="mb-4 break-after-page px-4 border print:border-none"
+                            >
                                 <h3>
                                     Kunci Jawaban
                                     {{ props.selectedAsesmen.nama }}
@@ -574,9 +578,9 @@ onBeforeMount(() => {
                                         </li>
                                     </ul>
                                 </div>
-                            </el-card>
-                            <el-card
-                                class="mb-4 break-after-page relative hidden-sm-and-down"
+                            </div>
+                            <div
+                                class="mb-4 break-after-page relative hidden-sm-and-down px-4 border print:border-none"
                             >
                                 <Kop />
 
@@ -751,7 +755,7 @@ onBeforeMount(() => {
                                         class="w-full border-b border-b-slate-600 border-dotted mb-4"
                                     ></li>
                                 </ul>
-                            </el-card>
+                            </div>
                         </div>
                     </div>
                 </el-col>
