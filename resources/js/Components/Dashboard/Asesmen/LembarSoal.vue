@@ -42,7 +42,7 @@ const getAllSoals = async () => {
 const cetakLembarSoal = async () => {
     let win = window.open("", "_blank", "width=1024,height=1080");
     const cssUrl =
-        page.props.app_env !== "local"
+        page.props.app_env == "local"
             ? "https://raporsd.test:5173/resources/css/app.css"
             : "/build/assets/app.css";
     let elemen = document.querySelector(".cetak");
