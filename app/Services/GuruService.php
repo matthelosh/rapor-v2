@@ -74,6 +74,7 @@ class GuruService
             $store_ttd = $ttd->storeAs('public/images/ttd/', $data['nip'] . '.png');
         }
 
+        // dd($data);
         $guru = Guru::updateOrCreate(
             [
                 'id' => $data['id'] ?? null,
@@ -85,7 +86,7 @@ class GuruService
                 'nama' => $data['nama'],
                 'gelar_belakang' => $data['gelar_belakang'] !== 'null' ? $data['gelar_belakang'] : null,
                 'jk' => $data['jk'],
-                'alamat' => $data['alamat'] ?? null,
+                'alamat' => $data['alamat'] ?? '-',
                 'hp' => $data['hp'] ?? '-',
                 'status' => $data['status'],
                 'email' => $data['email'] ?? $data['nip'] . '@raporsd.web.id',
@@ -99,13 +100,14 @@ class GuruService
             $guru->sekolahs()->attach($data['sekolahs']);
         } else {
             $ids = explode(",", $data['sekolahs']);
-            foreach ($guru->sekolahs->pluck('id') as $sekolah) {
-                for ($i = 0; $i < count($ids); $i++) {
-                    if ((int) $ids[$i] !== (int) $sekolah) {
-                        $guru->sekolahs()->attach($ids[$i]);
-                    }
-                }
-            }
+            $guru->sekolahs()->sync($ids);
+            // foreach ($guru->sekolahs->pluck('id') as $sekolah) {
+            //     for ($i = 0; $i < count($ids); $i++) {
+            //         if ((int) $ids[$i] !== (int) $sekolah) {
+            //             $guru->sekolahs()->attach($ids[$i]);
+            //         }
+            //     }
+            // }
         }
 
 
