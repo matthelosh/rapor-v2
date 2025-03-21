@@ -14,9 +14,54 @@ use Illuminate\Support\Facades\DB;
 
 trait NilaiTrait
 {
+    /**
+     * array:8 [▼ // app/NilaiTrait.php:20
+     *"siswas" => array:32 [▼
+     * 0 => array:28 [
+     *      "id" => 124
+     *   "nisn" => "3173097628"
+     *   "nis" => null
+     *   "nik" => "3507214405170001"
+     *   "nama" => "VANESA ARINDA MAYKA"
+     *   "jk" => "Perempuan"
+     *   "tempat_lahir" => "MALANG"
+     *   "tanggal_lahir" => "2017-05-04"
+     *   "alamat" => null
+     *   "rt" => "-"
+     *   "rw" => "-"
+     *   "desa" => "-"
+     *   "kecamatan" => "-"
+     *   "kode_pos" => "-"
+     *   "kabupaten" => "-"
+     *   "Provinsi" => "-"
+     *   "hp" => "085851945078"
+     *   "email" => "3173097628@raporsd.net"
+     *   "foto" => null
+     *   "agama" => "Islam"
+     *   "angkatan" => "2024"
+     *   "sekolah_id" => "20518848"
+     *   "status" => "aktif"
+     *   "created_at" => "2025-01-22T01:30:17.000000Z"
+     *   "updated_at" => "2025-03-20T02:14:31.000000Z"
+     *   "dapo_id" => "faa9a5b4-8b95-4e0e-94d2-7cf936b80891"
+     *   "pivot" => array:2 [▶]
+     *   "nilai" => "90"
+     * ],
+     * ...
+     *  ]
+     *  "rombelId" => "20518848-2425-1A"
+     *  "tingkat" => "1"
+     *  "mapelId" => "pabp"
+     *  "agama" => "Islam"
+     *  "semester" => "1"
+     *  "tapel" => "2425"
+     *  "tipe" => "ts"
+     *]
+     */
     public function simpanNilai($request)
     {
         try {
+            // dd($request->all());
             $siswas = $request->siswas;
             // dd($siswas);
             $query = $request->query();

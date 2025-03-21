@@ -800,10 +800,12 @@ Route::middleware('auth')->group(
                     }
                 );
 
-                Route::prefix("periode")->group(
+                Route::middleware('role:admin|superadmin')->prefix("periode")->group(
                     function () {
                         Route::get("/", [PeriodeController::class, 'home'])
-                            ->name('dashboard.setting.periode')->middleware('role:admin|superadmin');
+                            ->name('dashboard.setting.periode');
+                        Route::put("/tapel/{id}", [PeriodeController::class, "toggleTapel"])->name('dashboard.setting.tapel.toggle');
+                        Route::put("/semester/{id}", [PeriodeController::class, "toggleSemester"])->name('dashboard.setting.semester.toggle');
                     }
                 );
 
