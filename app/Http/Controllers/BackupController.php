@@ -25,9 +25,10 @@ class BackupController extends Controller
                 dd($request->sekolahId);
             } else {
                 // $backup = Artisan::call('database:backup');
+                $mysqldump = \env('APP_ENV') == 'local' ? '/Users/Shared/DBngin/mysql/8.2/bin' : 'mysqldump';
                 $name = 'backup-' . Carbon::now()->format('Ymd-His') . '.sql';
                 $backup = MySql::create()
-                    ->setDumpBinaryPath('/Users/Shared/DBngin/mysql/8.2/bin')
+                    ->setDumpBinaryPath($mysqldump)
                     ->setDbName(env('DB_DATABASE'))
                     ->setUserName(env('DB_USERNAME'))
                     ->setPassword(env('DB_PASSWORD'))

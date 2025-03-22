@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { router, Head } from "@inertiajs/vue3";
+import { router, Head, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
 import DashLayout from "@/Layouts/DashLayout.vue";
@@ -8,6 +8,8 @@ defineProps({
     tapels: Array,
     semesters: Array,
 });
+
+const page = usePage();
 const loading = ref(false);
 
 const toggleTapel = async (item) => {
