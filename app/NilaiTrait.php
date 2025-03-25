@@ -5,12 +5,13 @@ namespace App;
 use App\Models\Guru;
 use App\Models\Mapel;
 use App\Models\Nilai;
-use App\Models\Tapel;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
+use App\Models\Tapel;
 use App\Models\Tp;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait NilaiTrait
 {
@@ -61,11 +62,23 @@ trait NilaiTrait
     public function simpanNilai($request)
     {
         try {
-            // dd($request->all());
+            Log::info('Starting simpanNilai in NilaiTrait', [
+                'request_data' => $request->all(),
+                'query_params' => $request->query()
+            ]);
+
             $siswas = $request->siswas;
-            // dd($siswas);
             $query = $request->query();
+
+            Log::info('Processing data in simpanNilai', [
+                'siswas_count' => count($siswas),
+                'query_params' => $query
+            ]);
             foreach ($siswas as $siswa) {
+                Log::info('Processing siswa', [
+                    'nisn' => $siswa['nisn'],
+                    'nilai' => $siswa['nilai'] ?? null
+                ]);
                 if ($query['tipe'] == 'uh') {
                     foreach ($siswa['nilais'] as $k => $v) {
                         $tp = Tp::whereKode($k)->first();
@@ -116,7 +129,7 @@ trait NilaiTrait
                             'tapel' => $query['tapel'],
                             'semester' => $query['semester'],
                             'siswa_id' => $siswa['nisn'],
-                            'guru_id' => auth()->user()->userable->nip,
+                            'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
                             'rombel_id' => $query['rombelId'],
                             'mapel_id' => $query['mapelId'],
                             'agama' => $query['agama'] ?? null,
@@ -130,8 +143,13 @@ trait NilaiTrait
                 }
             }
 
+            Log::info('Completed simpanNilai successfully');
             return 'Nilai Disimpan';
         } catch (\Throwable $th) {
+            Log::error('Error in simpanNilai', [
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ]);
             throw $th;
         }
     }

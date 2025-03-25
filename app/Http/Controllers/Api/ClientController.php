@@ -8,10 +8,13 @@ use App\Models\Agenda;
 use App\Models\Asesmen;
 use App\Models\Rombel;
 use App\Models\Tp;
+use App\NilaiTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
+    use NilaiTrait;
     public function getRombel(Request $request)
     {
         $npsn = $request->query('npsn');
@@ -26,11 +29,11 @@ class ClientController extends Controller
     public function getTp(Request $request)
     {
         $fase = $request->query('fase');
-        $tingkat = $fase == 'A' ? ['1','2'] : ($fase == 'B' ? ['3','4'] : ['5','6']);
+        $tingkat = $fase == 'A' ? ['1', '2'] : ($fase == 'B' ? ['3', '4'] : ['5', '6']);
 
         $mapel = $request->query('mapel') ?? 'pabp';
         $agama = $request->query('agama') ?? 'Islam';
-        $semester = $request->query('semester') ? ['semester','=', $request->query('semester')  ] : ['semester', 'LIKE', '%'];
+        $semester = $request->query('semester') ? ['semester', '=', $request->query('semester')] : ['semester', 'LIKE', '%'];
         try {
             return response()->json([
                 'tps' => Tp::where([
@@ -38,7 +41,7 @@ class ClientController extends Controller
                     ['mapel_id', '=', $mapel],
                     ['agama', '=', $agama && $agama != 'null' ? $agama : null],
                     $semester
-                ])->whereIn('tingkat', $tingkat)->get(['id', 'kode', 'teks', 'mapel_id', 'elemen']),
+                ])->whereIn('tingkat', $tingkat)->get(),
                 'agama' => $agama == 'null'
             ], 200);
         } catch (\Throwable $th) {
@@ -49,11 +52,35 @@ class ClientController extends Controller
     {
         $npsn = $request->query('npsn');
         try {
+            Log::info('Starting storeNilai in ClientController', [
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'headers' => $request->headers->all(),
+                'body' => $request->all(),
+                'query' => $request->query(),
+                'ip' => $request->ip(),
+            ]);
+
+            $result = $this->simpanNilai($request);
+
+            Log::info('Completed storeNilai in ClientController', [
+                'result' => $result
+            ]);
+
             return response()->json([
-                'rombels' => Rombel::where('sekolah_id', $npsn)->with('siswas')->get(),
+                'status' => 'success',
+                'message' => $result
             ], 200);
         } catch (\Throwable $th) {
-            throw $th;
+            Log::error('Error in storeNilai', [
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -87,4 +114,8 @@ class ClientController extends Controller
             throw $th;
         }
     }
+
+    // public function storeNilai(Request $request) {
+
+    // }
 }

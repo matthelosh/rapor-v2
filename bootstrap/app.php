@@ -29,6 +29,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ]);
 
         //
+        $middleware->api(append: [
+            \App\Http\Middleware\LogApiMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (UnauthorizedException $e, Request $request) {

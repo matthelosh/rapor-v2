@@ -81,9 +81,11 @@ class DaposyncController extends Controller
             $sekolah = Sekolah::whereNpsn($npsn)->first();
             $dapo = '';
 
+            $count = \array_count_values(array_column($datas, 'tingkat_pendidikan_id'));
             foreach ($datas as $data) {
                 $ruang = substr($data['id_ruang_str'], -2);
-                $kode = $npsn . '-' . $this->tapel()->kode . '-' . $ruang;
+                $kode = $npsn . '-' . $this->tapel()->kode . '-' . (($count[$data['tingkat_pendidikan_id']] === 1) ? $ruang[0] : $ruang);
+
                 $fase = $data['tingkat_pendidikan_id'] < 3 ? 'A' : ($data['tingkat_pendidikan_id'] < 5 ? 'B' : 'C');
                 $guru = Guru::where('dapo_id', $data['ptk_id'])->first();
                 $rombel = Rombel::updateOrCreate(
