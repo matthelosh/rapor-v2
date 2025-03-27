@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\Periode;
 use App\Models\Mapel;
 use App\Models\Rombel;
 use App\Models\Sekolah;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\DB;
 
 class NilaiService
 {
@@ -19,6 +19,7 @@ class NilaiService
     {
         /** @var \App\Models\User */
         $user = auth()->user();
+        $semester = Periode::semester()->kode;
         $mapels = [
             'guru_agama',
             'guru_pjok',
@@ -35,9 +36,27 @@ class NilaiService
             $agama = $user->userable->agama;
             $datas = Sekolah::whereHas('gurus', function ($q) use ($guruId) {
                 $q->where('gurus.id', $guruId);
-            })->with('ks')->with('rombels.siswas', function ($q) use ($agama) {
-                $q->where('siswas.agama', $agama);
-            })->get();
+            })->with('ks')
+                ->with(
+                    [
+                        'rombels' => function ($q) use ($agama, $semester) {
+                            $q->with('siswas', function ($s) use ($agama) {
+
+                                $s->where('siswas.agama', $agama);
+                            });
+                            $q->with(['siswas', 'nilais' => function ($n) use ($agama, $semester) {
+                                $n->select(
+                                    'rombel_id',
+                                    DB::raw("SUM(CASE WHEN tipe = 'uh' THEN 1 ELSE 0 END) as uh"),
+                                    DB::raw("SUM(CASE WHEN tipe = 'ts' THEN 1 ELSE 0 END) as pts"),
+                                    DB::raw("SUM(CASE WHEN tipe = 'as' THEN 1 ELSE 0 END) as pas"),
+                                )->where('agama', $agama)
+                                    ->where('semester', $semester)
+                                    ->groupBy('rombel_id');
+                            }]);
+                        }
+                    ]
+                )->get();
             /**
              * datas => [
              *  rombels => [

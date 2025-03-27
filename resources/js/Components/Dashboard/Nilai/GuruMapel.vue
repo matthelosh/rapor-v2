@@ -34,6 +34,8 @@ const open = (rombel, komponen, sekolah) => {
 
     mode.value = komponen;
 };
+
+const persen = (scope) => {};
 </script>
 
 <template>
@@ -69,18 +71,55 @@ const open = (rombel, komponen, sekolah) => {
                                         {{ scope.row.siswas?.length }}
                                     </template>
                                 </el-table-column>
+                                <el-table-column label="% Penilaian">
+                                    <template #default="scope">
+                                        <p>
+                                            UH:
+                                            {{
+                                                Math.round(
+                                                    (parseInt(
+                                                        scope.row.nilais[0]
+                                                            ?.uh ?? 0
+                                                    ) /
+                                                        scope.row.siswas
+                                                            ?.length) *
+                                                        100
+                                                )
+                                            }}
+                                            % | PTS:
+                                            {{
+                                                Math.round(
+                                                    (parseInt(
+                                                        scope.row.nilais[0]
+                                                            ?.pts ?? 0
+                                                    ) /
+                                                        scope.row.siswas
+                                                            ?.length) *
+                                                        100
+                                                )
+                                            }}
+                                            % | PAS:
+                                            {{
+                                                Math.round(
+                                                    (parseInt(
+                                                        scope.row.nilais[0]
+                                                            ?.as ?? 0
+                                                    ) /
+                                                        scope.row.siswas
+                                                            ?.length) *
+                                                        100
+                                                )
+                                            }}
+                                            %
+                                        </p>
+                                    </template>
+                                </el-table-column>
                                 <el-table-column label="Entri Nilai">
                                     <template #default="scope">
                                         <span class="flex items-center">
                                             <el-button
-                                                style="
-                                                    background: linear-gradient(
-                                                        105deg,
-                                                        #225588 70%,
-                                                        #cdaa77dd 15%
-                                                    );
-                                                    color: white;
-                                                "
+                                                :native-type="null"
+                                                type="primary"
                                                 rounded
                                                 size="small"
                                                 @click="
@@ -93,6 +132,7 @@ const open = (rombel, komponen, sekolah) => {
                                                 >Nilai Harian</el-button
                                             >
                                             <el-button
+                                                :native-type="null"
                                                 type="primary"
                                                 rounded
                                                 size="small"
@@ -106,6 +146,7 @@ const open = (rombel, komponen, sekolah) => {
                                                 >PTS</el-button
                                             >
                                             <el-button
+                                                :native-type="null"
                                                 type="primary"
                                                 rounded
                                                 size="small"
@@ -126,9 +167,6 @@ const open = (rombel, komponen, sekolah) => {
                     </template>
                 </el-collapse>
             </div>
-            <p>
-                {{ page.props.nilais }}
-            </p>
         </el-card>
         <FormNilaiHarian
             v-if="mode == 'harian'"

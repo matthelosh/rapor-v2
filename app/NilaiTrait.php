@@ -62,89 +62,154 @@ trait NilaiTrait
     public function simpanNilai($request)
     {
         try {
-            Log::info('Starting simpanNilai in NilaiTrait', [
-                'request_data' => $request->all(),
-                'query_params' => $request->query()
-            ]);
 
             $siswas = $request->siswas;
             $query = $request->query();
 
-            Log::info('Processing data in simpanNilai', [
-                'siswas_count' => count($siswas),
-                'query_params' => $query
-            ]);
-            foreach ($siswas as $siswa) {
-                Log::info('Processing siswa', [
-                    'nisn' => $siswa['nisn'],
-                    'nilai' => $siswa['nilai'] ?? null
-                ]);
-                if ($query['tipe'] == 'uh') {
-                    foreach ($siswa['nilais'] as $k => $v) {
-                        $tp = Tp::whereKode($k)->first();
-                        if ($v !== null || $tp) {
-                            $store = Nilai::updateOrCreate(
-                                [
-                                    'tapel' => $query['tapel'],
-                                    'semester' => $query['semester'],
-                                    'siswa_id' => $siswa['nisn'],
-                                    'guru_id' => auth()->user()->userable->nip,
-                                    'rombel_id' => $query['rombelId'],
-                                    'mapel_id' => $query['mapelId'],
-                                    'agama' => $query['agama'] ?? null,
-                                    'tp_id' => $k,
-                                    'tipe' =>  'uh',
-                                ],
-                                [
-                                    'skor' => $v !== 'null' ? $v : 0
-                                ]
-                            );
+            // foreach ($siswas as $siswa) {
+            //     if ($query['tipe'] == 'uh') {
+            //         foreach ($siswa['nilais'] as $k => $v) {
+            //             $tp = Tp::whereKode($k)->first();
+            //             if ($v !== null || $tp) {
+            //                 $store = Nilai::updateOrCreate(
+            //                     [
+            //                         'tapel' => $query['tapel'],
+            //                         'semester' => $query['semester'],
+            //                         'siswa_id' => $siswa['nisn'],
+            //                         'guru_id' => auth()->user()->userable->nip,
+            //                         'rombel_id' => $query['rombelId'],
+            //                         'mapel_id' => $query['mapelId'],
+            //                         'agama' => $query['agama'] ?? null,
+            //                         'tp_id' => $k,
+            //                         'tipe' =>  'uh',
+            //                     ],
+            //                     [
+            //                         'skor' => $v !== 'null' ? $v : 0
+            //                     ]
+            //                 );
+            //             }
+            //         }
+            //     } elseif ($query['tipe'] == 'all') {
+            //         foreach ($siswa['nilais'] as $k => $v) {
+            //             $tp = Tp::whereKode($k)->first();
+            //             if ($v !== null || $tp) {
+            //                 $store = Nilai::updateOrCreate(
+            //                     [
+            //                         'tapel' => $query['tapel'],
+            //                         'semester' => $query['semester'],
+            //                         'siswa_id' => $siswa['nisn'],
+            //                         'guru_id' => auth()->user()->userable->nip,
+            //                         'rombel_id' => $query['rombelId'],
+            //                         'mapel_id' => $query['mapelId'],
+            //                         'agama' => $query['agama'] ?? null,
+            //                         'tp_id' => \in_array($k, ['ts', 'as']) ? null : $k,
+            //                         'tipe' => \in_array($k, ['ts', 'as']) ? $k : 'uh',
+            //                     ],
+            //                     [
+            //                         'skor' => $v !== 'null' ? $v : 0
+            //                     ]
+            //                 );
+            //             }
+            //         }
+            //     } else {
+            //         $store = Nilai::updateOrCreate(
+            //             [
+            //                 'tapel' => $query['tapel'],
+            //                 'semester' => $query['semester'],
+            //                 'siswa_id' => $siswa['nisn'],
+            //                 'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
+            //                 'rombel_id' => $query['rombelId'],
+            //                 'mapel_id' => $query['mapelId'],
+            //                 'agama' => $query['agama'] ?? null,
+            //                 'tp_id' => null,
+            //                 'tipe' => $query['tipe'],
+            //             ],
+            //             [
+            //                 'skor' => $siswa['nilai']
+            //             ]
+            //         );
+            //     }
+            // }
+            // return $query['tipe'];
+            switch ($query['tipe']) {
+                case "ts":
+                case "as":
+                    foreach ($siswas as $siswa) {
+                        $store = Nilai::updateOrCreate(
+                            [
+                                'tapel' => $query['tapel'],
+                                'semester' => $query['semester'],
+                                'siswa_id' => $siswa['nisn'],
+                                'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
+                                'rombel_id' => $query['rombelId'],
+                                'mapel_id' => $query['mapelId'],
+                                'agama' => $query['agama'] ?? null,
+                                'tp_id' => null,
+                                'tipe' => $query['tipe'],
+                            ],
+                            [
+                                'skor' => $siswa['nilai']
+                            ]
+                        );
+                    }
+                    return "Nilai " . \strtoupper($query['tipe']) . " disimpan.";
+                    break;
+                case "uh":
+                    foreach ($siswas as $siswa) {
+                        foreach ($siswa['nilais'] as $k => $v) {
+                            $tp = Tp::whereKode($k)->first();
+                            if ($v !== null || $tp) {
+                                $store = Nilai::updateOrCreate(
+                                    [
+                                        'tapel' => $query['tapel'],
+                                        'semester' => $query['semester'],
+                                        'siswa_id' => $siswa['nisn'],
+                                        'guru_id' => auth()->user()->userable->nip,
+                                        'rombel_id' => $query['rombelId'],
+                                        'mapel_id' => $query['mapelId'],
+                                        'agama' => $query['agama'] ?? null,
+                                        'tp_id' => $k,
+                                        'tipe' =>  'uh',
+                                    ],
+                                    [
+                                        'skor' => $v !== 'null' ? $v : 0
+                                    ]
+                                );
+                            }
                         }
                     }
-                } elseif ($query['tipe'] == 'all') {
-                    foreach ($siswa['nilais'] as $k => $v) {
-                        $tp = Tp::whereKode($k)->first();
-                        if ($v !== null || $tp) {
-                            $store = Nilai::updateOrCreate(
-                                [
-                                    'tapel' => $query['tapel'],
-                                    'semester' => $query['semester'],
-                                    'siswa_id' => $siswa['nisn'],
-                                    'guru_id' => auth()->user()->userable->nip,
-                                    'rombel_id' => $query['rombelId'],
-                                    'mapel_id' => $query['mapelId'],
-                                    'agama' => $query['agama'] ?? null,
-                                    'tp_id' => \in_array($k, ['ts', 'as']) ? null : $k,
-                                    'tipe' => \in_array($k, ['ts', 'as']) ? $k : 'uh',
-                                ],
-                                [
-                                    'skor' => $v !== 'null' ? $v : 0
-                                ]
-                            );
+                    return 'Nilai Ulangan Harian Disimpan';
+                    break;
+                default:
+                    foreach ($siswas as $siswa) {
+                        foreach ($siswa['nilais'] as $k => $v) {
+                            $tp = Tp::whereKode($k)->first();
+                            if ($v !== null || $tp) {
+                                $store = Nilai::updateOrCreate(
+                                    [
+                                        'tapel' => $query['tapel'],
+                                        'semester' => $query['semester'],
+                                        'siswa_id' => $siswa['nisn'],
+                                        'guru_id' => auth()->user()->userable->nip,
+                                        'rombel_id' => $query['rombelId'],
+                                        'mapel_id' => $query['mapelId'],
+                                        'agama' => $query['agama'] ?? null,
+                                        'tp_id' => \in_array($k, ['ts', 'as']) ? null : $k,
+                                        'tipe' => \in_array($k, ['ts', 'as']) ? $k : 'uh',
+                                    ],
+                                    [
+                                        'skor' => $v !== 'null' ? $v : 0
+                                    ]
+                                );
+                            }
                         }
                     }
-                } else {
-                    $store = Nilai::updateOrCreate(
-                        [
-                            'tapel' => $query['tapel'],
-                            'semester' => $query['semester'],
-                            'siswa_id' => $siswa['nisn'],
-                            'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
-                            'rombel_id' => $query['rombelId'],
-                            'mapel_id' => $query['mapelId'],
-                            'agama' => $query['agama'] ?? null,
-                            'tp_id' => null,
-                            'tipe' => $query['tipe'],
-                        ],
-                        [
-                            'skor' => $siswa['nilai']
-                        ]
-                    );
-                }
+
+                    return "Nilai Disimpan";
+                    break;
             }
 
-            Log::info('Completed simpanNilai successfully');
-            return 'Nilai Disimpan';
+            // Log::info('Completed simpanNilai successfully');
         } catch (\Throwable $th) {
             Log::error('Error in simpanNilai', [
                 'error' => $th->getMessage(),
@@ -283,9 +348,9 @@ trait NilaiTrait
 
                 foreach ($sekolahs[0]->rombels as $rombel) {
                     \array_push($res, [
-                        'rombel' => $rombel->kode,
+                        'rombel' => $rombel,
                         'nilais' => [
-                            'pts' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'ts')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
+                            'pts' => (Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'ts')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count() / $rombel->siswas()->count() * 100),
                             'uhs' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'uh')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
                             'pas' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'as')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
                         ]

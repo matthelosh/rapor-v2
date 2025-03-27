@@ -51,21 +51,22 @@ class ClientController extends Controller
     public function storeNilai(Request $request)
     {
         $npsn = $request->query('npsn');
+        // return $request->query();
         try {
-            Log::info('Starting storeNilai in ClientController', [
-                'url' => $request->fullUrl(),
-                'method' => $request->method(),
-                'headers' => $request->headers->all(),
-                'body' => $request->all(),
-                'query' => $request->query(),
-                'ip' => $request->ip(),
-            ]);
+            // Log::info('Starting storeNilai in ClientController', [
+            //     'url' => $request->fullUrl(),
+            //     'method' => $request->method(),
+            //     'headers' => $request->headers->all(),
+            //     'body' => $request->all(),
+            //     'query' => $request->query(),
+            //     'ip' => $request->ip(),
+            // ]);
 
             $result = $this->simpanNilai($request);
 
-            Log::info('Completed storeNilai in ClientController', [
-                'result' => $result
-            ]);
+            // Log::info('Completed storeNilai in ClientController', [
+            //     'result' => $result
+            // ]);
 
             return response()->json([
                 'status' => 'success',
