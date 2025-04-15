@@ -871,8 +871,8 @@ Route::middleware('auth')->group(
 
                 Route::prefix("agenda")->group(
                     function () {
-                        Route::get("/", [AgendaController::class, 'home'])->name('dashboard.agenda')->middleware('role:admin|superadmin');
-                        Route::post('/store', [AgendaController::class, 'store'])->name('dashboard.agenda.store')->middleware('role:admin|superadmin');
+                        Route::get("/", [AgendaController::class, 'home'])->name('dashboard.agenda')->middleware('role:admin|superadmin|ops');
+                        Route::post('/store', [AgendaController::class, 'store'])->name('dashboard.agenda.store')->middleware('role:admin|superadmin|ops');
                     }
                 );
 
@@ -905,6 +905,15 @@ Route::middleware('auth')->group(
                     }
 
                 );
+
+                // https://raporsd.test/dashboard/administrasi/presensiguru
+                Route::prefix('administrasi')
+                    ->group(
+                        function () {
+                            Route::get('/presensiguru', [AdministrasiController::class, 'presensiGuru'])->middleware('role:ops|guru_agama')->name('presensi.guru.index');
+                            Route::get('/presensiguru/unduh', [AdministrasiController::class, 'unduhPresensi'])->middleware('role:ops|guru_agama')->name('presensi.guru.download');
+                        }
+                    );
 
                 // Sekolah Plus Ngaji
                 Route::prefix("spn")->middleware('role:guru_agama')->group(

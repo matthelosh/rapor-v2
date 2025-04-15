@@ -230,8 +230,22 @@
         "label": "SPN",
         "icon": "religion-islamic",
         "url": "/dashboard/spn",
-        "roles": ["superadmin", "admin", "guru_kelas", "guru_agama"],
+        "roles": ["guru_kelas", "guru_agama"],
         "children": []
+    },
+    {
+        "label": "Administrasi",
+        "icon": "bookshelf",
+        "url": "/dashboard/administrasi",
+        "roles": ["ops", "guru_agama", "guru_inggris", "guru_kelas", "guru_pjok"],
+        "children": [
+            {
+                "label": "Presensi Guru",
+                "icon": "calendar-check",
+                "url": "/dashboard/administrasi/presensiguru",
+                "roles": ["ops", "guru_agama"]
+            }
+        ]
     },
     {
         "label": "Pengaturan",
@@ -249,7 +263,7 @@
                 "label": "Agenda",
                 "icon": "calendar-check",
                 "url": "/dashboard/agenda",
-                "roles": ["superadmin","admin"]
+                "roles": ["superadmin","admin", "ops"]
             },
             {
                 "label": "Hak Akses",

@@ -49,7 +49,7 @@ class AgendaController extends Controller
                 ],
                 [
                     'nama' => $data['nama'],
-                    'pelaksana' => $data['pelaksana'],
+                    'pelaksana' => $data['pelaksana'] ?? 'admin',
                     'mulai' => $data['mulai'],
                     'tipe' => $data['tipe'],
                     'selesai' => $data['selesai'],
