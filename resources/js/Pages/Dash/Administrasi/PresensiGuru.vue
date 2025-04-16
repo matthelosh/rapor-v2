@@ -94,6 +94,10 @@ const cetak = async () => {
 
     let win = window.open("", "_blank", "width=800,height=600");
     win.document.write(html);
+
+    setTimeout(() => {
+        // win.print();
+    }, 1000);
 };
 onMounted(() => {
     selectedBulan.value = params.bulan ?? new Date().getMonth();
@@ -107,25 +111,40 @@ onMounted(() => {
         </template>
         <el-card>
             <template #header>
-                <div class="flex items-center gap-2">
-                    <el-select placeholder="Bulan" v-model="selectedBulan">
-                        <el-option value="0" label="Pilih Bulan"></el-option>
-                        <el-option
-                            v-for="b in bulans"
-                            :value="b"
-                            :label="months[b]"
-                        ></el-option>
-                    </el-select>
-                    <el-select placeholder="Tahun" v-model="selectedTahun">
-                        <el-option
-                            v-for="t in tahuns"
-                            :value="t"
-                            :label="t"
-                        ></el-option>
-                    </el-select>
-                    <el-button @click="getData">Lihat Presensi</el-button>
-                    <el-button @click="cetak">Cetak</el-button>
-                </div>
+                <el-affix :offset="68">
+                    <div class="flex items-center gap-2 bg-white">
+                        <el-select placeholder="Bulan" v-model="selectedBulan">
+                            <el-option
+                                value="0"
+                                label="Pilih Bulan"
+                            ></el-option>
+                            <el-option
+                                v-for="b in bulans"
+                                :value="b"
+                                :label="months[b]"
+                            ></el-option>
+                        </el-select>
+                        <el-select placeholder="Tahun" v-model="selectedTahun">
+                            <el-option
+                                v-for="t in tahuns"
+                                :value="t"
+                                :label="t"
+                            ></el-option>
+                        </el-select>
+                        <el-button
+                            :native-type="null"
+                            type="primary"
+                            @click="getData"
+                            >Lihat Presensi</el-button
+                        >
+                        <el-button
+                            :native-type="null"
+                            type="primary"
+                            @click="cetak"
+                            >Cetak</el-button
+                        >
+                    </div>
+                </el-affix>
             </template>
             <div>
                 <div>
@@ -157,12 +176,12 @@ onMounted(() => {
                                         >
                                             NAMA / NIP
                                         </th>
-                                        <th
+                                        <!-- <th
                                             class="border p-2 border-black"
                                             rowspan="2"
                                         >
                                             JABATAN
-                                        </th>
+                                        </th> -->
                                         <template
                                             v-for="tanggal in week.tanggals"
                                         >
@@ -194,7 +213,7 @@ onMounted(() => {
                                             v-for="tanggal in week.tanggals"
                                         >
                                             <th
-                                                class="border p-2 border-black"
+                                                class="border p-2 border-black w-[60px]"
                                                 :class="
                                                     !tanggal.tanggal ||
                                                     tanggal.isLibur
@@ -205,7 +224,7 @@ onMounted(() => {
                                                 In
                                             </th>
                                             <th
-                                                class="border p-2 border-black"
+                                                class="border p-2 border-black w-[80px]"
                                                 :class="
                                                     !tanggal.tanggal ||
                                                     tanggal.isLibur
@@ -213,10 +232,10 @@ onMounted(() => {
                                                         : ''
                                                 "
                                             >
-                                                Paraf
+                                                TTD
                                             </th>
                                             <th
-                                                class="border p-2 border-black"
+                                                class="border p-2 border-black w-[60px]"
                                                 :class="
                                                     !tanggal.tanggal ||
                                                     tanggal.isLibur
@@ -227,7 +246,7 @@ onMounted(() => {
                                                 Out
                                             </th>
                                             <th
-                                                class="border p-2 border-black"
+                                                class="border p-2 border-black w-[80px]"
                                                 :class="
                                                     !tanggal.tanggal ||
                                                     tanggal.isLibur
@@ -248,8 +267,10 @@ onMounted(() => {
                                             >
                                                 {{ g + 1 }}
                                             </td>
-                                            <td class="border p-2 border-black">
-                                                <p>
+                                            <td
+                                                class="border p-2 border-black text-xs"
+                                            >
+                                                <p class="leading-4">
                                                     {{ guru.gelar_depan ?? "" }}
                                                     {{ guru.nama }},
                                                     {{
@@ -257,7 +278,10 @@ onMounted(() => {
                                                         ""
                                                     }}
                                                 </p>
-                                                <p>
+                                                <p class="leading-4">
+                                                    {{ guru.jabatan }}
+                                                </p>
+                                                <p class="leading-4">
                                                     NIP.
                                                     {{
                                                         guru.status !== "gtt"
@@ -266,15 +290,15 @@ onMounted(() => {
                                                     }}
                                                 </p>
                                             </td>
-                                            <td class="border p-2 border-black">
+                                            <!-- <td class="border p-2 border-black">
                                                 <p>{{ guru.jabatan }}</p>
-                                            </td>
+                                            </td> -->
                                             <template
                                                 v-for="tanggal in week.tanggals"
                                             >
                                                 <template v-for="i in 4">
                                                     <td
-                                                        class="border border-black w-[100px] text-center font-bold uppercase"
+                                                        class="border border-black text-center font-bold uppercase"
                                                         :class="
                                                             !tanggal.tanggal ||
                                                             tanggal.isLibur
@@ -295,11 +319,70 @@ onMounted(() => {
                                     </template>
                                 </tbody>
                             </table>
-                            <div class="grid grid-cols-2 my-8">
-                                <div class="col-span-1 p-4 ket border">
-                                    <p>Keterangan:</p>
+                            <div class="grid grid-cols-4 my-8">
+                                <div
+                                    class="col-span-1 p-4 ket border rounded-lg border-black"
+                                >
+                                    <p class="font-bold">Keterangan:</p>
+                                    <ol class="pl-4 list-decimal">
+                                        <template v-for="agenda in agendas">
+                                            <li
+                                                v-if="
+                                                    (dayjs(
+                                                        agenda.mulai
+                                                    ).month() ==
+                                                        selectedBulan ||
+                                                        dayjs(
+                                                            agenda.selesai
+                                                        ).month() ==
+                                                            selectedBulan) &&
+                                                    dayjs(
+                                                        agenda.mulai
+                                                    ).year() == selectedTahun
+                                                "
+                                            >
+                                                <span>
+                                                    <span
+                                                        class="text-red-500 font-bold"
+                                                    >
+                                                        {{
+                                                            dayjs(
+                                                                agenda.mulai
+                                                            ).format(
+                                                                "D MMM YYYY"
+                                                            )
+                                                        }}
+                                                    </span>
+                                                    <span
+                                                        v-if="
+                                                            dayjs(
+                                                                agenda.mulai
+                                                            ).diff(
+                                                                dayjs(
+                                                                    agenda.selesai
+                                                                ),
+                                                                'd'
+                                                            ) !== 0
+                                                        "
+                                                    >
+                                                        -
+                                                        {{
+                                                            dayjs(
+                                                                agenda.selesai
+                                                            ).format(
+                                                                "D MMM YYYY"
+                                                            )
+                                                        }}</span
+                                                    >
+                                                    <span class="text-black">
+                                                        : {{ agenda.deskripsi }}
+                                                    </span>
+                                                </span>
+                                            </li>
+                                        </template>
+                                    </ol>
                                 </div>
-                                <div class="col-span-1 ttd">
+                                <div class="col-span-3 ttd">
                                     <table class="w-full">
                                         <tbody>
                                             <tr>
@@ -329,14 +412,16 @@ onMounted(() => {
                                                     <p
                                                         class="font-bold underline leading-4 tracking-wider"
                                                     >
-                                                        SITI, S. Pd., M.M
+                                                        {{
+                                                            page.props.pejabat
+                                                                .korwil
+                                                        }}
                                                     </p>
                                                     <p class="leading-4">
                                                         NIP.
                                                         {{
-                                                            page.props
-                                                                .sekolahs[0].ks
-                                                                .nip
+                                                            page.props.pejabat
+                                                                .nip_korwil
                                                         }}
                                                     </p>
                                                 </td>
@@ -347,14 +432,16 @@ onMounted(() => {
                                                     <p
                                                         class="font-bold underline leading-4 tracking-wider"
                                                     >
-                                                        SUBARIYANTI, S. Pd., M.M
+                                                        {{
+                                                            page.props.pejabat
+                                                                .pengawas
+                                                        }}
                                                     </p>
                                                     <p class="leading-4">
                                                         NIP.
                                                         {{
-                                                            page.props
-                                                                .sekolahs[0].ks
-                                                                .nip
+                                                            page.props.pejabat
+                                                                .nip_pengawas
                                                         }}
                                                     </p>
                                                 </td>

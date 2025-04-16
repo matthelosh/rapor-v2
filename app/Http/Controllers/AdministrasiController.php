@@ -24,7 +24,7 @@ class AdministrasiController extends Controller
     public function presensiGuru(Request $request)
     {
         try {
-            $month = $request->query('bulan') ?? date('n');
+            $month = $request->query('bulan') ?? date('m');
             $tahun = $request->query('tahun') ?? date('Y');
 
             $npsn = $request->query('sekolahId') ?? $request->user()->userable->sekolahs[0]->npsn;
@@ -33,10 +33,11 @@ class AdministrasiController extends Controller
             $agendas = Agenda::whereMonth('mulai', $month)
                 ->orWhereMonth('selesai', $month)
                 ->whereYear('mulai', $tahun)
-                ->whereYear('selesai', $tahun)
+                ->orWhereYear('selesai', $tahun)
                 ->where('tipe', 'libur')
                 ->orderBy('mulai', 'ASC')
                 ->get();
+
 
             $events = $agendas->flatMap(function ($agenda) use ($month, $tahun) {
                 $start = Carbon::parse($agenda->mulai);
@@ -104,7 +105,7 @@ class AdministrasiController extends Controller
             return Inertia::render(
                 'Dash/Administrasi/PresensiGuru',
                 [
-                    'agendas' => $events,
+                    'agendas' => $agendas,
                     'gurus' => Guru::whereHas('sekolahs', function ($s) use ($npsn) {
                         $s->where('npsn', $npsn);
                     })->whereNot('jabatan', 'Ops')->get(),

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Helpers\Periode;
 use App\Models\Gugus;
 use App\Models\Mapel;
+use App\Models\Pejabat;
 use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Semester;
@@ -49,6 +50,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 "message" => fn() => $request->session()->get('message'),
             ],
+            'pejabat' => Pejabat::first(),
             'periode' => $this->periode(),
             'app_env' => env('APP_ENV'),
             'guguses' => $user ? Gugus::all() : null,
