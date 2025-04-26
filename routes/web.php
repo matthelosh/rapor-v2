@@ -536,6 +536,12 @@ Route::middleware('auth')->group(
                     }
                 );
 
+                Route::prefix("analisis")->group(
+                    function () {
+                        Route::get('/', [AnalisisController::class, 'home'])->name('dashboard.analisis.home');
+                    }
+                )->middleware('role:guru_kelas|guru_agama|guru_inggris|guru_pjok');
+
                 Route::prefix("soal")->group(
                     function () {
                         Route::get('/', [SoalController::class, 'home'])

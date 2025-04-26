@@ -8,10 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Helpers\UserState;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory;
+    use Notifiable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -50,12 +53,22 @@ class User extends Authenticatable
         ];
     }
 
-    function userable()
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
+    public function userable()
     {
         return $this->morphTo(__FUNCTION__, 'userable_type', 'userable_id');
     }
 
-    function getIsOnlineAttribute()
+    public function getIsOnlineAttribute()
     {
         return UserState::isOnline($this->id);
     }

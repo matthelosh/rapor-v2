@@ -80,4 +80,9 @@ class Asesmen extends Model
     {
         return $this->belongsToMany(Siswa::class, 'asesmen_siswa');
     }
+
+    public function analises()
+    {
+        return $this->hasMany(Analisis::class, 'asesmen_id', 'kode');
+    }
 }

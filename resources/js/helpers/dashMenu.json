@@ -132,6 +132,18 @@
                     "guru_inggris",
                     "ops"
                 ]
+            },
+            {
+                "label": "Analisis",
+                "url": "/dashboard/analisis",
+                "icon": "chart-line",
+                "roles": [
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris",
+                    "ops"
+                ]
             }
         ]
     },

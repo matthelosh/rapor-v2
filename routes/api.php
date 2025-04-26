@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
+
 use App\Http\Middleware\ApiKeyVerified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -49,3 +54,10 @@ Route::middleware('verify_api_key')->prefix('dapo')->group(
         Route::post('/siswa/sync', [DaposyncController::class, 'syncSiswa']);
     }
 );
+
+// API Authentication
+Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+
+Route::middleware('auth:api')->get('/me', function (Request $request) {
+    return \response()->json(auth()->user()->userable);
+});
