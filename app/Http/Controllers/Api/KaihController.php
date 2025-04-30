@@ -11,10 +11,14 @@ class KaihController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($request->user());
+        // return response()->json([
+        //     "user" => $request->user()->userable,
+        // ]);
         try {
-            $user = $request->user();
+            $detail = $request->user()->userable;
 
-            $datas = Kaih::all();
+            $datas = Kaih::where("siswa_id", $detail->nisn)->get();
             return response()->json([
                 "success" => true,
                 "datas" => $datas,

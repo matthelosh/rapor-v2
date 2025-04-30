@@ -16,7 +16,10 @@ class AuthController extends Controller
         $credentials = $request->only("name", "password");
         if (!($token = JWTAuth::attempt($credentials))) {
             return response()->json(
-                ["error" => "Username atau password tidak sesuai."],
+                [
+                    "success" => false,
+                    "message" => "Username atau password tidak sesuai.",
+                ],
                 401
             );
         }
