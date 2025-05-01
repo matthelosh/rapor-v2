@@ -18,7 +18,14 @@ class KaihController extends Controller
         try {
             $detail = $request->user()->userable;
 
-            $datas = Kaih::where("siswa_id", $detail->nisn)->get();
+            $datas = Kaih::where("siswa_id", $detail->nisn)
+                ->orderBy("waktu", "DESC")
+                ->limit(10)
+                ->get();
+
+            // $grouped = $datas->groupBy(function ($item) {
+            //     return $item->created_at->format("Y-m-d");
+            // });
             return response()->json([
                 "success" => true,
                 "datas" => $datas,
@@ -28,8 +35,8 @@ class KaihController extends Controller
                 [
                     "success" => false,
                     "message" => "Error: " . $th,
-                ],
-                $th->getCode()
+                ]
+                // $th->getCode()
             );
         }
     }

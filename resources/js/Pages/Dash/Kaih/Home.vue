@@ -51,7 +51,35 @@ const showSemester = (item, rombel) => {
                                     <el-table-column label="Nama" prop="nama" />
                                     <el-table-column label="Progress KAIH">
                                         <template #default="{ row }">
-                                            {{ row.kaihs }}
+                                            <div
+                                                class="bar flex gap-2 items-end"
+                                            >
+                                                <template
+                                                    v-for="k in Object.keys(
+                                                        row.kaihs,
+                                                    )"
+                                                    :key="`kaih-${k}`"
+                                                >
+                                                    <ElTooltip :content="k">
+                                                        <div
+                                                            class="bar-item w-[50px] flex items-end justify-center cursor-pointer font-bold text-slate-600 rounded hover:shadow hover:-translate-y-2 transition-transform duration-300"
+                                                            :class="
+                                                                row.kaihs[k] <=
+                                                                30
+                                                                    ? 'bg-red-300'
+                                                                    : row.kaihs[
+                                                                            k
+                                                                        ] <= 60
+                                                                      ? 'bg-yellow-300'
+                                                                      : 'bg-green-400'
+                                                            "
+                                                            :style="`height: ${row.kaihs[k]}px;`"
+                                                        >
+                                                            {{ row.kaihs[k] }}
+                                                        </div>
+                                                    </ElTooltip>
+                                                </template>
+                                            </div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column label="Opsi">
