@@ -7,6 +7,7 @@ use App\Models\Rombel;
 use App\Helpers\Periode;
 use Inertia\Inertia;
 use App\Models\Kaih;
+use DB;
 
 class KaihController extends Controller
 {
@@ -14,29 +15,127 @@ class KaihController extends Controller
     {
         try {
             $guru = $request->user()->userable;
+
+            // $rombels->each(function ($rombel) {
+            //     $rombel->siswas->each(function ($siswa) use ($rombel) {
+            //         $siswa->kaihs = [
+            //             "Bangun Pagi" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Bangun Pagi"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Beribadah" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Beribadah"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Berolahraga" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Berolahraga"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Makan Sehat dan Bergizi" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Makan Sehat dan Bergizi"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Gemar Belajar" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Gemar Belajar"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Bermasyarakat" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Bermasyarakat"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //             "Tidur Cepat" => Kaih::where([
+            //                 ["rombel_id", "=", $rombel->kode],
+            //                 ["siswa_id", "=", $siswa->nisn],
+            //                 ["kebiasaan", "=", "Tidur Cepat"],
+            //                 // ["semester", "=", Periode::semester()],
+            //             ])->count(),
+            //         ];
+            //     });
+            // });
             $rombels = Rombel::whereGuruId($guru->id)
                 ->whereTapel(Periode::tapel()->kode)
-                ->with("siswas")
+                ->with(["siswas"])
                 ->get();
-            $rombels->each(function ($rombel) {
-                $rombel->siswas->each(function ($siswa) {
-                    $siswa->kaihs = [
-                        "Bangun Pagi" => 30,
-                        "Beribadah" => 60,
-                        "Berolahraga" => 50,
-                        "Makan Sehat dan Bergizi" => 70,
-                        "Gemar Belajar" => 25,
-                        "Bermasyarakat" => 80,
-                        "Tidur Cepat" => 40,
+            foreach ($rombels as $rombel) {
+                $rombel->siswas->each(function ($siswa) use ($request) {
+                    $siswa->load([
+                        "kaihs" => function ($query) use ($request, $siswa) {
+                            if (
+                                $request->query("bulan") &&
+                                $request->query("tahun")
+                            ) {
+                                $query
+                                    ->whereMonth(
+                                        "created_at",
+                                        $request->query("bulan")
+                                    )
+                                    ->whereYear(
+                                        "created_at",
+                                        $request->query("tahun")
+                                    );
+                            }
+                            $query->orderBy("kebiasaan");
+                        },
+                    ]);
+                    $daftar_kebiasaan = [
+                        "Bangun Pagi",
+                        "Beribadah",
+                        "Makan Sehat dan Bergizi",
+                        "Gemar Belajar",
+                        "Bermasyarakat",
+                        "Tidur Cepat",
+                        "Berolahraga",
                     ];
+
+                    $grouped = $siswa->kaihs
+                        ->groupBy("kebiasaan")
+                        ->map->count();
+
+                    $siswa->kebiasaan_count = collect(
+                        $daftar_kebiasaan
+                    )->mapWithKeys(function ($kebiasaan) use ($grouped) {
+                        return [$kebiasaan => $grouped[$kebiasaan] ?? 0];
+                    });
                 });
-            });
-            // dd($rombels);
+            }
             return Inertia::render("Dash/Kaih/Home", [
                 "rombels" => $rombels,
             ]);
         } catch (Throwable $th) {
             throw $th;
+        }
+    }
+
+    public function perBulan(Request $request)
+    {
+        try {
+            $kaihs = Kaih::where([
+                ["rombel_id", "=", $request->query("rombelId")],
+                ["siswa_id", "=", $request->query("siswaId")],
+                ["bulan", "=", $request->query("bulan")],
+            ])->get();
+
+            return response()->json([
+                "success" => true,
+                "kaihs" => $kaihs,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => "Error: " . $th->getMessage(),
+            ]);
         }
     }
 

@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 Route::prefix("")->group(function () {
     Route::get("/", [FrontController::class, "home"])->name("home");
 
     Route::get("/tes-dapodik", [FrontController::class, "tesdapodik"]);
-
+    Route::get("/tes-s3", function (Request $request) {
+        dd(Storage::disk("s3")->allFiles());
+    });
     Route::get("/baca/{slug}", [PostController::class, "read"])->name(
         "home.post.read"
     );
@@ -447,6 +451,9 @@ Route::middleware("auth")->group(function () {
         Route::prefix("kaih")->group(function () {
             Route::get("/home", [KaihController::class, "home"])->name(
                 "dashboard.kaih.home"
+            );
+            Route::get("/bulan", [KaihController::class, "perBulan"])->name(
+                "dashboard.kaih.bulan"
             );
             Route::get("/rekap/siswa", [
                 KaihController::class,

@@ -27,8 +27,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'password' => ['required', 'string'],
+            "name" => ["required", "string"],
+            "password" => ["required", "string"],
         ];
     }
 
@@ -41,11 +41,24 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('name', 'password'), $this->boolean('remember'))) {
+        if (
+            !Auth::attempt(
+                $this->only("name", "password"),
+                $this->boolean("remember")
+            )
+        ) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'name' => trans('auth.failed'),
+                "name" => trans("auth.failed"),
+            ]);
+        }
+
+        if (Auth::user()->hasRole("siswa")) {
+            // $this->ensureNotSiswa(Auth::user());
+            throw ValidationException::withMessages([
+                "name" =>
+                    "Siswa tidak dapat mengakses halaman ini. Akses melalui https://siswa.pkgwagir.or.id",
             ]);
         }
 
@@ -59,7 +72,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -68,9 +81,9 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
+            "email" => trans("auth.throttle", [
+                "seconds" => $seconds,
+                "minutes" => ceil($seconds / 60),
             ]),
         ]);
     }
@@ -80,6 +93,17 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(
+            Str::lower($this->string("email")) . "|" . $this->ip()
+        );
+    }
+
+    public function ensureNotSiswa($user)
+    {
+        if ($user->hasRole("siswa")) {
+            // dd($user);
+            return back()->withErrors("Anda tidak dapat masuk sebagai siswa");
+            Auth::logout();
+        }
     }
 }

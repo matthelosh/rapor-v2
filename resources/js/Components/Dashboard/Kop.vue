@@ -43,7 +43,7 @@ const defaultLogo = (e) => {
             </h1>
             <p class="font-light print:text-[10pt]">
                 Alamat: {{ capitalize(sekolah.alamat) }},
-                {{ capitalize(sekolah.desa) }}, Kec.
+                {{ capitalize(sekolah.desa) }}
                 {{ capitalize(sekolah.kecamatan) }}, Kode Pos
                 {{ sekolah.kode_pos }}
             </p>

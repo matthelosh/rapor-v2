@@ -61,12 +61,12 @@ onBeforeMount(() => {
         </div>
         <div class="content py-4 px-6 bg-slate-200">
             <div
-                class="page bg-white p-4 w-[60%] mx-auto rounded shadow print:w-full print:rounded-none print:shadow-none"
+                class="page bg-white p-4 w-[90%] xl:w-[60%] mx-auto rounded shadow print:w-full print:rounded-none print:shadow-none"
             >
                 <Kop />
                 <h3 class="text-center text-2xl font-black uppercase my-8">
                     Formulir Pemantauan <br />
-                    7 Kebiasaan Anak Indonesia Hebat
+                    Tujuh Kebiasaan Anak Indonesia Hebat
                 </h3>
 
                 <table class="my-4">
