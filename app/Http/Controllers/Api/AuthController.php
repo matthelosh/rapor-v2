@@ -26,6 +26,15 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $role = $user->getRoleNames()->first();
+        if ($role !== "siswa") {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Maaf, Laman ini khusus Siswa/Ortu.",
+                ],
+                403
+            );
+        }
         return response()->json([
             "access_token" => $token,
             "token_type" => "bearer",
