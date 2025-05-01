@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Rombel;
 use App\Models\User;
+use App\Helpers\Periode;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -66,8 +68,15 @@ Route::post("/login", [AuthController::class, "login"])->name("api.login");
 
 Route::middleware(["auth:api"])->get("/me", function (Request $request) {
     $user = $request->user();
+    $detail = $user->userable;
+    $rombel = Rombel::whereHas("siswas", function ($query) use ($detail) {
+        $query->where("siswas.id", $detail->id);
+    })
+        ->whereTapel(Periode::tapel()->kode)
+        ->first();
+    $detail->rombel = $rombel;
     return \response()->json([
-        "detail" => $user->userable,
+        "detail" => $detail,
     ]);
 });
 
