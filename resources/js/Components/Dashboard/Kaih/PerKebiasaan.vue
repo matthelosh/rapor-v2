@@ -32,14 +32,13 @@ const items = computed(() => {
     for (let i = 0; i < daysInMonth; i++) {
         const currentDate = startDate.add(i, "day").format("YYYY-MM-DD");
         const matched = datas.value.find(
-            (item) =>
-                dayjs(item.created_at).format("YYYY-MM-DD") === currentDate,
+            (item) => dayjs(item.waktu).format("YYYY-MM-DD") === currentDate,
         );
         dates.push({
             tanggal: currentDate,
             kebiasaan: matched ? matched.kebiasaan : null,
             status: matched ? matched.is_done : null,
-            waktu: matched ? dayjs(matched.created_at).format("HH:mm") : null,
+            waktu: matched ? dayjs(matched.waktu).format("HH:mm") : null,
         });
     }
     return dates;
@@ -97,6 +96,5 @@ const items = computed(() => {
                 </ElTooltip>
             </template>
         </div>
-        {{ datas }}
     </div>
 </template>

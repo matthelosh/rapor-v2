@@ -30,17 +30,17 @@ class KaihController extends Controller
                             ) {
                                 $query
                                     ->whereMonth(
-                                        "created_at",
+                                        "waktu",
                                         $request->query("bulan")
                                     )
                                     ->whereYear(
-                                        "created_at",
+                                        "waktu",
                                         $request->query("tahun")
                                     );
                             } else {
                                 $query
-                                    ->whereYear("created_at", date("Y"))
-                                    ->whereMonth("created_at", date("m"));
+                                    ->whereYear("waktu", date("Y"))
+                                    ->whereMonth("waktu", date("m"));
                             }
                             $query->orderBy("kebiasaan");
                         },
