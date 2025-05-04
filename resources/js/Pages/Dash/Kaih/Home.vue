@@ -9,14 +9,24 @@ const FormSemester = defineAsyncComponent(
 const KaihDetail = defineAsyncComponent(
     () => import("@/Components/Dashboard/Kaih/KaihDetail.vue"),
 );
+const PerKebiasaan = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Kaih/PerKebiasaan.vue"),
+);
 defineProps({ rombels: Array });
 
-const bulan = ref("");
-const tahun = ref("");
+const bulan = ref(null);
+const tahun = ref(null);
 const selectedRombel = ref(null);
 const formSemester = ref(false);
 const formDetail = ref(false);
 const selectedSiswa = ref(null);
+const bulanTahun = computed(() => {
+    return (
+        (tahun.value ?? new Date().getFullYear()) +
+        "-" +
+        (bulan.value ?? new Date().getMonth() + 1)
+    );
+});
 const showSemester = (item, rombel) => {
     selectedSiswa.value = item;
     formSemester.value = true;
@@ -34,6 +44,24 @@ const showDetail = (item, rombel) => {
         label: rombel.label,
         tapel: rombel.tapel,
     };
+};
+const formPerKebiasaan = ref(false);
+const selectedKebiasaan = ref(null);
+const showPerKebiasaan = (row, rombel, kebiasaan) => {
+    // console.log(kebiasaan);
+    selectedSiswa.value = row;
+    formPerKebiasaan.value = true;
+    selectedKebiasaan.value = kebiasaan;
+    selectedRombel.value = {
+        kode: rombel.kode,
+        label: rombel.label,
+        tapel: rombel.tapel,
+    };
+};
+const resetForm = () => {
+    selectedKebiasaan.value = null;
+    selectedSiswa.value = null;
+    selectedRombel.value = null;
 };
 const tahuns = computed(() => {
     const currentYear = new Date().getFullYear();
@@ -189,6 +217,13 @@ const fetchData = () => {
                                                                           : 'bg-green-400'
                                                                 "
                                                                 :style="`height: ${row.kebiasaan_count[k]}px;`"
+                                                                @click="
+                                                                    showPerKebiasaan(
+                                                                        row,
+                                                                        rombel,
+                                                                        k,
+                                                                    )
+                                                                "
                                                             >
                                                                 {{
                                                                     row
@@ -262,6 +297,20 @@ const fetchData = () => {
                 :siswa="selectedSiswa"
                 :rombel="selectedRombel"
                 v-if="formDetail"
+            />
+        </template>
+    </el-dialog>
+    <el-dialog v-model="formPerKebiasaan" fullscreen @closed="resetForm">
+        <template #header>
+            <h2>{{ selectedKebiasaan }}: {{ selectedSiswa.nama }}</h2>
+        </template>
+        <template #default>
+            <PerKebiasaan
+                :siswa="selectedSiswa"
+                :rombel="selectedRombel"
+                :kebiasaan="selectedKebiasaan"
+                :bulanTahun="bulanTahun"
+                v-if="formPerKebiasaan"
             />
         </template>
     </el-dialog>

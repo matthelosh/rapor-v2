@@ -16,54 +16,6 @@ class KaihController extends Controller
         try {
             $guru = $request->user()->userable;
 
-            // $rombels->each(function ($rombel) {
-            //     $rombel->siswas->each(function ($siswa) use ($rombel) {
-            //         $siswa->kaihs = [
-            //             "Bangun Pagi" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Bangun Pagi"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Beribadah" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Beribadah"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Berolahraga" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Berolahraga"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Makan Sehat dan Bergizi" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Makan Sehat dan Bergizi"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Gemar Belajar" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Gemar Belajar"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Bermasyarakat" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Bermasyarakat"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //             "Tidur Cepat" => Kaih::where([
-            //                 ["rombel_id", "=", $rombel->kode],
-            //                 ["siswa_id", "=", $siswa->nisn],
-            //                 ["kebiasaan", "=", "Tidur Cepat"],
-            //                 // ["semester", "=", Periode::semester()],
-            //             ])->count(),
-            //         ];
-            //     });
-            // });
             $rombels = Rombel::whereGuruId($guru->id)
                 ->whereTapel(Periode::tapel()->kode)
                 ->with(["siswas"])
@@ -85,6 +37,10 @@ class KaihController extends Controller
                                         "created_at",
                                         $request->query("tahun")
                                     );
+                            } else {
+                                $query
+                                    ->whereYear("created_at", date("Y"))
+                                    ->whereMonth("created_at", date("m"));
                             }
                             $query->orderBy("kebiasaan");
                         },
