@@ -218,13 +218,13 @@
         "label": "7 KAIH",
         "icon": "calendar-check",
         "url": "#",
-        "roles": ["ops", "guru_kelas"],
+        "roles": ["guru_agama", "guru_kelas"],
         "children": [
             {
                 "label": "Lihat",
                 "icon": "table",
                 "url": "/dashboard/kaih/home",
-                "roles": ["guru_kelas"]
+                "roles": ["guru_kelas", "guru_agama"]
             }
         ]
     },

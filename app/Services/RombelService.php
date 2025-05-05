@@ -27,28 +27,34 @@ class RombelService
     {
         $user = $request->user();
         $kktps = [];
-        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
-            $rombels = Rombel::with('sekolah', 'guru', 'siswas')->get();
-        } elseif ($user->hasRole('ops')) {
+        if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
+            $rombels = Rombel::with("sekolah", "gurus", "siswas")->get();
+        } elseif ($user->hasRole("ops")) {
             // dd('Tes');
-            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
-                ->with('sekolah', 'guru', 'siswas')
-                ->with('kktps', function ($q) {
-                    $q->with('mapel');
+            $rombels = Rombel::where(
+                "sekolah_id",
+                $user->userable->sekolahs[0]->npsn
+            )
+                ->with("sekolah", "gurus", "siswas")
+                ->with("kktps", function ($q) {
+                    $q->with("mapel");
                 })
-                ->orderBy('id')
-                ->get();;
-        } elseif ($user->hasRole('guru_kelas')) {
-            $rombels = Rombel::where('sekolah_id', $user->userable->sekolahs[0]->npsn)
-                ->where('guru_id', $user->userable->id)
-                ->with('sekolah', 'guru', 'siswas')
-                ->with('kktps', function ($q) {
-                    $q->with('mapel');
+                ->orderBy("id")
+                ->get();
+        } elseif ($user->hasRole("guru_kelas")) {
+            $rombels = Rombel::where(
+                "sekolah_id",
+                $user->userable->sekolahs[0]->npsn
+            )
+                ->where("guru_id", $user->userable->id)
+                ->with("sekolah", "gurus", "siswas")
+                ->with("kktps", function ($q) {
+                    $q->with("mapel");
                 })
                 ->get();
         }
 
-        return ['rombels' => $rombels];
+        return ["rombels" => $rombels];
     }
 
     // public function index($request) {
@@ -68,26 +74,36 @@ class RombelService
     {
         try {
             $data = $request->all();
-
+            // dd($data["guru_id"]);
+            $wali = Guru::whereId($data["guru_id"])->first();
             $store = Rombel::updateOrCreate(
                 [
-                    'id' => $data['id'] ?? null,
-                    'kode' => $data['kode']
+                    "id" => $data["id"] ?? null,
+                    "kode" => $data["kode"],
                 ],
                 [
-                    'tapel' => $data['tapel'],
-                    'pararel' => $data['pararel'],
-                    'label' => $data['label'],
-                    'fase' => $data['fase'],
-                    'tingkat' => $data['tingkat'],
-                    'sekolah_id' => $data['sekolah_id'],
-                    'guru_id' => $data['guru_id'],
-                    'is_active' => true,
+                    "tapel" => $data["tapel"],
+                    "pararel" => $data["pararel"],
+                    "label" => $data["label"],
+                    "fase" => $data["fase"],
+                    "tingkat" => $data["tingkat"],
+                    "sekolah_id" => $data["sekolah_id"],
+                    "guru_id" => $wali->id,
+                    "is_active" => true,
                 ]
             );
+            $store->gurus()->attach($wali->nip, ["status" => "wali"]);
+            $store
+                ->gurus()
+                ->attach(
+                    collect(explode(",", $data["pengajars"]))->mapWithKeys(
+                        fn($nip) => [$nip => ["status" => "pengajar"]]
+                    )
+                );
             return back()->with("success", true);
         } catch (\Exception $e) {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            dd($e);
+            // return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
@@ -97,7 +113,7 @@ class RombelService
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
             foreach ($siswas as $siswa) {
-                $rombel->siswas()->attach($siswa['id']);
+                $rombel->siswas()->attach($siswa["id"]);
             }
             return true;
         } catch (\Exception $e) {
@@ -110,7 +126,7 @@ class RombelService
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
             foreach ($siswas as $siswa) {
-                $rombel->siswas()->detach($siswa['id']);
+                $rombel->siswas()->detach($siswa["id"]);
             }
             return true;
         } catch (\Exception $e) {

@@ -50,7 +50,8 @@ const items = computed(() => {
         <h3
             class="text-center uppercase font-black font-['Arial'] text-xl mb-8"
         >
-            DETAIL {{ kebiasaan }}
+            DETAIL {{ kebiasaan }} BULAN
+            {{ dayjs(bulanTahun).locale("id").format("MMMM YYYY") }}
         </h3>
 
         <img

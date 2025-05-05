@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $nip
@@ -69,21 +69,21 @@ class Guru extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nip',
-        'dapo_id',
-        'nuptk',
-        'gelar_depan',
-        'nama',
-        'gelar_belakang',
-        'jk',
-        'alamat',
-        'hp',
-        'status',
-        'email',
-        'foto',
-        'agama',
-        'pangkat',
-        'jabatan'
+        "nip",
+        "dapo_id",
+        "nuptk",
+        "gelar_depan",
+        "nama",
+        "gelar_belakang",
+        "jk",
+        "alamat",
+        "hp",
+        "status",
+        "email",
+        "foto",
+        "agama",
+        "pangkat",
+        "jabatan",
     ];
 
     // protected function foto(): Attribute
@@ -92,34 +92,51 @@ class Guru extends Model
     //         get: fn ($foto) => url('/storage/guru/' . $foto),
     //     );
     // }
+    //
+
+    // protected $primaryKey = "nip";
+    // public $incrementing = false;
+    // protected $keyType = "string";
 
     public function user(): MorphOne
     {
-        return $this->morphOne(User::class, 'userable');
+        return $this->morphOne(User::class, "userable");
     }
 
     public function sekolahs()
     {
-        return $this->belongsToMany(Sekolah::class, 'guru_sekolah');
+        return $this->belongsToMany(Sekolah::class, "guru_sekolah");
     }
 
     public function workhops()
     {
-        return $this->belongsToMany(Workshop::class, 'guru_workshop');
+        return $this->belongsToMany(Workshop::class, "guru_workshop");
     }
 
     public function sertifikats()
     {
-        return $this->hasMany(Sertifikat::class, 'guru_id', 'nip');
+        return $this->hasMany(Sertifikat::class, "guru_id", "nip");
     }
 
     public function tps()
     {
-        return $this->hasMany(Tp::class, 'guru_id', 'nip');
+        return $this->hasMany(Tp::class, "guru_id", "nip");
     }
 
     public function orgs()
     {
-        return $this->belongsToMany(Org::class, 'guru_org');
+        return $this->belongsToMany(Org::class, "guru_org");
+    }
+
+    public function rombels()
+    {
+        return $this->belongsToMany(
+            Rombel::class,
+            "guru_rombel",
+            "guru_id",
+            "rombel_id",
+            "nip",
+            "kode"
+        )->withPivot("status");
     }
 }

@@ -22,6 +22,7 @@ const rombel = ref({
     sekolah_id: "",
     guru_id: "",
     is_active: "",
+    pengajars: [],
 });
 const romawi = (num) => {
     let roman = {
@@ -113,7 +114,7 @@ const getGurus = async () => {
                         ? "all"
                         : page.props.sekolahs[0].id,
                 },
-            })
+            }),
         )
         .then((res) => {
             gurus.value = res.data.gurus;
@@ -131,8 +132,8 @@ watch(
             rombel.value.pararel = newV.value.pararel
                 ? newV.value.pararel
                 : /[a-zA-Z]/gi.test(newV.value.kode.substring(-1))
-                ? newV.value.kode.substring(-1)
-                : "0";
+                  ? newV.value.kode.substring(-1)
+                  : "0";
             rombel.value.kode =
                 page.props.sekolahs[0].npsn +
                 "-" +
@@ -152,7 +153,7 @@ watch(
             rombel.value.fase = setFase(newV.value.tingkat);
         }
     },
-    { deep: true }
+    { deep: true },
 );
 
 onBeforeMount(() => {
@@ -244,6 +245,23 @@ const toString = (num) => {
                                 v-for="(guru, g) in gurus"
                                 :key="g"
                                 :value="guru.id"
+                                :label="`${guru.nip}|${guru.nama}`"
+                            />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item label="Pengajar">
+                        <el-select
+                            v-model="rombel.pengajars"
+                            placeholder="Tambahkan Pengajar"
+                            multiple
+                            filterable
+                        >
+                            <el-option
+                                v-for="(guru, g) in gurus"
+                                :key="g"
+                                :value="guru.nip"
                                 :label="`${guru.nip}|${guru.nama}`"
                             />
                         </el-select>

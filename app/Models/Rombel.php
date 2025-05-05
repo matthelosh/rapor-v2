@@ -64,9 +64,20 @@ class Rombel extends Model
         "is_active",
     ];
 
-    public function guru()
+    // protected $primaryKey = "nip";
+    // public $incrementing = false;
+    // protected $keyType = "string";
+
+    public function gurus()
     {
-        return $this->belongsTo(Guru::class, "guru_id", "id");
+        return $this->belongsToMany(
+            Guru::class,
+            "guru_rombel",
+            "rombel_id",
+            "guru_id",
+            "kode",
+            "nip"
+        )->withPivot("status");
     }
 
     public function sekolah()

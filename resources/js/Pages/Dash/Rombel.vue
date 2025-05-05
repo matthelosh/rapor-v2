@@ -49,7 +49,7 @@ const reloadData = () => {
 };
 
 const hapus = async (id) => {
-    await router.delete(route("dashboard.rombel.destroy", { id: id }), {
+    router.delete(route("dashboard.rombel.destroy", { id: id }), {
         onSuccess: (page) => {
             ElNotification({
                 title: "Info",
@@ -102,6 +102,40 @@ const simpanKktp = async (rombel) => {
     );
 };
 
+const waliKelas = (itemRombel) => {
+    const wali = itemRombel.gurus.filter(
+        (guru) => guru.pivot.status === "wali",
+    )[0];
+    return (
+        (wali.gelar_depan ?? "") +
+        " " +
+        wali.nama +
+        (wali.gelar_belakang ? "," + wali.gelar_belakang : "")
+    );
+};
+
+const guruPengajar = (itemRombel) => {
+    const guru = itemRombel.gurus.filter(
+        (guru) => guru.pivot.status === "pengajar",
+    );
+    return guru;
+};
+const defaultFoto = (guru) => {
+    return guru.jk == "Laki-laki"
+        ? "/img/user_l.png"
+        : guru.agama == "Islam"
+          ? "/img/user_p_is.png"
+          : "/img/user_p.png";
+};
+const fotoGuru = (guru) => {
+    return guru.foto
+        ? guru.foto
+        : guru.jk == "Laki-laki"
+          ? "/img/user_l.png"
+          : guru.agama == "Islam"
+            ? "/img/user_p_is.png"
+            : "/img/user_p.png";
+};
 const init = async () => {
     // if (page.props.auth.roles[0] === 'ops') {
     //     rombels.value = page.props.rombels
@@ -221,16 +255,34 @@ onBeforeMount(async () => {
                     <el-table-column label="Wali Kelas">
                         <template #default="scope">
                             <p>
-                                {{ scope.row.guru?.gelar_depan }}
-                                {{ scope.row.guru?.nama }},
-                                {{ scope.row.guru?.gelar_belakang }}
+                                {{ waliKelas(scope.row) }}
                             </p>
                         </template>
                     </el-table-column>
-                    <el-table-column
-                        label="KKTP"
-                        v-if="page.props.auth.roles[0] == 'guru_kelas'"
-                    >
+                    <el-table-column label="Guru Pengajar">
+                        <template #default="scope">
+                            <ul class="list-decimal pl-4">
+                                <li
+                                    v-for="(gp, i) in guruPengajar(scope.row)"
+                                    :key="i"
+                                >
+                                    <el-popover>
+                                        <div>
+                                            <img
+                                                :src="fotoGuru(gp)"
+                                                alt="Foto Guru"
+                                                :onerror="`this.error=null; this.src = ${defaultFoto(gp)}`"
+                                            />
+                                        </div>
+                                        <template #reference>
+                                            {{ gp.nama }} [{{ gp.jabatan }}]
+                                        </template>
+                                    </el-popover>
+                                </li>
+                            </ul>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="KKTP">
                         <template #default="scope">
                             <el-popover width="400px" trigger="click">
                                 <template #reference>
@@ -317,7 +369,10 @@ onBeforeMount(async () => {
                                             type="primary"
                                             size="small"
                                             @click="mgmSiswa(scope.row)"
-                                            :disabled="page.props.auth.roles[0] !== 'ops'"
+                                            :disabled="
+                                                page.props.auth.roles[0] !==
+                                                'ops'
+                                            "
                                         >
                                             <Icon
                                                 icon="mdi:account-plus-outline"

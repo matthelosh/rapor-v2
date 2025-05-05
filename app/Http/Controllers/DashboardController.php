@@ -13,7 +13,6 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-
     // public function tesReverb()
     // {
     //     \event(new JawabanReceived("Ini Hanya Tes"));
@@ -23,7 +22,7 @@ class DashboardController extends Controller
     {
         // \event(new JawabanReceived('Ini Jawaban'));
         $user = $request->user();
-        $tapel = Tapel::whereIsActive(true)->pluck('kode')->first();
+        $tapel = Tapel::whereIsActive(true)->pluck("kode")->first();
         $data = [];
 
         // Tes Dapodik
@@ -38,40 +37,55 @@ class DashboardController extends Controller
 
         // dd($response);
 
-        if (in_array($request->user()->getRoleNames()[0], ['superadmin', 'admin', 'admin_tp'])) {
-            $data['sekolahs'] = Sekolah::with('ks', 'gurus')
+        if (
+            in_array($request->user()->getRoleNames()[0], [
+                "superadmin",
+                "admin",
+                "admin_tp",
+            ])
+        ) {
+            $data["sekolahs"] = Sekolah::with("ks", "gurus")
                 ->with([
-                    'rombels' => function ($q) use ($tapel) {
+                    "rombels" => function ($q) use ($tapel) {
                         $q->whereTapel($tapel);
                     },
-                    'siswas' => fn($s) => $s->whereStatus('aktif'),
-                ])->get();
-        } elseif ($user->hasRole('ops')) {
-            $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
-                ->with('gurus', 'ks')
-                ->with('rombels', function ($q) use ($tapel) {
-                    $q->where('tapel', $tapel);
-                    $q->with('guru');
-                    $q->with('siswas', fn($q) => $q->where('status', 'aktif'));
-                })
-                ->with('mapels')
-                ->first();
-        } elseif ($user->hasRole('guru_kelas')) {
-            $data['sekolah'] = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)
-                ->with('mapels')
-                ->first();
-        } elseif ($user->hasRole(['guru_agama', 'guru_pjok', 'guru_inggris'])) {
-            $guruId = $user->userable->id;
-            $data['sekolahs'] = Sekolah::whereHas('gurus', function ($q) use ($guruId) {
-                $q->where('gurus.id', $guruId);
-            })
-                ->with('rombels.siswas')
+                    "siswas" => fn($s) => $s->whereStatus("aktif"),
+                ])
                 ->get();
-        } elseif ($user->hasRole('org')) {
+        } elseif ($user->hasRole("ops")) {
+            $data["sekolah"] = Sekolah::where(
+                "npsn",
+                $user->userable->sekolahs[0]->npsn
+            )
+                ->with("gurus", "ks")
+                ->with("rombels", function ($q) use ($tapel) {
+                    $q->where("tapel", $tapel);
+                    $q->with("gurus");
+                    $q->with("siswas", fn($q) => $q->where("status", "aktif"));
+                })
+                ->with("mapels")
+                ->first();
+        } elseif ($user->hasRole("guru_kelas")) {
+            $data["sekolah"] = Sekolah::where(
+                "npsn",
+                $user->userable->sekolahs[0]->npsn
+            )
+                ->with("mapels")
+                ->first();
+        } elseif ($user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])) {
+            $guruId = $user->userable->id;
+            $data["sekolahs"] = Sekolah::whereHas("gurus", function ($q) use (
+                $guruId
+            ) {
+                $q->where("gurus.id", $guruId);
+            })
+                ->with("rombels.siswas")
+                ->get();
+        } elseif ($user->hasRole("org")) {
             // $data['org'] = Org::where
         }
-        return Inertia::render('Dashboard', [
-            'data' => $data,
+        return Inertia::render("Dashboard", [
+            "data" => $data,
         ]);
     }
 
@@ -79,19 +93,27 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $ops = [];
-        if ($user->hasRole('admin') || $user->hasRole('superadmin')) {
-            $ops = Guru::whereHas('user.roles', function ($q) {
-                $q->where('name', 'ops');
-            })->with('user.roles')->get();
+        if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
+            $ops = Guru::whereHas("user.roles", function ($q) {
+                $q->where("name", "ops");
+            })
+                ->with("user.roles")
+                ->get();
         } else {
-            $sekolah = Sekolah::where('npsn', $user->userable->sekolahs[0]->npsn)->first();
-            $ops = Guru::whereHas('user.roles', function ($q) {
-                $q->where('name', 'ops');
-            })->where('nip', $sekolah->npsn)->with('user.roles')->get();
+            $sekolah = Sekolah::where(
+                "npsn",
+                $user->userable->sekolahs[0]->npsn
+            )->first();
+            $ops = Guru::whereHas("user.roles", function ($q) {
+                $q->where("name", "ops");
+            })
+                ->where("nip", $sekolah->npsn)
+                ->with("user.roles")
+                ->get();
         }
 
-        return Inertia::render('Dash/Ops', [
-            'ops' => $ops,
+        return Inertia::render("Dash/Ops", [
+            "ops" => $ops,
         ]);
     }
 }

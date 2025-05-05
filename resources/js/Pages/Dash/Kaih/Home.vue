@@ -1,6 +1,7 @@
 <script setup>
 import { ref, defineAsyncComponent, computed } from "vue";
 import { router } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
 import DashLayout from "@/Layouts/DashLayout.vue";
 
 const FormSemester = defineAsyncComponent(
@@ -11,6 +12,9 @@ const KaihDetail = defineAsyncComponent(
 );
 const PerKebiasaan = defineAsyncComponent(
     () => import("@/Components/Dashboard/Kaih/PerKebiasaan.vue"),
+);
+const PerBulan = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Kaih/PerBulan.vue"),
 );
 defineProps({ rombels: Array });
 
@@ -58,6 +62,18 @@ const showPerKebiasaan = (row, rombel, kebiasaan) => {
         tapel: rombel.tapel,
     };
 };
+
+const formPerBulan = ref(false);
+const showPerBulan = (row, rombel) => {
+    selectedSiswa.value = row;
+    formPerBulan.value = true;
+    selectedRombel.value = {
+        kode: rombel.kode,
+        label: rombel.label,
+        tapel: rombel.tapel,
+    };
+};
+
 const resetForm = () => {
     selectedKebiasaan.value = null;
     selectedSiswa.value = null;
@@ -243,6 +259,7 @@ const fetchData = () => {
                                                     <el-button-group>
                                                         <el-button
                                                             size="small"
+                                                            class="group"
                                                             @click="
                                                                 showDetail(
                                                                     row,
@@ -250,11 +267,34 @@ const fetchData = () => {
                                                                 )
                                                             "
                                                         >
-                                                            Detail</el-button
+                                                            <Icon
+                                                                icon="mdi:chart-doughnut"
+                                                                class="group-hover:text-orange-400"
+                                                            />
+                                                            <span
+                                                                class="ml-[0.1rem]"
+                                                            >
+                                                                Grafik
+                                                            </span>
+                                                        </el-button>
+                                                        <el-button
+                                                            size="small"
+                                                            @click="
+                                                                showPerBulan(
+                                                                    row,
+                                                                    rombel,
+                                                                )
+                                                            "
                                                         >
-                                                        <el-button size="small"
-                                                            >Bulanan</el-button
-                                                        >
+                                                            <Icon
+                                                                icon="mdi:calendar"
+                                                            />
+                                                            <span
+                                                                class="ml-[0.1rem]"
+                                                            >
+                                                                Bulan
+                                                            </span>
+                                                        </el-button>
                                                         <el-button
                                                             size="small"
                                                             @click="
@@ -263,8 +303,16 @@ const fetchData = () => {
                                                                     rombel,
                                                                 )
                                                             "
-                                                            >Semester</el-button
                                                         >
+                                                            <Icon
+                                                                icon="mdi:calendar"
+                                                            />
+                                                            <span
+                                                                class="ml-[0.1rem]"
+                                                            >
+                                                                Semester
+                                                            </span>
+                                                        </el-button>
                                                     </el-button-group>
                                                 </div>
                                             </template>
@@ -296,6 +344,7 @@ const fetchData = () => {
             <KaihDetail
                 :siswa="selectedSiswa"
                 :rombel="selectedRombel"
+                :bulanTahun="bulanTahun"
                 v-if="formDetail"
             />
         </template>
@@ -311,6 +360,19 @@ const fetchData = () => {
                 :kebiasaan="selectedKebiasaan"
                 :bulanTahun="bulanTahun"
                 v-if="formPerKebiasaan"
+            />
+        </template>
+    </el-dialog>
+    <el-dialog v-model="formPerBulan" fullscreen @closed="resetForm">
+        <template #header>
+            <h2>Detail Per Bulan {{ selectedSiswa.nama }}</h2>
+        </template>
+        <template #default>
+            <PerBulan
+                :siswa="selectedSiswa"
+                :rombel="selectedRombel"
+                :bulanTahun="bulanTahun"
+                v-if="formPerBulan"
             />
         </template>
     </el-dialog>

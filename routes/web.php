@@ -448,18 +448,20 @@ Route::middleware("auth")->group(function () {
         });
 
         // 7 Kaih
-        Route::prefix("kaih")->group(function () {
-            Route::get("/home", [KaihController::class, "home"])->name(
-                "dashboard.kaih.home"
-            );
-            Route::get("/bulan", [KaihController::class, "perBulan"])->name(
-                "dashboard.kaih.bulan"
-            );
-            Route::get("/rekap/siswa", [
-                KaihController::class,
-                "rekapSiswa",
-            ])->name("dashboard.kaih.rekap.siswa");
-        });
+        Route::middleware(["role:guru_agama|guru_kelas"])
+            ->prefix("kaih")
+            ->group(function () {
+                Route::get("/home", [KaihController::class, "home"])->name(
+                    "dashboard.kaih.home"
+                );
+                Route::get("/bulan", [KaihController::class, "perBulan"])->name(
+                    "dashboard.kaih.bulan"
+                );
+                Route::get("/rekap/siswa", [
+                    KaihController::class,
+                    "rekapSiswa",
+                ])->name("dashboard.kaih.rekap.siswa");
+            });
 
         Route::prefix("roles")->group(function () {
             Route::get("/", [RoleController::class, "home"])->name(
