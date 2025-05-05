@@ -31,7 +31,7 @@ const labels = [
     "Makan Sehat dan Bergizi",
     "Gemar Belajar",
     "Bermasyarakat",
-    "Tidur Awal",
+    "Tidur Cepat",
 ];
 
 // Menyusun data untuk setiap siswa

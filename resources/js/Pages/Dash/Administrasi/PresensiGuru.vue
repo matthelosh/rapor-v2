@@ -65,7 +65,7 @@ const getData = async () => {
                 bulan: selectedBulan.value + 1,
                 tahun: selectedTahun.value,
             },
-        })
+        }),
     );
 };
 
@@ -84,7 +84,7 @@ const cetak = async () => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Presensi ${bulans.value[selectedBulan]}</title>
-            <link rel="stylesheet" href="${cssUrl}" />  
+            <link rel="stylesheet" href="${cssUrl}" />
         </head>
         <body>
             ${content}
@@ -199,9 +199,9 @@ onMounted(() => {
                                                 {{
                                                     tanggal.tanggal
                                                         ? dayjs(
-                                                              tanggal.tanggal
+                                                              tanggal.tanggal,
                                                           ).format(
-                                                              "D MMMM YYYY"
+                                                              "D MMMM YYYY",
                                                           )
                                                         : ""
                                                 }}
@@ -329,15 +329,15 @@ onMounted(() => {
                                             <li
                                                 v-if="
                                                     (dayjs(
-                                                        agenda.mulai
+                                                        agenda.mulai,
                                                     ).month() ==
                                                         selectedBulan ||
                                                         dayjs(
-                                                            agenda.selesai
+                                                            agenda.selesai,
                                                         ).month() ==
                                                             selectedBulan) &&
                                                     dayjs(
-                                                        agenda.mulai
+                                                        agenda.mulai,
                                                     ).year() == selectedTahun
                                                 "
                                             >
@@ -347,30 +347,30 @@ onMounted(() => {
                                                     >
                                                         {{
                                                             dayjs(
-                                                                agenda.mulai
+                                                                agenda.mulai,
                                                             ).format(
-                                                                "D MMM YYYY"
+                                                                "D MMM YYYY",
                                                             )
                                                         }}
                                                     </span>
                                                     <span
                                                         v-if="
                                                             dayjs(
-                                                                agenda.mulai
+                                                                agenda.mulai,
                                                             ).diff(
                                                                 dayjs(
-                                                                    agenda.selesai
+                                                                    agenda.selesai,
                                                                 ),
-                                                                'd'
+                                                                'd',
                                                             ) !== 0
                                                         "
                                                     >
                                                         -
                                                         {{
                                                             dayjs(
-                                                                agenda.selesai
+                                                                agenda.selesai,
                                                             ).format(
-                                                                "D MMM YYYY"
+                                                                "D MMM YYYY",
                                                             )
                                                         }}</span
                                                     >
@@ -414,14 +414,14 @@ onMounted(() => {
                                                     >
                                                         {{
                                                             page.props.pejabat
-                                                                .korwil
+                                                                ?.korwil
                                                         }}
                                                     </p>
                                                     <p class="leading-4">
                                                         NIP.
                                                         {{
                                                             page.props.pejabat
-                                                                .nip_korwil
+                                                                ?.nip_korwil
                                                         }}
                                                     </p>
                                                 </td>
@@ -434,14 +434,14 @@ onMounted(() => {
                                                     >
                                                         {{
                                                             page.props.pejabat
-                                                                .pengawas
+                                                                ?.pengawas
                                                         }}
                                                     </p>
                                                     <p class="leading-4">
                                                         NIP.
                                                         {{
                                                             page.props.pejabat
-                                                                .nip_pengawas
+                                                                ?.nip_pengawas
                                                         }}
                                                     </p>
                                                 </td>

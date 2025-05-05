@@ -28,7 +28,7 @@ class BejoKaihSeeder extends Seeder
                 "Tidur Cepat",
             ]),
             "is_done" => true,
-            "waktu" => fake()->dateTimeBetween("-3 week", "+1 week"),
+            "waktu" => fake()->dateTimeBetween("-1 week", "+4 week"),
             "keterangan" => fake()->sentence(3),
         ]);
     }

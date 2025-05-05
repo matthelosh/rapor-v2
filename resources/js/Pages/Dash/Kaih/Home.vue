@@ -2,6 +2,7 @@
 import { ref, defineAsyncComponent, computed } from "vue";
 import { router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
+import dayjs from "dayjs";
 import DashLayout from "@/Layouts/DashLayout.vue";
 
 const FormSemester = defineAsyncComponent(
@@ -78,6 +79,9 @@ const resetForm = () => {
     selectedKebiasaan.value = null;
     selectedSiswa.value = null;
     selectedRombel.value = null;
+    // formPerBulan.value = false;
+    // formPerKebiasaan.value = false;
+    // formDetail.value = false;
 };
 const tahuns = computed(() => {
     const currentYear = new Date().getFullYear();
@@ -87,6 +91,15 @@ const tahuns = computed(() => {
     }
     return years;
 });
+const prosentase = (value) => {
+    const day = dayjs(
+        (tahun.value ?? new Date().getFullYear()) +
+            "-" +
+            (bulan.value ?? new Date().getMonth() + 1),
+    );
+    const daysCount = day.daysInMonth();
+    return Math.round((value / daysCount) * 100);
+};
 
 const fetchData = () => {
     try {
@@ -217,22 +230,26 @@ const fetchData = () => {
                                                     >
                                                         <ElTooltip :content="k">
                                                             <div
-                                                                class="bar-item w-[50px] flex items-end justify-center cursor-pointer font-bold text-slate-600 rounded hover:shadow hover:-translate-y-2 transition-transform duration-300"
+                                                                class="bar-item w-[50px] flex items-end justify-center cursor-pointer font-bold text-slate-600 rounded hover:shadow hover:-translate-y-1 transition-transform duration-300"
                                                                 :class="
-                                                                    row
-                                                                        .kebiasaan_count[
-                                                                        k
-                                                                    ] <= 30
+                                                                    prosentase(
+                                                                        row
+                                                                            .kebiasaan_count[
+                                                                            k
+                                                                        ],
+                                                                    ) <= 30
                                                                         ? 'bg-red-300'
-                                                                        : row
-                                                                                .kebiasaan_count[
-                                                                                k
-                                                                            ] <=
+                                                                        : prosentase(
+                                                                                row
+                                                                                    .kebiasaan_count[
+                                                                                    k
+                                                                                ],
+                                                                            ) <=
                                                                             60
                                                                           ? 'bg-yellow-300'
                                                                           : 'bg-green-400'
                                                                 "
-                                                                :style="`height: ${row.kebiasaan_count[k]}px;`"
+                                                                :style="`height: ${prosentase(row.kebiasaan_count[k])}px;`"
                                                                 @click="
                                                                     showPerKebiasaan(
                                                                         row,
@@ -242,10 +259,12 @@ const fetchData = () => {
                                                                 "
                                                             >
                                                                 {{
-                                                                    row
-                                                                        .kebiasaan_count[
-                                                                        k
-                                                                    ] ?? "0"
+                                                                    prosentase(
+                                                                        row
+                                                                            .kebiasaan_count[
+                                                                            k
+                                                                        ],
+                                                                    ) ?? "0"
                                                                 }}
                                                             </div>
                                                         </ElTooltip>
@@ -326,16 +345,12 @@ const fetchData = () => {
             </el-card>
         </template>
     </DashLayout>
-    <el-dialog v-model="formSemester" fullscreen>
+    <el-dialog v-model="formSemester" fullscreen v-if="formSemester">
         <template #default>
-            <FormSemester
-                :siswa="selectedSiswa"
-                :rombel="selectedRombel"
-                v-if="formSemester"
-            />
+            <FormSemester :siswa="selectedSiswa" :rombel="selectedRombel" />
         </template>
     </el-dialog>
-    <el-dialog v-model="formDetail" fullscreen>
+    <el-dialog v-model="formDetail" fullscreen v-if="formDetail">
         <template #header>
             <h2>{{ selectedSiswa.nama }}</h2>
             <p>Kelas: {{ selectedRombel.label }}</p>
@@ -345,11 +360,15 @@ const fetchData = () => {
                 :siswa="selectedSiswa"
                 :rombel="selectedRombel"
                 :bulanTahun="bulanTahun"
-                v-if="formDetail"
             />
         </template>
     </el-dialog>
-    <el-dialog v-model="formPerKebiasaan" fullscreen @closed="resetForm">
+    <el-dialog
+        v-model="formPerKebiasaan"
+        fullscreen
+        @closed="resetForm"
+        v-if="formPerKebiasaan"
+    >
         <template #header>
             <h2>{{ selectedKebiasaan }}: {{ selectedSiswa.nama }}</h2>
         </template>
@@ -359,20 +378,23 @@ const fetchData = () => {
                 :rombel="selectedRombel"
                 :kebiasaan="selectedKebiasaan"
                 :bulanTahun="bulanTahun"
-                v-if="formPerKebiasaan"
             />
         </template>
     </el-dialog>
-    <el-dialog v-model="formPerBulan" fullscreen @closed="resetForm">
+    <el-dialog
+        v-model="formPerBulan"
+        fullscreen
+        @closed="resetForm"
+        v-if="formPerBulan"
+    >
         <template #header>
-            <h2>Detail Per Bulan {{ selectedSiswa.nama }}</h2>
+            <h2>Detail Per Bulan {{ selectedSiswa?.nama }}</h2>
         </template>
         <template #default>
             <PerBulan
                 :siswa="selectedSiswa"
                 :rombel="selectedRombel"
                 :bulanTahun="bulanTahun"
-                v-if="formPerBulan"
             />
         </template>
     </el-dialog>

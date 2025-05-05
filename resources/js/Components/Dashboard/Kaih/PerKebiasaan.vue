@@ -75,7 +75,7 @@ const items = computed(() => {
                     :popper-class="!item.kebiasaan ? 'hidden' : 'show-tooltip'"
                 >
                     <div
-                        class="flex flex-col items-center justify-center h-[100px] w-[100px] p-2 border rounded relative cursor-pointer hover:shadow-lg transition-all hover:-translate-y-2 duration-300 group"
+                        class="flex flex-col items-center justify-center h-[100px] w-[100px] p-2 border rounded relative cursor-pointer hover:shadow-lg transition-all duration-300 group"
                         :class="item.kebiasaan ? 'bg-white' : 'bg-gray-300'"
                     >
                         <span
