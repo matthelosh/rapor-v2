@@ -457,6 +457,10 @@ Route::middleware("auth")->group(function () {
                 Route::get("/bulan", [KaihController::class, "perBulan"])->name(
                     "dashboard.kaih.bulan"
                 );
+                Route::post("/rekap/input", [
+                    KaihController::class,
+                    "inputRekap",
+                ])->name("dashboard.kaih.rekap.input");
                 Route::get("/rekap/siswa", [
                     KaihController::class,
                     "rekapSiswa",

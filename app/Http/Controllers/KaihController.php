@@ -8,6 +8,7 @@ use App\Helpers\Periode;
 use Inertia\Inertia;
 use App\Models\Kaih;
 use DB;
+use Carbon\Carbon;
 
 class KaihController extends Controller
 {
@@ -113,6 +114,45 @@ class KaihController extends Controller
                 "success" => false,
                 "message" => "Error: " . $th->getMessage(),
             ]);
+        }
+    }
+
+    public function inputRekap(Request $request)
+    {
+        try {
+            // dd($request->all());
+            $tgls = [];
+            foreach ($request->kegiatans as $k => $tanggals) {
+                foreach ($tanggals as $tanggal) {
+                    $now = Carbon::now("Asia/Jakarta");
+                    $waktu = Carbon::createFromFormat(
+                        "Y-m-d H:i:s",
+                        $tanggal . " " . $now->format("H:i:s"),
+                        "Asia/Jakarta"
+                    );
+                    Kaih::updateOrCreate(
+                        [
+                            "rombel_id" => $request->rombelId,
+                            "siswa_id" => $request->siswaId,
+                            "waktu" => $waktu->toDateTimeString(),
+                            "semester" => Periode::semester()->kode,
+                            "kebiasaan" => $k,
+                        ],
+                        [
+                            "is_done" => true,
+                            "keterangan" => $request->keterangan,
+                        ]
+                    );
+                    // array_push($tgls, $tanggal);
+                }
+            }
+            // dd($tgls);
+            return back()->with(
+                "message",
+                "Rekap KAIH " . $request->siswaId . " disimpan."
+            );
+        } catch (\THrowable $th) {
+            dd($th);
         }
     }
 }

@@ -1,16 +1,20 @@
 <script setup>
-import { defineAsyncComponent } from "vue";
+import { defineAsyncComponent, ref } from "vue";
 
 import { Icon } from "@iconify/vue";
 const props = defineProps({
     siswa: Object,
     rombel: Object,
-    bulan: String,
+    bulanTahun: String,
 });
 
 const LineChart = defineAsyncComponent(() => import("./PerMingguChart.vue"));
+const InputRekap = defineAsyncComponent(() => import("./InputRekap.vue"));
 
-const inputRekap = () => {};
+const formRekap = ref(false);
+const inputRekap = () => {
+    formRekap.value = true;
+};
 
 const printRekap = () => {
     // window.print();
@@ -43,6 +47,14 @@ const printBlanko = () => {
         >
     </div>
     <div class="w-[600px] h-[600px] mx-auto py-8">
-        <LineChart :bulan="bulan" :rombel="rombel" :siswa="siswa" />
+        <LineChart :bulan="bulanTahun" :rombel="rombel" :siswa="siswa" />
     </div>
+    <el-dialog v-model="formRekap" v-if="formRekap">
+        <template #header>
+            <div class="h3">
+                Formulir Rekap Kegiatan {{ siswa.nama }} Bulan {{ bulanTahun }}
+            </div>
+        </template>
+        <InputRekap :siswa="siswa" :rombel="rombel" :bulan="bulanTahun" />
+    </el-dialog>
 </template>
