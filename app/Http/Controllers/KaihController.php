@@ -130,19 +130,22 @@ class KaihController extends Controller
                         $tanggal . " " . $now->format("H:i:s"),
                         "Asia/Jakarta"
                     );
-                    Kaih::updateOrCreate(
-                        [
+                    $splitted_tanggal = explode("-", $tanggal);
+                    $exists = Kaih::whereYear("waktu", $splitted_tanggal[0])
+                        ->whereMonth("waktu", $splitted_tanggal[1])
+                        ->whereDate("waktu", $splitted_tanggal[2])
+                        ->get();
+                    if ($exists->count() < 1) {
+                        Kaih::create([
                             "rombel_id" => $request->rombelId,
                             "siswa_id" => $request->siswaId,
-                            "waktu" => $waktu->toDateTimeString(),
                             "semester" => Periode::semester()->kode,
                             "kebiasaan" => $k,
-                        ],
-                        [
+                            "waktu" => $waktu->toDateTimeString(),
                             "is_done" => true,
                             "keterangan" => $request->keterangan,
-                        ]
-                    );
+                        ]);
+                    }
                     // array_push($tgls, $tanggal);
                 }
             }

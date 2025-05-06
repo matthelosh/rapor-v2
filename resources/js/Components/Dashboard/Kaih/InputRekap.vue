@@ -8,7 +8,7 @@ import "dayjs/locale/id";
 const page = usePage();
 const loading = ref(false);
 const kegiatans = ref({
-    "Bangun Pagi": ["2025-05-01"],
+    "Bangun Pagi": [],
     Beribadah: [],
     Berolahraga: [],
     "Makan Sehat dan Bergizi": [],

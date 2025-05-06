@@ -43,10 +43,10 @@ const data = {
         {
             // label: props.siswa.nama,
             label: "Terlaksana",
-            // data: labels.map(
-            //     (label) => props.siswa.kebiasaan_count[label] || 0,
-            // ),
-            data: [10, 3, 40, 20, 15, 25, 30],
+            data: labels.map(
+                (label) => props.siswa.kebiasaan_count[label] || 0,
+            ),
+            // data: [10, 3, 40, 20, 15, 25, 30],
             backgroundColor: [
                 "rgba(200, 199, 232, 0.5)",
                 "rgba(54, 162, 235, 1)",
