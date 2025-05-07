@@ -1,9 +1,20 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, useTemplateRef, onMounted } from "vue";
 import { Link } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
+import { onClickOutside } from "@vueuse/core";
 
-import menus from '@/helpers/frontMenu.json'
+import menus from "@/helpers/frontMenu.json";
+const navWrapper = ref(null);
+
+// if (window.innerWidth < 768 && navWrapper) {
+//     if (navWrapper.classList?.contains("hidden") === false) {
+//         onClickOutside((navWrapper, event) => {
+//             console.log(navWrapper, event);
+//             toggleNav();
+//         });
+//     }
+// }
 
 defineProps({
     canLogin: {
@@ -15,61 +26,97 @@ defineProps({
     appName: String,
 });
 
-const showDrawer = ref(false)
+const showDrawer = ref(false);
+const toggleNav = () => {
+    const nav = document.querySelector(".nav-wrapper");
+    nav.classList.toggle("hidden");
+};
+onMounted(() => {
+    onClickOutside(navWrapper, (event) => {
+        if (
+            window.innerWidth < 768 &&
+            navWrapper.value &&
+            !navWrapper.value.classList.contains("hidden")
+        ) {
+            // console.log(navWrapper.value, event);
+            toggleNav();
+        }
+    });
+});
 </script>
 
 <template>
     <el-affix :offset="0">
-    <header class="navbar z-40 bg-sky-600 h-[63px]">
-            <el-row justify="center">
-                <el-col :span="24" :md="24" :lg="24" :xl="18">
-                    <div class="navbar-container  w-full flex justify-between items-center h-[60px] px-6">
-                        <h3 class="uppercase text-white">
-                            <Link href="/" class="flex items-center gap-1">
-                                <img src="/img/tutwuri.png" alt="Logo" class="h-[28px]">
-                                {{ appName }}
-                            </Link>
-                        </h3>
-                        <nav class="gap-4 uppercase hidden md:flex text-white">
-                            <template v-for="(menu, m) in menus" :key="m">
-                                <Link :href="menu.url" v-if="menu.children.length < 1">
-                                    {{ menu.label }}
-                                </Link>
-                                <el-popover v-if="menu.children.length > 0" trigger="click" class="hover:cursor-pointer" width="160">
-                                    <template #reference>
-                                        <a href="#">
-                                            {{ menu.label }}
-                                        </a>
-                                    </template>
-                                    <ul >
-                                        <li v-for="sub in menu.children" class="px-2 py-3 hover:bg-sky-100 uppercase">
-                                            <Link :href="sub.url">{{ sub.label }}</Link>
-                                        </li>
-                                    </ul>
-                                </el-popover>
-                            </template>
-                            <Link href="/login" class="flex items-center">
-                                <Icon icon="mdi:application-import"  />
-                            </Link>
-                        </nav>
-                        <Icon icon="mdi:dots-vertical" class="text-2xl inline md:hidden" @click="showDrawer = !showDrawer" />
+        <div
+            class="header flex justify-between items-start py-2 px-4 text-white relative h-[50px]"
+        >
+            <Link href="/" class="logo flex items-center gap-1">
+                <img src="/img/logo_pkg.png" alt="" class="h-10" />
+                <div class="logo-text flex flex-col items-start justify-start">
+                    <h3 class="leading-3 m-0 p-0">P.K.G.</h3>
+                    <small class="leading-3 m-0 p-0">Kecamatan Wagir</small>
+                </div>
+            </Link>
+            <div class="header-navs flex flex-col items-end justify-start h-10">
+                <button @click="toggleNav" class="sm:hidden translate-y-2">
+                    <Icon icon="mdi:menu" class="text-xl" />
+                </button>
+                <div class="nav-wrapper hidden sm:block z-20" ref="navWrapper">
+                    <div
+                        class="header-nav flex flex-col sm:flex-row bg-white sm:bg-transparent bg-opacity-40 backdrop-blur p-2 rounded shadow sm:shadow-none gap-2"
+                    >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/"
+                            >Beranda</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/profil"
+                            >Profil</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/layanan"
+                            >Layanan</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/berita"
+                            >Berita</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/info"
+                            >Pengumuman</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/galeri"
+                            >Galeri</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/agenda"
+                            >Agenda</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/sertifikat"
+                            >Sertifikat</Link
+                        >
+                        <Link
+                            href="/login"
+                            class="flex items-center bg-sky-400 sm:bg-transparent border px-2 rounded text-lg sm:hover:bg-white sm:hover:text-sky-600 transition-all duration-300"
+                        >
+                            <Icon icon="mdi-light:login" />
+                            Masuk
+                        </Link>
                     </div>
-                </el-col>
-            </el-row>
-        </header>
+                </div>
+            </div>
+        </div>
     </el-affix>
-    <el-drawer v-model="showDrawer" size="60%" :withHeader="false">
-        <nav class="gap-2 flex-col flex">
-            <template v-for="(menu, m) in menus" :key="m">
-                <Link :href="menu.url">
-                    {{ menu.label }}
-                </Link>
-            </template>
-            <Link href="/login" class="flex items-center">
-                <Icon icon="mdi:application-import"  />
-            </Link>  
-        </nav>
-    </el-drawer>
 </template>
 
 <style>
@@ -81,12 +128,11 @@ const showDrawer = ref(false)
 }
 .navbar .navbar-container {
     color: #efefef;
-    height: 100%;   
+    height: 100%;
     background: rgb(27, 110, 226);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
 } */
-
 </style>

@@ -28,7 +28,10 @@ const showItem = (roles) => {
 <template>
     <div class="p-0">
         <div class="avatar relative bg-sky-200 py-8">
-            <img :src="avatar()" class="rounded-full border border-dashed border-4 border-slate-500 drop-shadow object-cover w-40 mx-auto clip-path" />
+            <img
+                :src="avatar()"
+                class="rounded-full border-dashed border-4 border-slate-500 drop-shadow object-cover w-40 mx-auto clip-path"
+            />
             <h3
                 class="absolute bottom-0 bg-sky-800 text-center text-white font-black tracking-wide w-full py-3 px-2 bg-opacity-90"
             >
@@ -62,7 +65,12 @@ const showItem = (roles) => {
                                 <span>{{ item.label }}</span>
                             </Link>
                         </li>
-                        <li v-if="item.children.length > 0 && showItem(item.roles)" class="group">
+                        <li
+                            v-if="
+                                item.children.length > 0 && showItem(item.roles)
+                            "
+                            class="group"
+                        >
                             <a
                                 :href="item.url"
                                 @click="toggleChild"

@@ -1,18 +1,23 @@
 <script setup>
-import { Link, router, usePage } from "@inertiajs/vue3";
+import { Link, router, usePage, Head } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
+import Header from "@/Layouts/Front/Header.vue";
+import Footer from "@/Layouts/Front/Footer.vue";
 
-const toggleNav = () => {
-    const nav = document.querySelector(".nav-wrapper");
-    nav.classList.toggle("hidden");
-};
+const page = usePage();
+
+// const toggleNav = () => {
+//     const nav = document.querySelector(".nav-wrapper");
+//     nav.classList.toggle("hidden");
+// };
 </script>
 
 <template>
+    <Head title="Sugeng Rawuh" />
     <div
         class="wrapper bg-gradient-to-br from-sky-400 to-indigo-500 min-h-screen w-screen relative overflow-x-hidden"
     >
-        <div
+        <!-- <div
             class="header flex justify-between items-start py-2 px-4 text-white relative h-[50px]"
         >
             <Link href="/" class="logo flex items-center gap-1">
@@ -22,7 +27,6 @@ const toggleNav = () => {
                     <small class="leading-3 m-0 p-0">Kecamatan Wagir</small>
                 </div>
             </Link>
-            <!-- <div class="spacer"></div> -->
             <div class="header-navs flex flex-col items-end justify-start h-10">
                 <button @click="toggleNav" class="sm:hidden translate-y-2">
                     <Icon icon="mdi:menu" class="text-xl" />
@@ -61,8 +65,11 @@ const toggleNav = () => {
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="logo flex justify-center mt-8 gap-4 sm:gap-8 bg-white p-4">
+        </div> -->
+        <Header />
+        <div
+            class="logo flex justify-center mt-8 gap-4 sm:gap-8 bg-white pt-16 pb-8"
+        >
             <img
                 src="/img/malangkab.png"
                 alt="Kab Malang"
@@ -93,10 +100,11 @@ const toggleNav = () => {
             <h1
                 class="title text-8xl text-white font-['Arial'] font-black text-shadow-lg"
             >
-                P<span class="hidden">USAT</span> K<span class="hidden"
+                P<span class="hidden sm:inline">USAT</span> K<span
+                    class="hidden sm:inline"
                     >EGIATAN</span
                 >
-                G<span class="hidden">URU</span>
+                G<span class="hidden sm:inline">URU</span>
             </h1>
             <h3
                 class="subtitle text-4xl text-white font-black font-['Arial'] text-shadow-lg"
@@ -135,5 +143,6 @@ const toggleNav = () => {
                 </li>
             </ul>
         </div>
+        <Footer class="mt-12" />
     </div>
 </template>

@@ -6,48 +6,81 @@ import { Icon } from "@iconify/vue";
 // import 'element-plus/es/components/button/style/css'
 import SideItem from "@/Layouts/SideMenu.vue";
 const contentTrigger = ref(true);
-const page = usePage()
+const page = usePage();
 const logout = () => {
     router.post(route("logout"));
 };
 
 const sideWidth = computed(() => {
-    return window.innerWidth <= 414 ? '0%' : '15%'
-})
+    return window.innerWidth <= 414 ? "0%" : "15%";
+});
 
 const toggleSide = () => {
-    const side = document.querySelector('aside')
-    side.style.width = '50%'
-    side.classList.toggle("hidden-sm-and-down")
-}
+    const side = document.querySelector("aside");
+    side.style.width = "50%";
+    side.classList.toggle("hidden-sm-and-down");
+};
 
 onMounted(() => {
-    (contentTrigger.value = true)
+    contentTrigger.value = true;
 });
 </script>
 <template>
-    <div class="common-layout h-screen w-screen">
-        <el-container class="h-full w-full">
-            <el-aside width="15%" class="max-h-screen hidden-sm-and-down" v-if="page.props.auth.roles[0] !== 'siswa'">
-                <div class="side-content h-full bg-slate-100">
+    <div
+        class="common-layout h-screen w-screen bg-gradient-to-br from-sky-400 to-indigo-500 relative"
+    >
+        <div class="ornamen absolute top-0 right-0 bottom-0 left-0">
+            <img
+                src="/img/meja_kerja.svg"
+                alt="Meja Kerja"
+                class="absolute bottom-8 right-64 w-60"
+            />
+            <img
+                src="/img/asn.svg"
+                alt="Meja Kerja"
+                class="absolute bottom-8 right-8 h-72"
+            />
+            <img
+                src="/img/buku.svg"
+                alt="Meja Kerja"
+                class="absolute left-32 top-64 h-48"
+            />
+        </div>
+        <el-container class="h-full w-full z-20 relative">
+            <el-aside
+                width="15%"
+                class="max-h-screen hidden-sm-and-down"
+                v-if="page.props.auth.roles[0] !== 'siswa'"
+            >
+                <div
+                    class="side-content h-full bg-slate-100 bg-opacity-70 backdrop-blur-md"
+                >
                     <el-scrollbar max-height="100vh">
                         <SideItem />
                     </el-scrollbar>
                 </div>
             </el-aside>
-            <el-container>
-                <el-header class="px-8 z-40 bg-white">
+            <div class="w-full">
+                <el-header class="px-8 z-40">
                     <div
-                        class="content bg-white mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md"
+                        class="content bg-white bg-opacity-60 backdrop-blur-md mt-2 w-full flex items-center justify-between h-full p-4 shadow-md rounded-b-md"
                     >
                         <div class="head-title flex items-center gap-2">
                             <span>
-                                <Icon v-if="page.props.auth.roles[0] !== 'siswa'" icon="mdi:menu" class="text-xl hidden-md-and-up" @click="toggleSide" />
-                                <Link v-else :href="route('dashboard')" >
+                                <Icon
+                                    v-if="page.props.auth.roles[0] !== 'siswa'"
+                                    icon="mdi:menu"
+                                    class="text-xl hidden-md-and-up"
+                                    @click="toggleSide"
+                                />
+                                <Link v-else :href="route('dashboard')">
                                     <Icon icon="mdi:home" />
                                 </Link>
                             </span>
-                            <img src="/img/tutwuri.png" class="w-10 hidden-md-and-down" />
+                            <img
+                                src="/img/tutwuri.png"
+                                class="w-10 hidden-md-and-down"
+                            />
                             <slot name="header"></slot>
                         </div>
                         <div class="header-items flex items-center">
@@ -69,14 +102,14 @@ onMounted(() => {
                         </div>
                     </div>
                 </el-header>
-                <el-main>
+                <el-main class="h-[90vh]">
                     <Transition name="slide-fade" mode="out-in" :duration="500">
                         <div v-if="contentTrigger">
                             <slot />
                         </div>
                     </Transition>
                 </el-main>
-            </el-container>
+            </div>
         </el-container>
     </div>
 </template>
@@ -97,10 +130,10 @@ onMounted(() => {
 }
 
 .el-dialog {
-    padding: 0!important;
+    padding: 0 !important;
 }
 
 .el-dialog__header {
-    margin-right: 0!important;
+    margin-right: 0 !important;
 }
 </style>
