@@ -1,88 +1,139 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
-import { Head, Link, usePage, router } from "@inertiajs/vue3";
+import { Link, router, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
-import Header from '@/Layouts/Front/Header.vue';
-const Hero = defineAsyncComponent(() => import('@/Layouts/Front/Hero.vue'))
-const Side = defineAsyncComponent(() => import('@/Layouts/Front/Side.vue'))
-const Footer = defineAsyncComponent(() => import('@/Layouts/Front/Footer.vue'))
-
-const page = usePage();
-
-defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
-    appName: String,
-    posts: Array,
-    infos: Array,
-    agendas: Array,
-    galeris: Array,
-});
-
-
+const toggleNav = () => {
+    const nav = document.querySelector(".nav-wrapper");
+    nav.classList.toggle("hidden");
+};
 </script>
 
 <template>
-    <Head title="Selamat Datang" />
-    <div class="common-layout">
-        <div class="wrapper">
-            <Header :appName="appName" />
-            <el-main>
-                <div class="main-container">
-                        <el-row :gutter="20" justify="center">
-                            <el-col :span="24" :md="18" :lg="24" :xl="18">
-                                <div class="hero ">
-                                    <Hero />
-                                </div>
-
-                            </el-col>
-                        </el-row>
-                    <div class="main-content py-10">
-                        <el-container>
-                            <el-row :gutter="20" justify="center">
-                                <el-col :span="24" :md="18" :lg="18" :xl="12">
-                                    <div class="grid grid-cols-1 gap-0 md:gap-4 md:grid-cols-3">
-                                        <template v-for="(post, p) in posts" :key="p">
-                                            <div class="columns-1 col-span-1 shadow mb-4 p-2 border" :class="p === 0 ? 'md:col-span-3':''">
-                                                <div class="cover col-span-1 h-[200px]" :class="p === 0 ? 'md:h-[350px]' : ''">
-                                                    <img :src="post.cover" alt="Cover" class="w-full object-cover h-full" />
-                                                </div>
-                                                <article class="col-span-3 px-2 md:pr-4 pt-2">
-                                                    <h3 class="text-lg font-bold text-sky-800 hover:underline mb-4">
-                                                        <Link :href="`/baca/${post.slug}`">{{ post.title }}</Link>
-                                                    </h3>
-                                                    <p class="text-justify" v-html="post.content.substring(0, p === 0 ? 700 : 250)"></p>
-                                                </article>
-                                            </div>
-                                        </template>
-                                    </div>
-                                </el-col>
-                                <el-col :span="24" :md="6">
-                                    <Side :infos="infos" :agendas="agendas" :galeris="galeris" />
-                                </el-col>
-                            </el-row>
-                        </el-container>
+    <div
+        class="wrapper bg-gradient-to-br from-sky-400 to-indigo-500 min-h-screen w-screen relative overflow-x-hidden"
+    >
+        <div
+            class="header flex justify-between items-start py-2 px-4 text-white relative h-[50px]"
+        >
+            <Link href="/" class="logo flex items-center gap-1">
+                <img src="/img/logo_pkg.png" alt="" class="h-10" />
+                <div class="logo-text flex flex-col items-start justify-start">
+                    <h3 class="leading-3 m-0 p-0">P.K.G.</h3>
+                    <small class="leading-3 m-0 p-0">Kecamatan Wagir</small>
+                </div>
+            </Link>
+            <!-- <div class="spacer"></div> -->
+            <div class="header-navs flex flex-col items-end justify-start h-10">
+                <button @click="toggleNav" class="sm:hidden translate-y-2">
+                    <Icon icon="mdi:menu" class="text-xl" />
+                </button>
+                <div class="nav-wrapper hidden sm:block z-20">
+                    <div
+                        class="header-nav flex flex-col sm:flex-row bg-white sm:bg-transparent bg-opacity-40 backdrop-blur p-2 rounded shadow sm:shadow-none gap-2"
+                    >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/"
+                            >Beranda</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/profil"
+                            >Profil</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/layanan"
+                            >Layanan</Link
+                        >
+                        <Link
+                            class="hover:underline px-2 sm:text-white text-sky-700 text-lg"
+                            href="/galeri"
+                            >Galeri</Link
+                        >
+                        <Link
+                            href="/login"
+                            class="flex items-center bg-sky-400 sm:bg-transparent border px-2 rounded text-lg sm:hover:bg-white sm:hover:text-sky-600 transition-all duration-300"
+                        >
+                            <Icon icon="mdi-light:login" />
+                            Masuk
+                        </Link>
                     </div>
                 </div>
-            </el-main>
-            <Footer />
+            </div>
+        </div>
+        <div class="logo flex justify-center mt-8 gap-4 sm:gap-8 bg-white p-4">
+            <img
+                src="/img/malangkab.png"
+                alt="Kab Malang"
+                class="h-16 sm:h-32"
+            />
+            <img src="/img/tutwuri.png" alt="Tutwuri" class="h-16 sm:h-32" />
+            <div class="bg-white h-16 sm:h-32 text-center">
+                <img
+                    src="/img/ramah.png"
+                    alt="Ramah"
+                    class="h-14 sm:h-24 object-cover -translate-y-2"
+                />
+                <img
+                    src="/img/bermutu.png"
+                    alt="Bermutu"
+                    class="h-16 sm:h-24 object-cover -translate-y-10 sm:-translate-y-12"
+                />
+            </div>
+        </div>
+        <img
+            src="/img/laptop.png"
+            alt=""
+            class="absolute -right-40 sm:right-8 sm:bottom-0 sm:h-[600px]"
+        />
+        <div
+            class="hero p-4 bg-white bg-opacity-15 backdrop-blur-0 relative my-8"
+        >
+            <h1
+                class="title text-8xl text-white font-['Arial'] font-black text-shadow-lg"
+            >
+                P<span class="hidden">USAT</span> K<span class="hidden"
+                    >EGIATAN</span
+                >
+                G<span class="hidden">URU</span>
+            </h1>
+            <h3
+                class="subtitle text-4xl text-white font-black font-['Arial'] text-shadow-lg"
+            >
+                <span class="hidden">KORWIL DINAS PENDIDIKAN </span>KECAMATAN
+            </h3>
+            <h1
+                class="title text-4xl sm:text-9xl text-white font-['Arial'] font-black text-shadow-lg"
+            >
+                WAGIR
+            </h1>
+        </div>
+        <div class="kontak">
+            <h1 class="p-4 bg-white sm:w-[20%] text-xl font-black">
+                Website & Sosmed:
+            </h1>
+            <ul class="pl-6 mt-4">
+                <li>
+                    <a
+                        href="https://pkgwagir.or.id"
+                        class="flex items-center text-white gap-2 py-2"
+                    >
+                        <Icon icon="mdi:globe" class="text-xl" />
+                        https://pkgwagir.or.id
+                    </a>
+                </li>
+                <li>
+                    <a
+                        href="https://youtube.com"
+                        class="flex items-center text-white gap-2 py-2"
+                        target="_blank"
+                    >
+                        <Icon icon="mdi:youtube" class="text-xl" />
+                        Literasi Wagir Untuk Bangsa
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </template>
-
-<style scoped>
-
-</style>
