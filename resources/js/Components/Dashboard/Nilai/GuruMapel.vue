@@ -1,11 +1,17 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { ElCard } from "element-plus";
 const page = usePage();
-import FormNilaiHarian from "./FormNilaiHarian.vue";
-import FormNilaiTS from "./FormNilaiTS.vue";
-import FormNilaiAS from "./FormNilaiAS.vue";
+const FormNilaiHarian = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiHarian.vue"),
+);
+const FormNilaiTS = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiTS.vue"),
+);
+const FormNilaiAS = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiAS.vue"),
+);
 
 const selectedRombel = ref({});
 const selectedSekolah = ref({});
@@ -79,11 +85,11 @@ const persen = (scope) => {};
                                                 Math.round(
                                                     (parseInt(
                                                         scope.row.nilais[0]
-                                                            ?.uh ?? 0
+                                                            ?.uh ?? 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
-                                                        100
+                                                        100,
                                                 )
                                             }}
                                             % | PTS:
@@ -91,11 +97,11 @@ const persen = (scope) => {};
                                                 Math.round(
                                                     (parseInt(
                                                         scope.row.nilais[0]
-                                                            ?.pts ?? 0
+                                                            ?.pts ?? 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
-                                                        100
+                                                        100,
                                                 )
                                             }}
                                             % | PAS:
@@ -103,11 +109,11 @@ const persen = (scope) => {};
                                                 Math.round(
                                                     (parseInt(
                                                         scope.row.nilais[0]
-                                                            ?.as ?? 0
+                                                            ?.as ?? 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
-                                                        100
+                                                        100,
                                                 )
                                             }}
                                             %
@@ -126,7 +132,7 @@ const persen = (scope) => {};
                                                     open(
                                                         scope.row,
                                                         'harian',
-                                                        sekolah
+                                                        sekolah,
                                                     )
                                                 "
                                                 >Nilai Harian</el-button
@@ -140,7 +146,7 @@ const persen = (scope) => {};
                                                     open(
                                                         scope.row,
                                                         'sts',
-                                                        sekolah
+                                                        sekolah,
                                                     )
                                                 "
                                                 >PTS</el-button
@@ -154,7 +160,7 @@ const persen = (scope) => {};
                                                     open(
                                                         scope.row,
                                                         'sas',
-                                                        sekolah
+                                                        sekolah,
                                                     )
                                                 "
                                                 >PAS</el-button
