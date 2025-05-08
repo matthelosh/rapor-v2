@@ -219,6 +219,10 @@ const printRekap = () => {
     win.document.open();
     win.document.write(html);
     win.document.close();
+    setTimeout(() => {
+        win.print();
+        win.close();
+    }, 1000);
 };
 
 const printBlanko = () => {
