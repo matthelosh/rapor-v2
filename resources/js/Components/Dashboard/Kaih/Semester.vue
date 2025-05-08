@@ -3,6 +3,9 @@ import { ref, computed, onBeforeMount } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import axios from "axios";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+
 import Kop from "@/Components/Dashboard/Kop.vue";
 const page = usePage();
 const props = defineProps({ siswa: Object, rombel: Object });
@@ -16,18 +19,45 @@ const kebiasaans = ref([
     "Bermasyarakat",
     "Tidur Cepat",
 ]);
-// const lookup = props.siswa.kaihs.reduce((acc, cur) => {
-//     acc[cur.kebiasaan] = cur.waktu;
-//     return acc;
-// }, {});
-// const items = computed(() => {
-//     return kebiasaans.value.map((keb) => ({
-//         keb,
-//         nilai: lookup[keb] ?? null,
-//     }));
-// });
+const rekap = ref(null);
+const jmlHari = computed(() => {
+    const semester = page.props.periode.semester.kode;
+    const tahun =
+        semester == "1"
+            ? page.props.periode.tapel.label.split("/")[0]
+            : page.props.periode.tapel.label.split("/")[1];
+    const startDate =
+        semester == "1" ? dayjs(tahun + "-07-01") : dayjs(tahun + "-01-01");
+    const endDate =
+        semester == "1" ? dayjs(tahun + "-12-31") : dayjs(tahun + "-06-30");
 
-const cetak = async () => {};
+    return endDate.diff(startDate, "day") + 1;
+});
+
+const prosentase = (nilai) => {
+    return Math.round((nilai / jmlHari.value) * 100);
+};
+
+const cetak = async () => {
+    const cssUrl =
+        page.props.app_env == "local"
+            ? page.props.appUrl + ":5173/resources/css/app.css"
+            : "/assets/css/app.css";
+    const element = document.querySelector(".page");
+    const html = `<!doctype html>
+            <html>
+                <head>
+                    <title>Rekap 7 KAIH ${props.siswa.nama}-${props.siswa.nisn}</title>
+                    <link rel="stylesheet" href="${cssUrl}"
+                </head>
+                <body>
+                    ${element.outerHTML}
+                </body>
+            </html>
+        `;
+    let win = window.open("", "_blank", "width=900,height=800");
+    win.document.write(html);
+};
 
 const getKaihSiswa = () => {
     axios
@@ -35,12 +65,12 @@ const getKaihSiswa = () => {
             route("dashboard.kaih.rekap.siswa", {
                 _query: {
                     rombelId: props.rombel.kode,
-                    semester: "1",
+                    semester: page.props.periode.semester.kode,
                     siswaId: props.siswa.nisn,
                 },
             }),
         )
-        .then((res) => console.log(res));
+        .then((res) => (rekap.value = res.data.rekap));
 };
 
 onBeforeMount(() => {
@@ -64,11 +94,15 @@ onBeforeMount(() => {
                 class="page bg-white p-4 w-[90%] xl:w-[60%] mx-auto rounded shadow print:w-full print:rounded-none print:shadow-none"
             >
                 <Kop />
-                <h3 class="text-center text-2xl font-black uppercase my-8">
+                <h3 class="text-center text-2xl font-black uppercase mt-8">
                     Formulir Pemantauan <br />
                     Tujuh Kebiasaan Anak Indonesia Hebat
                 </h3>
-
+                <h4 class="text-center uppercase font-bold">
+                    Semester {{ page.props.periode.semester.label }} Tahun
+                    {{ page.props.periode.tapel.label }}
+                </h4>
+                <!-- <div class="text-center">{{ page.props.appName }}</div> -->
                 <table class="my-4">
                     <tbody>
                         <tr>
@@ -86,15 +120,17 @@ onBeforeMount(() => {
                             <td>:</td>
                             <td>{{ rombel.label }}</td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td>Bulan</td>
                             <td>:</td>
                             <td></td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
-
-                <table class="w-full">
+                <!-- <div>
+                    {{ rekap }}
+                </div> -->
+                <table class="w-full" v-if="rekap">
                     <thead>
                         <tr>
                             <th class="border border-black p-2" rowspan="2">
@@ -120,37 +156,58 @@ onBeforeMount(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- <template v-for="(kaih, k) in items" :key="`keb-${k}`">
+                        <template
+                            v-for="(key, k) in Object.keys(rekap)"
+                            :key="`key-${k}`"
+                        >
                             <tr>
                                 <td class="border border-black text-center p-2">
                                     {{ k + 1 }}
                                 </td>
                                 <td class="border border-black left p-2">
-                                    {{ kaih.keb }}
+                                    {{ key }}
                                 </td>
                                 <td class="border border-black text-center p-2">
-                                    {{ kaih.nilai }}
+                                    <!-- {{ prosentase(rekap[key]) }} |
+                                    {{ rekap[key] }} | {{ key }} -->
                                     <Icon
-                                        icon="mdi:check-circle-outline"
-                                        class="mx-auto text-xl text-red-500"
+                                        v-if="
+                                            prosentase(rekap[key]) <= 33 &&
+                                            rekap[key]
+                                        "
+                                        icon="mdi:check"
+                                        class="mx-auto text-2xl text-red-500"
                                     />
                                 </td>
                                 <td class="border border-black text-center p-2">
                                     <Icon
-                                        icon="mdi:check-circle-outline"
-                                        class="mx-auto text-xl text-green-500"
+                                        v-if="
+                                            rekap[key] &&
+                                            prosentase(rekap[key]) > 33 &&
+                                            prosentase(rekap[key]) <= 66
+                                        "
+                                        icon="mdi:check"
+                                        class="mx-auto text-2xl text-green-500"
                                     />
                                 </td>
                                 <td class="border border-black text-center p-2">
                                     <Icon
-                                        icon="mdi:check-circle-outline"
-                                        class="mx-auto text-xl text-blue-500"
+                                        v-if="
+                                            rekap[key] &&
+                                            prosentase(rekap[key]) > 66 &&
+                                            prosentase(rekap[key]) <= 100
+                                        "
+                                        icon="mdi:check"
+                                        class="mx-auto text-2xl text-blue-500"
                                     />
                                 </td>
                             </tr>
-                        </template> -->
+                        </template>
                     </tbody>
                 </table>
+
+                <!-- {{ siswa.kaihs }} -->
+
                 <div class="ttd grid grid-cols-3 my-16">
                     <div class="ttd-guru">
                         <p>Menyetujui,</p>

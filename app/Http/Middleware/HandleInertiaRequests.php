@@ -59,6 +59,8 @@ class HandleInertiaRequests extends Middleware
             "pejabat" => Pejabat::first(),
             "periode" => $this->periode(),
             "app_env" => env("APP_ENV"),
+            "appUrl" => env("APP_URL"),
+            "appName" => env("APP_NAME"),
             "guguses" => $user ? Gugus::all() : null,
             "mapels" => $user
                 ? ($user->hasRole("admin")

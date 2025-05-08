@@ -99,15 +99,52 @@ class KaihController extends Controller
     public function rekapSiswa(Request $request)
     {
         try {
+            $startDate =
+                Periode::semester()->kode == "1"
+                    ? Carbon::parse(
+                        explode("/", Periode::tapel()->label)[0] . "-07-01"
+                    )->startOfDay()
+                    : Carbon::parse(
+                        explode("/", Periode::tapel()->label)[1] . "-01-01"
+                    )->startOfDay();
+            $endDate =
+                Periode::semester()->kode == "1"
+                    ? Carbon::parse(
+                        explode("/", Periode::tapel()->label)[0] . "-12-31"
+                    )->endOfDay()
+                    : Carbon::parse(
+                        explode("/", Periode::tapel()->label)[1] . "-06-30"
+                    )->endOfDay();
             $kaihs = Kaih::where([
                 ["rombel_id", "=", $request->query("rombelId")],
                 ["siswa_id", "=", $request->query("siswaId")],
                 ["semester", "=", $request->query("semester")],
-            ])->get();
+            ])
+                ->whereBetween("waktu", [$startDate, $endDate])
+                ->get();
 
+            $daftar_kebiasaan = [
+                "Bangun Pagi",
+                "Beribadah",
+                "Makan Sehat dan Bergizi",
+                "Gemar Belajar",
+                "Bermasyarakat",
+                "Tidur Cepat",
+                "Berolahraga",
+            ];
+
+            $grouped = $kaihs->groupBy("kebiasaan")->map->count();
+            // $rekap = [];
+            $rekap = collect($daftar_kebiasaan)->mapWithKeys(function (
+                $kebiasaan
+            ) use ($grouped) {
+                return [$kebiasaan => $grouped[$kebiasaan] ?? 0];
+            });
+
+            // dd($kaihs);
             return response()->json([
                 "success" => true,
-                "kaihs" => $kaihs,
+                "rekap" => $rekap,
             ]);
         } catch (\Throwable $th) {
             return response()->json([
