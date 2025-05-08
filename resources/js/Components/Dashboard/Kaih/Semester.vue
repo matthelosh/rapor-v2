@@ -42,7 +42,7 @@ const cetak = async () => {
     const cssUrl =
         page.props.app_env == "local"
             ? page.props.appUrl + ":5173/resources/css/app.css"
-            : "/assets/css/app.css";
+            : "/build/assets/app.css";
     const element = document.querySelector(".page");
     const html = `<!doctype html>
             <html>
@@ -56,7 +56,12 @@ const cetak = async () => {
             </html>
         `;
     let win = window.open("", "_blank", "width=900,height=800");
+    win.document.open();
     win.document.write(html);
+    win.document.close();
+    setTimeout(() => {
+        win.print();
+    }, 1000);
 };
 
 const getKaihSiswa = () => {

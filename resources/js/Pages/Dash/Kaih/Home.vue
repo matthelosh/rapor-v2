@@ -400,6 +400,7 @@ const fetchData = () => {
         fullscreen
         @closed="resetForm"
         v-if="formPerBulan"
+        style="background: #ffffff78; backdrop-filter: blur(5px)"
     >
         <template #header>
             <h2>Detail Per Bulan {{ selectedSiswa?.nama }}</h2>
