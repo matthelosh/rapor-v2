@@ -78,7 +78,7 @@ onMounted(() => {
                                 </Link>
                             </span>
                             <img
-                                src="/img/tutwuri.png"
+                                src="/img/logo_pkg.png"
                                 class="w-10 hidden-md-and-down"
                             />
                             <slot name="header"></slot>
@@ -135,5 +135,15 @@ onMounted(() => {
 
 .el-dialog__header {
     margin-right: 0 !important;
+}
+
+.el-card {
+    background-color: #ffffffab;
+    backdrop-filter: blur(8px);
+}
+
+.el-table {
+    border-radius: 5px;
+    /* overflow: hidden; */
 }
 </style>

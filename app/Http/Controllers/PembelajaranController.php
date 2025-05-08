@@ -15,59 +15,79 @@ class PembelajaranController extends Controller implements HasMiddleware
 {
     use PembelajaranTrait;
 
-
     public function home(Request $request)
     {
-        if ($request->user()->hasRole('admin_tp')) {
+        if ($request->user()->hasRole("admin_tp")) {
             // dd('Mapel');
             $permission_name = $request->user()->getPermissionNames();
             $permission = \explode("_", $permission_name[0]);
             $mapel = $permission[1];
             // dd($mapel);
-            if ($mapel == 'mapel') {
+            if ($mapel == "mapel") {
                 // Guru Kelas
-                if (in_array(end($permission), ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu'])) {
+                if (
+                    in_array(end($permission), [
+                        "Islam",
+                        "Kristen",
+                        "Katolik",
+                        "Hindu",
+                        "Budha",
+                        "Konghuchu",
+                    ])
+                ) {
                     $agama = end($permission);
-                    $mapels = Mapel::where('kode', 'pabp')->with([
-                        'tps' => function ($t) use ($agama) {
-                            $t->where('agama', $agama);
-                        }
-                    ])->get();
+                    $mapels = Mapel::where("kode", "pabp")
+                        ->with([
+                            "tps" => function ($t) use ($agama) {
+                                $t->where("agama", $agama);
+                            },
+                        ])
+                        ->get();
                 } else {
-                    $mapels = Mapel::where('kode', end($permission))->get();
+                    $mapels = Mapel::where("kode", end($permission))->get();
                 }
             } else {
                 // Guru Kelas
-                $mapels = Mapel::whereNot('kode', end($permission))->with([
-                    'tps' => function ($t) use ($mapel) {
-                        $t->where('tingkat', $mapel);
-                    }
-                ])->get();
+                $mapels = Mapel::whereNot("kode", end($permission))
+                    ->with([
+                        "tps" => function ($t) use ($mapel) {
+                            $t->where("tingkat", $mapel);
+                        },
+                    ])
+                    ->get();
             }
-        } elseif ($request->user()->hasRole(['admin', 'superadmin', 'ops'])) {
-            $mapels = Mapel::with('tps')->get();
-        } elseif ($request->user()->hasRole('guru_kelas')) {
+        } elseif ($request->user()->hasRole(["admin", "superadmin", "ops"])) {
+            $mapels = Mapel::with("tps")->get();
+        } elseif ($request->user()->hasRole("guru_kelas")) {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
             $guruId = $request->user()->userable->nip;
-            $mapels = Mapel::whereHas('sekolahs', function ($s) use ($sekolahId) {
-                $s->where('npsn', $sekolahId);
-            })->with('mapels', function ($m) use ($guruId) {
-                $m->with('tps', function ($t) use ($guruId) {
+            $mapels = Mapel::whereHas("sekolah", function ($s) use (
+                $sekolahId
+            ) {
+                $s->where("npsn", $sekolahId);
+            })
+                ->with("tps", function ($t) use ($guruId) {
                     $t->whereGuruId($guruId);
-                });
-            })->get();
+                })
+                ->get();
         } else {
-            $mapelId = $request->user()->hasRole('guru_agama') ? 'pabp' : ($request->user()->hasRole('guru_pjok') ? 'pjok' : 'bing');
+            $mapelId = $request->user()->hasRole("guru_agama")
+                ? "pabp"
+                : ($request->user()->hasRole("guru_pjok")
+                    ? "pjok"
+                    : "bing");
             // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
             $guruId = $request->user()->userable->nip;
-            $mapels = Mapel::whereKode($mapelId)->with('tps', function ($t) use ($guruId) {
-                $t->whereGuruId($guruId);
-            })->get();
+            $mapels = Mapel::whereKode($mapelId)
+                ->with("tps", function ($t) use ($guruId) {
+                    $t->whereGuruId($guruId);
+                })
+                ->get();
         }
-        return Inertia::render('Dash/Pembelajaran', [
-            'mapels' => $mapels,
-            'elemens' => Elemen::all(),
-            'ekskuls' => Ekskul::all()
+        return Inertia::render("Dash/Pembelajaran", [
+            "mapels" => $mapels,
+            "elemens" => Elemen::all(),
+            "ekskuls" => Ekskul::all(),
         ]);
     }
 
@@ -79,7 +99,10 @@ class PembelajaranController extends Controller implements HasMiddleware
             // dd($request->mapels);
             $sekolah->mapels()->sync($request->mapels);
 
-            return back()->with('message', "Mapel ditambahkan ke " . $sekolah->nama);
+            return back()->with(
+                "message",
+                "Mapel ditambahkan ke " . $sekolah->nama
+            );
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }
@@ -92,19 +115,19 @@ class PembelajaranController extends Controller implements HasMiddleware
             foreach ($datas as $data) {
                 Mapel::updateOrCreate(
                     [
-                        'kode' => $data['kode'],
+                        "kode" => $data["kode"],
                     ],
                     [
-                        'kode' => $data['kode'],
-                        'label' => $data['label'],
-                        'fase' => $data['fase'],
-                        'kategori' => $data['kategori'],
-                        'deskripsi' => $data['deskripsi'],
+                        "kode" => $data["kode"],
+                        "label" => $data["label"],
+                        "fase" => $data["fase"],
+                        "kategori" => $data["kategori"],
+                        "deskripsi" => $data["deskripsi"],
                     ]
                 );
             }
 
-            return back()->with('message', 'Mapel Diimpor');
+            return back()->with("message", "Mapel Diimpor");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -116,18 +139,18 @@ class PembelajaranController extends Controller implements HasMiddleware
             foreach ($datas as $data) {
                 Ekskul::updateOrCreate(
                     [
-                        'kode' => $data['kode'],
+                        "kode" => $data["kode"],
                     ],
                     [
-                        'nama' => $data['nama'],
-                        'keterangan' => $data['keterangan'],
-                        'sifat' => $data['sifat'],
-                        'is_active' => true,
+                        "nama" => $data["nama"],
+                        "keterangan" => $data["keterangan"],
+                        "sifat" => $data["sifat"],
+                        "is_active" => true,
                     ]
                 );
             }
 
-            return back()->with('message', 'Ekskul Diimpor');
+            return back()->with("message", "Ekskul Diimpor");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -138,26 +161,28 @@ class PembelajaranController extends Controller implements HasMiddleware
         $sekolah = Sekolah::findOrFail($request->sekolahId);
         $sekolah->ekskuls()->sync($request->ekskuls);
 
-        return back()->with('message', "Ekskul ditambahkan ke " . $sekolah->nama);
+        return back()->with(
+            "message",
+            "Ekskul ditambahkan ke " . $sekolah->nama
+        );
     }
 
     public function indexEkskul(Request $request)
     {
-        $sekolahId = $request->query('sekolahId');
-        $ekskuls =  Ekskul::whereHas('sekolah', function ($q) use ($sekolahId) {
+        $sekolahId = $request->query("sekolahId");
+        $ekskuls = Ekskul::whereHas("sekolah", function ($q) use ($sekolahId) {
             $q->where(function ($sq) use ($sekolahId) {
-                $sq->where('npsn', $sekolahId);
+                $sq->where("npsn", $sekolahId);
             });
         })->get();
 
-        return response()->json(['ekskuls' => $ekskuls]);
+        return response()->json(["ekskuls" => $ekskuls]);
     }
-
 
     public static function middleware(): array
     {
         return [
-            'role:admin|ops|guru_kelas|admin_tp|guru_agama|guru_pjok|guru_inggris',
+            "role:admin|ops|guru_kelas|admin_tp|guru_agama|guru_pjok|guru_inggris",
         ];
     }
 }

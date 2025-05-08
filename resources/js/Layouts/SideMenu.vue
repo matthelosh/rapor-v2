@@ -27,13 +27,13 @@ const showItem = (roles) => {
 
 <template>
     <div class="p-0">
-        <div class="avatar relative bg-sky-200 py-8">
+        <div class="avatar relative py-4">
             <img
                 :src="avatar()"
-                class="rounded-full border-dashed border-4 border-slate-500 drop-shadow object-cover w-40 mx-auto clip-path"
+                class="rounded-full shadow-lg object-cover w-32 mx-auto clip-path"
             />
             <h3
-                class="absolute bottom-0 bg-sky-800 text-center text-white font-black tracking-wide w-full py-3 px-2 bg-opacity-90"
+                class="text-center hover:bg-sky-600 p-2 hover:text-white font-bold text-slate-700 transition-all duration-300"
             >
                 <Link :href="route('profile.edit')">
                     {{
@@ -43,8 +43,19 @@ const showItem = (roles) => {
                     }}
                 </Link>
             </h3>
+            <!-- <h3
+                class="absolute bottom-0 bg-sky-800 text-center text-white font-black tracking-wide w-full py-3 px-2 bg-opacity-90"
+            >
+                <Link :href="route('profile.edit')">
+                    {{
+                        page.props.auth.user.userable
+                            ? page.props.auth.user.userable.nama
+                            : page.props.auth.user.name
+                    }}
+                </Link>
+            </h3> -->
         </div>
-        <div class="menu-item py-2 px-4">
+        <div class="menu-item py-1 px-4">
             <el-divider>Menu</el-divider>
             <el-scrollbar height="500">
                 <ul>

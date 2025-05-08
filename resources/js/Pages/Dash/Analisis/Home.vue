@@ -38,7 +38,7 @@ const simpan = async () => {};
                     >Data Asesmen {{ page.props.periode.tapel.label }}</template
                 >
                 <template #default>
-                    {{ props.asesmens }}
+                    <!-- {{ props.asesmens }} -->
                     <el-table :data="props.asesmens">
                         <el-table-column
                             label="#"

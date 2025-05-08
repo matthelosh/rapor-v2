@@ -70,6 +70,7 @@ class DashboardController extends Controller
                 "npsn",
                 $user->userable->sekolahs[0]->npsn
             )
+                ->with("rombels.siswas")
                 ->with("mapels")
                 ->first();
         } elseif ($user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])) {

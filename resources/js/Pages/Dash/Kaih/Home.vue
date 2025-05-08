@@ -125,7 +125,9 @@ const fetchData = () => {
             <h3>7 KAIH</h3>
         </template>
         <template #default>
-            <el-card body-class="bg-slate-200">
+            <el-card
+                style="background-color: #ffffffab; backdrop-filter: blur(5px)"
+            >
                 <template #header>
                     <div class="toolbar flex items-center justify-between">
                         <h3>Monitor Progress 7 KAIH</h3>
@@ -189,12 +191,21 @@ const fetchData = () => {
                     </div>
                 </template>
                 <template #default>
-                    <el-collapse>
+                    <el-collapse
+                        style="
+                            background: transparent;
+                            border-radius: 5px;
+                            overflow: hidden;
+                        "
+                        accordion
+                    >
                         <template
                             v-for="(rombel, r) in rombels"
                             :key="`rombel-${r}`"
                         >
-                            <el-collapse-item>
+                            <el-collapse-item
+                                style="background: transparent !important"
+                            >
                                 <template #title>
                                     <div class="p-4 text-lg font-black">
                                         {{ rombel.label }}
@@ -204,6 +215,9 @@ const fetchData = () => {
                                     <el-table
                                         :data="rombel.siswas"
                                         max-height="600"
+                                        style="
+                                            background: transparent !important;
+                                        "
                                     >
                                         <el-table-column
                                             label="#"

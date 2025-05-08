@@ -15,7 +15,9 @@ const profil = computed(() => page.props.auth.user.userable);
 <template>
     <el-row :gutter="20">
         <el-col :span="6">
-            <el-card>
+            <el-card
+                style="background-color: #ffffffba; backdrop-filter: blur(10px)"
+            >
                 <template #header>
                     <span>Data Mapel</span>
                 </template>
@@ -34,36 +36,63 @@ const profil = computed(() => page.props.auth.user.userable);
             </el-card>
         </el-col>
         <el-col :span="12">
-            <el-card>
+            <el-card
+                style="background-color: #ffffffba; backdrop-filter: blur(10px)"
+            >
                 <template #header>
                     <span>Data Rombel</span>
                 </template>
                 <div class="card-body">
-                    <el-table :data="data.rombels">
-                        <el-table-column
-                            label="#"
-                            type="index"
-                        ></el-table-column>
-                        <el-table-column
-                            label="Nama"
-                            prop="label"
-                        ></el-table-column>
-                        <el-table-column label="Siswa">
-                            <template #default="scope">
-                                <span>{{ scope.row.siswas.length }}</span>
+                    <table class="w-full text-gray-600 text-sm">
+                        <thead>
+                            <tr>
+                                <th
+                                    class="border-b-2 p-2 border-double border-black"
+                                >
+                                    #
+                                </th>
+                                <th
+                                    class="border-b-2 p-2 border-double border-black text-left"
+                                >
+                                    Rombel
+                                </th>
+                                <th
+                                    class="border-b-2 p-2 border-double border-black"
+                                >
+                                    Jumlah Siswa
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template
+                                v-for="(rombel, r) in data.sekolah.rombels"
+                                :key="r"
+                            >
+                                <tr>
+                                    <td
+                                        class="border-b border-gray-400 text-center p-2"
+                                    >
+                                        {{ r + 1 }}
+                                    </td>
+                                    <td class="border-b border-gray-400 p-2">
+                                        {{ rombel.label }}
+                                    </td>
+                                    <td
+                                        class="border-b border-gray-400 p-2 text-center"
+                                    >
+                                        {{ rombel.siswas?.length }}
+                                    </td>
+                                </tr>
                             </template>
-                        </el-table-column>
-                        <el-table-column label="Lembaga">
-                            <template #default="scope">
-                                <span>{{ scope.row.sekolah.nama }}</span>
-                            </template>
-                        </el-table-column>
-                    </el-table>
+                        </tbody>
+                    </table>
                 </div>
             </el-card>
         </el-col>
         <el-col :span="6">
-            <el-card>
+            <el-card
+                style="background-color: #ffffffba; backdrop-filter: blur(10px)"
+            >
                 <template #header>
                     <span>Profil Guru</span>
                 </template>
