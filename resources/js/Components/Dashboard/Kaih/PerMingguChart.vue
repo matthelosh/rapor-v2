@@ -22,6 +22,7 @@ ChartJS.register(
 );
 
 import dayjs from "dayjs";
+import "dayjs/locale/id";
 import isoWeek from "dayjs/plugin/isoWeek";
 dayjs.extend(isoWeek);
 
@@ -92,7 +93,7 @@ const options = {
     plugins: {
         title: {
             display: true,
-            text: `Perkembangan Kebiasaan per Minggu ${props.siswa.nama}`,
+            text: `${props.siswa.nama}`,
         },
     },
     scales: {
@@ -104,5 +105,10 @@ const options = {
 </script>
 
 <template>
+    <h3 class="text-center font-bold">
+        Perkembangan Kebiasaan Bulan
+        {{ dayjs(bulan).locale("id").format("MMMM YYYY") }}
+    </h3>
+    <h1 class="text-center font-bold">(Per Minggu)</h1>
     <Line :data="chartData" :options="options" />
 </template>

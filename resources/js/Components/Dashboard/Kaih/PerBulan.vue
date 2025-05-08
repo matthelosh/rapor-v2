@@ -33,6 +33,10 @@ const printBlanko = () => {
 </script>
 <template>
     <div class="toolbar flex items-center justify-center">
+        <el-button class="uppercase" size="small" @click="printBlanko">
+            <Icon icon="mdi:form" />
+            Cetak Blanko</el-button
+        >
         <el-button class="uppercase" size="small" @click="inputRekap">
             <Icon icon="mdi:pencil" />
             Input Rekap</el-button
@@ -40,10 +44,6 @@ const printBlanko = () => {
         <el-button class="uppercase" size="small" @click="printRekap">
             <Icon icon="mdi:chart-line" />
             Cetak Rekap</el-button
-        >
-        <el-button class="uppercase" size="small" @click="printBlanko">
-            <Icon icon="mdi:form" />
-            Cetak Blanko</el-button
         >
     </div>
     <div class="w-[600px] h-[600px] mx-auto py-8">
