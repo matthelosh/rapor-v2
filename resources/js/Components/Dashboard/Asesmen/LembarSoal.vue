@@ -6,8 +6,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 dayjs.locale("id");
 
-const FormSoal = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Asesmen/FormSoal.vue")
+const FormSoal = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Asesmen/FormSoal.vue"),
 );
 
 const page = usePage();
@@ -32,7 +32,7 @@ const getAllSoals = async () => {
                         : null,
                 asesmen_id: props.selectedAsesmen.id,
                 semester: props.selectedAsesmen.semester.kode,
-            })
+            }),
         )
         .then((res) => {
             allSoals.value = res.data.soals;
@@ -51,14 +51,14 @@ const cetakLembarSoal = async () => {
         <!doctype html>
         <html>
             <head>
-                <title>Lembar Soal ${props.selectedAsesmen.nama}</title>   
+                <title>Lembar Soal ${props.selectedAsesmen.nama}</title>
                 <link href="${cssUrl}" rel="stylesheet" />
             </head>
 
             <body>
                 ${elemen.outerHTML}
             </body>
-        </html>    
+        </html>
     `;
     win.document.write(html);
     setTimeout(() => {
@@ -96,7 +96,7 @@ const attachSoal = async (soalId) => {
                 soals.value.push(item);
                 router.reload({ only: ["asesmens"], preserveState: true });
             },
-        }
+        },
     );
 };
 
@@ -117,7 +117,7 @@ const detachSoal = (item, indexSoal) => {
                 soals.value.splice(indexSoal, 1);
                 router.reload({ preserveState: true });
             },
-        }
+        },
     );
 };
 
@@ -142,7 +142,12 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <el-dialog v-model="show" fullscreen :show-close="false">
+    <el-dialog
+        v-model="show"
+        fullscreen
+        :show-close="false"
+        style="min-height: 100vh !important"
+    >
         <template #header>
             <div class="flex items-center h-full w-full justify-between">
                 <h3>Lembar Soal Asesmen: {{ props.selectedAsesmen.nama }}</h3>
@@ -250,9 +255,9 @@ onBeforeMount(() => {
                                                             dayjs(
                                                                 props
                                                                     .selectedAsesmen
-                                                                    .tanggal
+                                                                    .tanggal,
                                                             ).format(
-                                                                "DD MMM YYYY"
+                                                                "DD MMM YYYY",
                                                             )
                                                         }}
                                                     </td>
@@ -328,7 +333,7 @@ onBeforeMount(() => {
                                                         ) in soals.filter(
                                                             (soal) =>
                                                                 soal.tipe ==
-                                                                'pilihan'
+                                                                'pilihan',
                                                         )"
                                                     >
                                                         <ul class="tes">
@@ -341,7 +346,7 @@ onBeforeMount(() => {
                                                                     @click="
                                                                         detachSoal(
                                                                             soal,
-                                                                            s
+                                                                            s,
                                                                         )
                                                                     "
                                                                 />
@@ -409,7 +414,7 @@ onBeforeMount(() => {
                                                         soals.filter(
                                                             (soal) =>
                                                                 soal.tipe ==
-                                                                'isian'
+                                                                'isian',
                                                         ).length > 0
                                                     "
                                                 >
@@ -433,7 +438,7 @@ onBeforeMount(() => {
                                                             ) in soals.filter(
                                                                 (soal) =>
                                                                     soal.tipe ==
-                                                                    'isian'
+                                                                    'isian',
                                                             )"
                                                             class="group relative my-2 hover:bg-sky-50"
                                                         >
@@ -443,7 +448,7 @@ onBeforeMount(() => {
                                                                 @click="
                                                                     detachSoal(
                                                                         soal,
-                                                                        s
+                                                                        s,
                                                                     )
                                                                 "
                                                             />
@@ -468,7 +473,7 @@ onBeforeMount(() => {
                                                         soals.filter(
                                                             (soal) =>
                                                                 soal.tipe ==
-                                                                'uraian'
+                                                                'uraian',
                                                         ).length > 0
                                                     "
                                                 >
@@ -492,7 +497,7 @@ onBeforeMount(() => {
                                                             ) in soals.filter(
                                                                 (soal) =>
                                                                     soal.tipe ==
-                                                                    'uraian'
+                                                                    'uraian',
                                                             )"
                                                             class="group relative"
                                                         >
@@ -502,7 +507,7 @@ onBeforeMount(() => {
                                                                 @click="
                                                                     detachSoal(
                                                                         soal,
-                                                                        s
+                                                                        s,
                                                                     )
                                                                 "
                                                             />
@@ -543,7 +548,8 @@ onBeforeMount(() => {
                                     <div class="columns-6 p-2">
                                         <div
                                             v-for="(soal, s) in soals.filter(
-                                                (soal) => soal.tipe == 'pilihan'
+                                                (soal) =>
+                                                    soal.tipe == 'pilihan',
                                             )"
                                         >
                                             {{ s + 1 }}. {{ soal.kunci }}
@@ -557,7 +563,7 @@ onBeforeMount(() => {
                                     <ul class="pl-6 list-decimal">
                                         <li
                                             v-for="(soal, s) in soals.filter(
-                                                (soal) => soal.tipe == 'isian'
+                                                (soal) => soal.tipe == 'isian',
                                             )"
                                         >
                                             <span v-html="soal.kunci"></span>
@@ -571,7 +577,7 @@ onBeforeMount(() => {
                                     <ul class="pl-6 list-decimal">
                                         <li
                                             v-for="(soal, s) in soals.filter(
-                                                (soal) => soal.tipe == 'uraian'
+                                                (soal) => soal.tipe == 'uraian',
                                             )"
                                         >
                                             <span v-html="soal.kunci"></span>
@@ -736,7 +742,7 @@ onBeforeMount(() => {
                                 <ul class="list-decimal pl-4">
                                     <li
                                         v-for="item of soals.filter(
-                                            (soal) => soal.tipe == 'isian'
+                                            (soal) => soal.tipe == 'isian',
                                         ).length"
                                         class="w-full border-b border-b-slate-600 border-dotted mb-2"
                                     ></li>
@@ -750,7 +756,7 @@ onBeforeMount(() => {
                                 <ul class="list-decimal pl-4 mt-4">
                                     <li
                                         v-for="item of soals.filter(
-                                            (soal) => soal.tipe == 'isian'
+                                            (soal) => soal.tipe == 'isian',
                                         ).length"
                                         class="w-full border-b border-b-slate-600 border-dotted mb-4"
                                     ></li>
@@ -783,7 +789,8 @@ onBeforeMount(() => {
                                     <ul class="pl-4">
                                         <li
                                             v-for="(soal, s) in allSoals.filter(
-                                                (soal) => soal.tipe == 'pilihan'
+                                                (soal) =>
+                                                    soal.tipe == 'pilihan',
                                             )"
                                             class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                             draggable="true"
@@ -812,7 +819,7 @@ onBeforeMount(() => {
                                     <ul>
                                         <li
                                             v-for="(soal, s) in allSoals.filter(
-                                                (soal) => soal.tipe == 'isian'
+                                                (soal) => soal.tipe == 'isian',
                                             )"
                                             class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                             draggable="true"
@@ -841,7 +848,7 @@ onBeforeMount(() => {
                                     <ul>
                                         <li
                                             v-for="(soal, s) in allSoals.filter(
-                                                (soal) => soal.tipe == 'uraian'
+                                                (soal) => soal.tipe == 'uraian',
                                             )"
                                             class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                             draggable="true"
@@ -895,7 +902,7 @@ onBeforeMount(() => {
                             <ul class="pl-4">
                                 <li
                                     v-for="(soal, s) in allSoals.filter(
-                                        (soal) => soal.tipe == 'pilihan'
+                                        (soal) => soal.tipe == 'pilihan',
                                     )"
                                     class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                     draggable="true"
@@ -918,7 +925,7 @@ onBeforeMount(() => {
                             <ul>
                                 <li
                                     v-for="(soal, s) in allSoals.filter(
-                                        (soal) => soal.tipe == 'isian'
+                                        (soal) => soal.tipe == 'isian',
                                     )"
                                     class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                     draggable="true"
@@ -941,7 +948,7 @@ onBeforeMount(() => {
                             <ul>
                                 <li
                                     v-for="(soal, s) in allSoals.filter(
-                                        (soal) => soal.tipe == 'uraian'
+                                        (soal) => soal.tipe == 'uraian',
                                     )"
                                     class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                     draggable="true"
