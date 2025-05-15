@@ -56,7 +56,7 @@ const cetak = async () => {
     let win = window.open(
         window.location.origin + "/print",
         "_blank",
-        "height=2000,width=1500"
+        "height=2000,width=1500",
     );
     await win.document.write(html);
     setTimeout(() => {
@@ -81,7 +81,7 @@ const getNilaiPAS = async () => {
                     siswaId: props.siswa.nisn,
                     sekolahId: sekolah.value.npsn,
                 },
-            })
+            }),
         )
         .then((res) => {
             nilai.value = res.data;
@@ -158,69 +158,74 @@ onBeforeUnmount(() => {
                     >
                         <div class="col-span-3">
                             <table>
-                                <tr>
-                                    <td>Nama</td>
-                                    <td class="px-2">:</td>
-                                    <td>{{ capitalize(siswa.nama) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>NISN</td>
-                                    <td class="px-2">:</td>
-                                    <td>{{ siswa.nisn }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Sekolah</td>
-                                    <td class="px-2">:</td>
-                                    <td>{{ namaSekolah(sekolah.nama) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Alamat</td>
-                                    <td class="px-2">:</td>
-                                    <td>
-                                        {{ capitalize(sekolah.alamat) }}
-                                        {{ capitalize(sekolah.desa) }}
-                                    </td>
-                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>Nama</td>
+                                        <td class="px-2">:</td>
+                                        <td>{{ capitalize(siswa.nama) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>NISN</td>
+                                        <td class="px-2">:</td>
+                                        <td>{{ siswa.nisn }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sekolah</td>
+                                        <td class="px-2">:</td>
+                                        <td>{{ namaSekolah(sekolah.nama) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Alamat</td>
+                                        <td class="px-2">:</td>
+                                        <td>
+                                            {{ capitalize(sekolah.alamat) }}
+                                            {{ capitalize(sekolah.desa) }}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                         <div></div>
                         <div class="col-span-2">
                             <table>
-                                <tr>
-                                    <td>Kelas</td>
-                                    <td class="px-1">:</td>
-                                    <td>{{ props.rombel.label }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Fase</td>
-                                    <td class="px-1">:</td>
-                                    <td>{{ props.rombel.fase }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Semester</td>
-                                    <td class="px-1">:</td>
-                                    <td>
-                                        {{
-                                            !props.arsip
-                                                ? page.props.periode.semester
-                                                      .label
-                                                : props.semester == "1"
-                                                ? "Ganjil"
-                                                : "Genap"
-                                        }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Tahun Pelajaran</td>
-                                    <td class="px-1">:</td>
-                                    <td>
-                                        {{
-                                            !props.arsip
-                                                ? page.props.periode.tapel.label
-                                                : props.tapel.label
-                                        }}
-                                    </td>
-                                </tr>
+                                <tbody>
+                                    <tr>
+                                        <td>Kelas</td>
+                                        <td class="px-1">:</td>
+                                        <td>{{ props.rombel.label }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fase</td>
+                                        <td class="px-1">:</td>
+                                        <td>{{ props.rombel.fase }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Semester</td>
+                                        <td class="px-1">:</td>
+                                        <td>
+                                            {{
+                                                !props.arsip
+                                                    ? page.props.periode
+                                                          .semester.label
+                                                    : props.semester == "1"
+                                                      ? "Ganjil"
+                                                      : "Genap"
+                                            }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Tahun Pelajaran</td>
+                                        <td class="px-1">:</td>
+                                        <td>
+                                            {{
+                                                !props.arsip
+                                                    ? page.props.periode.tapel
+                                                          .label
+                                                    : props.tapel.label
+                                            }}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>

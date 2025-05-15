@@ -1,93 +1,156 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
-import { Head, router, usePage } from '@inertiajs/vue3'
-import { Icon } from '@iconify/vue'
+import { ref, computed, onBeforeMount } from "vue";
+import { Head, router, usePage } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
 
-import DashLayout from '@/Layouts/DashLayout.vue'
-import Cover from '@/Components/Dashboard/Rapor/Cover.vue'
-import Biodata from '@/Components/Dashboard/Rapor/Biodata.vue'
-import RaporPTS from '@/Components/Dashboard/Rapor/RaporPTS.vue'
-import RaporPAS from '@/Components/Dashboard/Rapor/RaporPAS.vue'
+import DashLayout from "@/Layouts/DashLayout.vue";
+import Cover from "@/Components/Dashboard/Rapor/Cover.vue";
+import Biodata from "@/Components/Dashboard/Rapor/Biodata.vue";
+import RaporPTS from "@/Components/Dashboard/Rapor/RaporPTS.vue";
+import RaporPAS from "@/Components/Dashboard/Rapor/RaporPAS.vue";
 
-const page = usePage()
-const mode = ref('list')
+const page = usePage();
+const mode = ref("list");
 
-const rombel = ref(null)
-const selectedSiswa = ref({})
+const rombel = ref(null);
+const selectedSiswa = ref({});
 
 const cetak = (laman, siswa) => {
-    mode.value = laman
-    selectedSiswa.value = siswa
-}
+    mode.value = laman;
+    selectedSiswa.value = siswa;
+};
 
 const closeLaman = () => {
-    mode.value = 'list'
-    selectedSiswa.value = {}
-}
+    mode.value = "list";
+    selectedSiswa.value = {};
+};
 
 const nextSiswa = () => {
     // alert('halo')
-    let current = rombel.value.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
-    if(current >= rombel.value.siswas.length-1 ) {
-        alert('Ini sudah siswa yang terakhir')
-        return false
+    let current = rombel.value.siswas.findIndex(
+        (siswa) => siswa.id === selectedSiswa.value.id,
+    );
+    if (current >= rombel.value.siswas.length - 1) {
+        alert("Ini sudah siswa yang terakhir");
+        return false;
     } else {
-        selectedSiswa.value = rombel.value.siswas[current+1]
+        selectedSiswa.value = rombel.value.siswas[current + 1];
     }
-}
+};
 const prevSiswa = () => {
     // alert('halo')
-    let current = rombel.value.siswas.findIndex(siswa => siswa.id === selectedSiswa.value.id)
-    if(current === 0 ) {
-        alert('Ini sudah siswa yang pertama')
-        return false
+    let current = rombel.value.siswas.findIndex(
+        (siswa) => siswa.id === selectedSiswa.value.id,
+    );
+    if (current === 0) {
+        alert("Ini sudah siswa yang pertama");
+        return false;
     } else {
-        selectedSiswa.value = rombel.value.siswas[current-1]
+        selectedSiswa.value = rombel.value.siswas[current - 1];
     }
-}
+};
+
+const cetakTranskrip = async (siswa) => {
+    const url = `/cetak/transkrip/${siswa.nisn}`;
+    window.open(url, "_blank");
+};
 onBeforeMount(() => {
-    rombel.value = page.props.rombels[0]
-})
+    rombel.value = page.props.rombels[0];
+});
 </script>
 
 <template>
-<Head title="Rapor Siswa" />
+    <Head title="Rapor Siswa" />
 
-<DashLayout>
-    <template #header>
-        <h3 class="uppercase">Rapor Siswa {{ selectedSiswa?.nama }}</h3>
-    </template>
-    <el-card v-if="mode == 'list'">
+    <DashLayout>
         <template #header>
-            <div>
-                <h3 class="uppercase font-bold text-slate-600">Rapor Siswa {{ rombel.label }} {{ rombel.sekolah.nama }}</h3>
-            </div>
+            <h3 class="uppercase">Rapor Siswa {{ selectedSiswa?.nama }}</h3>
         </template>
-        <div class="card-body">
-            <el-table :data="rombel.siswas" height="80vh" size="small">
-                <el-table-column label="#" type="index" prop="scope.$index" />
-                <el-table-column label="NISN" prop="nisn" />
-                <el-table-column label="Nama" prop="nama" />
-                <el-table-column label="JK" prop="jk" />
-                <el-table-column label="Opsi Cetak">
-                    <template #default="scope">
-                        <div>
-                            <el-button-group>
-                                <el-button type="primary" @click="cetak('cover', scope.row)">Cover</el-button>
-                                <el-button type="primary" @click="cetak('biodata', scope.row)">Biodata</el-button>
-                                <el-button type="primary" @click="cetak('pts', scope.row)">PTS</el-button>
-                                <el-button type="primary" @click="cetak('pas', scope.row)">PAS</el-button>
-                            </el-button-group>
-                        </div>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </div>
-    </el-card>
-    <Cover v-if="mode == 'cover'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" :rombel="rombel" />
-    <Biodata v-if="mode == 'biodata'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" :rombel="rombel" />
-    <RaporPTS v-if="mode == 'pts'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" :rombel="rombel" />
-    <RaporPAS v-if="mode == 'pas'" :siswa="selectedSiswa" @close="closeLaman" @nextSiswa="nextSiswa" @prevSiswa="prevSiswa" :rombel="rombel" />
-</DashLayout>
-
+        <el-card v-if="mode == 'list'">
+            <template #header>
+                <div>
+                    <h3 class="uppercase font-bold text-slate-600">
+                        Rapor Siswa {{ rombel.label }} {{ rombel.sekolah.nama }}
+                    </h3>
+                </div>
+            </template>
+            <div class="card-body">
+                <el-table :data="rombel.siswas" height="80vh" size="small">
+                    <el-table-column
+                        label="#"
+                        type="index"
+                        prop="scope.$index"
+                    />
+                    <el-table-column label="NISN" prop="nisn" width="150" />
+                    <el-table-column label="Nama" prop="nama" />
+                    <el-table-column label="JK" prop="jk" width="100" />
+                    <el-table-column label="Opsi Cetak" fixed="right">
+                        <template #default="scope">
+                            <div>
+                                <el-button-group size="small">
+                                    <el-button
+                                        type="primary"
+                                        @click="cetak('cover', scope.row)"
+                                        >Cover</el-button
+                                    >
+                                    <el-button
+                                        type="primary"
+                                        @click="cetak('biodata', scope.row)"
+                                        >Biodata</el-button
+                                    >
+                                    <el-button
+                                        type="primary"
+                                        @click="cetak('pts', scope.row)"
+                                        >PTS</el-button
+                                    >
+                                    <el-button
+                                        type="primary"
+                                        @click="cetak('pas', scope.row)"
+                                        >PAS</el-button
+                                    >
+                                    <el-button
+                                        type="primary"
+                                        @click="cetakTranskrip(scope.row)"
+                                        >Transkrip</el-button
+                                    >
+                                </el-button-group>
+                            </div>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+        </el-card>
+        <Cover
+            v-if="mode == 'cover'"
+            :siswa="selectedSiswa"
+            @close="closeLaman"
+            @nextSiswa="nextSiswa"
+            @prevSiswa="prevSiswa"
+            :rombel="rombel"
+        />
+        <Biodata
+            v-if="mode == 'biodata'"
+            :siswa="selectedSiswa"
+            @close="closeLaman"
+            @nextSiswa="nextSiswa"
+            @prevSiswa="prevSiswa"
+            :rombel="rombel"
+        />
+        <RaporPTS
+            v-if="mode == 'pts'"
+            :siswa="selectedSiswa"
+            @close="closeLaman"
+            @nextSiswa="nextSiswa"
+            @prevSiswa="prevSiswa"
+            :rombel="rombel"
+        />
+        <RaporPAS
+            v-if="mode == 'pas'"
+            :siswa="selectedSiswa"
+            @close="closeLaman"
+            @nextSiswa="nextSiswa"
+            @prevSiswa="prevSiswa"
+            :rombel="rombel"
+        />
+    </DashLayout>
 </template>

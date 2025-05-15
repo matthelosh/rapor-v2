@@ -4,23 +4,23 @@ import { usePage } from "@inertiajs/vue3";
 import { ElCard } from "element-plus";
 const page = usePage();
 
-const FormNilaiHarian = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiHarian.vue")
+const FormNilaiHarian = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiHarian.vue"),
 );
-const FormNilaiTS = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiTS.vue")
+const FormNilaiTS = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiTS.vue"),
 );
-const FormNilaiAS = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiAS.vue")
+const FormNilaiAS = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiAS.vue"),
 );
-const FormNilaiP5 = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiP5.vue")
+const FormNilaiP5 = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiP5.vue"),
 );
-const FormNilaiSPN = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiSPN.vue")
+const FormNilaiSPN = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiSPN.vue"),
 );
-const FormNilaiKelas = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Nilai/FormNilaiKelas.vue")
+const FormNilaiKelas = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiKelas.vue"),
 );
 
 const mode = ref("home");
@@ -90,6 +90,7 @@ const closeForm = () => {
                                 <el-table-column
                                     label="Kategori"
                                     prop="kategori"
+                                    width="100"
                                 />
                                 <el-table-column label="Entri Nilai">
                                     <template #default="scope">
@@ -106,7 +107,7 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'nilai-kelas'
+                                                        'nilai-kelas',
                                                     )
                                                 "
                                                 >Nilai Kelas</el-button
@@ -123,7 +124,7 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'harian'
+                                                        'harian',
                                                     )
                                                 "
                                                 >Nilai Harian</el-button
@@ -140,7 +141,7 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'sts'
+                                                        'sts',
                                                     )
                                                 "
                                                 >PTS</el-button
@@ -157,7 +158,7 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'sas'
+                                                        'sas',
                                                     )
                                                 "
                                                 >PAS</el-button
@@ -174,10 +175,10 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'p5'
+                                                        'psaj',
                                                     )
                                                 "
-                                                >P5</el-button
+                                                >PSAJ</el-button
                                             >
                                             <el-button
                                                 type="primary"
@@ -191,7 +192,7 @@ const closeForm = () => {
                                                     openForm(
                                                         scope.row,
                                                         rombel,
-                                                        'spn'
+                                                        'spn',
                                                     )
                                                 "
                                                 >SPN</el-button

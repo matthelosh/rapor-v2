@@ -11,8 +11,8 @@ const loading = ref(false);
 const page = usePage();
 const props = defineProps({ siswa: Object, rombel: Object });
 
-const Kop = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Kop.vue")
+const Kop = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Kop.vue"),
 );
 const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
 
@@ -69,7 +69,7 @@ const getNilaiPTS = async () => {
                     siswaId: props.siswa.nisn,
                     sekolahId: sekolah.value.npsn,
                 },
-            })
+            }),
         )
         .then((res) => {
             console.log(res);
@@ -131,36 +131,44 @@ onBeforeMount(async () => {
                 <div class="grid grid-cols-6 text-left px-8 my-8">
                     <div class="col-span-3">
                         <table>
-                            <tr>
-                                <td>Nama Peserta Didik</td>
-                                <td class="px-1">:</td>
-                                <td>{{ siswa.nama }}</td>
-                            </tr>
-                            <tr>
-                                <td>NISN / NIS</td>
-                                <td class="px-1">:</td>
-                                <td>{{ siswa.nisn }} / {{ siswa.nis }}</td>
-                            </tr>
-                            <tr>
-                                <td>Kelas</td>
-                                <td class="px-1">:</td>
-                                <td>{{ rombel.label }}</td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>Nama Peserta Didik</td>
+                                    <td class="px-1">:</td>
+                                    <td>{{ siswa.nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td>NISN / NIS</td>
+                                    <td class="px-1">:</td>
+                                    <td>{{ siswa.nisn }} / {{ siswa.nis }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Kelas</td>
+                                    <td class="px-1">:</td>
+                                    <td>{{ rombel.label }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div></div>
                     <div>
                         <table>
-                            <tr>
-                                <td>Semester</td>
-                                <td class="px-1">:</td>
-                                <td>{{ page.props.periode.semester.label }}</td>
-                            </tr>
-                            <tr>
-                                <td>Tahun Ajaran</td>
-                                <td class="px-1">:</td>
-                                <td>{{ page.props.periode.tapel.label }}</td>
-                            </tr>
+                            <tbody>
+                                <tr>
+                                    <td>Semester</td>
+                                    <td class="px-1">:</td>
+                                    <td>
+                                        {{ page.props.periode.semester.label }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tahun Ajaran</td>
+                                    <td class="px-1">:</td>
+                                    <td>
+                                        {{ page.props.periode.tapel.label }}
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

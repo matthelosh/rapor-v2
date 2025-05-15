@@ -265,6 +265,7 @@ onBeforeMount(() => {
                                     placeholder="Pangkat"
                                 >
                                     <el-option value="-" label="-" />
+                                    <el-option value="ix" label="IX" />
                                     <el-option value="IIIa" label="III/A" />
                                     <el-option value="IIIb" label="III/B" />
                                     <el-option value="IIIc" label="III/C" />
@@ -330,4 +331,3 @@ onBeforeMount(() => {
         </el-row>
     </el-dialog>
 </template>
-

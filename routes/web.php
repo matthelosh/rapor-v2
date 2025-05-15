@@ -656,6 +656,14 @@ Route::middleware("auth")->group(function () {
                 "storeMember",
             ])->name("dashboard.organisasi.member.store");
         });
+
+        // Cetak
+    });
+    Route::prefix("cetak")->group(function () {
+        Route::get("/transkrip/{nisn}", [
+            CetakController::class,
+            "cetakTranskrip",
+        ]);
     });
 });
 
