@@ -620,6 +620,12 @@ Route::middleware("auth")->group(function () {
             ])
                 ->middleware("role:ops|guru_agama")
                 ->name("presensi.guru.download");
+            Route::prefix("akhirjenjang")->group(function () {
+                Route::get("/", [
+                    AdministrasiController::class,
+                    "homeAkhirJenjang",
+                ])->name("dashboard.administrasi.akhirjenjang.home");
+            });
         });
 
         // Sekolah Plus Ngaji

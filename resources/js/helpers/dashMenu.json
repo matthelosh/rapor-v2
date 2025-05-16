@@ -79,16 +79,7 @@
                 "label": "Pembelajaran",
                 "icon": "bookshelf",
                 "url": "/dashboard/pembelajaran",
-                "roles": [
-                    "superadmin",
-                    "admin",
-                    "ops",
-                    "admin_tp",
-                    "guru_agama",
-                    "guru_inggris",
-                    "guru_kelas",
-                    "guru_pjok"
-                ]
+                "roles": ["superadmin", "admin", "ops", "admin_tp"]
             }
         ]
     },
@@ -258,13 +249,13 @@
         "label": "SPN",
         "icon": "religion-islamic",
         "url": "/dashboard/spn",
-        "roles": ["guru_kelas", "guru_agama"],
+        "roles": ["guru_agama"],
         "children": []
     },
     {
         "label": "Administrasi",
         "icon": "bookshelf",
-        "url": "/dashboard/administrasi",
+        "url": "#",
         "roles": [
             "ops",
             "guru_agama",
@@ -273,6 +264,12 @@
             "guru_pjok"
         ],
         "children": [
+            {
+                "label": "Akhir Jenjang",
+                "icon": "folder",
+                "url": "/dashboard/administrasi/akhirjenjang",
+                "roles": ["ops", "guru_kelas"]
+            },
             {
                 "label": "Presensi Guru",
                 "icon": "calendar-check",

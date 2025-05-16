@@ -14,10 +14,14 @@ const goto = (url) => {
 // const avatar = () => {
 //     return page.props.auth.roles.includes('admin') ? '/img/user_l.png' : (page.props.auth.user.userable.jk == 'Laki-laki' ? '/img/user_l.png' : (page.props.auth.user.agama == 'Islam' ? '/img/user_p_is.png': '/img/user_p.png'))
 // }
-const toggleChild = (e) => {
-    const li = e.target.closest("li");
-    const child = li.querySelector("ul.child");
-    child.classList.toggle("hidden");
+// das
+const activeMenu = ref(null);
+
+const toggleChild = (itemId) => {
+    activeMenu.value = activeMenu.value === itemId ? null : itemId;
+    // const li = e.target.closest("li");
+    // const child = li.querySelector("ul.child");
+    // child.classList.toggle("hidden");
 };
 
 const showItem = (roles) => {
@@ -43,17 +47,6 @@ const showItem = (roles) => {
                     }}
                 </Link>
             </h3>
-            <!-- <h3
-                class="absolute bottom-0 bg-sky-800 text-center text-white font-black tracking-wide w-full py-3 px-2 bg-opacity-90"
-            >
-                <Link :href="route('profile.edit')">
-                    {{
-                        page.props.auth.user.userable
-                            ? page.props.auth.user.userable.nama
-                            : page.props.auth.user.name
-                    }}
-                </Link>
-            </h3> -->
         </div>
         <div class="menu-item py-1 px-4">
             <el-divider>Menu</el-divider>
@@ -66,6 +59,7 @@ const showItem = (roles) => {
                                 item.children.length < 1 &&
                                 showItem(item.roles)
                             "
+                            class="py-2"
                         >
                             <Link
                                 :href="item.url"
@@ -80,11 +74,11 @@ const showItem = (roles) => {
                             v-if="
                                 item.children.length > 0 && showItem(item.roles)
                             "
-                            class="group"
+                            class="group py-2"
                         >
                             <a
                                 :href="item.url"
-                                @click="toggleChild"
+                                @click.stop="toggleChild(i)"
                                 class="parent flex justify-between items-center gap-1 text-slate-600"
                             >
                                 <span class="flex items-center gap-1">
@@ -93,12 +87,15 @@ const showItem = (roles) => {
                                 </span>
                                 <Icon icon="mdi:chevron-up" />
                             </a>
-                            <ul class="pl-4 pt-1 child">
+                            <ul
+                                class="pl-4 pt-1 child"
+                                :class="{ hidden: activeMenu !== i }"
+                            >
                                 <template
                                     v-for="(sub, s) in item.children"
                                     :key="i + '-' + s"
                                 >
-                                    <li v-if="showItem(sub.roles)">
+                                    <li v-if="showItem(sub.roles)" class="py-1">
                                         <!-- <span>{{ sub.roles }}</span> -->
                                         <Link
                                             :href="sub.url"
