@@ -6,6 +6,7 @@ import { capitalize } from "@/helpers/String";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import axios from "axios";
+import { cssUrl } from "@/helpers/utils";
 
 const loading = ref(false);
 const page = usePage();
@@ -23,25 +24,20 @@ const close = () => {
 };
 
 const showNext = async () => {
-    await emit("nextSiswa");
+    emit("nextSiswa");
     getNilaiPTS();
 };
 const showPrev = async () => {
-    await emit("prevSiswa");
+    emit("prevSiswa");
     getNilaiPTS();
 };
 const cetak = async () => {
-    let host = window.location.host;
     let el = document.querySelector(".cetak");
-    let cssUrl =
-        page.props.app_env == "local"
-            ? "https://localhost:5173/resources/css/app.css"
-            : `/build/assets/app.css`;
     let html = `<!doctype html>
 				<html>
 					<head>
 						<title>Cover Rapor</title>
-						<link rel="stylesheet" href="${cssUrl}" />
+						<link rel="stylesheet" href="${cssUrl()}" />
 					</head>
 					<body>
 						${el.outerHTML}
@@ -50,7 +46,7 @@ const cetak = async () => {
 				</html>
 	`;
     let win = window.open(host + "/print", "_blank", "height=600,width=1500");
-    await win.document.write(html);
+    win.document.write(html);
     setTimeout(() => {
         win.print();
         win.close();
@@ -221,7 +217,7 @@ onBeforeMount(async () => {
                     <p>Orang tua / Wali Murid</p>
 
                     <p
-                        class="font-bold uppercase underline leading-4 mt-20 border-b border-dotted border-b-2 border-black w-[80%] mx-auto"
+                        class="font-bold uppercase underline leading-4 mt-20 border-dotted border-b-2 border-black w-[80%] mx-auto"
                     >
                         &nbsp;
                     </p>

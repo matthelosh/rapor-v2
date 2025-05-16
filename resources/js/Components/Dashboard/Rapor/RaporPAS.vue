@@ -6,7 +6,7 @@ import { namaSekolah, capitalize } from "@/helpers/String";
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 import axios from "axios";
-
+import { cssUrl } from "@/helpers/utils";
 const loading = ref(false);
 const page = usePage();
 const props = defineProps({
@@ -26,25 +26,21 @@ const close = () => {
 };
 
 const showNext = async () => {
-    await emit("nextSiswa");
+    emit("nextSiswa");
     getNilaiPAS();
 };
 const showPrev = async () => {
-    await emit("prevSiswa");
+    emit("prevSiswa");
     getNilaiPAS();
 };
 const cetak = async () => {
     let host = window.location.host;
     let el = document.querySelector(".cetak");
-    let cssUrl =
-        page.props.app_env == "local"
-            ? "https://localhost:5173/resources/css/app.css"
-            : `/build/assets/app.css`;
     let html = `<!doctype html>
 				<html>
 					<head>
 						<title class="uppercase">Laporan Hasil Belajar ${props.siswa.nama}</title>
-						<link rel="stylesheet" href="${cssUrl}" />
+						<link rel="stylesheet" href="${cssUrl()}" />
 					</head>
 					<body style="position:relative;">
 						${el.outerHTML}
@@ -58,10 +54,10 @@ const cetak = async () => {
         "_blank",
         "height=2000,width=1500",
     );
-    await win.document.write(html);
+    win.document.write(html);
     setTimeout(() => {
         win.print();
-        // win.close();
+        win.close();
     }, 1500);
 };
 

@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { Head, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
-
+import { cssUrl } from "@/helpers/utils";
 const page = usePage();
 const props = defineProps({ siswa: Object, rombel: Object });
 const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
@@ -32,17 +32,12 @@ const showPrev = () => {
     emit("prevSiswa");
 };
 const cetak = async () => {
-    let host = window.location.host;
     let el = document.querySelector(".cetak");
-    let cssUrl =
-        page.props.app_env == "local"
-            ? "https://localhost:5173/resources/css/app.css"
-            : `/build/assets/app.css`;
     let html = `<!doctype html>
 				<html>
 					<head>
 						<title>Cover Rapor</title>
-						<link rel="stylesheet" href="${cssUrl}" />
+						<link rel="stylesheet" href="${cssUrl()}" />
 					</head>
 					<body>
 						${el.outerHTML}
@@ -51,7 +46,7 @@ const cetak = async () => {
 				</html>
 	`;
     let win = window.open(host + "/print", "_blank", "height=600,width=1024");
-    await win.document.write(html);
+    win.document.write(html);
     setTimeout(() => {
         win.print();
         win.close();

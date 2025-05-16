@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TranskripDetail extends Model
 {
@@ -17,7 +18,7 @@ class TranskripDetail extends Model
         "nilai_akhir",
     ];
 
-    public function transkrip()
+    public function transkrip(): BelongsTo
     {
         return $this->belongsTo(Transkrip::class, "transkrip_id", "kode");
     }

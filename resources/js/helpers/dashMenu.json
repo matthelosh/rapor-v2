@@ -84,6 +84,32 @@
         ]
     },
     {
+        "label": "Administrasi",
+        "icon": "bookshelf",
+        "url": "#",
+        "roles": [
+            "ops",
+            "guru_agama",
+            "guru_inggris",
+            "guru_kelas",
+            "guru_pjok"
+        ],
+        "children": [
+            {
+                "label": "Akhir Jenjang",
+                "icon": "folder",
+                "url": "/dashboard/administrasi/akhirjenjang",
+                "roles": ["ops", "guru_kelas"]
+            },
+            {
+                "label": "Presensi Guru",
+                "icon": "calendar-check",
+                "url": "/dashboard/administrasi/presensiguru",
+                "roles": ["ops", "guru_agama"]
+            }
+        ]
+    },
+    {
         "label": "Berita",
         "icon": "typewriter",
         "url": "/dashboard/post",
@@ -252,32 +278,7 @@
         "roles": ["guru_agama"],
         "children": []
     },
-    {
-        "label": "Administrasi",
-        "icon": "bookshelf",
-        "url": "#",
-        "roles": [
-            "ops",
-            "guru_agama",
-            "guru_inggris",
-            "guru_kelas",
-            "guru_pjok"
-        ],
-        "children": [
-            {
-                "label": "Akhir Jenjang",
-                "icon": "folder",
-                "url": "/dashboard/administrasi/akhirjenjang",
-                "roles": ["ops", "guru_kelas"]
-            },
-            {
-                "label": "Presensi Guru",
-                "icon": "calendar-check",
-                "url": "/dashboard/administrasi/presensiguru",
-                "roles": ["ops", "guru_agama"]
-            }
-        ]
-    },
+
     {
         "label": "Pengaturan",
         "icon": "settings",

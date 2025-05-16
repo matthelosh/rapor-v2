@@ -15,20 +15,13 @@
     <body class="font-serif bg-slate-300 print:bg-white p-4 print:p-0" onload="cetak()">
         <script>
             function cetak() {
-                // window.print();
-                // setTimeout(() => {
-                //     window.close()
-                // }, 500)
+                window.print();
+                setTimeout(() => {
+                    window.close()
+                }, 500)
             }
         </script>
         <div class="wrapper w-full md:w-[900px]  print:w-full mx-auto p-4 print:p-0 bg-white shadow print:shadow-none print:bg-white relative">
-            <img class="qrcode absolute bottom-10" src="data:image/png;base64,{{ base64_encode(
-                QrCode::format('png')
-                    ->merge(public_path('img/logo_pkg.png'), 0.3, true)
-                    ->size(100)
-                    ->generate(config('app.url').'/verifikasi/transkrip/'. $siswa->nisn)
-                ) }}"
-            />
             <div class="kop grid grid-cols-5 border-black border-double border-b-4">
                 <div class="col-span-1 flex items-center justify-center">
                     <img src="{{asset('img/malangkab.png') }}" alt="Logo" class="h-32" />
@@ -46,10 +39,10 @@
 
                 </div>
             </div>
-            <h1 class="text-center font-black text-lg uppercase">Transkrip Nilai</h1>
-            <p class="text-center">No: ...........................</p>
+            <h1 class="text-center font-black text-lg uppercase mt-6 leading-4">Transkrip Nilai</h1>
+            <p class="text-center leading-4">No: ...........................</p>
 
-            <table>
+            <table class="my-8">
                 <tbody>
                     <tr>
                         <td>Satuan Pendidikan</td><td class="pr-2">:</td><td>{{$sekolah->nama}}</td>
@@ -61,13 +54,22 @@
                         <td>Nama Lengkap</td><td class="pr-2">:</td><td>{{$siswa->nama}}</td>
                     </tr>
                     <tr>
-                        <td>Tempat, Tanggal Lahir</td><td class="pr-2">:</td><td>{{$siswa->tempat_lahir}}, {{\Carbon\Carbon::parse($siswa->tanggal_lahir)->locale('id')->format('d F Y')}}</td>
+                        <td>Tempat, Tanggal Lahir</td>
+                        <td class="pr-2">:</td>
+                        @php
+                            $tglLahir=\Carbon\Carbon::parse($siswa->tanggal_lahir)->locale('id')->format('d F Y')
+                        @endphp
+                        <td>{{$siswa->tempat_lahir}}, {{$tglLahir}}</td>
                     </tr>
                     <tr>
-                        <td>Nomor Induk Siswa Nasional</td><td class="pr-2">:</td><td>{{$siswa->nisn}}</td>
+                        <td>Nomor Induk Siswa Nasional</td>
+                        <td class="pr-2">:</td>
+                        <td>{{$siswa->nisn}}</td>
                     </tr>
                     <tr>
-                        <td>Nomor Ijazah</td><td class="pr-2">:</td><td></td>
+                        <td>Nomor Ijazah</td>
+                        <td class="pr-2">:</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Tanggal Kelulusan</td><td class="pr-2">:</td><td></td>
@@ -107,6 +109,14 @@
                     <p class="leading-4">NIP. @if($sekolah->ks->status == 'pns') {{ $sekolah->ks->nip }} @endif</p>
                 </div>
             </div>
+
+            <img class="qrcode absolute bottom-0" src="data:image/png;base64,{{ base64_encode(
+                QrCode::format('png')
+                    ->merge(public_path('img/logo_pkg.png'), 0.3, true)
+                    ->size(100)
+                    ->generate(config('app.url').'/verifikasi/transkrip/'. $siswa->nisn)
+                ) }}"
+            />
         </div>
     </body>
 </html>

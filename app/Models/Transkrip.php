@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transkrip extends Model
 {
@@ -25,16 +26,16 @@ class Transkrip extends Model
         "penerbit",
     ];
 
-    public function sekolah()
+    public function sekolah(): BelongsTo
     {
         return $this->belongsTo(Sekolah::class, "sekolah_id", "npsn");
     }
-    public function siswa()
+    public function siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class, "siswa_id", "nisn");
     }
 
-    public function diterbitkan_oleh()
+    public function diterbitkan_oleh(): BelongsTo
     {
         return $this->belongsTo(Guru::class, "penerbit", "nip");
     }
