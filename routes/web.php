@@ -54,6 +54,16 @@ Route::prefix("")->group(function () {
         ])->name("sertifikat.verify");
     });
 
+    Route::prefix("verifikasi")->group(function () {
+        Route::prefix("transkrip")->group(function () {
+            Route::get("{nisn}", [
+                VerifyController::class,
+                "verifyTranskrip",
+            ])->name("verifikasi.transkrip");
+        });
+        Route::prefix("rapor")->group(function () {});
+    });
+
     // Captcha
     Route::prefix("/captcha")->group(function () {
         Route::get("/new", [CaptchaController::class, "new"])->name(

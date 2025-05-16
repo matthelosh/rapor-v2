@@ -52,7 +52,11 @@ const prevSiswa = () => {
 
 const cetakTranskrip = async (siswa) => {
     const url = `/cetak/transkrip/${siswa.nisn}`;
-    window.open(url, "_blank");
+    window.open(
+        url,
+        "_blank",
+        "popup=yes,width=1024,height=1500,scrollbars=no,toolbar=no,menubar=no",
+    );
 };
 onBeforeMount(() => {
     rombel.value = page.props.rombels[0];
