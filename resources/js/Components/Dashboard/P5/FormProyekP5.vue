@@ -29,8 +29,8 @@ const loading = ref({
     }
 
 const simpanNilaiP5 = async () => {
-    router.post(route('dashboard.p5.nilai.store'), 
-        { 
+    router.post(route('dashboard.p5.nilai.store'),
+        {
             datas: nilais.value
         },
         {

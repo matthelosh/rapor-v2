@@ -1,7 +1,3 @@
-@php
-    $mapels = ["Pendidikan Agama dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia", "Matematika", "Ilmu Pengetahuan Alam dan Sosial", "Seni Rupa", "Pendidikan Jasmani, Olahraga, dan Kesehatan", "Bahasa Inggris", "Bahasa Jawa"];
-@endphp
-
 <!doctype html>
 <html lang="id">
     <head>

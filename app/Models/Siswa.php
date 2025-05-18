@@ -131,9 +131,9 @@ class Siswa extends Model
         return $this->hasMany(NilaiP5::class, "siswa_id", "nisn");
     }
 
-    public function user(): MorphMany
+    public function user()
     {
-        return $this->morphMany(User::class, "userable");
+        return $this->morphOne(User::class, "userable");
     }
 
     public function jilids()

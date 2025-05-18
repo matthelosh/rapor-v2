@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, defineAsyncComponent} from 'vue'
 import { Head, router, usePage } from '@inertiajs/vue3';
 
 import DashLayout from '@/Layouts/DashLayout.vue';
@@ -9,13 +9,15 @@ import codemirror from 'codemirror';
 import 'codemirror/lib/codemirror.css'; // import base style
 import 'codemirror/mode/xml/xml.js'; // language
 import 'codemirror/addon/selection/active-line.js'; // require active-line.js
-import 'codemirror/addon/edit/closetag.js'; 
+import 'codemirror/addon/edit/closetag.js';
 import axios from 'axios';
 const page = usePage()
 const mode = ref('list')
 const loading = ref(false)
 const tps = ref([])
 defineProps({canAddSoal: Boolean})
+
+const ImporSoal = defineAsyncComponent(import('@/Components/Dashboard/Asesmen/ImportSoal.vue'))
 
 const extensions = [
     Doc, Text, History, Dropcursor,
@@ -73,6 +75,10 @@ const addSoal = () => {
     mode.value = 'form'
 }
 
+const importSoal = () => {
+    mode.value = 'imporSoal'
+}
+
 const closeForm = () => {
     mode.value = 'list'
     soal.value = {}
@@ -92,7 +98,7 @@ const simpanSoal = async () => {
                 level: 'MOT'
             }
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
-        }, 
+        },
         onError: errs => {
             Object.keys(errs).forEach(k => {
                 setTimeout(() => {
@@ -113,12 +119,12 @@ const rules = ref({
 const getTps = async () => {
     loading.value = true
     axios.post(route('dashboard.pembelajaran.tp.index'), {
-        
+
         mapelId: soal.value.mapel_id,
         tingkat: soal.value.tingkat,
         semester: soal.value.semester,
         agama: soal.value.mapel_id == 'pabp' ? page.props.auth.user.userable.agama : null
-    
+
     }).then(res => {
         tps.value = res.data.tps
     }).catch(err => {
@@ -143,7 +149,7 @@ const hapus = async(item) => {
                 level: 'MOT'
             }
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
-        }, 
+        },
         onError: errs => {
             Object.keys(errs).forEach(k => {
                 setTimeout(() => {
@@ -166,6 +172,7 @@ const hapus = async(item) => {
             <div class="flex items-center justify-between">
                 <h3>Data Soal </h3>
                 <div class="flex items-center gap-1">
+                    <el-button size="small" @click="importSoal" :disabled="!canAddSoal" v-if="mode == 'list'">Impor Soal</el-button>
                     <el-button type="primary" size="small" @click="addSoal" :disabled="!canAddSoal" v-if="mode == 'list'">Tambah Soal</el-button>
                     <el-button type="danger" size="small" @click="closeForm" :disabled="!canAddSoal" v-if="mode == 'form'">Batal</el-button>
                 </div>
@@ -325,7 +332,7 @@ const hapus = async(item) => {
                     </el-row>
                     <el-row :gutter=20 justify="center">
                         <el-col>
-                            
+
                             <el-form-item label="Kunci Jawaban" justify="center">
                                 <el-radio-group v-model="soal.kunci">
                                     <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
@@ -349,6 +356,8 @@ const hapus = async(item) => {
             </el-form>
         </div>
     </el-card>
+
+    <ImporSoal v-if="mode=='imporSoal'" @close="closeForm" />
 </DashLayout>
 </template>
 

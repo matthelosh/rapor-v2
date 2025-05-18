@@ -17,6 +17,8 @@ import dayjs from "dayjs";
 import "dayjs/locale/id";
 dayjs.locale("id");
 
+import { siswaHeaders } from "@/helpers/utils";
+
 const page = usePage();
 
 const formImpor = ref({
@@ -24,19 +26,19 @@ const formImpor = ref({
     url: "",
     fields: [],
 });
-const FormImpor = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/FormImpor.vue")
+const FormImporSiswa = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Siswa/FormImporSiswa.vue"),
 );
-const SiswaDapodik = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Siswa/SiswaDapodik.vue")
+const SiswaDapodik = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Siswa/SiswaDapodik.vue"),
 );
 const formSiswa = ref(false);
-const FormSiswa = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Siswa/FormSiswa.vue")
+const FormSiswa = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Siswa/FormSiswa.vue"),
 );
 const formOrtu = ref(false);
-const FormOrtu = defineAsyncComponent(() =>
-    import("@/Components/Dashboard/Siswa/FormOrtu.vue")
+const FormOrtu = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Siswa/FormOrtu.vue"),
 );
 const search = ref(null);
 const siswas = computed(() => {
@@ -109,7 +111,7 @@ const imporSiswa = () => {
         show: true,
         url: "dashboard.siswa.impor",
         title: "Siswa",
-        fields: fieldSiswa.value,
+        fields: siswaHeaders(),
     };
 };
 const imporOrtu = () => {
@@ -133,10 +135,10 @@ const fotoUrl = (item) => {
     let foto = item.foto
         ? item.foto
         : item.jk == "Perempuan"
-        ? item.agama == "Islam"
-            ? "/img/siswi-is.png"
-            : "/img/siswi.png"
-        : "/img/siswa.png";
+          ? item.agama == "Islam"
+              ? "/img/siswi-is.png"
+              : "/img/siswi.png"
+          : "/img/siswa.png";
     return foto;
 };
 
@@ -186,7 +188,7 @@ const createAccount = async (id) => {
                     }, 500);
                 });
             },
-        }
+        },
     );
 };
 
@@ -278,7 +280,7 @@ const unduhFormatSiswa = async () => {
     utils.book_append_sheet(wb, ws, "SISWA");
     writeFile(
         wb,
-        "Format Impor Siswa " + page.props.sekolahs[0].nama + ".xlsx"
+        "Format Impor Siswa " + page.props.sekolahs[0].nama + ".xlsx",
     );
 };
 
@@ -291,46 +293,46 @@ const unduhFormat = async () => {
                 nama: siswa.nama,
                 nama_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.nama : ""
+                        ortu.relasi == "Ayah" ? ortu.nama : "",
                     ) ?? "",
                 alamat_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.alamat : ""
+                        ortu.relasi == "Ayah" ? ortu.alamat : "",
                     ) ?? "",
                 hp_ayah:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ayah" ? ortu.hp : ""
+                        ortu.relasi == "Ayah" ? ortu.hp : "",
                     ) ?? "",
                 nama_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.nama : ""
+                        ortu.relasi == "Ibu" ? ortu.nama : "",
                     ) ?? "",
                 alamat_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.alamat : ""
+                        ortu.relasi == "Ibu" ? ortu.alamat : "",
                     ) ?? "",
                 hp_ibu:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Ibu" ? ortu.hp : ""
+                        ortu.relasi == "Ibu" ? ortu.hp : "",
                     ) ?? "",
                 nama_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.nama : ""
+                        ortu.relasi == "Wali" ? ortu.nama : "",
                     ) ?? "",
                 alamat_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.alamat : ""
+                        ortu.relasi == "Wali" ? ortu.alamat : "",
                     ) ?? "",
                 hp_wali:
                     siswa.ortus.map((ortu) =>
-                        ortu.relasi == "Wali" ? ortu.hp : ""
+                        ortu.relasi == "Wali" ? ortu.hp : "",
                     ) ?? "",
             });
         });
     }
-    const ws = await utils.json_to_sheet(data);
-    const wb = await utils.book_new();
-    await utils.book_append_sheet(wb, ws, "ORTU");
+    const ws = utils.json_to_sheet(data);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "ORTU");
     writeFile(wb, "Format Impor Ortu " + page.props.sekolahs[0].nama + ".xlsx");
 };
 
@@ -353,6 +355,33 @@ const siswaDapodik = ref(false);
 const closeSiswaDapodik = () => {
     siswaDapodik.value = false;
 };
+
+const bulkAccount = () => {
+    router.post(
+        route("dashboard.siswa.account.bulk.add", {
+            _query: {
+                sekolah_id: page.props.sekolahs[0].npsn,
+                rombel_id: page.props.auth.roles.includes("guru_kelas")
+                    ? page.props.rombels[0].kode
+                    : null,
+            },
+        }),
+        null,
+        {
+            onStart: () => (loading.value = true),
+            onSuccess: () => {
+                router.reload({ only: ["siswas"], preserveState: true });
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: "success",
+                });
+            },
+        },
+    );
+};
+
+const param = computed(() => route().params);
 </script>
 <template>
     <Head title="Data Siswa" />
@@ -384,7 +413,7 @@ const closeSiswaDapodik = () => {
                             >
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center justify-end px-2 md:w-[60%]"
+                            class="card-toolbar--items flex-grow flex items-center justify-end px-2"
                         >
                             <el-button-group
                                 class="hidden-sm-and-down"
@@ -407,13 +436,7 @@ const closeSiswaDapodik = () => {
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button
-                                    type="danger"
-                                    @click="siswaDapodik = true"
-                                >
-                                    <Icon icon="mdi:web-sync" />
-                                    Impor Dapodik
-                                </el-button>
+
                                 <el-button
                                     type="success"
                                     @click="unduhFormatSiswa"
@@ -429,6 +452,10 @@ const closeSiswaDapodik = () => {
                                 >
                                     <Icon icon="mdi-file-excel" />
                                     Impor
+                                </el-button>
+                                <el-button type="danger" @click="bulkAccount">
+                                    <Icon icon="mdi:people" />
+                                    Buat akun
                                 </el-button>
                             </el-button-group>
                             <el-input
@@ -452,7 +479,13 @@ const closeSiswaDapodik = () => {
                     max-height="75vh"
                     v-loading="!siswas"
                 >
-                    <el-table-column label="#" type="index"></el-table-column>
+                    <el-table-column label="#" width="40">
+                        <template #default="scope">
+                            {{
+                                scope.$index + 1 + parseInt(param?.page ?? "0")
+                            }}
+                        </template>
+                    </el-table-column>
                     <el-table-column
                         label="Sekolah"
                         v-if="page.props.auth.roles.includes('admin')"
@@ -463,14 +496,14 @@ const closeSiswaDapodik = () => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="NISN">
+                    <el-table-column label="NISN" width="125">
                         <template #default="{ row }">
                             <el-button type="primary" text @click="edit(row)">{{
                                 row.nisn
                             }}</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Foto">
+                    <el-table-column label="Foto" width="80">
                         <template #default="scope">
                             <el-avatar
                                 :src="scope.row.foto"
@@ -481,7 +514,11 @@ const closeSiswaDapodik = () => {
                         </template>
                     </el-table-column>
                     <el-table-column label="Nama" prop="nama"></el-table-column>
-                    <el-table-column label="JK" prop="jk"></el-table-column>
+                    <el-table-column label="JK" width="50">
+                        <template #default="{ row }">
+                            {{ row.jk == "Laki-laki" ? "Lk" : "Pr" }}
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Tempat, Tanggal Lahir">
                         <template #default="scope">
                             {{ scope.row.tempat_lahir }},
@@ -492,14 +529,9 @@ const closeSiswaDapodik = () => {
                             }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Kelas">
+                    <el-table-column label="Kelas" width="60">
                         <template #default="scope">
                             {{ scope.row.rombels[0]?.label }}
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="Akun" width="100">
-                        <template #default="scope">
-                            {{ scope.row.user?.name }}
                         </template>
                     </el-table-column>
                     <el-table-column label="Angkatan" width="100">
@@ -514,7 +546,7 @@ const closeSiswaDapodik = () => {
                                     Ayah:
                                     {{
                                         scope.row.ortus.filter(
-                                            (ayah) => ayah.relasi == "Ayah"
+                                            (ayah) => ayah.relasi == "Ayah",
                                         )[0]?.nama
                                     }}
                                 </p>
@@ -522,28 +554,28 @@ const closeSiswaDapodik = () => {
                                     Ibu:
                                     {{
                                         scope.row.ortus.filter(
-                                            (ibu) => ibu.relasi == "Ibu"
+                                            (ibu) => ibu.relasi == "Ibu",
                                         )[0]?.nama
                                     }}
                                 </p>
                                 <p
                                     v-if="
                                         scope.row.ortus.filter(
-                                            (ortu) => ortu.relasi == 'Wali'
+                                            (ortu) => ortu.relasi == 'Wali',
                                         ).length > 0
                                     "
                                 >
                                     Wali:
                                     {{
                                         scope.row.ortus.filter(
-                                            (wali) => wali.relasi == "Wali"
+                                            (wali) => wali.relasi == "Wali",
                                         )[0]?.nama
                                     }}
                                 </p>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Status" width="130">
+                    <el-table-column label="Status" width="100">
                         <template #default="scope">
                             <el-select
                                 v-model="scope.row.status"
@@ -646,6 +678,8 @@ const closeSiswaDapodik = () => {
                             :total="siswas.total"
                             layout="prev,pager,next"
                             background
+                            :default-current-page="siswas.current_page"
+                            :page-count="siswas.last_page"
                             @current-change="onCurrentChange"
                         ></el-pagination>
                     </div>
@@ -658,7 +692,7 @@ const closeSiswaDapodik = () => {
             :selectedSiswa="selectedSiswa"
             v-if="formSiswa"
         />
-        <FormImpor
+        <FormImporSiswa
             :open="formImpor.show"
             @close="closeImpor"
             :fields="formImpor.fields"

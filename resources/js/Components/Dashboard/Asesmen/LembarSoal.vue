@@ -17,7 +17,7 @@ const show = ref(false);
 const soals = ref([]);
 const showFormSoal = ref(false);
 
-import Kop from "@/Components/Umum/Kop.vue";
+import Kop from "@/Components/Dashboard/Kop.vue";
 
 const allSoals = ref([]);
 const getAllSoals = async () => {

@@ -1,6 +1,8 @@
 <script setup>
+import { usePage } from "@inertiajs/vue3";
 import DashLayout from "@/Layouts/DashLayout.vue";
 
+// const page = usePage();
 const props = defineProps({ rombels: Array });
 </script>
 
@@ -9,8 +11,10 @@ const props = defineProps({ rombels: Array });
         <template #header>
             <span>Administrasi Akhir Jenjang</span>
         </template>
+
         <div
             class="card p-4 rounded shadow bg-white bg-opacity-70 backdrop-blur max-w-full"
+            v-if="rombels[0].tingkat == '6'"
         >
             <!-- {{ rombels }} -->
             <el-collapse accordion>
@@ -62,5 +66,6 @@ const props = defineProps({ rombels: Array });
                 </template>
             </el-collapse>
         </div>
+        <el-alert type="error" v-else> Hanya untuk Kelas 6 </el-alert>
     </DashLayout>
 </template>

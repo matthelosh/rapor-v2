@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { defineAsyncComponent, onBeforeMount, ref } from "vue";
-const Kop = defineAsyncComponent(() => import("@/Components/Umum/Kop.vue"));
+const Kop = defineAsyncComponent(() => import("@/Components/Dashboard/Kop.vue"));
 const page = usePage();
 const props = defineProps({ jilid: Object });
 const emit = defineEmits(["close"]);
@@ -32,8 +32,8 @@ const cetak = () => {
         <!doctype html>
         <html>
             <head>
-                <title>Jurnal SPN</title>  
-                <link rel="stylesheet" href="${cssUrl}" />  
+                <title>Jurnal SPN</title>
+                <link rel="stylesheet" href="${cssUrl}" />
             </head>
             <body>
                 ${el.outerHTML}

@@ -4,7 +4,7 @@ import { Head, router, usePage } from '@inertiajs/vue3'
 
 import DashLayout from '@/Layouts/DashLayout.vue';
 import { ElNotification } from 'element-plus';
-const FormNilaiP5 = defineAsyncComponent(() => import('@/Components/Dashboard/P5/FormNilaiP5.vue'))
+const FormNilaiP5 = defineAsyncComponent(() => import('@/Components/Dashboard/P5/FormProyekP5.vue'))
 const RaporP5 = defineAsyncComponent(() => import('@/Components/Dashboard/P5/RaporP5.vue'))
 
 const mode = ref('list')
@@ -121,7 +121,7 @@ const closeMe = () => {
                         </el-col>
                     </template>
                 </el-row>
-            </div>  
+            </div>
             <div class="form " v-if="mode == 'form'">
                 <h3 class="text-lg font-bold text-sky-700 text-center mb-4 uppercase">Formulir Proyek P5</h3>
                 <el-form v-model="proyek" label-width="200">

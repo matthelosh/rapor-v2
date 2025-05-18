@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch} from "vue";
 import { router, Link, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { avatar } from "@/helpers/Gambar.js";
@@ -27,6 +27,33 @@ const toggleChild = (itemId) => {
 const showItem = (roles) => {
     return roles.includes(page.props.auth.roles[0]);
 };
+
+const isChildRouteIsActive = (children) => {
+    if (!children) return false;
+    return children.some((child) => page.url === child.url);
+}
+
+watch(
+    () => page.url,
+    () => {
+        items.forEach((item, index) => {
+            if (item.children && item.children.length > 0 && isChildRouteIsActive(item.children)) {
+                activeMenu.value = index
+            }
+        });
+    },
+    { immediate: true }
+);
+
+onMounted(() => {
+    items.forEach((item, index) => {
+        if (item.children && item.children.length > 0 && isChildRouteIsActive(item.children)) {
+            activeMenu.value = index;
+        }
+    });
+
+});
+
 </script>
 
 <template>

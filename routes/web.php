@@ -168,6 +168,10 @@ Route::middleware("auth")->group(function () {
                 SiswaController::class,
                 "addAccount",
             ])->name("dashboard.siswa.account.add");
+            Route::post("/account/bulk/add", [
+                SiswaController::class,
+                "addBulkAccount",
+            ])->name("dashboard.siswa.account.bulk.add");
             Route::post("/nonmember", [
                 SiswaController::class,
                 "nonMember",

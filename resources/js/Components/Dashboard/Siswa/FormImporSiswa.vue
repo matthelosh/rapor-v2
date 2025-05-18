@@ -6,6 +6,7 @@ import { ElNotification } from "element-plus";
 
 const page = usePage();
 const loading = ref(false);
+const progress = ref(0);
 const props = defineProps({
     open: Boolean,
     fields: Array,
@@ -16,14 +17,51 @@ const props = defineProps({
 const emit = defineEmits(["close"]);
 const show = computed(() => props.open);
 const datas = ref([]);
+// const totalRows = ref(0);
+
+const parseSheet = async (sheet, range, headers, onProgress) => {
+    loading.value = true;
+    const rows = [];
+    const startRow = 6;
+    const totalRows = range.e.r - startRow + 1;
+
+    const batchSize = 100;
+
+    for (let i = 0; i < totalRows; i += batchSize) {
+        const batchEnd = Math.min(i + batchSize, totalRows);
+
+        for (let r = i + startRow; r < batchEnd + startRow; r++) {
+            const rowData = {};
+            for (let col = 0; col < props.fields.length; col++) {
+                const cellAddress = utils.encode_cell({ r, c: col });
+                const cell = sheet[cellAddress];
+                rowData[props.fields[col]] = cell ? cell.v : null;
+            }
+            rows.push(rowData);
+        }
+
+        onProgress(Math.round(((i + batchSize) / totalRows) * 100));
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
+    }
+
+    return rows;
+};
+
 const onFilePicked = async (e) => {
+    // loading.value = true;
     const file = e.target.files[0];
     const ab = await file.arrayBuffer();
-
     const wb = read(ab);
+    const sheet = wb.Sheets[wb.SheetNames[0]];
 
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    datas.value = utils.sheet_to_json(ws);
+    const range = utils.decode_range(sheet["!ref"]);
+    const rows = await parseSheet(sheet, range, props.fields, (p) => {
+        progress.value = p;
+    });
+    datas.value = rows;
+    loading.value = false;
+    console.log(datas.value);
 };
 
 const kirim = async () => {
@@ -97,10 +135,9 @@ const closeMe = () => {
         <div class="body">
             <el-table
                 :data="datas"
-                v-if="datas.length > 0"
                 max-height="78vh"
                 size="small"
-                v-loading="loading"
+                :loading="loading"
             >
                 <el-table-column
                     v-for="(field, f) in props.fields"
@@ -109,12 +146,12 @@ const closeMe = () => {
                     :label="field.toUpperCase()"
                 />
             </el-table>
-            <el-alert v-else type="success">
+            <!-- <el-alert v-else type="success">
                 <span class="font-bold text-sky-600 text-xl"
                     >Pastikan File Excel dengan format kolom</span
                 >
                 <span class="text-sky-800 text-xl">{{ props.fields }}</span>
-            </el-alert>
+            </el-alert> -->
         </div>
     </el-dialog>
 </template>

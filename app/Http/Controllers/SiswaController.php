@@ -20,12 +20,9 @@ class SiswaController extends Controller
         $siswas = $siswaService->home($request);
         // $siswas = Siswa::paginate(20);
 
-        return Inertia::render(
-            'Dash/Siswa',
-            [
-                'siswas' => $siswas,
-            ]
-        );
+        return Inertia::render("Dash/Siswa", [
+            "siswas" => $siswas,
+        ]);
     }
 
     /**
@@ -40,9 +37,9 @@ class SiswaController extends Controller
     {
         try {
             $siswaService->impor($request);
-            return back()->with('status', 'Data Siswa diimpor');
+            return back()->with("status", "Data Siswa diimpor");
         } catch (\Exception $e) {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
@@ -51,7 +48,7 @@ class SiswaController extends Controller
         try {
             $siswas = DapodikHelper::siswas($request->all());
             return response()->json([
-                'siswas' => $siswas
+                "siswas" => $siswas,
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -64,10 +61,12 @@ class SiswaController extends Controller
     public function store(SiswaRequest $request, SiswaService $siswaService)
     {
         try {
+            $store = $siswaService->store(
+                $request->all(),
+                $request->file("file") ?? null
+            );
 
-            $store = $siswaService->store($request->all(), $request->file('file') ?? null);
-
-            return back()->with('data', $store);
+            return back()->with("data", $store);
         } catch (\Exception $e) {
             return back()->withErrors("errors", $e->getMessage());
         }
@@ -78,38 +77,60 @@ class SiswaController extends Controller
      */
     public function nonMember(Request $request)
     {
-        $rombelId = $request->query('rombelId');
-        $targetRombel = $request->query('targetRombel');
+        $rombelId = $request->query("rombelId");
+        $targetRombel = $request->query("targetRombel");
         $tapel = $this->tapel()->kode;
         try {
             if (!$targetRombel) {
-                $siswas = Siswa::whereDoesntHave(
-                    'rombels',
-                    function ($r) use ($tapel) {
-                        $r->whereTapel($tapel);
-                    }
-                )
+                $siswas = Siswa::whereDoesntHave("rombels", function ($r) use (
+                    $tapel
+                ) {
+                    $r->whereTapel($tapel);
+                })
                     // ->orWhereHas(
                     //     'rombels',
                     //     function ($q) use ($rombelId) {
                     //         $q->whereNot('rombels.id', $rombelId);
                     //     }
                     // )
-                    ->where('sekolah_id', $request->user()->userable->sekolahs[0]->npsn)
-                    ->with('sekolah')
-                    ->whereStatus('aktif')->get();
+                    ->where(
+                        "sekolah_id",
+                        $request->user()->userable->sekolahs[0]->npsn
+                    )
+                    ->with("sekolah")
+                    ->whereStatus("aktif")
+                    ->get();
             } else {
-                $rombel = Rombel::where('id', $targetRombel)->with('siswas')->first();
+                $rombel = Rombel::where("id", $targetRombel)
+                    ->with("siswas")
+                    ->first();
                 $siswas = $rombel->siswas;
             }
-            return response()->json(['siswas' => $siswas]);
+            return response()->json(["siswas" => $siswas]);
         } catch (\Exception $e) {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Create accounts for siswas
+     */
+
+    public function addBulkAccount(Request $request, SiswaService $siswaService)
+    {
+        try {
+            $res = $siswaService->bulkAccount(
+                $request->sekolah_id,
+                $request->rombel_id
+            );
+            return back()->with("message", $res["message"]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+    }
+
+    /**
+     * Add account for siswa
      */
     public function addAccount(Request $request)
     {
@@ -117,17 +138,17 @@ class SiswaController extends Controller
             $siswa = Siswa::findorFail($request->id);
             $user = User::updateOrCreate(
                 [
-                    'name' => $siswa->nisn,
+                    "name" => $siswa->nisn,
                 ],
                 [
-                    'password' => Hash::make($siswa->nisn),
-                    'email' => $siswa->email ?? $siswa->nisn . '@e.mail',
-                    'userable_id' => $siswa->id,
-                    'userable_type' => 'App\Models\Siswa'
+                    "password" => Hash::make($siswa->nisn),
+                    "email" => $siswa->email ?? $siswa->nisn . "@e.mail",
+                    "userable_id" => $siswa->id,
+                    "userable_type" => "App\Models\Siswa",
                 ]
             );
-            $user->assignRole('siswa');
-            return back()->with('message', 'Akun Siswa dibuat');
+            $user->assignRole("siswa");
+            return back()->with("message", "Akun Siswa dibuat");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -138,9 +159,12 @@ class SiswaController extends Controller
      */
     public function update(Request $request, SiswaService $siswaService)
     {
-        $update = $siswaService->store($request->all(), $request->file('file') ?? null);
+        $update = $siswaService->store(
+            $request->all(),
+            $request->file("file") ?? null
+        );
         // dd($store);
-        return back()->with('message', 'Data Siswa diperbarui');
+        return back()->with("message", "Data Siswa diperbarui");
     }
 
     /**

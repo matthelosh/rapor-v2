@@ -17,7 +17,7 @@ const props = defineProps({
 import DashLayout from "@/Layouts/DashLayout.vue";
 import { computed, defineAsyncComponent, onMounted, ref } from "vue";
 
-const Kop = defineAsyncComponent(() => import("@/Components/Umum/Kop.vue"));
+const Kop = defineAsyncComponent(() => import("@/Components/Dashboard/Kop.vue"));
 
 const months = [
     "Januari",
