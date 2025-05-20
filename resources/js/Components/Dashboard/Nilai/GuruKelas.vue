@@ -188,6 +188,7 @@ onBeforeMount(() => {
                                                 "
                                                 rounded
                                                 size="small"
+                                                v-if="rombel.tingkat == '6'"
                                                 @click="
                                                     openForm(
                                                         scope.row,
@@ -205,6 +206,7 @@ onBeforeMount(() => {
                                                 "
                                                 rounded
                                                 size="small"
+                                                v-if="page.props.auth.roles.includes('guru_agama')"
                                                 @click="
                                                     openForm(
                                                         scope.row,

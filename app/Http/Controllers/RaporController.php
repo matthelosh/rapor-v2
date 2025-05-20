@@ -13,7 +13,9 @@ class RaporController extends Controller
     public function home(Request $request)
     {
 
-        return Inertia::render('Dash/Rapor', []);
+        return Inertia::render('Dash/Rapor', [
+            'tapels' => Tapel::all()
+        ]);
     }
 
     public function periodik(Request $request)

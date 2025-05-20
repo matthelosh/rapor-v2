@@ -74,7 +74,10 @@ class HandleInertiaRequests extends Middleware
                 ? Rombel::whereTapel(Periode::tapel()->kode)->get()
                 : ($user->hasRole("guru_kelas")
                     ? Rombel::where("guru_id", $user->userable->id)
-                        ->with("siswas.ortus", "sekolah")
+                    ->with("sekolah")
+                    ->with('siswas', function($q) {
+                        $q->with('ortus')->orderBy('nama', 'ASC');
+                    })
                         ->get()
                     : ($user->hasRole("siswa")
                         ? Rombel::where(
