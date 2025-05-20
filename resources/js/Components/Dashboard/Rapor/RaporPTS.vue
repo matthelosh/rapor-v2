@@ -60,7 +60,7 @@ const getNilaiPTS = async () => {
             route("dashboard.rapor.pts", {
                 _query: {
                     rombelId: props.rombel.kode,
-                    semester: page.props.periode.semester.kode,
+                    semester: route().params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     siswaId: props.siswa.nisn,
                     sekolahId: sekolah.value.npsn,
@@ -86,13 +86,13 @@ onBeforeMount(async () => {
 
 <template>
     <Head
-        :title="`Laporan Hasil Belajar Tengah Semester ${page.props.periode.semester.label}`"
+        :title="`Laporan Hasil Belajar Tengah Semester ${route().params.semester ?? page.props.periode.semester.label}`"
     />
     <div
         class="toolbar h-12 bg-slate-200 w-full flex items-center justify-between print:hidden px-4"
     >
         <span>
-            Cetak Rapor PTS {{ page.props.periode.semester.label }} Tahun
+            Cetak Rapor PTS {{ route().params.semester ?? page.props.periode.semester.label }} Tahun
             {{ page.props.periode.tapel.label }}
         </span>
         <div class="toolbar-items flex items-center">

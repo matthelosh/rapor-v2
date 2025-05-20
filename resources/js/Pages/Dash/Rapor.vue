@@ -24,7 +24,7 @@ const closeLaman = () => {
     mode.value = "list";
     selectedSiswa.value = {};
 };
-
+const selectedSemester = ref('')
 const nextSiswa = () => {
     // alert('halo')
     let current = rombel.value.siswas.findIndex(
@@ -58,8 +58,14 @@ const cetakTranskrip = async (siswa) => {
         "popup=yes,width=1024,height=1500,scrollbars=no,toolbar=no,menubar=no",
     );
 };
+
+const onSemesterChanged = (e) => {
+    selectedSemester.value = e
+    router.visit(window.location.pathname+'?semester='+e)
+}
 onBeforeMount(() => {
     rombel.value = page.props.rombels[0];
+    selectedSemester.value = route().params.semester ?? page.props.periode.semester.kode
 });
 </script>
 
@@ -72,10 +78,16 @@ onBeforeMount(() => {
         </template>
         <el-card v-if="mode == 'list'">
             <template #header>
-                <div>
+                <div class="flex items-center justify-between w-full">
                     <h3 class="uppercase font-bold text-slate-600">
                         Rapor Siswa {{ rombel.label }} {{ rombel.sekolah.nama }}
                     </h3>
+                    <div class="header-items flex-grow flex items-center gap-2 justify-end">
+                        <el-select v-model="selectedSemester" placeholder="Pilih Semester" style="width:100px;" @change="onSemesterChanged">
+                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="`Sem ${sem}`" />
+
+                        </el-select>
+                    </div>
                 </div>
             </template>
             <div class="card-body">
