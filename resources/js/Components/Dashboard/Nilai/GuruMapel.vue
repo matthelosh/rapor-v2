@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { ref, computed, defineAsyncComponent, onBeforeMount } from "vue";
+import { usePage, router } from "@inertiajs/vue3";
 import { ElCard } from "element-plus";
 const page = usePage();
 const FormNilaiHarian = defineAsyncComponent(
@@ -40,8 +40,19 @@ const open = (rombel, komponen, sekolah) => {
 
     mode.value = komponen;
 };
-
+const params = route().params
 const persen = (scope) => {};
+const selectedSemester = ref('')
+
+const onSemesterChanged = (e) => {
+    router.visit(`${window.location.pathname}?semester=${selectedSemester.value}`, {
+        reload: {only: ['nilais']},
+        preserveState: true
+    })
+}
+onBeforeMount(() => {
+    selectedSemester.value = params.semester | page.props.periode.semester.kode
+})
 </script>
 
 <template>
@@ -52,11 +63,17 @@ const persen = (scope) => {};
                     <div class="title">
                         <h3 class="text-lg font-bold">
                             Penilaian Semester
-                            {{ page.props.periode.semester.label }}
-                            {{ page.props.periode.tapel.deskripsi }}
+                            {{ params.semester ?? page.props.periode.semester.kode }}
+                            {{ page.props.periode.tapel.label }}
                         </h3>
                     </div>
-                    <div class="toolbar-items"></div>
+                    <div class="toolbar-items flex items-center justify-end gap-2">
+
+                        <p>Semester:</p>
+                        <el-select v-model="selectedSemester" placeholder="Pilih semester" style="width: 60px;" @change="onSemesterChanged">
+                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="sem" />
+                        </el-select>
+                    </div>
                 </div>
             </template>
             <div class="card-body">

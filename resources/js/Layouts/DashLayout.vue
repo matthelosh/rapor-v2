@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeMount } from "vue";
 import { router, Head, usePage, Link } from "@inertiajs/vue3";
 import { ElContainer, ElHeader, ElAside, ElMain } from "element-plus";
 import { Icon } from "@iconify/vue";
@@ -21,9 +21,18 @@ const toggleSide = () => {
     side.classList.toggle("hidden-sm-and-down");
 };
 
+// const selectedSemester = ref('')
+// const onSemesterChanged = (e) => {
+//     alert(e)
+// }
+
 onMounted(() => {
     contentTrigger.value = true;
+
 });
+onBeforeMount(() => {
+    // selectedSemester.value = page.props.periode.semester.kode
+})
 </script>
 <template>
     <div
@@ -83,7 +92,8 @@ onMounted(() => {
                             />
                             <slot name="header"></slot>
                         </div>
-                        <div class="header-items flex items-center">
+                        <div class="header-items flex items-center justify-end flex-grow gap-2">
+                            <p class="px-2 bg-sky-700 rounded text-white">Semester {{page.props.periode.semester.label}} | {{page.props.periode.tapel.label}}</p>
                             <el-popconfirm
                                 title="Yakin Keluar?"
                                 @confirm="logout"

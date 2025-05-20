@@ -22,7 +22,7 @@ const notGuru = computed(() => {
 <DashLayout>
     <template #header>
         <div>
-            <h3 class="font-black text-xl text-slate-700" v-if="page.props.auth.roles.includes('guru_kelas')">{{ page.props.sekolahs[0].nama }}</h3>
+                <h3 class="text-lg font-bold">Penilaian</h3>
         </div>
     </template>
     <component :is="komponen" v-if="!notGuru"/>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Nilai;
 use App\NilaiTrait;
+use App\Helpers\Periode;
 use App\Services\NilaiService;
 use Illuminate\Http\Request;
 
@@ -14,9 +15,10 @@ class NilaiController extends Controller
 
     public function home(Request $request, NilaiService $nilaiService)
     {
-
+        $semester = $request->semester ?? Periode::semester()->kode;
+        $tapel = $request->tapel ?? Periode::tapel()->kode;
         return Inertia::render('Dash/Nilai', [
-            'datas' => $nilaiService->home(),
+            'datas' => $nilaiService->home($semester, $tapel),
             'nilais' => $this->prosentase($request->user())
         ]);
     }

@@ -30,13 +30,12 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: page.props.periode.semester.kode,
+                semester: route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "as",
             },
         }),
-        { siswas: siswas.value },
-        {
+        { siswas: siswas.value },{
             onSuccess: (page) => {
                 router.reload({ only: ["nilais"] });
                 ElNotification({
@@ -91,7 +90,7 @@ const getNilai = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: route().params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "as",
                 },

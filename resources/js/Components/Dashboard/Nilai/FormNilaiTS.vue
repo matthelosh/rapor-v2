@@ -22,7 +22,7 @@ const simpan = async() => {
             tingkat: props.rombel.tingkat,
             mapelId: props.mapel?.kode,
             agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
-            semester: page.props.periode.semester.kode,
+            semester: route().params.semester ?? page.props.periode.semester.kode,
             tapel: page.props.periode.tapel.kode,
             tipe: 'ts'
         }
@@ -30,7 +30,7 @@ const simpan = async() => {
         onSuccess: (page) => {
             router.reload({only: ['nilais']})
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
-        }, 
+        },
         onError: errs => {
             // console.log(errs)
             Object.keys(errs).forEach(k => {
@@ -60,7 +60,7 @@ const simpan = async() => {
 //         })
 //     })
 // }
-
+const params = route().params
 const getNilai = async() => {
     await axios.post(route('dashboard.nilai.index', {
         _query: {
@@ -68,7 +68,7 @@ const getNilai = async() => {
             tingkat: props.rombel.tingkat,
             mapelId: props.mapel?.kode,
             agama: page.props.auth.roles.includes('guru_agama') ? page.props.auth.user.userable.agama : null,
-            semester: page.props.periode.semester.kode,
+            semester: params.semester ?? page.props.periode.semester.kode,
             tapel: page.props.periode.tapel.kode,
             tipe: 'ts'
         }
@@ -139,9 +139,9 @@ onBeforeMount(async() => {
                 <div>
                     <p>Nilai Tengah Semester {{page.props.periode.semester.label}} {{ page.props.periode.tapel.label }}</p>
                     <!-- {{ props.mapel }} -->
-                    <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p> 
+                    <p class="text-sky-800 font-black">{{ props.mapel.label ? props.mapel.label : (!props.mapel.kode.includes('pabp') ? props.mapel.kode.toUpperCase() : `Pendidikan Agama ${page.props.auth.user.userable.agama}`) }} </p>
                     <p>
-                        {{ props.rombel.label }} 
+                        {{ props.rombel.label }}
                         <span>{{ role !== 'guru_kelas' ? props.sekolah.nama : props.rombel.sekolah.nama }}</span>
                     </p>
                 </div>

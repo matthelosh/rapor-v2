@@ -32,7 +32,7 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: page.props.periode.semester.kode,
+                semester: route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "uh",
             },
@@ -78,7 +78,7 @@ const getTps = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: route().params.semester ?? page.props.periode.semester.kode,
                 },
             })
         )
@@ -111,7 +111,7 @@ const getNilai = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: route().params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "uh",
                 },
@@ -164,7 +164,7 @@ const onFileNilaiPicked = async (e) => {
 
 const unduhFormat = async () => {
     let data = [];
-    await siswas.value.forEach((siswa) => {
+    siswas.value.forEach((siswa) => {
         let item = {
             nisn: siswa.nisn,
             nama: siswa.nama,

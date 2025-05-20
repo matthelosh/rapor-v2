@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineAsyncComponent } from "vue";
+import { ref, computed, defineAsyncComponent, onBeforeMount } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { ElCard } from "element-plus";
 const page = usePage();
@@ -26,6 +26,9 @@ const FormNilaiKelas = defineAsyncComponent(
 const mode = ref("home");
 const selectedRombel = ref({});
 const selectedMapel = ref({});
+const selectedSemester = ref('')
+
+const params = route().params
 
 const guruKelas = () => {
     return page.props.auth.roles[0].includes("guru_kelas");
@@ -43,6 +46,10 @@ const closeForm = () => {
     selectedMapel.value = {};
     mode.value = "home";
 };
+
+onBeforeMount(() => {
+    selectedSemester.value = params.semester ?? page.props.periode.semester.kode
+})
 </script>
 
 <template>
@@ -57,7 +64,13 @@ const closeForm = () => {
                             {{ page.props.periode.tapel.deskripsi }}
                         </h3>
                     </div>
-                    <div class="toolbar-items"></div>
+                    <div class="toolbar-items flex items-center gap-2">
+                        <p>Semester:</p>
+                        <el-select v-model="selectedSemester" placeholder="Pilih Semester">
+                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="`Semester ${sem}`" />
+                        </el-select>
+
+                    </div>
                 </div>
             </template>
             <div class="card-body">

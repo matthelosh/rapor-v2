@@ -32,7 +32,7 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: page.props.periode.semester.kode,
+                semester: route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "all",
             },
@@ -78,7 +78,7 @@ const getTps = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: route().params.semester ?? page.props.periode.semester.kode,
                 },
             })
         )
@@ -102,6 +102,8 @@ const getTps = async () => {
         });
 };
 
+const params = route().params
+
 const getNilaiUh = async () => {
     await axios
         .post(
@@ -113,7 +115,7 @@ const getNilaiUh = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "uh",
                 },
@@ -144,7 +146,7 @@ const getNilaiAs = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "as",
                 },
@@ -175,7 +177,7 @@ const getNilaiTs = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: page.props.periode.semester.kode,
+                    semester: params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "ts",
                 },

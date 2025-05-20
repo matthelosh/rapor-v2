@@ -15,11 +15,11 @@ class NilaiService
     /** @var \App\Models\User */
     // private $user = auth()->user();
 
-    public function home()
+    public function home($semester, $tapel)
     {
         /** @var \App\Models\User */
         $user = auth()->user();
-        $semester = Periode::semester()->kode;
+        /* $semester = Periode::semester()->kode; */
         $mapels = [
             'guru_agama',
             'guru_pjok',
@@ -72,8 +72,8 @@ class NilaiService
              *  ]
              * ]
              *
-             * 
-             * 
+             *
+             *
              */
         } elseif ($user->hasRole('ops')) {
             $datas = Sekolah::where('id', $user->userable->sekolahs[0]->id)->with('rombels.siswas', 'rombels.guru')->first();
