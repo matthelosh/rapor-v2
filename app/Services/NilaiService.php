@@ -42,7 +42,7 @@ class NilaiService
                         'rombels' => function ($q) use ($agama, $semester) {
                             $q->with('siswas', function ($s) use ($agama) {
 
-                                $s->where('siswas.agama', $agama);
+                                $s->where('siswas.agama', $agama)->orderBy('nama', 'ASC');
                             });
                             $q->with(['siswas', 'nilais' => function ($n) use ($agama, $semester) {
                                 $n->select(

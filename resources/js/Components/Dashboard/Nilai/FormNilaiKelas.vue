@@ -85,12 +85,13 @@ const getTps = async () => {
         .then((res) => {
             tps.value = res.data.tps;
             loading.value = false;
+            let raws = []
             props.rombel.siswas.forEach((siswa, s) => {
                 let ns = {};
                 tps.value.forEach((tp, t) => (ns[tp.kode] = 0));
                 ns["ts"] = 0;
                 ns["as"] = 0;
-                siswas.value.push({
+                raws.push({
                     id: siswa.id,
                     nisn: siswa.nisn,
                     nama: siswa.nama,
@@ -99,6 +100,7 @@ const getTps = async () => {
                     agama: siswa.agama,
                 });
             });
+        siswas.value = raws.sort((a,b) => a.nama.localeCompare(b.nama))
         });
 };
 
@@ -230,7 +232,7 @@ const onFileNilaiPicked = async (e) => {
 
 const unduhFormat = async () => {
     let data = [];
-    await siswas.value.forEach((siswa) => {
+    siswas.value.forEach((siswa) => {
         let item = {
             nisn: siswa.nisn,
             nama: siswa.nama,
@@ -393,14 +395,14 @@ onBeforeMount(async () => {
                         <tr>
                             <th
                                 class="border-e border-b p-2 w-[100px]"
-                                v-for="(tp, t) in tps"
+                                v-for="(tp, t) in tps" :key="`tp-${tp.kode}`"
                             >
                                 {{ tp.kode }}
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(siswa, s) in siswas">
+                        <tr v-for="(siswa, s) in siswas" :key="`sis-${s}`">
                             <td class="p-3 text-center border-b bg-slate-50">
                                 {{ s + 1 }}
                             </td>
@@ -413,7 +415,7 @@ onBeforeMount(async () => {
                             <td class="p-3 border-b bg-slate-100">
                                 {{ siswa.jk }}
                             </td>
-                            <template v-for="(tp, t) in tps">
+                            <template v-for="(tp, t) in tps" :key="`tp-${tp.kode}`">
                                 <td
                                     class="p-3 border-b"
                                     :class="

@@ -446,6 +446,7 @@ onBeforeMount(async () => {
                             prop="nama"
                             fixed
                             width="230"
+                            :sortable="true"
                         />
                         <el-table-column label="JK" width="60">
                             <template #default="scope">

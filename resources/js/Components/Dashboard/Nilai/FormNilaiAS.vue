@@ -408,8 +408,8 @@ onBeforeMount(async () => {
                             width="120"
                             fixed
                         />
-                        <el-table-column label="Nama" prop="nama" fixed />
-                        <el-table-column label="Jenis KelaminK" width="100">
+                        <el-table-column label="Nama" prop="nama" fixed :sortable="true" width="200" />
+                        <el-table-column label="Jenis Kelamin" width="100">
                             <template #default="scope">
                                 {{ scope.row.jk }}
                             </template>
