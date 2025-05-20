@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, defineAsyncComponent, onBeforeMount } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { usePage, router } from "@inertiajs/vue3";
 import { ElCard } from "element-plus";
 const page = usePage();
 
@@ -47,6 +47,10 @@ const closeForm = () => {
     mode.value = "home";
 };
 
+const onSemesterChanged = (e) => {
+    router.visit(window.location.pathname + '?semester='+selectedSemester.value, {reload: { only: ['datas', 'rombels']}, preserveState: true})
+}
+
 onBeforeMount(() => {
     selectedSemester.value = params.semester ?? page.props.periode.semester.kode
 })
@@ -66,8 +70,8 @@ onBeforeMount(() => {
                     </div>
                     <div class="toolbar-items flex items-center gap-2">
                         <p>Semester:</p>
-                        <el-select v-model="selectedSemester" placeholder="Pilih Semester">
-                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="`Semester ${sem}`" />
+                        <el-select v-model="selectedSemester" placeholder="Pilih Semester" @change="onSemesterChanged" style="width:100px">
+                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="`Sem ${sem}`" />
                         </el-select>
 
                     </div>

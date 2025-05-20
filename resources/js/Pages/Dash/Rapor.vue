@@ -61,7 +61,7 @@ const cetakTranskrip = async (siswa) => {
 
 const onSemesterChanged = (e) => {
     selectedSemester.value = e
-    router.visit(window.location.pathname+'?semester='+e)
+    router.visit(window.location.pathname+'?semester='+e, { preserveState: true})
 }
 onBeforeMount(() => {
     rombel.value = page.props.rombels[0];

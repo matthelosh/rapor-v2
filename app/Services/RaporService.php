@@ -11,6 +11,8 @@ use App\Models\Nilai;
 use App\Models\NilaiEkskul;
 use App\Models\Rombel;
 use App\Models\Sekolah;
+use App\Models\Tapel;
+use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\TanggalRapor;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +55,7 @@ class RaporService
                     $npts ??
                         [
                             'tapel' => Periode::tapel(),
-                            'semester' => Periode::semester(),
+                            'semester' => $queries['semester'] ? Semester::whereKode($queries['semester'])->first() : Periode::semester(),
                             'siswa_id' => $queries['siswaId'],
                             'guru_id' => Auth::user()->userable->nip,
                             'rombel_id' => $queries['rombelId'],
@@ -80,6 +82,8 @@ class RaporService
             //         ->orderBy('mapels.id')
             //         ->get(),
             // ];
+            $nilais['tapel'] = $queries['tapel'] ? Tapel::where('kode', $queries['tapel'])->first() : Periode::tapel();
+            $nilais['semester'] = $queries['semester'] ? Semester::where('kode', $queries['semester'])->first() : Periode::semester();
             $tgl = TanggalRapor::where([
                 ['semester', '=', $queries['semester']],
                 ['tipe', '=', 'pts'],

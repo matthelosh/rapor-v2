@@ -16,6 +16,9 @@ const Kop = defineAsyncComponent(
     () => import("@/Components/Dashboard/Kop.vue"),
 );
 const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
+const periode = computed(() => {
+
+})
 
 const sekolah = computed(() => page.props.sekolahs[0]);
 const nilais = ref([]);
@@ -45,7 +48,7 @@ const cetak = async () => {
 
 				</html>
 	`;
-    let win = window.open(host + "/print", "_blank", "height=600,width=1500");
+    let win = window.open(page.props.appUrl + "/print", "_blank", "height=600,width=1500");
     win.document.write(html);
     setTimeout(() => {
         win.print();
@@ -68,7 +71,7 @@ const getNilaiPTS = async () => {
             }),
         )
         .then((res) => {
-            console.log(res);
+            // console.log(res);
             nilais.value = res.data;
             setTimeout(() => {
                 loading.value = false;
@@ -119,7 +122,6 @@ onBeforeMount(async () => {
             class="page w-[80%] print:w-full bg-white mx-auto shadow-lg print:shadow-none"
         >
             <Kop />
-            <!-- {{ nilais }} -->
             <div class="meta my-6">
                 <h3 class="text-center font-bold text-xl uppercase">
                     Laporan Hasil Sumatif Tengah Semester (STS)
@@ -154,14 +156,14 @@ onBeforeMount(async () => {
                                     <td>Semester</td>
                                     <td class="px-1">:</td>
                                     <td>
-                                        {{ page.props.periode.semester.label }}
+                                        {{ nilais['semester']?.label }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tahun Ajaran</td>
                                     <td class="px-1">:</td>
                                     <td>
-                                        {{ page.props.periode.tapel.label }}
+                                        {{ nilais['tapel']?.label }}
                                     </td>
                                 </tr>
                             </tbody>
