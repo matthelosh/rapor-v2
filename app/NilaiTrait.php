@@ -350,7 +350,7 @@ trait NilaiTrait
                     \array_push($res, [
                         'rombel' => $rombel,
                         'nilais' => [
-                            'pts' => (Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'ts')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count() / $rombel->siswas()->count() * 100),
+                            'pts' => (Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'ts')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count()),
                             'uhs' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'uh')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
                             'pas' => Nilai::where('rombel_id', $rombel->kode)->where('tipe', 'as')->where('mapel_id', 'pabp')->where('semester', $this->periode()['semester']->kode)->count(),
                         ]
