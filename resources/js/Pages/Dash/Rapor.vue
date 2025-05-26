@@ -11,7 +11,7 @@ import RaporPAS from "@/Components/Dashboard/Rapor/RaporPAS.vue";
 
 const page = usePage();
 const mode = ref("list");
-
+const loading = ref(false)
 const rombel = ref(null);
 const selectedSiswa = ref({});
 
@@ -69,6 +69,24 @@ const onTapelChanged = (e) => {
     selectedTapel.value = e
     router.visit(window.location.pathname+'?semester='+selectedSemester.value+'&tapel='+e, { preserveState: true})
 }
+
+const dialogPermanen = ref(false)
+const confirmPermanen = ref(false)
+const simpanPermanen = () => {
+    dialogPermanen.value = true
+}
+const setujuPermanen = ref(false)
+const confirmSimpan = async() => {
+    router.post(route('dashboard.rapor.permanen'), {rombelId: rombel.value.kode, tapel:selectedTapel.value, semester: selectedSemester.value},
+        {
+            onStart: () => loading.value = true,
+            onSuccess: () => ElNotification({title: "Info", message: page.props.flash.message, type: "success"}),
+            onError: (errors) => {
+                Object.keys(errors).forEach(k => ElNotification({title: "Error", message: errors[k], type: "error"}))
+            },
+            onFinish: () => loading.value = false
+        })
+}
 onBeforeMount(() => {
     rombel.value = page.props.rombels[0];
     selectedSemester.value = route().params.semester ?? page.props.periode.semester.kode
@@ -99,6 +117,10 @@ onBeforeMount(() => {
                         <el-select v-model="selectedTapel" placeholder="Pilih Tapel" style="width:130px;" @change="onTapelChanged">
                             <el-option v-for="tapel in page.props.tapels" :key="`tapel-${tapel.kode}`" :value="tapel.kode" :label="tapel.label" />
                         </el-select>
+                        <el-button @click="simpanPermanen" :native-type="null" type="danger">
+                            Simpan Permanen
+                        </el-button>
+
                     </div>
                 </div>
             </template>
@@ -183,4 +205,23 @@ onBeforeMount(() => {
             :rombel="rombel"
         />
     </DashLayout>
+    <Teleport to="body">
+        <el-dialog v-model="dialogPermanen" title="Konfirmasi Simpan Rapor secara permanen">
+            <el-alert type="error" class="text-lg" :closable="false">
+                <div class="flex gap-2">
+                    <label class="text-lg flex items-start gap-2">
+                    <el-checkbox v-model="setujuPermanen" size="large" type="error" />
+                        <span class="font-bold">Yakin?</span> Perubahan nilai tidak dapat dilakukan setelah rapor menjadi permanen
+
+                    </label>
+
+                </div>
+            </el-alert>
+            <div class="flex justify-end gap-2 mt-4">
+                <el-button :native-type="null" type="primary" @click="confirmSimpan" :disabled="!setujuPermanen">
+                    Ya, Simpan permanen
+                </el-button>
+            </div>
+        </el-dialog>
+    </Teleport>
 </template>

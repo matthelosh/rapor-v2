@@ -326,7 +326,7 @@ onBeforeMount(() => {
                               <!-- {{ page.props.sekolahs[0].mapels }} -->
                             <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && ['superadmin', 'admin', 'admin_tp'].includes(role))">
                                 <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.mapels" :key="m">
-                                    <el-collapse>
+                                    <el-collapse accordion>
                                         <el-collapse-item>
                                             <template #title>
                                                 <h3>{{ m+1 }}. {{ mapel.label }}</h3>

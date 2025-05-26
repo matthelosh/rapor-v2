@@ -185,6 +185,29 @@ class RaporService
         }
     }
 
+    public function simpanPermanen($rombelId, $tapel, $semester)
+    {
+        $rombel = Rombel::whereKode($rombelId)->with('siswas.sekolah')->first();
+        $results = [];
+
+        foreach ($rombel->siswas as $siswa)
+        {
+            $queries = [
+                'sekolahId' => $siswa->sekolah->npsn,
+                'siswaId' => $siswa->nisn,
+                'rombelId' => $rombelId,
+                'tapel' => $tapel,
+                'semester' => $semester
+            ];
+
+            $nilais = $this->nilaiPAS($queries);
+            array_push($results, $nilais);
+
+        }
+
+        dd($results);
+    }
+
     private function deskripsi($nilai) {}
 
     public function absensi($queries)

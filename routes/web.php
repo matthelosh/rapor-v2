@@ -61,7 +61,9 @@ Route::prefix("")->group(function () {
                 "verifyTranskrip",
             ])->name("verifikasi.transkrip");
         });
-        Route::prefix("rapor")->group(function () {});
+        Route::prefix("rapor")->group(function () {
+            Route::post("/permanen", [RaporController::class, 'makePermanent'])->name('dashboard.rapor.permanen');
+        });
     });
 
     // Captcha

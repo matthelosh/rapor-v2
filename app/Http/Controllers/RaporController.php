@@ -51,6 +51,18 @@ class RaporController extends Controller
         ]);
     }
 
+    public function makePermanent(Request $request, RaporService $raporService)
+    {
+        try {
+            $rombelId = $request->rombelId;
+            $result = $raporService->simpanPermanen($rombelId, $request->tapel, $request->semester);
+            return back()->with("message", $result['message']);
+        } catch(\Throwable $th)
+        {
+            return back()->withErrors($th->getMessage());
+        }
+    }
+
     public function tanggal(Request $request)
     {
         try {
