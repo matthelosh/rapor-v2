@@ -10,6 +10,8 @@ use App\Models\Sekolah;
 use App\PembelajaranTrait;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use App\Models\Rombel;
+use App\Helpers\Periode;
 
 class PembelajaranController extends Controller implements HasMiddleware
 {
@@ -60,15 +62,21 @@ class PembelajaranController extends Controller implements HasMiddleware
             $mapels = Mapel::with("tps")->get();
         } elseif ($request->user()->hasRole("guru_kelas")) {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
-            $guruId = $request->user()->userable->nip;
+                $nip = $request->user()->userable->nip;
+                $guruId = $request->user()->userable->id;
+            $tingkat = Rombel::where('guru_id', $guruId)->pluck('tingkat')->toArray();
+            /* dd($tingkat); */
             $mapels = Mapel::whereHas("sekolah", function ($s) use (
                 $sekolahId
             ) {
                 $s->where("npsn", $sekolahId);
             })
-                ->with("tps", function ($t) use ($guruId) {
-                    $t->whereGuruId($guruId);
+                ->with("tps", function ($t) use ($guruId, $tingkat) {
+                    //$t->whereGuruId($guruId);
+                    $t->where('semester', Periode::semester()->kode);
+                    $t->whereIn("tingkat", $tingkat);
                 })
+                /* ->with('tps') */
                 ->get();
         } else {
             $mapelId = $request->user()->hasRole("guru_agama")

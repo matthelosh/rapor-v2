@@ -26,6 +26,7 @@ const loading = ref(false)
 const mapels = ref([])
 const formMode = ref('add')
 const tambah = (mapel) => {
+    newTps.value.push(defaultTp.value)
     selectedMapel.value = mapel
     newTps.value[0].mapel_id = mapel.kode
     formMode.value = 'add'
@@ -244,52 +245,37 @@ const assignEkskul = () => {
     })
 }
 
-const newTps = ref([
-    {
-        fase: "A",
-        tingkat: "1",
-        kode: "",
-        elemen: "",
-        semester: "",
-        agama: "",
-        teks: ""
-    }
-])
+const newTps = ref([])
 
 const onDialogClosed = () => {
-    newTps.value = [{
-        fase: "A",
-        tingkat: "1",
-        kode: "",
-        elemen: "",
-        semester: "",
-        agama: "",
-        teks: ""
-    }]
+    newTps.value = []
 }
 
+const defaultTp = ref({
+    fase: page.props.auth.roles[0] == 'guru_kelas' ? page.props.rombels[0].fase: 'A',
+    tingkat: page.props.auth.roles[0] == 'guru_kelas' ? page.props.rombels[0].tingkat : '1',
+    kode: "",
+    elemen: "",
+    semester: "",
+    agama: "",
+    teks: ""
+
+})
 // const tes = () => {
 //     imporTp(newTps.value)
 // }
 
 const addRow = () => {
-    newTps.value.push(
-        {
-            fase: "A",
-            tingkat: "1",
-            mapel_id: selectedMapel.value.kode,
-            kode: "",
-            elemen: "",
-            semester: "",
-            agama: "",
-            teks: ""
-        }
-    )
-} 
+    newTps.value.push(defaultTp.value)
+}
 
 onBeforeMount(() => {
     mapels.value = page.props.sekolahs[0].mapels ? page.props.sekolahs[0].mapels.map(mapel => mapel.id) : []
     ekskuls.value = page.props.sekolahs[0].ekskuls ? page.props.sekolahs[0].ekskuls.map(ekskul => ekskul.id) : []
+    // if (page.props.auth.roles[0] == 'guru_kelas') {
+    //     newTps.value[0].fase = page.props.rombels[0].fase
+    //     newTps.value[0].tingkat = page.props.rombels[0].tingkat
+    // }
 })
 </script>
 
@@ -351,7 +337,7 @@ onBeforeMount(() => {
                                                         <el-button-group>
                                                             <el-button type="success" size="small" @click="addCp(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp', 'guru_agama','guru_kelas','guru_pjok', 'guru_inggris'].includes(role)">Tambah CP</el-button>
                                                             <el-button type="primary" size="small" @click="tambah(mapel)" :disabled="!['superadmin', 'admin', 'admin_tp', 'guru_agama','guru_kelas','guru_pjok', 'guru_inggris'].includes(role)">Tambah TP</el-button>
-                                                            
+
                                                         </el-button-group>
                                                 </div>
                                                 <el-table :data="mapel.tps" class="shadow" height="400">
@@ -375,7 +361,7 @@ onBeforeMount(() => {
                                                             </span>
                                                         </template>
                                                     </el-table-column>
-                    
+
                                                 </el-table>
                                             </div>
                                         </el-collapse-item>

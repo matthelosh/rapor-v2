@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use App\Jobs\CreateOrUpdateUserJob;
 use DB;
 
 class SiswaService
@@ -164,6 +165,8 @@ class SiswaService
     public function bulkAccount($sekolah_id, $rombel_id)
     {
         try {
+            if ($rombel_id) {
+
             $siswas = Siswa::where("sekolah_id", $sekolah_id)
                 ->whereHas("rombels", function ($q) use ($rombel_id) {
                     $q->where("rombels.kode", $rombel_id);
@@ -171,34 +174,13 @@ class SiswaService
                 ->where("status", "aktif")
                 ->whereDoesntHave("user")
                 ->get();
-            $data = [];
-            foreach ($siswas as $siswa) {
-                $data[] = [
-                    "name" => $siswa->nisn,
-                    "password" => Hash::make($siswa->nisn),
-                    "email" => $siswa->email ?? $siswa->nisn . "@e.mail",
-                    "userable_id" => $siswa->id,
-                    "userable_type" => "App\Models\Siswa",
-                ];
+            } else {
+                $siswas = Siswa::where("sekolah_id", $sekolah_id)->where("status", "aktif")->whereDoesntHave("user")->get();
             }
-
-            DB::table("users")->upsert(
-                $data,
-                ["name"],
-                [
-                    "password",
-                    "email",
-                    "userable_id",
-                    "userable_type",
-                    "updated_at",
-                ]
-            );
-            $newUsers = User::whereIn(
-                "name",
-                array_column($data, "name")
-            )->get();
-            foreach ($newUsers as $user) {
-                $user->syncRoles(["siswa"]);
+            /* dd($siswas); */
+            foreach($siswas as $siswa)
+            {
+                    CreateOrUpdateUserJob::dispatch($siswa)->delay(now()->addSEconds(1));
             }
             return [
                 "message" =>
