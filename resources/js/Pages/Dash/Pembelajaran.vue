@@ -26,7 +26,7 @@ const loading = ref(false)
 const mapels = ref([])
 const formMode = ref('add')
 const tambah = (mapel) => {
-    newTps.value.push(defaultTp.value)
+    newTps.value.push({...defaultTp.value})
     selectedMapel.value = mapel
     newTps.value[0].mapel_id = mapel.kode
     formMode.value = 'add'
@@ -266,7 +266,11 @@ const defaultTp = ref({
 // }
 
 const addRow = () => {
-    newTps.value.push(defaultTp.value)
+    newTps.value.push({...defaultTp.value})
+}
+
+const removeNewTpsItem = (t) => {
+    newTps.value.splice(t,1)
 }
 
 onBeforeMount(() => {
@@ -497,6 +501,7 @@ onBeforeMount(() => {
                             <th class="border bg-slate-100 py-1 w-[300px]">Elemen</th>
                             <th class="border bg-slate-100 py-1 w-[200px]">Kode</th>
                             <th class="border bg-slate-100 py-1">Teks</th>
+                            <th class="border bg-slate-100 py-1">Opsi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -533,6 +538,15 @@ onBeforeMount(() => {
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-input type="textarea" placeholder="Teks Tujuan Pembelajaran" v-model="tp.teks" rows="1" autosize></el-input>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
+                                    <el-popconfirm title="Yakin Hapus TP?" @confirm="removeNewTpsItem(t)">
+                                        <template #reference>
+                                            <el-button :native-type="null" type="danger">
+                                                <Icon icon="mdi:delete" />
+                                            </el-button>
+                                        </template>
+                                    </el-popconfirm>
                                 </td>
                             </tr>
                         </template>
