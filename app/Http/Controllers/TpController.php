@@ -33,8 +33,10 @@ class TpController extends Controller
     public function impor(Request $request)
     {
         try {
+            /* $mapel_id = $request->tps[0]['mapel_id']; */
             foreach ($request->tps as $tp) {
                 $guruId = $tp['guru_id'] ?? ($request->user()->hasRole(['guru_kelas', 'guru_agama', 'guru_pjok', 'guru_inggris']) ? $request->user()->userable->nip : null);
+
                 Tp::updateOrCreate(
                     [
                         'kode' => $tp['kode'],

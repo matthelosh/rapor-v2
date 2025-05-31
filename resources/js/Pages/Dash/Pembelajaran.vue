@@ -103,6 +103,7 @@ const onFileTpPicked = async(e) => {
 }
 
 const imporTp = async(tps) => {
+    // console.log(tps)
     await router.post(route('dashboard.pembelajaran.tp.impor'), {tps: tps}, {
         onStart: () => loading.value = true,
         onSuccess: (page) => {
@@ -254,6 +255,7 @@ const onDialogClosed = () => {
 const defaultTp = ref({
     fase: page.props.auth.roles[0] == 'guru_kelas' ? page.props.rombels[0].fase: 'A',
     tingkat: page.props.auth.roles[0] == 'guru_kelas' ? page.props.rombels[0].tingkat : '1',
+    mapel_id: selectedMapel.value.kode,
     kode: "",
     elemen: "",
     semester: "",
@@ -266,7 +268,10 @@ const defaultTp = ref({
 // }
 
 const addRow = () => {
-    newTps.value.push({...defaultTp.value})
+    // alert(defaultTp.value.mapel_id)
+    let item = {...defaultTp.value}
+    item.mapel_id = selectedMapel.value.kode
+    newTps.value.push(item)
 }
 
 const removeNewTpsItem = (t) => {
