@@ -26,9 +26,10 @@ const loading = ref(false)
 const mapels = ref([])
 const formMode = ref('add')
 const tambah = (mapel) => {
-    newTps.value.push({...defaultTp.value})
+    // newTps.value.push({...defaultTp.value})
     selectedMapel.value = mapel
-    newTps.value[0].mapel_id = mapel.kode
+    // newTps.value[0].mapel_id = mapel.kode
+    addRow(mapel)
     formMode.value = 'add'
     formTambah.value = true
 }
@@ -267,11 +268,19 @@ const defaultTp = ref({
 //     imporTp(newTps.value)
 // }
 
+const generateKode = (lastTp) => {
+    let kode = selectedMapel.value.kode.toUpperCase()+'-'+lastTp.fase+lastTp.tingkat+lastTp.semester+Math.floor(Math.random()*1000)
+    return kode
+}
+
 const addRow = () => {
     // alert(defaultTp.value.mapel_id)
     let item = {...defaultTp.value}
     item.mapel_id = selectedMapel.value.kode
+    item.semester = page.props.periode.semester.kode
+    // console.log(item)
     newTps.value.push(item)
+    item.kode = generateKode(newTps.value[newTps.value.length -1])
 }
 
 const removeNewTpsItem = (t) => {
@@ -503,8 +512,8 @@ onBeforeMount(() => {
                             <th class="border bg-slate-100 py-1 w-[70px]">Fase</th>
                             <th class="border bg-slate-100 py-1 w-[80px]">Tingkat</th>
                             <th class="border bg-slate-100 py-1 w-[80px]">Semester</th>
-                            <th class="border bg-slate-100 py-1 w-[300px]">Elemen</th>
                             <th class="border bg-slate-100 py-1 w-[200px]">Kode</th>
+                            <th class="border bg-slate-100 py-1 w-[300px]">Elemen</th>
                             <th class="border bg-slate-100 py-1">Teks</th>
                             <th class="border bg-slate-100 py-1">Opsi</th>
                         </tr>
@@ -534,20 +543,21 @@ onBeforeMount(() => {
                                     </el-select>
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
+                                    <el-input v-model="tp.kode" placeholder="Kode TP"></el-input>
+                                </td>
+                                <td class="text-center border px-1 py-2 align-top">
                                     <el-select v-model="tp.elemen" placeholder="Pilih Elemen">
                                         <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +' |' : ''} ${elemen.nama}`" />
                                     </el-select>
                                 </td>
-                                <td class="text-center border px-1 py-2 align-top">
-                                    <el-input v-model="tp.kode" placeholder="Kode TP"></el-input>
-                                </td>
+
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-input type="textarea" placeholder="Teks Tujuan Pembelajaran" v-model="tp.teks" rows="1" autosize></el-input>
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-popconfirm title="Yakin Hapus TP?" @confirm="removeNewTpsItem(t)">
                                         <template #reference>
-                                            <el-button :native-type="null" type="danger">
+                                            <el-button :native-type="null" type="danger" circle size="small">
                                                 <Icon icon="mdi:delete" />
                                             </el-button>
                                         </template>
