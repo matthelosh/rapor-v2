@@ -35,6 +35,7 @@ class RaporController extends Controller
     public function raporPAS(Request $request, RaporService $raporService)
     {
         $queries = $request->query();
+        /* dd($queries); */
         $absensis = $raporService->absensi($queries);
         $ekskuls = $raporService->ekskul($queries);
         $nilaiPas = $raporService->nilaiPAS($queries);

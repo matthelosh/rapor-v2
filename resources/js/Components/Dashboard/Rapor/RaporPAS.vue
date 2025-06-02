@@ -68,12 +68,12 @@ const getNilaiPAS = async () => {
             route("dashboard.rapor.pas", {
                 _query: {
                     rombelId: props.rombel.kode,
-                    semester: !props.arsip
+                    semester: !route().params.semester
                         ? page.props.periode.semester.kode
-                        : props.semester,
-                    tapel: !props.arsip
+                        : route().params.semester,
+                    tapel: !route().params.tapel
                         ? page.props.periode.tapel.kode
-                        : props.tapel.kode,
+                        : route().params.tapel,
                     siswaId: props.siswa.nisn,
                     sekolahId: sekolah.value.npsn,
                 },
@@ -200,10 +200,10 @@ onBeforeUnmount(() => {
                                         <td class="px-1">:</td>
                                         <td>
                                             {{
-                                                !props.arsip
+                                                !route().params.semester
                                                     ? page.props.periode
                                                           .semester.label
-                                                    : props.semester == "1"
+                                                    : route().params.semester == "1"
                                                       ? "Ganjil"
                                                       : "Genap"
                                             }}
