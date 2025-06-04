@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $guru_id
@@ -62,10 +62,7 @@ class Soal extends Model
         'agama',
         'tp_id',
         'pertanyaan',
-        'a',
-        'b',
-        'c',
-        'd',
+        'jawabans',
         'kunci',
         'tipe',
         'level'

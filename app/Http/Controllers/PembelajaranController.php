@@ -87,8 +87,8 @@ class PembelajaranController extends Controller implements HasMiddleware
             // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
             $guruId = $request->user()->userable->nip;
             $mapels = Mapel::whereKode($mapelId)
-                ->with("tps", function ($t) use ($guruId) {
-                    $t->whereGuruId($guruId);
+                ->with("tps", function ($t) {
+                    $t->where('semester', Periode::semester()->kode);
                 })
                 ->get();
         }

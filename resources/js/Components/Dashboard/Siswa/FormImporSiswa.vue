@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { read, utils } from "xlsx";
 import { router, usePage } from "@inertiajs/vue3";
 import { ElNotification } from "element-plus";
+import { Icon } from "@iconify/vue";
 
 const page = usePage();
 const loading = ref(false);
@@ -61,7 +62,7 @@ const onFilePicked = async (e) => {
     });
     datas.value = rows;
     loading.value = false;
-    console.log(datas.value);
+    // console.log(datas.value);
 };
 
 const kirim = async () => {
@@ -154,4 +155,15 @@ const closeMe = () => {
             </el-alert> -->
         </div>
     </el-dialog>
+    <Teleport to="body">
+        <div
+            class="fixed top-0 right-0 bottom-0 left-0 z-40 bg-white bg-opacity-10 backdrop-blur-sm flex items-center justify-center"
+            v-if="loading"
+        >
+            <Icon
+                icon="mdi:loading"
+                class="text-8xl animate-spin text-indigo-600"
+            />
+        </div>
+    </Teleport>
 </template>

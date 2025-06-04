@@ -73,7 +73,7 @@ const cetak = async () => {
     const lamans = document.querySelectorAll(".laman");
     let cssUrl =
         page.props.app_env == "local"
-            ? "https://localhost:5173/resources/css/app.css"
+            ? page.props.appUrl+":5173/resources/css/app.css"
             : `/build/assets/app.css`;
     let content = "";
     for (let laman in lamans) content += lamans[laman].outerHTML;
@@ -151,7 +151,7 @@ onMounted(() => {
                     <!-- Loop Minggu dalam Bulan -->
                     <template v-for="(week, w) in weeks">
                         <div
-                            class="laman my-4 p-4 border border-1 border-gray-100 shadow print:border-none print:shadow-none print:break-inside-avoid"
+                            class="laman bg-white my-4 border border-1 border-gray-100 shadow print:border-none print:shadow-none print:break-inside-avoid"
                         >
                             <Kop />
                             <h3
@@ -268,7 +268,7 @@ onMounted(() => {
                                                 {{ g + 1 }}
                                             </td>
                                             <td
-                                                class="border p-2 border-black text-xs"
+                                                class="border p-2 border-black"
                                             >
                                                 <p class="leading-4">
                                                     {{ guru.gelar_depan ?? "" }}
@@ -323,7 +323,7 @@ onMounted(() => {
                                 <div
                                     class="col-span-1 p-4 ket border rounded-lg border-black"
                                 >
-                                    <p class="font-bold">Keterangan:</p>
+                                    <p class="font-bold">Keterangan: </p>
                                     <ol class="pl-4 list-decimal">
                                         <template v-for="agenda in agendas">
                                             <li
@@ -338,7 +338,7 @@ onMounted(() => {
                                                             selectedBulan) &&
                                                     dayjs(
                                                         agenda.mulai,
-                                                    ).year() == selectedTahun
+                                                        ).year() == selectedTahun && week.tanggals.map(tgl => tgl.tanggal).includes(agenda.mulai)
                                                 "
                                             >
                                                 <span>

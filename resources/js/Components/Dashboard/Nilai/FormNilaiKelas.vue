@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount, onMounted, markRaw } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { ElDialog, ElNotification } from "element-plus";
+import {Warning} from '@element-plus/icons-vue'
 import { Icon } from "@iconify/vue";
 import axios from "axios";
 import { read, utils, writeFile } from "xlsx";
@@ -84,7 +85,20 @@ const getTps = async () => {
         )
         .then((res) => {
             tps.value = res.data.tps;
-            loading.value = false;
+        if (res.data.tps.length < 1) {
+            ElMessageBox.alert(
+                `Isi dulu TP Mapel ${props.mapel.label} Semester ${page.props.periode.semester.label}`,
+                'Peringatan', {
+                    type: 'warning',
+                    icon: markRaw(Warning),
+                    confirmButton: 'Ya',
+                    callback: () => {
+                        router.visit('/dashboard/pembelajaran')
+                    }
+                }
+            )
+        } else {
+            // loading.value = false;
             let raws = []
             props.rombel.siswas.forEach((siswa, s) => {
                 let ns = {};
@@ -100,8 +114,9 @@ const getTps = async () => {
                     agama: siswa.agama,
                 });
             });
-        siswas.value = raws.sort((a,b) => a.nama.localeCompare(b.nama))
-        });
+            siswas.value = raws.sort((a,b) => a.nama.localeCompare(b.nama))
+        }
+    }).finally(() => loading.value = false);
 };
 
 const params = route().params
@@ -264,6 +279,13 @@ const unduhFormat = async () => {
     );
 };
 
+// onMounted(() => {
+//     if (tps.value.length < 1) ElMessageBox.alert(
+//         `Isi dulu TP untuk mapel ${props.mapel.label} semester ${page.props.periode.semester.label}`,
+//         'Peringatan'
+//     )
+// })
+
 onBeforeMount(async () => {
     loading.value = true;
     await getTps();
@@ -377,6 +399,7 @@ onBeforeMount(async () => {
                                 JK
                             </th>
                             <th
+                                v-if="tps.length > 0"
                                 class="border-e border-b p-2"
                                 :colspan="tps.length"
                             >

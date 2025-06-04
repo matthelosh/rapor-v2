@@ -20,12 +20,12 @@ return new class extends Migration
             $table->string('agama', 30)->nullable();
             $table->integer('tp_id');
             $table->text('pertanyaan');
-            $table->text('a');
-            $table->text('b');
-            $table->text('c');
-            $table->text('d');
-            $table->string('kunci', 1);
-            $table->enum('tipe', ['pilihan', 'isian', 'uraian'])->default('pilihan');
+            $table->text('jawabans');
+            /* $table->text('b'); */
+            /* $table->text('c'); */
+            /* $table->text('d'); */
+            $table->text('kunci');
+            $table->enum('tipe', ['pilihan_ganda', 'pilihan_ganda_kompleks', 'menjodohkan', 'benar_salah', 'isian', 'uraian'])->default('pilihan_ganda');
             $table->enum('level', ['lot', 'mot', 'hot'])->default('mot');
             $table->timestamps();
         });

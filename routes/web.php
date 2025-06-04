@@ -329,6 +329,7 @@ Route::middleware("auth")->group(function () {
                 AsesmenController::class,
                 "reloadASesmen",
             ])->name("dashboard.asesmen.monitor.reload");
+
             Route::post("/attach/{id}", [
                 AsesmenController::class,
                 "attachSoal",
@@ -341,6 +342,9 @@ Route::middleware("auth")->group(function () {
             ])
                 ->middleware("can:update_asesmen")
                 ->name("dashboard.asesmen.soal.detach");
+
+            Route::post("/{kode}/kunci/store", [KunciJawabanController::class, 'store'])->name('dashboard.asesmen.kunci.store');
+
             Route::put("/{id}", [AsesmenController::class, "update"])
                 ->middleware("can:update_asesmen")
                 ->name("dashboard.asesmen.update");

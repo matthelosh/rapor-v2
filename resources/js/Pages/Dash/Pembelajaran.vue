@@ -217,7 +217,7 @@ const hapusTp = async(id) => {
 }
 
 const assignMapel = () => {
-    console.log(mapels.value)
+    // console.log(mapels.value)
     router.post(route('dashboard.pembelajaran.mapel.assign'), {sekolahId: page.props.sekolahs[0].id, mapels: mapels.value.filter(m => m !== null)}, {
         onSuccess: page => {
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
@@ -455,7 +455,7 @@ onBeforeMount(() => {
                 </div>
             </span>
         </template>
-        <el-card class="dialog-body" v-loading="loading" style="height: 90vh;">
+        <el-card class="dialog-body" v-loading="loading" style="height: 90vh; padding: 0;">
             <el-form v-model="newTp" label-position="top" v-if="formMode == 'edit'">
                 <el-row :gutter="10">
                     <el-col :span="4">
@@ -574,9 +574,12 @@ onBeforeMount(() => {
 </DashLayout>
 </template>
 
-<style>
+<style scoped>
 .el-dialog__header {
     background: rgb(208, 228, 247);
     padding: 10px;
+}
+#el-id-7990-13 > div > div.el-card__body{
+    padding: 0!important;
 }
 </style>

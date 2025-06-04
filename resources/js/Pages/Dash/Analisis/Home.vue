@@ -1,32 +1,29 @@
 <script setup>
 import DashLayout from "@/Layouts/DashLayout.vue";
 import { usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, defineAsyncComponent } from "vue";
 
 const props = defineProps({ asesmens: Array });
 const page = usePage();
 
-const tipe_soal = ref({
-    pg: "Pilihan Ganda",
-    pgk: "Pilihan Ganda Kompleks",
-    ps: "Pasangan",
-    bs: "Benar Salah",
-    is: "Isian",
-    ur: "Uraian",
-});
+const FormKunciJawaban = defineAsyncComponent(() =>
+    import('@/Components/Dashboard/Asesmen/FormKunciJawaban.vue')
+);
+
 
 const selectedAsesmen = ref(null);
-const showAnalises = (row) => {};
 const showFormKunci = ref(false);
 const inputKunci = (row) => {
     selectedAsesmen.value = row;
     showFormKunci.value = true;
 };
 
-const selectedTypes = ref([]);
-const kunci = ref({});
-
-const simpan = async () => {};
+const active = ref(0)
+const activeType = ref(null)
+const setActive = (tipe, i) => {
+    active.value = i
+    activeType.value = tipe
+}
 </script>
 
 <template>
@@ -66,14 +63,14 @@ const simpan = async () => {};
                         </el-table-column>
                         <el-table-column label="Opsi" fixed="right">
                             <template #default="{ row }">
-                                <span>
+                                <el-button-group size="small">
                                     <el-button @click="inputKunci(row)"
                                         >Kunci</el-button
                                     >
                                     <el-button @click="showAnalises(row)"
                                         >Analisa</el-button
                                     >
-                                </span>
+                                </el-button-group>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -82,60 +79,6 @@ const simpan = async () => {};
         </template>
     </DashLayout>
     <Teleport to="body">
-        <el-dialog
-            v-model="showFormKunci"
-            :title="`Kunci Jawaban ${selectedAsesmen?.nama}`"
-        >
-            <el-form label-position="top">
-                <div class="grid grid-cols-6 gap-2">
-                    <div class="col-span-2">
-                        <h3 class="mb-4 font-black text-lg">
-                            Tambahkan Tipe Soal
-                        </h3>
-                        <el-form-item label="Tipe Soal">
-                            <el-select
-                                v-model="selectedTypes"
-                                multiple
-                                placeholder="Tambah Soal"
-                            >
-                                <el-option
-                                    v-for="k in Object.keys(tipe_soal)"
-                                    :value="k"
-                                    :label="`${k}: ${tipe_soal[k]}`"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </div>
-                    <div class="col-span-4">
-                        <h3 class="mb-4 font-black text-lg text-center">
-                            Tambahkan Kunci Jawaban
-                        </h3>
-                        <el-alert type="error" v-if="selectedTypes.length < 1">
-                            Tambahkan Tipe soal dulu
-                        </el-alert>
-                        <div v-else class="px-4">
-                            <template v-for="tipe in selectedTypes">
-                                <el-form-item :label="tipe_soal[tipe]">
-                                    <el-input
-                                        type="textarea"
-                                        v-model="kunci[tipe]"
-                                    ></el-input>
-                                </el-form-item>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-            </el-form>
-            <template #footer>
-                <div class="flex justify-end p-4">
-                    <el-button
-                        :native-type="null"
-                        type="primary"
-                        @click="simpan"
-                        >Simpan</el-button
-                    >
-                </div>
-            </template>
-        </el-dialog>
+        <FormKunciJawaban :asesmen="selectedAsesmen" v-if="showFormKunci" :open="showFormKunci" @close="showFormKunci = !showFormKunci" />
     </Teleport>
 </template>

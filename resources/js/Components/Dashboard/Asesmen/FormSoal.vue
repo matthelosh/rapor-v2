@@ -8,7 +8,7 @@ import codemirror from 'codemirror';
 import 'codemirror/lib/codemirror.css'; // import base style
 import 'codemirror/mode/xml/xml.js'; // language
 import 'codemirror/addon/selection/active-line.js'; // require active-line.js
-import 'codemirror/addon/edit/closetag.js'; 
+import 'codemirror/addon/edit/closetag.js';
 import axios from 'axios';
 const page = usePage()
 const loading = ref(false)
@@ -84,7 +84,7 @@ const simpanSoal = async () => {
         onStart: () => loading.value = true,
         onSuccess: () => {
             router.reload({only: ['soals']})
-            
+
             ElNotification({title: 'Info', message: page.props.flash.message, type: 'success'})
             emit('stored', soal.value)
             soal.value = {
@@ -102,7 +102,7 @@ const simpanSoal = async () => {
                 d: null,
                 kunci: null
             }
-        }, 
+        },
         onError: errs => {
             Object.keys(errs).forEach(k => {
                 setTimeout(() => {
@@ -123,12 +123,12 @@ const rules = ref({
 const getTps = async () => {
     loading.value = true
     axios.post(route('dashboard.pembelajaran.tp.index'), {
-        
+
         mapelId: soal.value.mapel_id,
         tingkat: soal.value.tingkat,
         semester: soal.value.semester,
         agama: soal.value.mapel_id == 'pabp' ? props.selectedAsesmen.agama : null
-    
+
     }).then(res => {
         tps.value = res.data.tps
     }).catch(err => {
@@ -178,7 +178,7 @@ onBeforeMount(async () => {
                             <el-col :span="4">
                                 <el-form-item label="Tipe Soal">
                                     <el-select v-model="soal.tipe" placeholder="Pilih Tipe">
-                                        <el-option v-for="tipe in ['pilihan','isian', 'uraian']" :value="tipe"></el-option>
+                                        <el-option v-for="tipe in ['pilihan_ganda', 'pilihan_ganda_kompleks', 'menjodohkan', 'benar_salah', 'isian', 'uraian']" :value="tipe"></el-option>
                                     </el-select>
                                 </el-form-item>
                             </el-col>
@@ -208,7 +208,7 @@ onBeforeMount(async () => {
                             <el-col :span="24">
                                 <el-select v-model="soal.tp_id" filterable fit-input-width >
                                     <el-option v-for="tp in tps" :value="tp.id" :label="tp.teks">
-                                        
+
                                     </el-option>
                                 </el-select>
                             </el-col>
@@ -253,7 +253,7 @@ onBeforeMount(async () => {
                             </el-row>
                             <el-row :gutter=20 justify="center">
                                 <el-col>
-                                    
+
                                     <el-form-item label="Kunci Jawaban" justify="center">
                                         <el-radio-group v-model="soal.kunci">
                                             <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>

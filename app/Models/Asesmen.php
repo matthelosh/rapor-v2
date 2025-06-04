@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $kode
@@ -145,5 +146,9 @@ class Asesmen extends Model
     public function analises()
     {
         return $this->hasMany(Analisis::class, 'asesmen_id', 'kode');
+    }
+    public function kunci(): HasOne
+    {
+        return $this->hasOne(KunciJawaban::class, 'asesmen_id', 'kode');
     }
 }
