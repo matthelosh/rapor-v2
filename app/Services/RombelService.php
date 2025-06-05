@@ -35,7 +35,7 @@ class RombelService
                 "sekolah_id",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->with("sekolah", "gurus", "siswas")
+                ->with("sekolah", "gurus", "siswas", "wali_kelas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
                 })

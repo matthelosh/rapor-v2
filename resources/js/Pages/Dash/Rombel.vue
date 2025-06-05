@@ -102,24 +102,6 @@ const simpanKktp = async (rombel) => {
     );
 };
 
-const waliKelas = (itemRombel) => {
-    const wali = itemRombel.gurus.filter(
-        (guru) => guru.pivot.status === "wali",
-    )[0];
-    return (
-        (wali.gelar_depan ?? "") +
-        " " +
-        wali.nama +
-        (wali.gelar_belakang ? "," + wali.gelar_belakang : "")
-    );
-};
-
-const guruPengajar = (itemRombel) => {
-    const guru = itemRombel.gurus.filter(
-        (guru) => guru.pivot.status === "pengajar",
-    );
-    return guru;
-};
 const defaultFoto = (guru) => {
     return guru.jk == "Laki-laki"
         ? "/img/user_l.png"
@@ -137,9 +119,7 @@ const fotoGuru = (guru) => {
             : "/img/user_p.png";
 };
 const init = async () => {
-    // if (page.props.auth.roles[0] === 'ops') {
-    //     rombels.value = page.props.rombels
-    // } else {
+
     await page.props.rombels.forEach((rombel, r) => {
         if (rombel.kktps.length > 0) {
             rombels.value.push(rombel);
@@ -154,7 +134,6 @@ const init = async () => {
             });
         }
     });
-    // }
 };
 onBeforeMount(async () => {
     //init();
@@ -255,7 +234,7 @@ onBeforeMount(async () => {
                     <el-table-column label="Wali Kelas">
                         <template #default="scope">
                             <p>
-                                {{ waliKelas(scope.row) }}
+                                {{scope.row.wali_kelas[0].nama}}
                             </p>
                         </template>
                     </el-table-column>
@@ -263,7 +242,7 @@ onBeforeMount(async () => {
                         <template #default="scope">
                             <ul class="list-decimal pl-4">
                                 <li
-                                    v-for="(gp, i) in guruPengajar(scope.row)"
+                                    v-for="(gp, i) in scope.row.gurus"
                                     :key="i"
                                 >
                                     <el-popover>
@@ -271,7 +250,7 @@ onBeforeMount(async () => {
                                             <img
                                                 :src="fotoGuru(gp)"
                                                 alt="Foto Guru"
-                                                :onerror="`this.error=null; this.src = ${defaultFoto(gp)}`"
+                                                :onerror="(e) => e.target.src = defaultFoto(gp)"
                                             />
                                         </div>
                                         <template #reference>
@@ -345,7 +324,7 @@ onBeforeMount(async () => {
                     <el-table-column label="Status" width="60">
                         <template #default="scope">
                             <Icon
-                                :icon="`mdi:${scope.row.is_active == '1' ? 'check-circle' : 'close-circle'}`"
+                                :icon="scope.row.is_active == '1' ? 'mdi:check-circle' : 'mdi:close-circle'"
                                 :class="
                                     scope.row.is_active == '1'
                                         ? 'text-green-600'

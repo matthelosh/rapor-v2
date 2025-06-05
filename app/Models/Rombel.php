@@ -68,6 +68,21 @@ class Rombel extends Model
     // public $incrementing = false;
     // protected $keyType = "string";
 
+    public function wali_kelas()
+    {
+        return $this->belongsToMany(
+            Guru::class,
+            "guru_rombel",
+            "rombel_id",
+            "guru_id",
+            "kode",
+            "nip"
+        )->withPivot("status")
+        ->wherePivot("status", "wali");
+    }
+    /* public function getWaliAttribute() { */
+    /*     return $this->waliKelas->first(); */
+    /* } */
     public function gurus()
     {
         return $this->belongsToMany(
@@ -77,7 +92,8 @@ class Rombel extends Model
             "guru_id",
             "kode",
             "nip"
-        )->withPivot("status");
+        )->withPivot("status")
+        ->wherePivot("status", "pengajar");
     }
 
     public function sekolah()
