@@ -340,10 +340,10 @@ onBeforeMount(() => {
                             </span>
                         </div>
                         <div class="card-body p-2">
-                            <!-- {{ page.props.mapels }} -->
-                              <!-- {{ page.props.sekolahs[0].mapels }} -->
+                                <!-- {{ page.props.mapels }}-->
+                                <!-- {{ page.props.sekolahs[0].mapels.map(mapel => mapel.label) }} -->
                             <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && ['superadmin', 'admin', 'admin_tp'].includes(role))">
-                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.mapels" :key="m">
+                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
                                     <el-collapse accordion>
                                         <el-collapse-item>
                                             <template #title>
@@ -413,9 +413,11 @@ onBeforeMount(() => {
                                     <template #default>
                                         <h3 class="text-sky-600 font-bold">Pilih Ekskul</h3>
                                         <ol>
-                                            <li v-for="(ekskul,e) in page.props.ekskuls" :key="ekskul.id">
-                                                <el-checkbox :label="ekskul.nama" v-model="ekskuls[e]" :true-value="ekskul.id">{{ ekskul.nama }}</el-checkbox>
-                                            </li>
+                                            <el-checkbox-group v-model="ekskuls">
+                                                <li v-for="(ekskul,e) in page.props.ekskuls" :key="ekskul.id">
+                                                    <el-checkbox :label="ekskul.nama"  :value="ekskul.id">{{ ekskul.nama }}</el-checkbox>
+                                                </li>
+                                            </el-checkbox-group>
                                         </ol>
 
                                         <el-button type="success" @click="assignEkskul" >Simpan</el-button>
@@ -426,6 +428,7 @@ onBeforeMount(() => {
                             </div>
                         </div>
                         <div class="card-body">
+                                <!-- {{page.props.sekolahs[0].ekskuls}}-->
                             <el-table :data="page.props.sekolahs[0].ekskuls">
                                 <el-table-column label="Kode" prop="kode"></el-table-column>
                                 <el-table-column label="Nama" prop="nama"></el-table-column>
