@@ -41,6 +41,18 @@ class RombelController extends Controller
         }
     }
 
+    public function show(Request $request, $kode)
+    {
+        $rombel =  Rombel::where('kode', $kode)
+            ->with('siswas', function($s) {
+                $s->orderBy('nama', 'ASC');
+            })
+            ->first();
+        return response()
+            ->json([
+                        'siswas' => $rombel->siswas,
+            ]);
+    }
 
     /**
      * Store a newly created resource in storage.

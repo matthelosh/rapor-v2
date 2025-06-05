@@ -140,6 +140,10 @@ const closeForm = () => {
     router.reload({ only: ["soals"] });
     mode.value = "list";
 };
+
+const tingkats = computed(() => {
+    return page.props.auth.roles[0] == 'admin' ? ['kecamatan', 'gugus', 'lembaga'] : ['lembaga']
+})
 </script>
 
 <template>
@@ -496,11 +500,6 @@ const closeForm = () => {
                     :rules="rules"
                 >
                     <el-row :gutter="20">
-                        <!-- <el-col :span="6" :xs="24">
-                        <el-form-item label="Kode">
-                            <el-input :input-style="{border: 'red', background: '#ffefee', outline: 'red'}" v-model="asesmen.kode" placeholder="Kode Asesmen" :readonly="true"></el-input>
-                        </el-form-item>
-                    </el-col> -->
                         <el-col :span="8" :xs="24">
                             <el-form-item label="Nama Asesmen">
                                 <el-input
@@ -604,7 +603,7 @@ const closeForm = () => {
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="3" :xs="24">
+                        <el-col :span="2" :xs="24">
                             <el-form-item label="Semester">
                                 <el-select
                                     v-model="asesmen.semester"
@@ -614,7 +613,7 @@ const closeForm = () => {
                                     <el-option
                                         v-for="sem in ['1', '2']"
                                         :value="sem"
-                                        :label="`Semester ${sem}`"
+                                        :label="`${sem}`"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -627,23 +626,14 @@ const closeForm = () => {
                                     :readonly="false"
                                 >
                                     <el-option
-                                        v-for="(tingkat, t) in [
-                                            'lembaga',
-                                            'gugus',
-                                            'kecamatan',
-                                        ]"
+                                        v-for="(tingkat, t) in tingkats"
                                         :value="tingkat"
                                         :label="`${tingkat[0].toUpperCase() + tingkat.substring(1)}`"
                                     ></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <!-- <el-col :span="3" :xs="24">
-                        <el-form-item label="Tanggal">
-                            <el-date-picker v-model="asesmen.tanggal" placeholder="Tanggal Pelaksanaan" :value-format="'YYYY-MM-DD'" ></el-date-picker>
-                        </el-form-item>
-                    </el-col> -->
-                        <el-col :span="10" :xs="24">
+                        <el-col :span="8" :xs="24">
                             <el-form-item label="Waktu Pelaksanaan">
                                 <el-date-picker
                                     type="datetimerange"
@@ -656,12 +646,7 @@ const closeForm = () => {
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <!-- <el-col :span="6" :xs="24">
-                        <el-form-item label="Selesai">
-                            <el-date-picker type="datetime" v-model="asesmen.selesai" placeholder="Selesai"  value-format="YYYY-MM-DD h:m:s"></el-date-picker>
-                        </el-form-item>
-                    </el-col> -->
-                        <el-col :span="4" :xs="24">
+                       <el-col :span="4" :xs="24">
                             <el-form-item label="Jenis Asesmen">
                                 <el-select
                                     v-model="asesmen.jenis"

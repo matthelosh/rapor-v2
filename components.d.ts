@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Admin: typeof import('./resources/js/Components/Dashboard/Home/Admin.vue')['default']
     Agenda: typeof import('./resources/js/Components/Front/Side/Agenda.vue')['default']
+    Analisis: typeof import('./resources/js/Components/Dashboard/Asesmen/Analisis.vue')['default']
     AnggotaOrganisasi: typeof import('./resources/js/Components/Dashboard/Organisasi/AnggotaOrganisasi.vue')['default']
     Apd: typeof import('./resources/js/Components/Dashboard/P5/Apd.vue')['default']
     ApplicationLogo: typeof import('./resources/js/Components/ApplicationLogo.vue')['default']

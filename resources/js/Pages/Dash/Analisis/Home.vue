@@ -6,10 +6,13 @@ import { ref, defineAsyncComponent } from "vue";
 const props = defineProps({ asesmens: Array });
 const page = usePage();
 
-const FormKunciJawaban = defineAsyncComponent(() =>
-    import('@/Components/Dashboard/Asesmen/FormKunciJawaban.vue')
+const FormKunciJawaban = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Asesmen/FormKunciJawaban.vue"),
 );
 
+const FormAnalisis = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Asesmen/Analisis.vue"),
+);
 
 const selectedAsesmen = ref(null);
 const showFormKunci = ref(false);
@@ -18,12 +21,18 @@ const inputKunci = (row) => {
     showFormKunci.value = true;
 };
 
-const active = ref(0)
-const activeType = ref(null)
-const setActive = (tipe, i) => {
-    active.value = i
-    activeType.value = tipe
-}
+// Analisis
+const formAnalisis = ref(false);
+const showAnalises = (item) => {
+    selectedAsesmen.value = item;
+    formAnalisis.value = true;
+};
+
+const closeAnalisis = () => {
+    selectedAsesmen.value = null;
+    formAnalisis.value = false;
+};
+
 </script>
 
 <template>
@@ -56,9 +65,12 @@ const setActive = (tipe, i) => {
                         </el-table-column>
                         <el-table-column label="Tingkat" prop="tingkat">
                         </el-table-column>
-                        <el-table-column label="Analisis">
+                        <el-table-column label="Analisis & Kunci">
                             <template #default="{ row }">
-                                <span>{{ row.analises.length }}</span>
+                                <span
+                                    >{{ row.analises.length }} |
+                                    {{ row.kunci?.id }}</span
+                                >
                             </template>
                         </el-table-column>
                         <el-table-column label="Opsi" fixed="right">
@@ -79,6 +91,20 @@ const setActive = (tipe, i) => {
         </template>
     </DashLayout>
     <Teleport to="body">
-        <FormKunciJawaban :asesmen="selectedAsesmen" v-if="showFormKunci" :open="showFormKunci" @close="showFormKunci = !showFormKunci" />
+        <FormKunciJawaban
+            :asesmen="selectedAsesmen"
+            v-if="showFormKunci"
+            :open="showFormKunci"
+            @close="showFormKunci = !showFormKunci"
+        />
+    </Teleport>
+
+    <Teleport to="body">
+        <FormAnalisis
+            :asesmen="selectedAsesmen"
+            v-if="formAnalisis"
+            :open="formAnalisis"
+            @close="closeAnalisis"
+        />
     </Teleport>
 </template>

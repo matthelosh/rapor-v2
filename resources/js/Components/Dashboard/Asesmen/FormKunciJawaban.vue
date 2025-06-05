@@ -173,6 +173,19 @@ const simpan = async () => {
 };
 onBeforeMount(() => {
     show.value = props.open;
+    if (props.asesmen.kunci) {
+        let keys = [];
+        Object.keys(props.asesmen.kunci).forEach((key) => {
+            if (
+                !["id", "asesmen_id", "created_at", "updated_at"].includes(key)
+            ) {
+                keys.push(key);
+                kunci.value[key] = JSON.parse(props.asesmen.kunci[key]);
+            }
+        });
+        selectedTypes.value = keys;
+        // kunci.value = props.asesmen.kunci;
+    }
 });
 </script>
 
@@ -337,7 +350,7 @@ onBeforeMount(() => {
                 <el-form-item :label="(i + 1).toString()">
                     <el-input
                         placeholder="Masukkan Kunci"
-                        v-model="kunci['is'][i]"
+                        v-model="kunci['is'].kunci[i]"
                         style="border: none; outline: none"
                     />
                 </el-form-item>
@@ -364,13 +377,13 @@ onBeforeMount(() => {
                     <el-input
                         type="textarea"
                         placeholder="Masukkan Kunci"
-                        v-model="kunci['ur'][i]"
+                        v-model="kunci['ur'].kunci[i]"
                         style="border: none; outline: none"
                     />
                 </el-form-item>
             </template>
         </div>
-
+        <!-- {{ kunci }} -->
         <template #footer>
             <div class="flex justify-end p-4">
                 <el-button :native-type="null" type="primary" @click="simpan"

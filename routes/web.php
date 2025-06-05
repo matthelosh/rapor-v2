@@ -216,6 +216,7 @@ Route::middleware("auth")->group(function () {
             Route::post("/", [RombelController::class, "store"])->name(
                 "dashboard.rombel.store"
             );
+            Route::get("/{kode}", [RombelController::class, "show"])->name("dashboard.rombel.show");
             Route::post("/member/attach", [
                 RombelController::class,
                 "attachMember",
@@ -358,6 +359,7 @@ Route::middleware("auth")->group(function () {
                 Route::get("/", [AnalisisController::class, "home"])->name(
                     "dashboard.analisis.home"
                 );
+                Route::post('/cek-jawaban', [AnalisisController::class, 'cekJawaban'])->name('dashboard.analisis.cek-jawaban');
             })
             ->middleware("role:guru_kelas|guru_agama|guru_inggris|guru_pjok");
 
