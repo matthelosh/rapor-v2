@@ -257,7 +257,7 @@ onBeforeMount(() => {
                             <td class="border py-1 px-2">{{siswa.nama}}</td>
                             <template v-for="(pg, p) in kunci.pg.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['pg']['jawabans'][p]" maxlength="1" required class="w-6" />
+                                    <input v-model="analisis[s]['pg']['jawabans'][p]" maxlength="1" required class="w-6 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
@@ -265,15 +265,15 @@ onBeforeMount(() => {
                             </td>
                              <template v-for="(pg, p) in kunci.pgk.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['pgk']['jawabans'][p]" maxlength="2" required class="w-8" />
+                                    <input v-model="analisis[s]['pgk']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
-                            <td class="border py-1 px-2 text-center font-bold">
+                            <td class="border py-1 px-2 text-center font-bold ">
                                 {{skorPgk(s)}}
                             </td>
                             <template v-for="(ps, p) in kunci.ps.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['ps']['jawabans'][p]" maxlength="2" required class="w-8" />
+                                    <input v-model="analisis[s]['ps']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
@@ -282,7 +282,7 @@ onBeforeMount(() => {
 
                             <template v-for="(ps, p) in kunci.is.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['is']['jawabans'][p]" maxlength="2" required class="w-10" min="0" max="1" step="0.1" type="number" />
+                                    <input v-model="analisis[s]['is']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
@@ -291,7 +291,7 @@ onBeforeMount(() => {
 
                             <template v-for="(ps, p) in kunci.ur.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['ur']['jawabans'][p]" maxlength="2" required class="w-10" min="0" max="1" step="0.1" type="number" />
+                                    <input v-model="analisis[s]['ur']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
                             </template>
                              <td class="border py-1 px-2 text-center font-bold">
@@ -311,15 +311,15 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
-    input {
-        padding: 2px;
-        border: none;
-        border-bottom: 1px dotted #789890;
-    }
-    input:focus {
-        border: none;
-        outline: none!important;
-    }
+    /* input { */
+    /*     padding: 2px; */
+    /*     border: none; */
+    /*     border-bottom: 1px dotted #789890; */
+    /* } */
+    /* input:focus { */
+    /*     border: none; */
+    /*     outline: none!important; */
+    /* } */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none; /* Menghilangkan tampilan default browser */
