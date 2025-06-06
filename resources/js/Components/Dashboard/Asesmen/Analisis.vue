@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount, nextTick } from "vue";
 import { router, usePage } from "@inertiajs/vue3"
 import axios from 'axios'
 import { utils, writeFile } from 'xlsx'
@@ -238,6 +238,103 @@ const showKunci = () => {
     )
 }
 
+//Validasi input
+const pgRefs = ref([]);
+const validatePG = (e, s, index) => {
+    //console.log(val)
+    const val = e.target.value
+    if (["A", "B", "C", "D"].includes(val.toUpperCase())) {
+        nextTick(() => {
+            const nextInput = pgRefs[s][index + 1];
+            if (nextInput) nextInput.focus();
+        });
+    } else {
+        ElMessage({
+            type: "error",
+            message: "Jawaban hanya A,B,C atau D",
+            duration: 1000,
+        });
+        analisis.value[s].pg.jawabans[index] = "";
+        nextTick(() => {
+            pgRefs.value[s][index]?.focus();
+        });
+        return;
+    }
+};
+
+const pgkRefs = ref([]);
+const validatePgk = (e, s, index) => {
+    // console.log(e)
+    const val = e.target.value
+    const valids = ["AB", "AC", "AD", "BC", "BD", "CD"];
+    if (!valids.includes(val.toUpperCase())) {
+        ElMessage({
+            type: "error",
+            message: `Jawaban hanya ${valids}`,
+            duration: 1000,
+        });
+        analisis.value[s].pgk.jawabans[index] = "";
+        nextTick(() => {
+            pgkRefs.value[s][index]?.focus();
+        });
+        return;
+    }
+
+    nextTick(() => {
+        const nextInput = pgkRefs[s][index + 1];
+        if (nextInput) nextInput.focus();
+    });
+};
+const psRefs = ref([]);
+const validatePS = (e, s, index) => {
+    const val = e.target.value
+    const valids = [
+        "1A",
+        "1B",
+        "1C",
+        "1D",
+        "1E",
+        "2A",
+        "2B",
+        "2C",
+        "2D",
+        "2E",
+        "3A",
+        "3B",
+        "3C",
+        "3D",
+        "3E",
+        "4A",
+        "4B",
+        "4C",
+        "4D",
+        "4E",
+        "5A",
+        "5B",
+        "5C",
+        "5D",
+        "5E",
+    ];
+    if (!valids.includes(val.toUpperCase())) {
+        ElMessage({
+            type: "error",
+            message: `Jawaban hanya ${valids}`,
+            duration: 1000,
+        });
+        analisis.value[s].ps.jawabans[index] = "";
+        nextTick(() => {
+            psRefs.value[s][index]?.focus();
+        });
+        return;
+    }
+
+    nextTick(() => {
+        const nextInput = psRefs[s][index + 1];
+        if (nextInput) nextInput.focus();
+    });
+};
+
+
 onBeforeMount(() => {
     show.value = props.open;
     kunci.value = {
@@ -250,7 +347,14 @@ onBeforeMount(() => {
     }
     if (props.asesmen.analises) {
         // console.log(JSON.parse(props.asesmen.analises.hasil))
-        analisis.value = JSON.parse(props.asesmen.analises.hasil)
+        const hasil = JSON.parse(props.asesmen.analises.hasil)
+        analisis.value = hasil
+        hasil.forEach((has, h) => {
+            pgRefs.value[h] = []
+            pgkRefs.value[h] = []
+            psRefs.value[h] = []
+
+        })
     } else {
         getSiswa()
     }
@@ -322,7 +426,7 @@ onBeforeMount(() => {
                             <td class="border py-1 px-2">{{siswa.nama}}</td>
                             <template v-for="(pg, p) in kunci.pg.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['pg']['jawabans'][p]" maxlength="1" required class="w-6 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
+                                    <input :ref="(el) => (pgRefs[s][p] = el)" @input="(val) => validatePG(val, s, p)" v-model="analisis[s]['pg']['jawabans'][p]" maxlength="1" required class="w-6 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
@@ -330,7 +434,7 @@ onBeforeMount(() => {
                             </td>
                              <template v-for="(pg, p) in kunci.pgk.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['pgk']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
+                                    <input :ref="(el) => (pgkRefs[s][p] = el)" @change="(val) => validatePgk(val, s, p)" v-model="analisis[s]['pgk']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold ">
@@ -338,14 +442,14 @@ onBeforeMount(() => {
                             </td>
                             <template v-for="(ps, p) in kunci.ps.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['ps']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
+                                    <input :ref="(el) => (psRefs[s][p] = el)" @change="(val) => validatePS(val, s, p)" v-model="analisis[s]['ps']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
                                 {{skorPs(s)}}
                             </td>
 
-                            <template v-for="(ps, p) in kunci.is.kunci">
+                            <template v-for="(is, p) in kunci.is.kunci">
                                 <td class="border py-1 px-2">
                                     <input v-model="analisis[s]['is']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
@@ -354,7 +458,7 @@ onBeforeMount(() => {
                                 {{skorIs(s)}}
                             </td>
 
-                            <template v-for="(ps, p) in kunci.ur.kunci">
+                            <template v-for="(ur, p) in kunci.ur.kunci">
                                 <td class="border py-1 px-2">
                                     <input v-model="analisis[s]['ur']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
