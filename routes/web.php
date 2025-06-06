@@ -216,7 +216,7 @@ Route::middleware("auth")->group(function () {
             Route::post("/", [RombelController::class, "store"])->name(
                 "dashboard.rombel.store"
             );
-            Route::get("/{kode}", [RombelController::class, "show"])->name("dashboard.rombel.show");
+            Route::get("/{kode}/{tingkat}", [RombelController::class, "show"])->name("dashboard.rombel.show");
             Route::post("/member/attach", [
                 RombelController::class,
                 "attachMember",

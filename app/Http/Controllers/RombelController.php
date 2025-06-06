@@ -7,6 +7,7 @@ use App\Models\Rombel;
 use Illuminate\Http\Request;
 use App\Services\RombelService;
 use App\Http\Requests\RombelRequest;
+use App\Helpers\Periode;
 
 class RombelController extends Controller
 {
@@ -41,13 +42,25 @@ class RombelController extends Controller
         }
     }
 
-    public function show(Request $request, $kode)
+    public function show(Request $request, $kode, $tingkat)
     {
+        if ($kode !== 'kosong') {
         $rombel =  Rombel::where('kode', $kode)
             ->with('siswas', function($s) {
                 $s->orderBy('nama', 'ASC');
             })
+                ->first();
+        } else {
+            $guruId = $request->user()->userable->nip;
+            $rombel = Rombel::whereHas('gurus', function($g) use($guruId) {
+                $g->where('nip', $guruId);
+            })->where('tapel', Periode::tapel()->kode)
+                ->where('tingkat', $tingkat)
+                ->with('siswas', function($s) {
+                    $s->orderBy('nama', 'ASC');
+                })
             ->first();
+        }
         return response()
             ->json([
                         'siswas' => $rombel->siswas,

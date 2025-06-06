@@ -15,11 +15,13 @@ const siswas = ref([])
 const kunci = ref({})
 const analisis = ref([])
 const getSiswa = () => {
+
     axios.get(
         route(
             "dashboard.rombel.show",
             {
-                kode: props.asesmen.rombel_id
+                kode: props.asesmen.rombel_id ?? 'kosong',
+                tingkat: props.asesmen.kelas
             }
         ))
         .then(res => {
