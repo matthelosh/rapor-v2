@@ -42,10 +42,6 @@ const getSiswa = () => {
                         jawabans: [],
                         skor:0,
                     },
-                    bs: {
-                        jawabans: [],
-                        skor: 0,
-                    },
                     is: {
                         jawabans: [],
                         skor: 0,
@@ -87,13 +83,13 @@ const skorPs = (s) => {
     return skor
 }
 
-const skorBs = (s) => {
-    let skor = 0;
-    for ( let i = 0; i < analisis.value[s].bs.jawabans.length; i++) {
-        skor += kunci.value.bs.kunci[i].toUpperCase() == analisis.value[s].bs.jawabans[i].toUpperCase()
-    }
-    return skor;
-}
+// const skorBs = (s) => {
+//     let skor = 0;
+//     for ( let i = 0; i < analisis.value[s].bs.jawabans.length; i++) {
+//         skor += kunci.value.bs.kunci[i].toUpperCase() == analisis.value[s].bs.jawabans[i].toUpperCase()
+//     }
+//     return skor;
+// }
 
 const skorIs = (s) => {
     let skor = 0;
@@ -116,7 +112,9 @@ const skorUr = (s) => {
 
 }
 const skorTotal = (s) => {
-    return skorPg(s) + skorPgk(s) + skorPs(s) + skorIs(s) + skorUr(s)
+    let total = 0
+    total = skorPg(s) + skorPgk(s) + skorPs(s) + skorIs(s) + skorUr(s)
+    return total
 }
 
 const cetak = () => {
@@ -187,7 +185,6 @@ onBeforeMount(() => {
         pg: JSON.parse(props.asesmen.kunci.pg),
         pgk: JSON.parse(props.asesmen.kunci.pgk),
         ps: JSON.parse(props.asesmen.kunci.ps),
-        bs: JSON.parse(props.asesmen.kunci.bs),
         is: JSON.parse(props.asesmen.kunci.is),
         ur: JSON.parse(props.asesmen.kunci.ur),
 

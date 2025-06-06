@@ -11,7 +11,6 @@ const tipe_soal = ref({
     pg: "Pilihan Ganda",
     pgk: "Pilihan Ganda kompleks",
     ps: "Menjodohkan",
-    bs: "Benar-Salah",
     is: "Isian",
     ur: "Uraian",
 });
@@ -28,10 +27,10 @@ const kunci = ref({
         jml_soal: 0,
         kunci: [],
     },
-    bs: {
-        jml_soal: 0,
-        kunci: [],
-    },
+    // bs: {
+    //     jml_soal: 0,
+    //     kunci: [],
+    // },
     is: {
         jml_soal: 0,
         kunci: [],
