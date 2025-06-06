@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asesmen;
 use App\Models\Sekolah;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
@@ -47,5 +48,14 @@ class CetakController extends Controller
         } catch (\Throwable $th) {
             dd($th);
         }
+    }
+
+    public function cetakAnalisisAsesmen(Request $request, $asesmenId)
+    {
+        $asesmen = Asesmen::where('kode', $asesmenId)->first();
+        /* dd($asesmen); */
+        return view("cetak.analisis_asesmen", [
+            'asesmen' => $asesmen,
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Periode;
 use App\Models\Asesmen;
+use App\Models\Analisis;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -23,6 +24,23 @@ class AnalisisController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function store(Request $request)
+    {
+        dd($request->all());
+        $store = Analisis::updateOrCreate(
+            [
+                'asesmen_id' => $request->asesmen_id,
+            ],
+            [
+                'kunci' => null,
+                'hasil' => json_encode($request->hasil),
+                'keterangan' => 'Terang'
+            ]
+        );
+
+        return back()->with('message', 'Analisis disimpan');
     }
 
     public function cekJawaban(Request $request)

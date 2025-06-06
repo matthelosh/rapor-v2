@@ -2,6 +2,7 @@
 import { ref, computed, onBeforeMount } from "vue";
 import { router, usePage } from "@inertiajs/vue3"
 import axios from 'axios'
+import { utils, writeFile } from 'xlsx'
 
 const page = usePage()
 const props = defineProps({ asesmen: Object, open: Boolean });
@@ -86,6 +87,14 @@ const skorPs = (s) => {
     return skor
 }
 
+const skorBs = (s) => {
+    let skor = 0;
+    for ( let i = 0; i < analisis.value[s].bs.jawabans.length; i++) {
+        skor += kunci.value.bs.kunci[i].toUpperCase() == analisis.value[s].bs.jawabans[i].toUpperCase()
+    }
+    return skor;
+}
+
 const skorIs = (s) => {
     let skor = 0;
     //console.log(analisis.value[s].is.jawabans.length);
@@ -106,7 +115,72 @@ const skorUr = (s) => {
     return skor * 4
 
 }
-const skorTotal = (s) => {}
+const skorTotal = (s) => {
+    return skorPg(s) + skorPgk(s) + skorPs(s) + skorIs(s) + skorUr(s)
+}
+
+const cetak = () => {
+    // window.open(`/cetak/analisis-asesmen/${props.asesmen.kode}`, "_blank", "width=900,height=800")
+
+}
+
+// Unduh Excel
+const unduhExcel = () => {
+    const headers = [
+        "No", "Nama",
+        ...kunci.value.pg.kunci.map((_, i) => `PG ${i + 1}`),
+        "SUB PG",
+        ...kunci.value.pgk.kunci.map((_, i) => `PGK ${i + 1}`),
+        "SUB PGK",
+        ...kunci.value.ps.kunci.map((_, i) => `PS ${i + 1}`),
+        "SUB PS",
+        ...kunci.value.is.kunci.map((_, i) => `IS ${i + 1}`),
+        "SUB IS",
+        ...kunci.value.ur.kunci.map((_, i) => `UR ${i + 1}`),
+        "SUB UR",
+        "TOTAL SKOR"
+    ];
+
+    const data = analisis.value.map((a, index) => {
+        return [
+            index + 1,
+            a.nama,
+            ...a.pg.jawabans,
+            skorPg(index),
+            ...a.pgk.jawabans,
+            skorPgk(index),
+            ...a.ps.jawabans,
+            skorPs(index),
+            ...a.is.jawabans,
+            skorIs(index),
+            ...a.ur.jawabans,
+            skorUr(index),
+            skorTotal(index)
+        ];
+    });
+
+    const ws = utils.aoa_to_sheet([headers, ...data]);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Analisis");
+
+    writeFile(wb, `Analisis-Asesmen-${props.asesmen.nama}.xlsx`);
+
+}
+
+const simpan = async() => {
+    router.post(route('dashboard.analisis.store'), {
+        asesmen_id: props.asesmen.kode,
+        hasil: analisis.value
+    }, {
+            onStart: () => loading.value = true,
+            onSuccess: () => {
+                ElNotification({title: "Info", message: page.props.flash.message, type: "success"})
+            },
+            onFinish: () => loading.value = false
+        })
+}
+
+
 onBeforeMount(() => {
     show.value = props.open;
     kunci.value = {
@@ -129,8 +203,9 @@ onBeforeMount(() => {
         </template>
         <div class="h-10 bg-slate-200 py-2 flex items-center justify-between">
             <el-button-group size="small">
-                <el-button size="small">Export Excel</el-button>
-                <el-button size="small">Cetak</el-button>
+                <el-button size="small" @click="unduhExcel">Export Excel</el-button>
+                <el-button size="small" @click="cetak">Cetak</el-button>
+                <el-button size="small" @click="simpan">Simpan Analisis</el-button>
                 <el-button size="small">Simpan Nilai</el-button>
             </el-button-group>
         </div>

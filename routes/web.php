@@ -359,6 +359,7 @@ Route::middleware("auth")->group(function () {
                 Route::get("/", [AnalisisController::class, "home"])->name(
                     "dashboard.analisis.home"
                 );
+                Route::post("/store", [AnalisisController::class, "store"])->name("dashboard.analisis.store");
                 Route::post('/cek-jawaban', [AnalisisController::class, 'cekJawaban'])->name('dashboard.analisis.cek-jawaban');
             })
             ->middleware("role:guru_kelas|guru_agama|guru_inggris|guru_pjok");
@@ -692,6 +693,7 @@ Route::middleware("auth")->group(function () {
             CetakController::class,
             "cetakTranskrip",
         ]);
+        Route::get("/analisis-asesmen/{asesmenId}", [CetakController::class, "cetakAnalisisAsesmen"]);
     });
 });
 
