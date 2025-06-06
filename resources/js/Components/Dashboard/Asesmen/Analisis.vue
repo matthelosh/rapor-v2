@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onBeforeMount, nextTick } from "vue";
 import { router, usePage } from "@inertiajs/vue3"
+import { Icon } from '@iconify/vue'
 import axios from 'axios'
 import { utils, writeFile } from 'xlsx'
 
@@ -15,7 +16,10 @@ const siswas = ref([])
 const kunci = ref({})
 const analisis = ref([])
 const getSiswa = () => {
-
+    let loader = ElLoading.service({
+        fullscreen: true,
+        background: 'rgba(0,0,0,0.7)'
+    })
     axios.get(
         route(
             "dashboard.rombel.show",
@@ -54,9 +58,14 @@ const getSiswa = () => {
                     },
                     total: 0
                 })
+                pgRefs.value[s] = []
+                pgkRefs.value[s] = []
+                psRefs.value[s] = []
+
             })
             analisis.value = datas
         })
+        .finally(() => loader.close())
 }
 const skorPg = (s) => {
     let skor = 0
@@ -180,7 +189,7 @@ const unduhExcel = () => {
 
 const simpan = async() => {
     let data = []
-    analisis.value.forEach((siswa, s) => {
+        analisis.value.forEach((siswa, s) => {
         let item = {
             nisn: siswa.nisn,
             nama: siswa.nama,
@@ -210,15 +219,20 @@ const simpan = async() => {
 
         data.push(item)
     })
+        let loader = ElLoading.service({
+                    lock: true,
+                    text: 'Loading',
+                    background: 'rgba(0,0,0,0.7)'
+                })
+
     router.post(route('dashboard.analisis.store'), {
         asesmen_id: props.asesmen.kode,
         hasil: data
     }, {
-            onStart: () => loading.value = true,
             onSuccess: () => {
                 ElNotification({title: "Info", message: page.props.flash.message, type: "success"})
             },
-            onFinish: () => loading.value = false
+            onFinish: () => loader.close()
         })
 }
 
@@ -362,7 +376,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <el-dialog v-model="show" fullscreen @close="emit('close')">
+    <el-dialog v-model="show" fullscreen @close="emit('close')" v-loading="loading">
         <template #header>
             <div>Analisis</div>
         </template>
@@ -377,7 +391,7 @@ onBeforeMount(() => {
                 <el-button :native-type="null" type="primary" @click="showKunci">Lihat Kunci</el-button>
             </el-button-group>
         </div>
-        <div class="max-w-screen overflow-x-auto max-h-[80vh] overflow-y-auto">
+        <div class="max-w-screen overflow-x-auto max-h-[80vh] overflow-y-auto py-4">
             <table>
                 <thead>
                     <tr class="bg-sky-600 text-white">
@@ -423,7 +437,7 @@ onBeforeMount(() => {
                     <template v-for="(siswa,s) in analisis">
                         <tr class="even:bg-slate-100">
                             <td class="border py-1 px-2 text-center">{{s+1}}</td>
-                            <td class="border py-1 px-2">{{siswa.nama}}</td>
+                            <td class="border py-1 px-2 w-[200px] text-sm">{{siswa.nama}}</td>
                             <template v-for="(pg, p) in kunci.pg.kunci">
                                 <td class="border py-1 px-2">
                                     <input :ref="(el) => (pgRefs[s][p] = el)" @input="(val) => validatePG(val, s, p)" v-model="analisis[s]['pg']['jawabans'][p]" maxlength="1" required class="w-6 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" />
@@ -451,7 +465,7 @@ onBeforeMount(() => {
 
                             <template v-for="(is, p) in kunci.is.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['is']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
+                                    <input v-model="analisis[s]['is']['jawabans'][p]" maxlength="2" required class="w-12 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
                             </template>
                             <td class="border py-1 px-2 text-center font-bold">
@@ -460,7 +474,7 @@ onBeforeMount(() => {
 
                             <template v-for="(ur, p) in kunci.ur.kunci">
                                 <td class="border py-1 px-2">
-                                    <input v-model="analisis[s]['ur']['jawabans'][p]" maxlength="2" required class="w-8 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
+                                    <input v-model="analisis[s]['ur']['jawabans'][p]" maxlength="2" required class="w-12 text-center p-0 border-t-0 border-r-0 border-l-0 border-b outline-none active:outline-none focus:outline-none focus:bg-sky-50" min="0" max="1" step="0.1" type="number" />
                                 </td>
                             </template>
                              <td class="border py-1 px-2 text-center font-bold">
@@ -476,19 +490,11 @@ onBeforeMount(() => {
                 </tbody>
             </table>
         </div>
+
     </el-dialog>
 </template>
 
 <style scoped>
-    /* input { */
-    /*     padding: 2px; */
-    /*     border: none; */
-    /*     border-bottom: 1px dotted #789890; */
-    /* } */
-    /* input:focus { */
-    /*     border: none; */
-    /*     outline: none!important; */
-    /* } */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none; /* Menghilangkan tampilan default browser */
