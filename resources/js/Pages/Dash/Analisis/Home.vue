@@ -68,7 +68,7 @@ const closeAnalisis = () => {
                         <el-table-column label="Analisis & Kunci">
                             <template #default="{ row }">
                                 <span
-                                    >{{ row.analises.length }} |
+                                    >{{ row.analises?.id }} |
                                     {{ row.kunci?.id }}</span
                                 >
                             </template>

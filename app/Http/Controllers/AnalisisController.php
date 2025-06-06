@@ -28,7 +28,7 @@ class AnalisisController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
+        /* dd($request->all()); */
         $store = Analisis::updateOrCreate(
             [
                 'asesmen_id' => $request->asesmen_id,

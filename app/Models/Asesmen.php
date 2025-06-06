@@ -145,7 +145,7 @@ class Asesmen extends Model
 
     public function analises()
     {
-        return $this->hasMany(Analisis::class, 'asesmen_id', 'kode');
+        return $this->hasOne(Analisis::class, 'asesmen_id', 'kode');
     }
     public function kunci(): HasOne
     {

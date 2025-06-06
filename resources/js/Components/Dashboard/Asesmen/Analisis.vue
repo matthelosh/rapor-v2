@@ -51,7 +51,8 @@ const getSiswa = () => {
                     ur: {
                         jawabans: [],
                         skor: 0,
-                    }
+                    },
+                    total: 0
                 })
             })
             analisis.value = datas
@@ -101,7 +102,7 @@ const skorIs = (s) => {
         //console.log(analisis.value[s].is.jawabans[i])
     }
 
-    return skor * 2
+    return (skor * 2)
 }
 
 const skorUr = (s) => {
@@ -110,13 +111,23 @@ const skorUr = (s) => {
         skor += analisis.value[s].ur.jawabans[i]
     }
 
-    return skor * 4
+    return (skor * 4)
 
 }
 const skorTotal = (s) => {
     let total = 0
-    total = skorPg(s) + skorPgk(s) + skorPs(s) + skorIs(s) + skorUr(s)
-    return total
+    let maxscore = 0;
+    Object.keys(kunci.value).forEach(k => {
+        if (k == 'pg') {
+            maxscore += parseInt(kunci.value.pg.jml_soal)
+        } else if (k == 'ur') {
+            maxscore += parseInt(kunci.value.ur.jml_soal) * 4
+        } else {
+            maxscore += parseInt(kunci.value[k].jml_soal) * 2
+        }
+    })
+        total = (skorPg(s) + skorPgk(s) + skorPs(s) + skorIs(s) + skorUr(s))
+    return Math.round(total / maxscore * 100)
 }
 
 const cetak = () => {
@@ -168,9 +179,40 @@ const unduhExcel = () => {
 }
 
 const simpan = async() => {
+    let data = []
+    analisis.value.forEach((siswa, s) => {
+        let item = {
+            nisn: siswa.nisn,
+            nama: siswa.nama,
+            rombelId: siswa.rombelId ?? props.asesmen.rombel_id,
+            pg: {
+                jawabans: siswa.pg.jawabans,
+                skor: skorPg(s)
+            },
+            pgk: {
+                jawabans: siswa.pgk.jawabans,
+                skor: skorPgk(s)
+            },
+            ps: {
+                jawabans: siswa.ps.jawabans,
+                skor: skorPs(s)
+            },
+            is: {
+                jawabans: siswa.is.jawabans,
+                skor: skorIs(s)
+            },
+            ur: {
+                jawabans: siswa.ur.jawabans,
+                skor: skorUr(s)
+            },
+            total: skorTotal(s)
+        }
+
+        data.push(item)
+    })
     router.post(route('dashboard.analisis.store'), {
         asesmen_id: props.asesmen.kode,
-        hasil: analisis.value
+        hasil: data
     }, {
             onStart: () => loading.value = true,
             onSuccess: () => {
@@ -180,6 +222,21 @@ const simpan = async() => {
         })
 }
 
+const showKunci = () => {
+    let text = ''
+    Object.keys(kunci.value).forEach(k => {
+        text += `${k.toUpperCase()}: ${kunci.value[k].kunci},\n`
+    })
+    ElMessageBox.alert(
+        `${text}`,
+        'Kunci Jawaban:',
+        {
+            type: 'info',
+            draggable: true,
+            icon: false
+        }
+    )
+}
 
 onBeforeMount(() => {
     show.value = props.open;
@@ -191,7 +248,12 @@ onBeforeMount(() => {
         ur: JSON.parse(props.asesmen.kunci.ur),
 
     }
-    getSiswa()
+    if (props.asesmen.analises) {
+        // console.log(JSON.parse(props.asesmen.analises.hasil))
+        analisis.value = JSON.parse(props.asesmen.analises.hasil)
+    } else {
+        getSiswa()
+    }
 });
 </script>
 
@@ -206,6 +268,9 @@ onBeforeMount(() => {
                 <el-button size="small" @click="cetak">Cetak</el-button>
                 <el-button size="small" @click="simpan">Simpan Analisis</el-button>
                 <el-button size="small">Simpan Nilai</el-button>
+            </el-button-group>
+            <el-button-group size="small">
+                <el-button :native-type="null" type="primary" @click="showKunci">Lihat Kunci</el-button>
             </el-button-group>
         </div>
         <div class="max-w-screen overflow-x-auto max-h-[80vh] overflow-y-auto">
@@ -251,7 +316,7 @@ onBeforeMount(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-for="(siswa,s) in siswas">
+                    <template v-for="(siswa,s) in analisis">
                         <tr class="even:bg-slate-100">
                             <td class="border py-1 px-2 text-center">{{s+1}}</td>
                             <td class="border py-1 px-2">{{siswa.nama}}</td>
