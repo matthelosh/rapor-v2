@@ -221,7 +221,7 @@ const printRekap = () => {
     win.document.close();
     setTimeout(() => {
         win.print();
-        win.close();
+        // win.close();
     }, 1000);
 };
 

@@ -234,7 +234,7 @@ onBeforeMount(async () => {
                     <el-table-column label="Wali Kelas">
                         <template #default="scope">
                             <p>
-                                {{scope.row.wali_kelas[0]?.nama ?? '-'}}
+                                {{scope.row.wali_kelas ? scope.row.wali_kelas[0]?.nama : '-'}}
                             </p>
                         </template>
                     </el-table-column>

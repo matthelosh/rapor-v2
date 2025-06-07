@@ -279,12 +279,21 @@ const addRow = () => {
     item.mapel_id = selectedMapel.value.kode
     item.semester = page.props.periode.semester.kode
     // console.log(item)
+    item.agama = page.props.auth.roles[0] == 'guru_agama' ? page.props.auth.user.userable.agama : ""
     newTps.value.push(item)
     item.kode = generateKode(newTps.value[newTps.value.length -1])
 }
 
 const removeNewTpsItem = (t) => {
     newTps.value.splice(t,1)
+}
+
+const elemens = () => {
+    const results = page.props.elemens.filter(el => {
+       return el.mapel_id == selectedMapel.value.kode
+            && el.agama == ( page.props.auth.roles[0] == 'guru_agama' || selectedMapel.value.kode == 'pabp' ? page.props.auth.user.userable.agama : null)
+    })
+    return results
 }
 
 onBeforeMount(() => {
@@ -315,6 +324,7 @@ onBeforeMount(() => {
                             <h3 class="font-bold">Mata Pelajaran</h3>
                             <span>
                                 <!-- {{ page.props.mapels }} -->
+                                <el-button-group size="small">
                                 <el-popover trigger="click" width="350" v-if="page.props.mapels.length > 0">
                                     <template #reference>
                                         <el-button size="small" type="success" :disabled="role !== 'ops'">Atur Mapel</el-button>
@@ -334,20 +344,21 @@ onBeforeMount(() => {
                                 <el-button size="small" type="primary" @click="$refs.fileMapel.click()" :disabled="role !== 'admin'">Impor Mapel</el-button>
                                 <el-button size="small" type="primary" @click="$refs.filElemen.click()" :disabled="role !== 'admin'">Impor Elemen</el-button>
                                 <el-button type="success" size="small" @click="$refs.fileTp.click()">Impor TP</el-button>
+                                </el-button-group>
                                 <input type="file" ref="filElemen" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileElemenPicked" />
                                 <input type="file" ref="fileTp" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileTpPicked" />
                                 <input type="file" ref="fileMapel" accept=".xls,.xlsx,.ods, .csv" class="hidden" @change="onFileMapelPicked" />
                             </span>
                         </div>
-                        <div class="card-body p-2">
-                                <!-- {{ page.props.mapels }}-->
+                        <div class="card-body">
                                 <!-- {{ page.props.sekolahs[0].mapels.map(mapel => mapel.label) }} -->
                             <div class="data-mapel" v-if="(page.props.sekolahs[0].mapels.length > 0 && role !== 'admin') || (page.props.mapels.length > 0 && ['superadmin', 'admin', 'admin_tp'].includes(role))">
-                                <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m">
+                                    <!-- <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m"> -->
+                                    <template v-for="(mapel, m) in page.props.mapels" :key="m">
                                     <el-collapse accordion>
                                         <el-collapse-item>
                                             <template #title>
-                                                <h3>{{ m+1 }}. {{ mapel.label }}</h3>
+                                                <h3 class="px-2 font-bold">{{ m+1 }}. {{ mapel.label }}</h3>
                                             </template>
                                             <div class="collapse-body p-2 bg-sky-100">
                                                 <div class="collapse-body--tile flex justify-between mb-2">
@@ -380,7 +391,7 @@ onBeforeMount(() => {
                                                         </template>
                                                     </el-table-column>
 
-                                                </el-table>
+                                            </el-table>
                                             </div>
                                         </el-collapse-item>
                                     </el-collapse>
@@ -406,6 +417,7 @@ onBeforeMount(() => {
                                 <h3 class="font-bold">Ekstrakurikuler</h3>
                             </div>
                             <div class="card-header--items">
+                                <el-button-group>
                                 <el-popover trigger="click" width="350">
                                     <template #reference>
                                         <el-button size="small" type="primary" :disabled="role !== 'ops'">Atur Ekskul</el-button>
@@ -424,6 +436,7 @@ onBeforeMount(() => {
                                     </template>
                                 </el-popover>
                                 <el-button type="success" size="small" @click="$refs.fileEkskul.click()" :disabled="role !== 'admin'">Impor Ekskul</el-button>
+                                </el-button-group>
                                 <input type="file" ref="fileEkskul" accept=".xls,.xlsx,.ods,.csv" class="hidden" @change="onFileEkskulPicked" />
                             </div>
                         </div>
@@ -476,7 +489,8 @@ onBeforeMount(() => {
                     <el-col :span="10">
                         <el-form-item label="Elemen">
                             <el-select v-model="newTp.elemen" placeholder="Pilih Elemen">
-                                <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +'|' : ''} ${elemen.nama}`" />
+                                    <!-- <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +'|' : ''} ${elemen.nama}`" /> -->
+                                <el-option v-for="(elemen, e) in elemens()" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +'|' : ''} ${elemen.nama}`" />
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -550,7 +564,8 @@ onBeforeMount(() => {
                                 </td>
                                 <td class="text-center border px-1 py-2 align-top">
                                     <el-select v-model="tp.elemen" placeholder="Pilih Elemen">
-                                        <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +' |' : ''} ${elemen.nama}`" />
+                                            <!-- <el-option v-for="(elemen, e) in page.props.elemens.filter(el => el.mapel_id == selectedMapel.kode)" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +' |' : ''} ${elemen.nama}`" /> -->
+                                        <el-option v-for="(elemen, e) in elemens()" :key="e" :value="elemen.nama" :label="`${selectedMapel.kode == 'pabp' ? elemen.agama +' |' : ''} ${elemen.nama}`" />
                                     </el-select>
                                 </td>
 

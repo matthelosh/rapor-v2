@@ -79,11 +79,12 @@ class PembelajaranController extends Controller implements HasMiddleware
                 /* ->with('tps') */
                 ->get();
         } else {
+            /* dd("tes"); */
             $mapelId = $request->user()->hasRole("guru_agama")
                 ? "pabp"
                 : ($request->user()->hasRole("guru_pjok")
                     ? "pjok"
-                    : "bing");
+                : "bing");
             // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
             $guruId = $request->user()->userable->nip;
             $mapels = Mapel::whereKode($mapelId)
@@ -91,6 +92,10 @@ class PembelajaranController extends Controller implements HasMiddleware
                     $t->where('semester', Periode::semester()->kode);
                 })
                 ->get();
+            /* dd($mapels); */
+            if ($mapelId == 'pabp') {
+
+            }
         }
         return Inertia::render("Dash/Pembelajaran", [
             "mapels" => $mapels,

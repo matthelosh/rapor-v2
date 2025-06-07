@@ -90,6 +90,12 @@ Route::middleware("auth")->group(function () {
             DashboardController::class,
             "tesReverb",
         ])->name("dashboard.home.tes");
+
+        Route::prefix("bukuinduk")->group(
+            function () {
+                Route::get("/", [BukuindukController::class, 'home'])->name('dashboard.bukuinduk.home');
+            }
+        );
         Route::get("/", [DashboardController::class, "index"])
             ->middleware(["auth", "verified"])
             ->name("dashboard");

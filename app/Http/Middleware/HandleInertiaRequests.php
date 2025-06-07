@@ -62,11 +62,11 @@ class HandleInertiaRequests extends Middleware
             "appUrl" => env("APP_URL"),
             "appName" => env("APP_NAME"),
             "guguses" => $user ? Gugus::all() : null,
-            "mapels" => $user
-                ? ($user->hasRole("admin")
-                    ? Mapel::all()
-                    : $this->mapels($user))
-                : null,
+            /* "mapels" => $user */
+            /*     ? ($user->hasRole("admin") */
+            /*         ? Mapel::all() */
+            /*         : $this->mapels($user)) */
+            /*     : null, */
         ];
         if ($user) {
             $datas["sekolahs"] = $this->sekolahs($user);

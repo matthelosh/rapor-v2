@@ -42,11 +42,15 @@ class RombelService
                 ->orderBy("id")
                 ->get();
         } elseif ($user->hasRole("guru_kelas")) {
+            $nip = $user->userable->nip;
             $rombels = Rombel::where(
                 "sekolah_id",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->where("guru_id", $user->userable->id)
+                ->whereHas('wali_kelas', function($q) use($nip){
+                    $q->where('nip',$nip );
+                })
+                /* ->where("guru_id", $user->userable->id) */
                 ->with("sekolah", "gurus", "siswas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
