@@ -156,11 +156,12 @@ class HandleInertiaRequests extends Middleware
                     $q->orderBy("id", "ASC");
                     $q->with("tps");
                 })
-                ->with([
-                    "rombels" => function ($r) use ($tapel) {
-                        $r->whereTapel($tapel);
-                    },
-                ])
+                /* ->with([ */
+                /*     "rombels" => function ($r) use ($tapel) { */
+                /*         $r->whereTapel($tapel); */
+                /*         $r->with('wali_kelas', 'gurus'); */
+                /*     }, */
+                /* ]) */
                 ->with("ks", "ekskuls", "gugus")
                 ->get();
         } elseif ($role == "siswa") {
@@ -182,7 +183,9 @@ class HandleInertiaRequests extends Middleware
                         }
                     },
                     "rombels" => function ($r) use ($tapel) {
+
                         $r->where("tapel", $tapel);
+                        $r->with('wali_kelas', 'gurus');
                     },
                 ])
                 ->get() ?? null;

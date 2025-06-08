@@ -10,6 +10,7 @@ use App\Models\Tapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
+use App\Helpers\Periode;
 
 class DashboardController extends Controller
 {
@@ -63,7 +64,7 @@ class DashboardController extends Controller
                 ->with("gurus", "ks")
                 ->with("rombels", function ($q) use ($tapel) {
                     $q->where("tapel", $tapel);
-                    $q->with("gurus");
+                    $q->with("gurus", "wali_kelas");
                     $q->with("siswas", fn($q) => $q->where("status", "aktif"));
                 })
                 ->with("mapels")
@@ -73,7 +74,10 @@ class DashboardController extends Controller
                 "npsn",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->with("rombels.siswas")
+                ->with("rombels", function($r) {
+                    $r->where('tapel', Periode::tapel()->kode);
+                    $r->with("wali_kelas", "siswas");
+                })
                 ->with("mapels")
                 ->first();
         } elseif ($user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])) {

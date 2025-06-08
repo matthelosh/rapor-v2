@@ -18,7 +18,7 @@ class RombelController extends Controller
             $datas = $rombelService->home($request);
             return Inertia::render(
                 'Dash/Rombel',
-                /* $datas */
+                $datas
             );
         } catch (\Exception $e) {
             throw $e;
