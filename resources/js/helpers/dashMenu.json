@@ -1,5 +1,5 @@
 [
-    {
+     {
         "label": "Dashboard",
         "icon": "monitor-dashboard",
         "url": "/dashboard",
@@ -13,6 +13,18 @@
             "guru_agama",
             "guru_pjok",
             "guru_inggris",
+            "siswa"
+        ]
+    },
+    {
+        "label": "Buku Induk",
+        "icon": "book-open",
+        "url": "/dashboard/bukuinduk",
+        "children": [],
+        "roles": [
+            "ops",
+            "kepala_sekolah",
+            "guru_kelas",
             "siswa"
         ]
     },

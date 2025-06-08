@@ -489,6 +489,7 @@ const param = computed(() => route().params);
                     <el-table-column
                         label="Sekolah"
                         v-if="page.props.auth.roles.includes('admin')"
+                        sortable="true"
                     >
                         <template #default="scope">
                             <div>

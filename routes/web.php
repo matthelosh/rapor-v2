@@ -91,7 +91,7 @@ Route::middleware("auth")->group(function () {
             "tesReverb",
         ])->name("dashboard.home.tes");
 
-        Route::prefix("bukuinduk")->group(
+        Route::middleware("role:ops")->prefix("bukuinduk")->group(
             function () {
                 Route::get("/", [BukuindukController::class, 'home'])->name('dashboard.bukuinduk.home');
             }

@@ -231,7 +231,7 @@ const unduhFormat = async () => {
                     >
                         <template #default="scope">
                             <div>
-                                <ul class="list-decimal">
+                                <ul class="list-decimal pl-2">
                                     <li
                                         v-for="(
                                             sekolah, s
