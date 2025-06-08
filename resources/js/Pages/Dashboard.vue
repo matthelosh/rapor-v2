@@ -11,11 +11,11 @@ const Org = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Org.v
 const Siswa = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Siswa.vue'))
 
 const page = usePage()
-const role = page.props.auth.roles[0]
+const role = computed(() => page.props.auth.roles[0])
 const comp = computed(() => {
-    // return (['superadmin', 'admin', 'admin_tp'].includes(role)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
-    switch(role) {
-        case ['superadmin', 'admin', 'admin_tp'].includes(role) :
+    // return (['superadmin', 'admin', 'admin_tp'].includes(role.value)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
+    switch(role.value) {
+        case ['superadmin', 'admin', 'admin_tp'].includes(role.value) :
             return Admin
             break;
         case 'ops':
@@ -31,7 +31,7 @@ const comp = computed(() => {
             return Siswa
             break
         default:
-            return Mapel
+            return Admin
             break
     }
 })
@@ -44,7 +44,7 @@ const sekolahs = page.props.sekolahs
 
     <DashLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard {{role}}</h2>
         </template>
 
         <component :is="comp">

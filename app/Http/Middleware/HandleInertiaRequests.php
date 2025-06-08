@@ -149,7 +149,7 @@ class HandleInertiaRequests extends Middleware
         $role = $user->getRoleNames()[0];
         $tapel = $this->periode()["tapel"]->kode;
         if (\in_array($role, ["superadmin", "admin", "admin_tp", "org"])) {
-            return Sekolah::with("mapels.tps", "ks", "ekskuls", "gugus")->get();
+            return Sekolah::with("mapels.tps", "ks", "ekskuls", "gugus", "siswas")->get();
         } elseif ($role == "ops") {
             return Sekolah::where("id", $user->userable->sekolahs[0]->id)
                 ->with("mapels", function ($q) {

@@ -92,12 +92,11 @@ onMounted(() => {
         .listen('JawabanReceived', (e) => {
             console.log(e)
         })
-    
+
 })
 </script>
 
 <template>
-    <!-- {{ datas }} -->
     <el-row class="w-full" :gutter="20">
         <el-col :span="16" :xs="24">
             <el-card>
@@ -117,6 +116,7 @@ onMounted(() => {
                             <el-card shadow="never">
                                 <h3 class="font-bold">Keterangan:</h3>
                                 <table class="w-full">
+                                    <tbody>
                                     <tr
                                         v-for="(ag, a) in [
                                             'Islam',
@@ -135,9 +135,16 @@ onMounted(() => {
                                                 :value="
                                                     jml(dataAgama(datas)[a])
                                                 "
-                                            ></el-statistic>
+></el-statistic>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td>Jumlah</td>
+                                        <td>:</td>
+                                        <td>{{datas.length}}</td>
+
+                                    </tr>
+                                    </tbody>
                                 </table>
                             </el-card>
                         </el-col>
