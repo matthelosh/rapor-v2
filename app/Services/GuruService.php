@@ -35,8 +35,8 @@ class GuruService
             })
                 ->where("jabatan", "!=", "ops")
                 ->with("sekolahs", "user")
-                ->get();
-                /* ->paginate(10); */
+                /* ->get(); */
+                ->paginate(10);
         } else {
             $gurus = Guru::where("nip", $user->userable->nip)
                 ->with("user", "sekolahs")
