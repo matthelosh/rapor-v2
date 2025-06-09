@@ -56,9 +56,9 @@ const bgBars = ref(["#0cb2af","#a1c65d","#fac723","#f29222","#e95e50","#936fac"]
 <template>
 <div>
 <el-row :gutter="24">
-    <el-col :span="8">
+    <el-col :span="8" :xs="24">
         <el-card title="Data Siswa tiap Rombel">
-                        <div class="bars flex items-end gap-4 justify-center">
+                        <div class="bars flex items-end gap-2 sm:gap-4 justify-center">
                 <template v-for="(rombel, r) in data.sekolah.rombels" :key="r">
                             <div class="w-14 p-2  text-center relative flex flex-col rounded" :style="`background: ${bgBars[r]};min-height: 50px!important; height: ${(rombel.siswas.length / jmlSiswas * 100)*8}px;`">
 
@@ -74,11 +74,11 @@ const bgBars = ref(["#0cb2af","#a1c65d","#fac723","#f29222","#e95e50","#936fac"]
 
         </el-card>
     </el-col>
-    <el-col :span="10">
+    <el-col :span="10" :xs="24">
         <el-card title="Data Siswa tiap Rombel">
-                        <div class="bars flex items-end gap-4 justify-center">
+                        <div class="bars flex items-end gap-2 sm:gap-4 justify-center">
                 <template v-for="(agama, a) in agamas" :key="a">
-                            <div class="w-18 p-2  text-center relative flex flex-col rounded" :style="`min-height: 60px;height: ${jmlAgama(agama)}px; background: ${colorAgama[a]};`" >
+                            <div class="w-12 sm:w-18 p-2  text-center relative flex flex-col rounded" :style="`min-height: 60px;height: ${jmlAgama(agama)}px; background: ${colorAgama[a]};`" >
 
                                 <span class="bg-white rounded shadow">{{jmlAgama(agama)}}</span>
                                 <span class="w-full vertical-lr font-bold text-white drop-shadow">

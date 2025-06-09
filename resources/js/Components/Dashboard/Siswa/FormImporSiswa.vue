@@ -33,12 +33,21 @@ const parseSheet = async (sheet, range, headers, onProgress) => {
 
         for (let r = i + startRow; r < batchEnd + startRow; r++) {
             const rowData = {};
+            let isEmptyRow = true;
             for (let col = 0; col < props.fields.length; col++) {
                 const cellAddress = utils.encode_cell({ r, c: col });
                 const cell = sheet[cellAddress];
-                rowData[props.fields[col]] = cell ? cell.v : null;
+                const value = cell ? cell.v : null;
+
+                rowData[props.fields[col]] = value;
+                if (value !== null && value !== '') {
+                    isEmptyRow = false
+                }
+
             }
-            rows.push(rowData);
+            if (!isEmptyRow) {
+                rows.push(rowData);
+            }
         }
 
         onProgress(Math.round(((i + batchSize) / totalRows) * 100));

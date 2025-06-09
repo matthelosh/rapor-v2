@@ -414,13 +414,7 @@ onBeforeUnmount(() => {
                         </table>
                     </div>
                     <div class="text-left col-span-4">
-                        <div
-                            v-if="
-                                parseInt(page.props.periode.semester.kode) /
-                                    2 ===
-                                0
-                            "
-                        >
+                        <div v-if="page.props.periode.semester.kode =='2'">
                             <p class="font-bold">Keputusan:</p>
                             <p>Berdasarkan hasil belajar yang telah dicapai,</p>
                             <p>

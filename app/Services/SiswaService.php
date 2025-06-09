@@ -125,7 +125,15 @@ class SiswaService
                     "status" => $data["status"] ?? "aktif",
                 ];
             }
-            // dd($items);
+            /* dd($items[0]); */
+            /* /* $fails = []; */
+            /* foreach($items as $item) { */
+            /*     if (!$item['agama']) { */
+            /*         array_push($fails, $item); */
+            /*     } */
+            /* } */
+            /**/
+            /* dd($fails); */
             DB::table("siswas")->upsert(
                 $items,
                 ["nisn"],
@@ -157,7 +165,7 @@ class SiswaService
 
             return true;
         } catch (\Exception $e) {
-            // dd($e->getMessage());
+            dd($e->getMessage());
             return back()->withErrors($e->getMessage());
         }
     }
