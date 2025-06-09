@@ -33,7 +33,7 @@ class GuruService
             $gurus = Guru::whereHas("sekolahs", function ($q) use ($user) {
                 $q->where("sekolahs.npsn", $user->userable->sekolahs[0]->npsn);
             })
-                ->where("jabatan", "!=", "ops")
+                /* ->where("jabatan", "!=", "ops") */
                 ->with("sekolahs", "user")
                 /* ->get(); */
                 ->paginate(10);
