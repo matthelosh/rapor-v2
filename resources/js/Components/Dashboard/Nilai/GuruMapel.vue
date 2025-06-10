@@ -101,8 +101,8 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais[0]
-                                                            ?.uh ?? 0,
+                                                        scope.row.nilais ? scope.row.nilais[0]
+                                                            ?.uh : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
@@ -113,8 +113,8 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais[0]
-                                                            ?.pts ?? 0,
+                                                        scope.row.nilais ? scope.row.nilais[0]
+                                                            ?.pts : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
@@ -125,8 +125,8 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais[0]
-                                                            ?.as ?? 0,
+                                                        scope.row.nilais ? scope.row.nilais[0]
+                                                            ?.as : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *

@@ -1,5 +1,6 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, onBeforeMount } from "vue";
+import { usePage } from '@inertiajs/vue3'
 import Checkbox from "@/Components/Checkbox.vue";
 import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
@@ -9,7 +10,8 @@ import TextInput from "@/Components/TextInput.vue";
 import { Head, Link, useForm } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
-defineProps({
+const page = usePage()
+const props = defineProps({
     canResetPassword: {
         type: Boolean,
     },
@@ -38,6 +40,12 @@ const submit = () => {
     });
 };
 const respose = ref("");
+
+onBeforeMount(() => {
+    if (page.props.auth.user) {
+        router.visit(route('dashboard'))
+    }
+})
 </script>
 
 <template>

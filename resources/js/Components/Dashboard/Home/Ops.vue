@@ -11,30 +11,30 @@ const data = computed(() => page.props.data)
 
 const results = ref(null)
 
-const tesDapodik = async() => {
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: 'http://192.168.1.14:5774/WebService/getPengguna?npsn=20518848',
-        headers: {
-            'Authorization': 'Bearer QteRgcGaC8TGojF',
-            'Content-Type': 'application/json',
-            "Accept": "/",
-            "Cache-Control": "no-cache",
-            // 'user-agent':'curl/7.79.1'
-            // "Cookie": document.cookie
-        },
-        creadentials: 'same-origin'
-    };
+// const tesDapodik = async() => {
+//     let config = {
+//         method: 'get',
+//         maxBodyLength: Infinity,
+//         url: 'http://192.168.1.14:5774/WebService/getPengguna?npsn=20518848',
+//         headers: {
+//             'Authorization': 'Bearer QteRgcGaC8TGojF',
+//             'Content-Type': 'application/json',
+//             "Accept": "/",
+//             "Cache-Control": "no-cache",
+//             // 'user-agent':'curl/7.79.1'
+//             // "Cookie": document.cookie
+//         },
+//         creadentials: 'same-origin'
+//     };
 
-    axios.request(config)
-    .then((response) => {
-        console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-        console.log(error);
-    });
-}
+//     axios.request(config)
+//     .then((response) => {
+//         console.log(JSON.stringify(response.data));
+//     })
+//     .catch((error) => {
+//         console.log(error);
+//     });
+// }
 const agamas = ref(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Budha', 'Konghuchu']);
 const colorAgama = ref(["#8dbd05","#00a1ae","#5e36cc","#fe318e","#ff7540","#fd9800"])
 const jmlAgama = (agama) => {

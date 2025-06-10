@@ -13,27 +13,18 @@ const Siswa = defineAsyncComponent(() => import('@/Components/Dashboard/Home/Sis
 const page = usePage()
 const role = computed(() => page.props.auth.roles[0])
 const comp = computed(() => {
-    // return (['superadmin', 'admin', 'admin_tp'].includes(role.value)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
-    switch(role.value) {
-        case ['superadmin', 'admin', 'admin_tp'].includes(role.value) :
-            return Admin
-            break;
-        case 'ops':
-            return Ops
-            break
-        case 'guru_kelas':
-            return Wali
-            break
-        case "org":
-            return Org
-            break
-        case "siswa":
-            return Siswa
-            break
-        default:
-            return Admin
-            break
+    if (['superadmin', 'admin', 'admin_tp'].includes(role.value)) {
+        return Admin;
+    } else if (role.value == "ops") {
+        return Ops;
+    } else if(role.value == "guru_kelas") {
+        return Wali;
+    } else if (role.value == "siswa") {
+        return Siswa;
+    } else {
+        return Mapel;
     }
+    return (['superadmin', 'admin', 'admin_tp'].includes(role.value)) ? Admin : (role == 'ops' ? Ops : (role == 'guru_kelas' ? Wali : (role == 'siswa' ? Siswa : Mapel)))
 })
 
 const sekolahs = page.props.sekolahs
