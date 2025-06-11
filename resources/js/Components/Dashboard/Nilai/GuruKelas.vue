@@ -26,9 +26,9 @@ const FormNilaiKelas = defineAsyncComponent(
 const mode = ref("home");
 const selectedRombel = ref({});
 const selectedMapel = ref({});
-const selectedSemester = ref('')
+const selectedSemester = ref("");
 
-const params = route().params
+const params = route().params;
 
 const guruKelas = () => {
     return page.props.auth.roles[0].includes("guru_kelas");
@@ -48,16 +48,21 @@ const closeForm = () => {
 };
 
 const onSemesterChanged = (e) => {
-    router.visit(window.location.pathname + '?semester='+selectedSemester.value, {reload: { only: ['datas', 'rombels']}, preserveState: true})
-}
+    router.visit(
+        window.location.pathname + "?semester=" + selectedSemester.value,
+        { reload: { only: ["datas", "rombels"] }, preserveState: true },
+    );
+};
 
 onBeforeMount(() => {
-    selectedSemester.value = params.semester ?? page.props.periode.semester.kode
-})
+    selectedSemester.value =
+        params.semester ?? page.props.periode.semester.kode;
+});
 </script>
 
 <template>
     <div>
+        <!-- {{ page.props.rombels }} -->
         <el-card>
             <template #header>
                 <div class="card-toolbar flex items-center justify-between">
@@ -70,10 +75,19 @@ onBeforeMount(() => {
                     </div>
                     <div class="toolbar-items flex items-center gap-2">
                         <p>Semester:</p>
-                        <el-select v-model="selectedSemester" placeholder="Pilih Semester" @change="onSemesterChanged" style="width:100px">
-                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="`Sem ${sem}`" />
+                        <el-select
+                            v-model="selectedSemester"
+                            placeholder="Pilih Semester"
+                            @change="onSemesterChanged"
+                            style="width: 100px"
+                        >
+                            <el-option
+                                v-for="sem in ['1', '2']"
+                                :key="`sem${sem}`"
+                                :value="sem"
+                                :label="`Sem ${sem}`"
+                            />
                         </el-select>
-
                     </div>
                 </div>
             </template>
@@ -206,7 +220,11 @@ onBeforeMount(() => {
                                                 "
                                                 rounded
                                                 size="small"
-                                                v-if="page.props.auth.roles.includes('guru_agama')"
+                                                v-if="
+                                                    page.props.auth.roles.includes(
+                                                        'guru_agama',
+                                                    )
+                                                "
                                                 @click="
                                                     openForm(
                                                         scope.row,

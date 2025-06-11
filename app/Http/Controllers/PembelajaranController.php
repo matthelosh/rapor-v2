@@ -62,9 +62,11 @@ class PembelajaranController extends Controller implements HasMiddleware
             $mapels = Mapel::with("tps")->get();
         } elseif ($request->user()->hasRole("guru_kelas")) {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
-                $nip = $request->user()->userable->nip;
-                $guruId = $request->user()->userable->id;
-            $tingkat = Rombel::where('guru_id', $guruId)->pluck('tingkat')->toArray();
+            $nip = $request->user()->userable->nip;
+            $guruId = $request->user()->userable->id;
+            $tingkat = Rombel::where("guru_id", $guruId)
+                ->pluck("tingkat")
+                ->toArray();
             /* dd($tingkat); */
             $mapels = Mapel::whereHas("sekolah", function ($s) use (
                 $sekolahId
@@ -73,7 +75,7 @@ class PembelajaranController extends Controller implements HasMiddleware
             })
                 ->with("tps", function ($t) use ($guruId, $tingkat) {
                     //$t->whereGuruId($guruId);
-                    $t->where('semester', Periode::semester()->kode);
+                    $t->where("semester", Periode::semester()->kode);
                     $t->whereIn("tingkat", $tingkat);
                 })
                 /* ->with('tps') */
@@ -84,17 +86,16 @@ class PembelajaranController extends Controller implements HasMiddleware
                 ? "pabp"
                 : ($request->user()->hasRole("guru_pjok")
                     ? "pjok"
-                : "bing");
+                    : "bing");
             // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
             $guruId = $request->user()->userable->nip;
             $mapels = Mapel::whereKode($mapelId)
                 ->with("tps", function ($t) {
-                    $t->where('semester', Periode::semester()->kode);
+                    $t->where("semester", Periode::semester()->kode);
                 })
                 ->get();
             /* dd($mapels); */
-            if ($mapelId == 'pabp') {
-
+            if ($mapelId == "pabp") {
             }
         }
         return Inertia::render("Dash/Pembelajaran", [

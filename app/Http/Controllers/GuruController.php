@@ -101,7 +101,7 @@ class GuruController extends Controller
     {
         try {
             $guruService->destroy($id);
-            return back()->with("success", true);
+            return back()->with("message", "Guru dihapus.");
         } catch (\Exception $e) {
             return back()->withErrors(["errors" => $e->getMessage()]);
         }
