@@ -444,7 +444,6 @@ onBeforeMount(() => {
     <Head title="Pembelajaran" />
     <DashLayout>
         <template #header> Pembelajaran </template>
-        {{ page.props.rombels }}
         <el-card shadow="never" v-loading="loading">
             <template #header>
                 <span class="title font-bold text-lg">Konten Pembelajaran</span>

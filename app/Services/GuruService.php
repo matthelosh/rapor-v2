@@ -198,7 +198,12 @@ class GuruService
         ]);
         $guru->rombels()->attach($rombels);
         if ($guru->sekolahs->count() < 1) {
-            $guru->sekolahs()->attach($data["sekolahs"]);
+            if ($data["jabatan"] == "Ops") {
+                $sekolah = Sekolah::where("npsn", $data["nip"])->first();
+                $guru->sekolahs()->sync($sekolah->id);
+            } else {
+                $guru->sekolahs()->attach($data["sekolahs"]);
+            }
         } else {
             $ids = explode(",", $data["sekolahs"]);
             $guru->sekolahs()->sync($ids);

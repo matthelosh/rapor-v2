@@ -61,7 +61,7 @@ class SiswaService
                 "nis" => $data["npd"] ?? null,
                 "nik" => $data["nik"] ?? null,
                 "nama" => $data["nama"],
-                "jk" => $data["jk"] == "L" ? "Laki-laki" : "Perempuan",
+                "jk" => !in_array($data["jk"], ["L","P"]) ? $data['jk'] : ($data["jk"] == "L" ? "Laki-laki" : "Perempuan"): ,
                 "tempat_lahir" => $data["tempat_lahir"] ?? null,
                 "tanggal_lahir" => $data["tanggal_lahir"] ?? null,
                 "alamat" => $data["alamat"],

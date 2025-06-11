@@ -197,6 +197,7 @@ class HandleInertiaRequests extends Middleware
                 "siswas"
             )->get();
         } elseif ($role == "ops") {
+            // dd($user->userable->sekolahs);
             return Sekolah::where("id", $user->userable->sekolahs[0]->id)
                 ->with("mapels", function ($q) {
                     $q->orderBy("id", "ASC");
