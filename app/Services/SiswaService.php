@@ -67,7 +67,7 @@ class SiswaService
                 "alamat" => $data["alamat"],
                 "rt" => $data["rt"] ?? null,
                 "rw" => $data["rw"] ?? null,
-                "desa" => $data["kelurahan"],
+                "desa" => $data["desa"],
                 "kecamatan" => $data["kecamatan"] ?? null,
                 "kode_pos" => $data["kode_pos"] ?? "65158",
                 "kabupaten" => $data["kabupaten"] ?? "Malang",
@@ -107,7 +107,7 @@ class SiswaService
                     "alamat" => $data["alamat"],
                     "rt" => $data["rt"] ?? null,
                     "rw" => $data["rw"] ?? null,
-                    "desa" => $data["kelurahan"],
+                    "desa" => $data["desa"],
                     "kecamatan" => $data["kecamatan"] ?? null,
                     "kode_pos" => $data["kode_pos"] ?? "65158",
                     "kabupaten" => $data["kabupaten"] ?? "Malang",
@@ -174,21 +174,24 @@ class SiswaService
     {
         try {
             if ($rombel_id) {
-
-            $siswas = Siswa::where("sekolah_id", $sekolah_id)
-                ->whereHas("rombels", function ($q) use ($rombel_id) {
-                    $q->where("rombels.kode", $rombel_id);
-                })
-                ->where("status", "aktif")
-                ->whereDoesntHave("user")
-                ->get();
+                $siswas = Siswa::where("sekolah_id", $sekolah_id)
+                    ->whereHas("rombels", function ($q) use ($rombel_id) {
+                        $q->where("rombels.kode", $rombel_id);
+                    })
+                    ->where("status", "aktif")
+                    ->whereDoesntHave("user")
+                    ->get();
             } else {
-                $siswas = Siswa::where("sekolah_id", $sekolah_id)->where("status", "aktif")->whereDoesntHave("user")->get();
+                $siswas = Siswa::where("sekolah_id", $sekolah_id)
+                    ->where("status", "aktif")
+                    ->whereDoesntHave("user")
+                    ->get();
             }
             /* dd($siswas); */
-            foreach($siswas as $siswa)
-            {
-                    CreateOrUpdateUserJob::dispatch($siswa)->delay(now()->addSEconds(1));
+            foreach ($siswas as $siswa) {
+                CreateOrUpdateUserJob::dispatch($siswa)->delay(
+                    now()->addSEconds(1)
+                );
             }
             return [
                 "message" =>

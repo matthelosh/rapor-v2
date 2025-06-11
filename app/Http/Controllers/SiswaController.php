@@ -68,7 +68,7 @@ class SiswaController extends Controller
 
             return back()->with("data", $store);
         } catch (\Exception $e) {
-            return back()->withErrors("errors", $e->getMessage());
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
