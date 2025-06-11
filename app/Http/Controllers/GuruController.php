@@ -17,15 +17,15 @@ class GuruController extends Controller
     public function index(Request $request, GuruService $guruService)
     {
         $gurus = $guruService->index($request);
-        return Inertia::render('Dash/Guru', [
-            'gurus' => $gurus,
+        return Inertia::render("Dash/Guru", [
+            "gurus" => $gurus,
         ]);
     }
 
     public function show(Request $request, GuruService $guruService)
     {
         $gurus = $guruService->show($request);
-        return response()->json(['gurus' => $gurus]);
+        return response()->json(["gurus" => $gurus]);
     }
 
     /**
@@ -35,9 +35,9 @@ class GuruController extends Controller
     {
         try {
             $account = $guruService->addAccount($request->id);
-            return back()->with('message', $account);
+            return back()->with("message", $account);
         } catch (\Throwable $th) {
-            return back()->withErrors(['errors' => $th->getMessage()]);
+            return back()->withErrors(["errors" => $th->getMessage()]);
         }
     }
 
@@ -47,12 +47,19 @@ class GuruController extends Controller
     public function store(GuruRequest $request, GuruService $guruService)
     {
         try {
+            $store = $guruService->store(
+                $request->all(),
+                $request->file("file") ?? null,
+                $request->file("file_ttd") ?? null
+            );
 
-            $store = $guruService->store($request->all(), $request->file('file') ?? null, $request->file('file_ttd') ?? null);
-
-            return back()->with('data', $store);
+            return back()->with("message", $store);
+        } catch (ValidationException $e) {
+            return back()
+                ->withErros($e->validator->errors())
+                ->withInput();
         } catch (\Exception $e) {
-            return back()->withErrors("errors", $e->getMessage());
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
@@ -60,20 +67,31 @@ class GuruController extends Controller
     {
         try {
             $guruService->impor($request);
-            return back()->with('message', 'Data Guru diimpor');
+            return back()->with("message", "Data Guru diimpor");
         } catch (\Exception $e) {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
-
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, GuruService $guruService)
     {
-        $store = $guruService->store($request->all(), $request->file('file') ?? null, $request->file('file_ttd'));
-        return back()->with('message', $store);
+        try {
+            $store = $guruService->update(
+                $request->all(),
+                $request->file("file") ?? null,
+                $request->file("file_ttd")
+            );
+            return back()->with("message", $store);
+        } catch (ValidationException $e) {
+            return back()
+                ->withErros($e->validator->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            return back()->withErrors(["errors" => $e->getMessage()]);
+        }
     }
 
     /**
@@ -83,9 +101,9 @@ class GuruController extends Controller
     {
         try {
             $guruService->destroy($id);
-            return back()->with('success', true);
+            return back()->with("success", true);
         } catch (\Exception $e) {
-            return back()->withErrors(['errors' => $e->getMessage()]);
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 }

@@ -66,7 +66,9 @@ const simpan = async () => {
             Object.keys(err).forEach((k) => {
                 ElNotification({
                     title: "Error",
-                    message: err[k],
+                    message: err[k].includes("1062 Duplicate entry")
+                        ? "NIP / Email sudah digunakan"
+                        : err[k],
                     type: "error",
                 });
             });
@@ -94,7 +96,6 @@ const closeMe = () => {
     loading.value = false;
     emit("close");
 };
-
 onBeforeMount(() => {
     if (props.selectedGuru !== null) {
         guru.value = props.selectedGuru;
@@ -126,7 +127,6 @@ onBeforeMount(() => {
                     <!-- <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()"> -->
                     <el-avatar
                         :src="guru.foto"
-                        @error="onFotoError"
                         @click="$refs.fotoInput.click()"
                         style="margin: 0 auto; cursor: pointer"
                         :size="100"

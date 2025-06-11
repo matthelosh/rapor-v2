@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 // use App\Http\Resources\SekolahResource;
 
 class GuruService
@@ -60,70 +61,61 @@ class GuruService
         return $gurus;
     }
 
+    private function storeFoto($file)
+    {
+        $foto_file = $file;
+        $foto_name = $data["nip"] . "." . $foto_file->extension();
+        $store = $foto_file->storeAs("public/images/guru/", $foto_name);
+        $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+        return $foto;
+    }
+
+    private function storeTtd($ttd)
+    {
+        $store_ttd = $ttd->storeAs("public/images/ttd/", $data["nip"] . ".png");
+        return $store_ttd;
+    }
     public function store($data, $file, $ttd)
     {
-        // dd($data, $file);
-        // $data = $request->all();
-        // return response()->json(['cek' => $request->file('file')]);
         if ($file !== null) {
-            $foto_file = $file;
-            $foto_name = $data["nip"] . "." . $foto_file->extension();
-            $store = $foto_file->storeAs("public/images/guru/", $foto_name);
-            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+            $foto = $this->storeFoto($file);
         }
 
         if ($ttd !== null) {
-            $store_ttd = $ttd->storeAs(
-                "public/images/ttd/",
-                $data["nip"] . ".png"
-            );
+            $store_ttd = $this > storeTtd($ttd);
         }
 
         // dd($data);
-        $guru = Guru::updateOrCreate(
-            [
-                "id" => $data["id"] ?? null,
-                "nip" => $data["nip"],
-            ],
-            [
-                "nuptk" => $data["nuptk"] ?? null,
-                "gelar_depan" => $data["gelar_depan"] ?? null,
-                "nama" => $data["nama"],
-                "gelar_belakang" => $data["gelar_belakang"] ?? null,
-                "jk" => $data["jk"],
-                "alamat" => $data["alamat"] ?? "-",
-                "hp" => $data["hp"] ?? "-",
-                "status" => $data["status"],
-                "email" => $data["email"] ?? $data["nip"] . "@raporsd.web.id",
-                "foto" => $foto ?? null,
-                "agama" => $data["agama"],
-                "pangkat" => $data["pangkat"] ?? null,
-                "jabatan" => $data["jabatan"] ?? null,
-            ]
-        );
+        $guru = Guru::create([
+            "nip" => $data["nip"],
+            "nuptk" => $data["nuptk"] ?? null,
+            "gelar_depan" =>
+                $data["gelar_depan"] || $data["gelar_depan"] !== "null" ?? null,
+            "nama" => $data["nama"],
+            "gelar_belakang" => $data["gelar_belakang"] ?? null,
+            "jk" => $data["jk"],
+            "alamat" => $data["alamat"] ?? "-",
+            "hp" => $data["hp"] ?? "-",
+            "status" => $data["status"],
+            "email" => $data["email"] ?? $data["nip"] . "@raporsd.web.id",
+            "foto" => $foto ?? null,
+            "agama" => $data["agama"],
+            "pangkat" => $data["pangkat"] ?? null,
+            "jabatan" => $data["jabatan"] ?? null,
+        ]);
         if ($guru->sekolahs->count() < 1) {
             $guru->sekolahs()->attach($data["sekolahs"]);
         } else {
             $ids = explode(",", $data["sekolahs"]);
             $guru->sekolahs()->sync($ids);
-            // foreach ($guru->sekolahs->pluck('id') as $sekolah) {
-            //     for ($i = 0; $i < count($ids); $i++) {
-            //         if ((int) $ids[$i] !== (int) $sekolah) {
-            //             $guru->sekolahs()->attach($ids[$i]);
-            //         }
-            //     }
-            // }
         }
 
-        return !isset($data["id"])
-            ? "Data Guru Disimpan"
-            : "Data Guru diperbarui";
+        return "Data Guru Disimpan";
     }
 
     public function addAccount($id)
     {
         $guru = Guru::findOrFail($id);
-        // if (!$guru->user) {
         $user = User::updateOrCreate(
             [
                 "name" => $guru->nip,
@@ -135,15 +127,7 @@ class GuruService
                 "userable_type" => "App\Models\Guru",
             ]
         );
-        // } else {
-        //     $user = $guru->user;
-        //     $guru->update(["password" => Hash::make($guru->nip)]);
-        // }
-        // if (->user()->hasRole('admin')) {
         $user->syncRoles(strtolower(str_replace(" ", "_", $guru->jabatan)));
-        // }
-
-        // $guru->user()->attach($user->id);
 
         return "Akun guru berhasil dibuat.";
     }
@@ -181,11 +165,45 @@ class GuruService
         }
     }
 
-    public function update($request)
+    public function update($data, $file, $ttd)
     {
-        $guru = Guru::find($request->id);
-        // dd($guru->isDirty());
-        dd($request->all());
+        if ($file !== null) {
+            $foto = $this->storeFoto($file);
+        }
+
+        if ($ttd !== null) {
+            $store_ttd = $this > storeTtd($ttd);
+        }
+        $guru = Guru::whereId($data["id"])->with("rombels")->first();
+        $rombels = $guru->rombels->map(fn($rombel) => $rombel->kode);
+        $guru->rombels()->delete();
+        $guru->update([
+            "nip" => $data["nip"],
+            "nuptk" => $data["nuptk"] ?? null,
+            "gelar_depan" =>
+                $data["gelar_depan"] && $data["gelar_depan"] !== "null"
+                    ? $data["gelar_depan"]
+                    : null,
+            "nama" => $data["nama"],
+            "gelar_belakang" => $data["gelar_belakang"] ?? null,
+            "jk" => $data["jk"],
+            "alamat" => $data["alamat"] ?? "-",
+            "hp" => $data["hp"] ?? "-",
+            "status" => $data["status"],
+            "email" => $data["email"] ?? $data["nip"] . "@raporsd.web.id",
+            "foto" => $foto ?? null,
+            "agama" => $data["agama"],
+            "pangkat" => $data["pangkat"] ?? null,
+            "jabatan" => $data["jabatan"] ?? null,
+        ]);
+        $guru->rombels()->attach($rombels);
+        if ($guru->sekolahs->count() < 1) {
+            $guru->sekolahs()->attach($data["sekolahs"]);
+        } else {
+            $ids = explode(",", $data["sekolahs"]);
+            $guru->sekolahs()->sync($ids);
+        }
+        return "Data guru diperbarui.";
     }
 
     public function destroy($id)
@@ -196,6 +214,7 @@ class GuruService
             // dd($split);
             Storage::delete("public/sekolah/guru/" . $split[count($split) - 1]);
             $guru->sekolahs()->detach();
+            $guru->user()->delate();
             $delete = $guru->delete();
             return [
                 "success" => true,
