@@ -53,6 +53,7 @@ class SiswaService
             $store = $foto_file->storeAs("public/images/siswa/", $foto_name);
             $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
         }
+        $jk = ["L", "P"];
         $siswa = Siswa::updateOrCreate(
             [
                 "nisn" => $data["nisn"],
@@ -61,7 +62,11 @@ class SiswaService
                 "nis" => $data["npd"] ?? null,
                 "nik" => $data["nik"] ?? null,
                 "nama" => $data["nama"],
-                "jk" => !in_array($data["jk"], ["L","P"]) ? $data['jk'] : ($data["jk"] == "L" ? "Laki-laki" : "Perempuan"): ,
+                "jk" => !in_array($data["jk"], $jk)
+                    ? $data["jk"]
+                    : ($data["jk"] == "L"
+                        ? "Laki-laki"
+                        : "Perempuan"),
                 "tempat_lahir" => $data["tempat_lahir"] ?? null,
                 "tanggal_lahir" => $data["tanggal_lahir"] ?? null,
                 "alamat" => $data["alamat"],
