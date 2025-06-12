@@ -189,208 +189,213 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <el-dialog
-        v-model="show"
-        :title="`Kunci Jawaban ${asesmen?.nama}`"
-        @closed="emit('close')"
-        id="dialog-form-kunci"
-    >
-        <el-form-item label="Tipe Soal">
-            <el-select
-                v-model="selectedTypes"
-                multiple
-                placeholder="Tambah Soal"
+    <div>
+        <el-dialog
+            v-model="show"
+            :title="`Kunci Jawaban ${asesmen?.nama}`"
+            @closed="emit('close')"
+            id="dialog-form-kunci"
+        >
+            <el-form-item label="Tipe Soal">
+                <el-select
+                    v-model="selectedTypes"
+                    multiple
+                    placeholder="Tambah Soal"
+                >
+                    <el-option
+                        v-for="k in Object.keys(tipe_soal)"
+                        :value="k"
+                        :label="`${k}: ${tipe_soal[k]}`"
+                    ></el-option>
+                </el-select>
+            </el-form-item>
+            <el-steps :active="active">
+                <template v-for="(tipe, i) in selectedTypes">
+                    <el-step
+                        :title="`${tipe_soal[tipe]}`"
+                        @click="setActive(tipe, i)"
+                        style="cursor: pointer"
+                    >
+                        <template #description> </template>
+                    </el-step>
+                </template>
+            </el-steps>
+            <div
+                v-if="activeType == 'pg'"
+                class="p-2 border border-sky-400 rounded"
             >
-                <el-option
-                    v-for="k in Object.keys(tipe_soal)"
-                    :value="k"
-                    :label="`${k}: ${tipe_soal[k]}`"
-                ></el-option>
-            </el-select>
-        </el-form-item>
-        <el-steps :active="active">
-            <template v-for="(tipe, i) in selectedTypes">
-                <el-step
-                    :title="`${tipe_soal[tipe]}`"
-                    @click="setActive(tipe, i)"
-                    style="cursor: pointer"
-                >
-                    <template #description> </template>
-                </el-step>
-            </template>
-        </el-steps>
-        <div
-            v-if="activeType == 'pg'"
-            class="p-2 border border-sky-400 rounded"
-        >
-            <el-form label-position="top">
-                <el-form-item label="Jumlah Soal:">
-                    <el-input
-                        type="number"
-                        v-model="kunci['pg'].jml_soal"
-                        style="width: 60px"
-                    />
-                </el-form-item>
-                <h3 class="font-bold">Kunci Jawaban:</h3>
-                <div
-                    class="kunci flex flex-wrap gap-1"
-                    v-if="kunci['pg'].jml_soal > 0"
-                >
+                <el-form label-position="top">
+                    <el-form-item label="Jumlah Soal:">
+                        <el-input
+                            type="number"
+                            v-model="kunci['pg'].jml_soal"
+                            style="width: 60px"
+                        />
+                    </el-form-item>
+                    <h3 class="font-bold">Kunci Jawaban:</h3>
                     <div
-                        class="flex flex-col w-10"
-                        v-for="(item, i) in Array.from({
-                            length: kunci['pg'].jml_soal,
-                        })"
+                        class="kunci flex flex-wrap gap-1"
+                        v-if="kunci['pg'].jml_soal > 0"
                     >
-                        <el-form-item
-                            :label="(i + 1).toString()"
-                            :prop="`pg${i}`"
+                        <div
+                            class="flex flex-col w-10"
+                            v-for="(item, i) in Array.from({
+                                length: kunci['pg'].jml_soal,
+                            })"
                         >
-                            <el-input
-                                class="text-center"
-                                :validate-event="true"
-                                v-model="kunci['pg'].kunci[i]"
-                                maxlength="1"
-                                @input="validatePG($event, i)"
-                                :ref="(el) => (inputRefs[i] = el)"
-                            />
-                        </el-form-item>
+                            <el-form-item
+                                :label="(i + 1).toString()"
+                                :prop="`pg${i}`"
+                            >
+                                <el-input
+                                    class="text-center"
+                                    :validate-event="true"
+                                    v-model="kunci['pg'].kunci[i]"
+                                    maxlength="1"
+                                    @input="validatePG($event, i)"
+                                    :ref="(el) => (inputRefs[i] = el)"
+                                />
+                            </el-form-item>
+                        </div>
                     </div>
-                </div>
-            </el-form>
-        </div>
-        <div
-            class="p-2 border border-sky-400 rounded"
-            v-if="activeType == 'pgk'"
-        >
-            <el-form label-position="top">
-                <el-form-item label="Jumlah Soal:">
-                    <el-input
-                        type="number"
-                        v-model="kunci['pgk'].jml_soal"
-                        style="width: 60px"
-                    />
-                </el-form-item>
-                <h3 class="fotn-bold">Kunci Jawaban</h3>
-                <div
-                    class="flex gap-1 flex-wrap"
-                    v-if="kunci['pgk'].jml_soal > 0"
-                >
+                </el-form>
+            </div>
+            <div
+                class="p-2 border border-sky-400 rounded"
+                v-if="activeType == 'pgk'"
+            >
+                <el-form label-position="top">
+                    <el-form-item label="Jumlah Soal:">
+                        <el-input
+                            type="number"
+                            v-model="kunci['pgk'].jml_soal"
+                            style="width: 60px"
+                        />
+                    </el-form-item>
+                    <h3 class="fotn-bold">Kunci Jawaban</h3>
                     <div
-                        class="kunci flex flex-col gap-1"
-                        v-for="(item, i) in Array.from({
-                            length: kunci['pgk'].jml_soal,
-                        })"
+                        class="flex gap-1 flex-wrap"
+                        v-if="kunci['pgk'].jml_soal > 0"
                     >
-                        <el-form-item :label="(i + 1).toString()">
-                            <el-input
-                                v-model="kunci['pgk'].kunci[i]"
-                                style="width: 60px"
-                                @change="(val) => validatePGK(i, val)"
-                                :ref="(el) => (pgkRefs[i] = el)"
-                            />
-                        </el-form-item>
+                        <div
+                            class="kunci flex flex-col gap-1"
+                            v-for="(item, i) in Array.from({
+                                length: kunci['pgk'].jml_soal,
+                            })"
+                        >
+                            <el-form-item :label="(i + 1).toString()">
+                                <el-input
+                                    v-model="kunci['pgk'].kunci[i]"
+                                    style="width: 60px"
+                                    @change="(val) => validatePGK(i, val)"
+                                    :ref="(el) => (pgkRefs[i] = el)"
+                                />
+                            </el-form-item>
+                        </div>
                     </div>
-                </div>
-            </el-form>
-        </div>
-        <div
-            class="p-2 border border-sky-400 rounded"
-            v-if="activeType == 'ps'"
-        >
-            <el-form label-position="top">
+                </el-form>
+            </div>
+            <div
+                class="p-2 border border-sky-400 rounded"
+                v-if="activeType == 'ps'"
+            >
+                <el-form label-position="top">
+                    <el-form-item label="Jumlah Soal:">
+                        <el-input
+                            type="number"
+                            v-model="kunci['ps'].jml_soal"
+                            style="width: 50px"
+                        />
+                    </el-form-item>
+                    <h3 class="font-bold">Kunci Jawaban</h3>
+                    <div
+                        class="flex gap-1 flex-wrap"
+                        v-if="kunci['ps'].jml_soal > 0"
+                    >
+                        <div
+                            class="kunci flex flex-col gap-1"
+                            v-for="(item, i) in Array.from({
+                                length: kunci['ps'].jml_soal,
+                            })"
+                        >
+                            <el-form-item :label="(i + 1).toString()">
+                                <el-input
+                                    v-model="kunci['ps'].kunci[i]"
+                                    style="width: 60px"
+                                    @change="(val) => validatePS(i, val)"
+                                    :ref="(el) => (psRefs[i] = el)"
+                                />
+                            </el-form-item>
+                        </div>
+                    </div>
+                </el-form>
+            </div>
+            <div
+                v-if="activeType == 'is'"
+                class="p-2 border rounded border-sky-500"
+            >
                 <el-form-item label="Jumlah Soal:">
                     <el-input
                         type="number"
-                        v-model="kunci['ps'].jml_soal"
+                        v-model="kunci['is'].jml_soal"
                         style="width: 50px"
                     />
                 </el-form-item>
                 <h3 class="font-bold">Kunci Jawaban</h3>
-                <div
-                    class="flex gap-1 flex-wrap"
-                    v-if="kunci['ps'].jml_soal > 0"
+                <template
+                    v-for="(item, i) in Array.from({
+                        length: kunci['is'].jml_soal,
+                    })"
                 >
-                    <div
-                        class="kunci flex flex-col gap-1"
-                        v-for="(item, i) in Array.from({
-                            length: kunci['ps'].jml_soal,
-                        })"
-                    >
-                        <el-form-item :label="(i + 1).toString()">
-                            <el-input
-                                v-model="kunci['ps'].kunci[i]"
-                                style="width: 60px"
-                                @change="(val) => validatePS(i, val)"
-                                :ref="(el) => (psRefs[i] = el)"
-                            />
-                        </el-form-item>
-                    </div>
-                </div>
-            </el-form>
-        </div>
-        <div
-            v-if="activeType == 'is'"
-            class="p-2 border rounded border-sky-500"
-        >
-            <el-form-item label="Jumlah Soal:">
-                <el-input
-                    type="number"
-                    v-model="kunci['is'].jml_soal"
-                    style="width: 50px"
-                />
-            </el-form-item>
-            <h3 class="font-bold">Kunci Jawaban</h3>
-            <template
-                v-for="(item, i) in Array.from({
-                    length: kunci['is'].jml_soal,
-                })"
-            >
-                <el-form-item :label="(i + 1).toString()">
-                    <el-input
-                        placeholder="Masukkan Kunci"
-                        v-model="kunci['is'].kunci[i]"
-                        style="border: none; outline: none"
-                    />
-                </el-form-item>
-            </template>
-        </div>
-        <div
-            v-if="activeType == 'ur'"
-            class="p-2 border rounded border-sky-500"
-        >
-            <el-form-item label="Jumlah Soal:">
-                <el-input
-                    type="number"
-                    v-model="kunci['ur'].jml_soal"
-                    style="width: 50px"
-                />
-            </el-form-item>
-            <h3 class="font-bold">Kunci Jawaban</h3>
-            <template
-                v-for="(item, i) in Array.from({
-                    length: kunci['ur'].jml_soal,
-                })"
-            >
-                <el-form-item :label="(i + 1).toString()">
-                    <el-input
-                        type="textarea"
-                        placeholder="Masukkan Kunci"
-                        v-model="kunci['ur'].kunci[i]"
-                        style="border: none; outline: none"
-                    />
-                </el-form-item>
-            </template>
-        </div>
-        <!-- {{ kunci }} -->
-        <template #footer>
-            <div class="flex justify-end p-4">
-                <el-button :native-type="null" type="primary" @click="simpan"
-                    >Simpan</el-button
-                >
+                    <el-form-item :label="(i + 1).toString()">
+                        <el-input
+                            placeholder="Masukkan Kunci"
+                            v-model="kunci['is'].kunci[i]"
+                            style="border: none; outline: none"
+                        />
+                    </el-form-item>
+                </template>
             </div>
-        </template>
-    </el-dialog>
+            <div
+                v-if="activeType == 'ur'"
+                class="p-2 border rounded border-sky-500"
+            >
+                <el-form-item label="Jumlah Soal:">
+                    <el-input
+                        type="number"
+                        v-model="kunci['ur'].jml_soal"
+                        style="width: 50px"
+                    />
+                </el-form-item>
+                <h3 class="font-bold">Kunci Jawaban</h3>
+                <template
+                    v-for="(item, i) in Array.from({
+                        length: kunci['ur'].jml_soal,
+                    })"
+                >
+                    <el-form-item :label="(i + 1).toString()">
+                        <el-input
+                            type="textarea"
+                            placeholder="Masukkan Kunci"
+                            v-model="kunci['ur'].kunci[i]"
+                            style="border: none; outline: none"
+                        />
+                    </el-form-item>
+                </template>
+            </div>
+            <!-- {{ kunci }} -->
+            <template #footer>
+                <div class="flex justify-end p-4">
+                    <el-button
+                        :native-type="null"
+                        type="primary"
+                        @click="simpan"
+                        >Simpan</el-button
+                    >
+                </div>
+            </template>
+        </el-dialog>
+    </div>
 </template>
 
 <style>

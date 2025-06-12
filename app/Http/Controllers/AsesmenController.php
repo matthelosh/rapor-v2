@@ -14,6 +14,7 @@ use App\Models\Rombel;
 use App\Models\Siswa;
 use App\Models\Tapel;
 use App\Models\User;
+use App\Models\Mapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,53 +27,94 @@ class AsesmenController extends Controller
     {
         try {
             $tapel = $this->tapel()->kode;
-            if ($request->user()->hasRole('guru_kelas')) {
+            if ($request->user()->hasRole("guru_kelas")) {
                 // dd($request->user()->userable->nip);
-                $rombel = Rombel::where('guru_id', $request->user()->userable->id)->first();
+                $rombel = Rombel::where(
+                    "guru_id",
+                    $request->user()->userable->id
+                )->first();
                 // dd($rombel);
-                $asesmens = Asesmen::where('tingkat', 'kecamatan')
+                $asesmens = Asesmen::where("tingkat", "kecamatan")
                     ->orWhere([
-                        ['sekolah_id', '=', $request->user()->userable->sekolahs[0]->npsn],
-                        ['rombel_id', '=', $rombel->kode]
+                        [
+                            "sekolah_id",
+                            "=",
+                            $request->user()->userable->sekolahs[0]->npsn,
+                        ],
+                        ["rombel_id", "=", $rombel->kode],
                     ])
-                    ->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
+                    ->with(
+                        "soals",
+                        "rombel",
+                        "guru",
+                        "sekolah",
+                        "mapel",
+                        "semester",
+                        "tapel"
+                    )
                     ->get();
-            } elseif ($request->user()->hasRole('ops')) {
+            } elseif ($request->user()->hasRole("ops")) {
                 $asesmens = Asesmen::whereTapel($tapel)
-                    ->whereIn('tingkat', ['lembaga', 'gugus', 'kecamatan'])
-                    ->with('soals', 'rombel', 'guru', 'mapel', 'semester', 'tapel')
+                    ->whereIn("tingkat", ["lembaga", "gugus", "kecamatan"])
+                    ->with(
+                        "soals",
+                        "rombel",
+                        "guru",
+                        "mapel",
+                        "semester",
+                        "tapel"
+                    )
                     ->get();
-                // $canEdit = 
-            } elseif ($request->user()->hasRole('admin')) {
-                $asesmens = Asesmen::whereGuruId($request->user()->id)->with('soals', 'mapel', 'semester')
+                // $canEdit =
+            } elseif ($request->user()->hasRole("admin")) {
+                $asesmens = Asesmen::whereGuruId($request->user()->id)
+                    ->with("soals", "mapel", "semester")
                     ->with([
-                        'proses' => function ($p) {
-                            $p->with('siswa.user');
-                            $p->with('jawabans');
-                        }
+                        "proses" => function ($p) {
+                            $p->with("siswa.user");
+                            $p->with("jawabans");
+                        },
                     ])
-                    ->with('pesertas')
+                    ->with("pesertas")
                     ->get();
             } else {
-                $rombel = $request->query('rombel');
+                $rombel = $request->query("rombel");
                 // dd($rombel);
-                $asesmens = Asesmen::whereGuruId($request->user()->userable->nip)->with('soals', 'rombel', 'guru', 'sekolah', 'mapel', 'semester', 'tapel')
+                $role = $request->user()->getRoleNames()[0];
+                $mapels = [
+                    "guru_agama" => "pabp",
+                    "guru_pjok" => "pjok",
+                    "guru_inggris" => "bing",
+                ];
+                $mapel = $mapels[$role];
+                $agama =
+                    $mapel != "pabp" ? "%" : $request->user()->userable->agama;
+                $asesmens = Asesmen::where("mapel_id", $mapel)
+                    ->where("agama", $agama)
+                    ->with(
+                        "soals",
+                        "rombel",
+                        "guru",
+                        "sekolah",
+                        "mapel",
+                        "semester",
+                        "tapel",
+                        "analises"
+                    )
                     ->with([
-                        'proses' => function ($p) {
-                            $p->with('siswa.user');
-                            $p->with('jawabans');
-                        }
+                        "proses" => function ($p) {
+                            $p->with("siswa.user");
+                            $p->with("jawabans");
+                        },
                     ])
-                    ->with('pesertas')
+                    ->with("pesertas")
                     ->get();
             }
-            return Inertia::render(
-                'Dash/Asesmen/Home',
-                [
-                    'asesmens' => $asesmens,
-                    'canAddAsesmen' => $request->user()->can('add_asesmen'),
-                ]
-            );
+            return Inertia::render("Dash/Asesmen/Home", [
+                "mapels" => Mapel::all(),
+                "asesmens" => $asesmens,
+                "canAddAsesmen" => $request->user()->can("add_asesmen"),
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -81,16 +123,16 @@ class AsesmenController extends Controller
     public function reloadASesmen(Request $request)
     {
         try {
-            $asesmen = Asesmen::whereId($request->query('asesmenId'))
+            $asesmen = Asesmen::whereId($request->query("asesmenId"))
                 ->with([
-                    'proses' => function ($p) {
-                        $p->with('jawabans', 'siswa.user');
-                    }
+                    "proses" => function ($p) {
+                        $p->with("jawabans", "siswa.user");
+                    },
                 ])
                 ->first();
 
             return response()->json([
-                'asesmen' => $asesmen,
+                "asesmen" => $asesmen,
             ]);
         } catch (\Throwable $th) {
             //throw $th;
@@ -103,27 +145,33 @@ class AsesmenController extends Controller
             Asesmen::updateOrCreate(
                 [
                     // 'id' => $request->id ?? null,
-                    'kode' => $request->kode ?? $request->rombel_id . $request->mapel_id . $request->semester . $request->jenis . Str::random(6),
+                    "kode" =>
+                        $request->kode ??
+                        $request->rombel_id .
+                            $request->mapel_id .
+                            $request->semester .
+                            $request->jenis .
+                            Str::random(6),
                 ],
                 [
-                    'nama' => $request->nama,
-                    'deskripsi' => $request->deskripsi,
-                    'tanggal' => $request->tanggal,
-                    'mapel_id' => $request->mapel_id,
-                    'mulai' => $request->mulai,
-                    'selesai' => $request->selesai,
-                    'jenis' => $request->jenis,
-                    'agama' => $request->agama ?? null,
-                    'kelas' => $request->kelas,
-                    'tingkat' => $request->tingkat,
-                    'rombel_id' => $request->rombel_id,
-                    'sekolah_id' => $request->sekolah_id,
-                    'semester' => $request->semester,
-                    'tapel' => $request->tapel,
-                    'guru_id' => $request->guru_id ?? $request->user()->id
+                    "nama" => $request->nama,
+                    "deskripsi" => $request->deskripsi,
+                    "tanggal" => $request->tanggal,
+                    "mapel_id" => $request->mapel_id,
+                    "mulai" => $request->mulai,
+                    "selesai" => $request->selesai,
+                    "jenis" => $request->jenis,
+                    "agama" => $request->agama ?? null,
+                    "kelas" => $request->kelas,
+                    "tingkat" => $request->tingkat,
+                    "rombel_id" => $request->rombel_id,
+                    "sekolah_id" => $request->sekolah_id,
+                    "semester" => $request->semester,
+                    "tapel" => $request->tapel,
+                    "guru_id" => $request->guru_id ?? $request->user()->id,
                 ]
             );
-            return back()->with('message', 'Asesmen Disimpan');
+            return back()->with("message", "Asesmen Disimpan");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -135,7 +183,7 @@ class AsesmenController extends Controller
             $asesmen = Asesmen::findOrFail($id);
             $asesmen->soals()->attach($request->soalId);
 
-            return back()->with('message', 'Soal Ditambahkan');
+            return back()->with("message", "Soal Ditambahkan");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -147,7 +195,7 @@ class AsesmenController extends Controller
             $asesmen = Asesmen::findOrFail($id);
             $asesmen->soals()->detach($request->soalId);
 
-            return back()->with('message', 'Soal Dikeluarkan');
+            return back()->with("message", "Soal Dikeluarkan");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -156,10 +204,10 @@ class AsesmenController extends Controller
     public function destroy(Asesmen $asesmen, $id)
     {
         try {
-            DB::table('asesmen_soal')->where('asesmen_id', $id)->delete();
+            DB::table("asesmen_soal")->where("asesmen_id", $id)->delete();
             $asesmen::findOrFail($id)->delete();
 
-            return back()->with('message', 'Asesmen dihapus');
+            return back()->with("message", "Asesmen dihapus");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -176,22 +224,22 @@ class AsesmenController extends Controller
     {
         try {
             $siswa_id = $request->user()->userable->nisn;
-            $asesmens = Asesmen::whereSekolahId($request->user()->userable->sekolah_id)
-                ->orWhere('tingkat', 'kecamatan')
+            $asesmens = Asesmen::whereSekolahId(
+                $request->user()->userable->sekolah_id
+            )
+                ->orWhere("tingkat", "kecamatan")
                 ->with([
-                    'proses_siswa' => function ($p) use ($siswa_id) {
-                        $p->where('siswa_id', $siswa_id);
-                        $p->with('jawabans', function ($j) use ($siswa_id) {
-                            $j->where('siswa_id', $siswa_id);
+                    "proses_siswa" => function ($p) use ($siswa_id) {
+                        $p->where("siswa_id", $siswa_id);
+                        $p->with("jawabans", function ($j) use ($siswa_id) {
+                            $j->where("siswa_id", $siswa_id);
                         });
-                    }
-                ])->get();
-            return Inertia::render(
-                'Dash/Asesmen/Siswa/Home',
-                [
-                    'asesmens' => $asesmens,
-                ]
-            );
+                    },
+                ])
+                ->get();
+            return Inertia::render("Dash/Asesmen/Siswa/Home", [
+                "asesmens" => $asesmens,
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -200,31 +248,30 @@ class AsesmenController extends Controller
     public function kerjakanAsesmen(Request $request)
     {
         try {
-            $siswa_id = $request->query('siswaId');
-            $proses_id = $request->query('prosesId');
+            $siswa_id = $request->query("siswaId");
+            $proses_id = $request->query("prosesId");
             $asesmen = Asesmen::whereKode($request->kode)
-                ->with('soals')
+                ->with("soals")
                 ->with([
-                    'proses' => function ($j) use ($proses_id) {
-                        $j->where('id', $proses_id);
-                        $j->with('jawabans');
-                    }
+                    "proses" => function ($j) use ($proses_id) {
+                        $j->where("id", $proses_id);
+                        $j->with("jawabans");
+                    },
                 ])
                 ->first();
             $tapel = Periode::tapel()->kode;
 
-            return Inertia::render(
-                'Dash/Asesmen/Siswa/LembarSoal',
-                [
-                    'asesmen' => $asesmen,
-                    'siswa' => Siswa::whereNisn($request->siswaId)->with([
-                        'rombels' => function ($r) use ($tapel) {
+            return Inertia::render("Dash/Asesmen/Siswa/LembarSoal", [
+                "asesmen" => $asesmen,
+                "siswa" => Siswa::whereNisn($request->siswaId)
+                    ->with([
+                        "rombels" => function ($r) use ($tapel) {
                             $r->whereTapel($tapel);
                         },
-                        'sekolah'
-                    ])->first(),
-                ]
-            );
+                        "sekolah",
+                    ])
+                    ->first(),
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -232,39 +279,51 @@ class AsesmenController extends Controller
     public function mulaiKerjakan(Request $request, $kode)
     {
         try {
-            $siswa_id = $request->query('siswaId');
-            if ($request->query('prosesId')) {
-                $currentProses = ProsesAsesmen::whereId($request->query('prosesId'))
+            $siswa_id = $request->query("siswaId");
+            if ($request->query("prosesId")) {
+                $currentProses = ProsesAsesmen::whereId(
+                    $request->query("prosesId")
+                )
                     ->with([
-                        'jawabans' => function ($j) use ($siswa_id) {
+                        "jawabans" => function ($j) use ($siswa_id) {
                             $j->whereSiswaId($siswa_id);
-                        }
-                    ])->first();
+                        },
+                    ])
+                    ->first();
             } else {
                 $proses = ProsesAsesmen::updateOrCreate(
                     [
-                        'asesmen_id' => $kode,
-                        'siswa_id' => $siswa_id,
+                        "asesmen_id" => $kode,
+                        "siswa_id" => $siswa_id,
                     ],
                     [
-                        'mulai' => now(),
-                        'status' => 'progres',
+                        "mulai" => now(),
+                        "status" => "progres",
                     ]
                 );
                 $currentProses = ProsesAsesmen::whereId($proses->id)
                     ->with([
-                        'jawabans' => function ($j) use ($siswa_id) {
+                        "jawabans" => function ($j) use ($siswa_id) {
                             $j->whereSiswaId($siswa_id);
-                        }
-                    ])->first();
+                        },
+                    ])
+                    ->first();
             }
             $asesmen = Asesmen::whereKode($kode)->first();
             $guru = Guru::whereNip($asesmen->guru_id)->first();
-            $admin = $asesmen->tingkat == 'lembaga' ? User::where('userable_id', $guru->id)->where('userable_type', 'App\Models\Guru')->first() : User::whereName('admin')->first();
+            $admin =
+                $asesmen->tingkat == "lembaga"
+                    ? User::where("userable_id", $guru->id)
+                        ->where("userable_type", "App\Models\Guru")
+                        ->first()
+                    : User::whereName("admin")->first();
             // dd($ev);
-            SiswaMulaiAsesmen::dispatch($admin, "Peserta mulai mengerjakan asesmen: " . $asesmen->nama);
+            SiswaMulaiAsesmen::dispatch(
+                $admin,
+                "Peserta mulai mengerjakan asesmen: " . $asesmen->nama
+            );
             return response()->json([
-                'proses' => $currentProses
+                "proses" => $currentProses,
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -275,28 +334,36 @@ class AsesmenController extends Controller
     {
         try {
             $proses = ProsesAsesmen::findOrFail($request->proses_id);
-            $proses->update(['updated_at' => now(), 'selesai' => now()]);
+            $proses->update(["updated_at" => now(), "selesai" => now()]);
             $asesmen = Asesmen::whereKode($request->asesmen_id)->first();
             // dd($request->asesmen_id);
             $jawaban = Jawaban::updateOrCreate(
                 [
-                    'asesmen_id' => $request->asesmen_id,
-                    'siswa_id' => $request->siswa_id,
-                    'soal_id' => $request->soal_id,
-                    'is_benar' =>  false,
-                    'proses_id' => $request->proses_id,
+                    "asesmen_id" => $request->asesmen_id,
+                    "siswa_id" => $request->siswa_id,
+                    "soal_id" => $request->soal_id,
+                    "is_benar" => false,
+                    "proses_id" => $request->proses_id,
                 ],
                 [
-                    'teks' =>  $request->teks,
+                    "teks" => $request->teks,
                 ]
             );
             $guru = Guru::whereNip($asesmen->guru_id)->first();
-            $admin = $asesmen->tingkat == 'lembaga' ? User::where('userable_id', $guru->id)->where('userable_type', 'App\Models\Guru')->first() : User::whereName('admin')->first();
+            $admin =
+                $asesmen->tingkat == "lembaga"
+                    ? User::where("userable_id", $guru->id)
+                        ->where("userable_type", "App\Models\Guru")
+                        ->first()
+                    : User::whereName("admin")->first();
             // dd($ev);
             $siswa = Siswa::whereNisn($jawaban->siswa_id)->first();
 
-            SiswaMenjawab::dispatch($admin, $siswa->nama . " siswa menjawab soal");
-            return back()->with('message', 'Jawaban disimpan sementara');
+            SiswaMenjawab::dispatch(
+                $admin,
+                $siswa->nama . " siswa menjawab soal"
+            );
+            return back()->with("message", "Jawaban disimpan sementara");
         } catch (\Throwable $th) {
             throw $th;
         }

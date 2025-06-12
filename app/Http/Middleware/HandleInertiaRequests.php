@@ -220,13 +220,43 @@ class HandleInertiaRequests extends Middleware
                 ->with([
                     "mapels" => function ($m) use ($role) {
                         if ($role == "guru_kelas") {
-                            $m->whereNotIn("kode", ["pabp", "pjok", "bing"]);
+                            $m->whereNotIn("kode", [
+                                "pabp",
+                                "pjok",
+                                "bing",
+                            ])->with("tps", function ($t) {
+                                $t->where(
+                                    "semester",
+                                    Periode::semester()->kode
+                                );
+                            });
                         } elseif ($role == "guru_agama") {
-                            $m->where("kode", "pabp");
+                            $m->where("kode", "pabp")->with("tps", function (
+                                $t
+                            ) {
+                                $t->where(
+                                    "semester",
+                                    Periode::semester()->kode
+                                );
+                            });
                         } elseif ($role == "guru_pjok") {
-                            $m->where("kode", "pjok");
+                            $m->where("kode", "pjok")->with("tps", function (
+                                $t
+                            ) {
+                                $t->where(
+                                    "semester",
+                                    Periode::semester()->kode
+                                );
+                            });
                         } elseif ($role == "guru_inggris") {
-                            $m->where("kode", "bing");
+                            $m->where("kode", "bing")->with("tps", function (
+                                $t
+                            ) {
+                                $t->where(
+                                    "semester",
+                                    Periode::semester()->kode
+                                );
+                            });
                         }
                     },
                     "rombels" => function ($r) use ($tapel) {

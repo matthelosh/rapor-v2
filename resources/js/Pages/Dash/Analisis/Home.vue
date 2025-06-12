@@ -32,7 +32,6 @@ const closeAnalisis = () => {
     selectedAsesmen.value = null;
     formAnalisis.value = false;
 };
-
 </script>
 
 <template>
@@ -88,23 +87,23 @@ const closeAnalisis = () => {
                     </el-table>
                 </template>
             </el-card>
+            <Teleport to="body">
+                <FormKunciJawaban
+                    :asesmen="selectedAsesmen"
+                    v-if="showFormKunci"
+                    :open="showFormKunci"
+                    @close="showFormKunci = !showFormKunci"
+                />
+            </Teleport>
+
+            <Teleport to="body">
+                <FormAnalisis
+                    :asesmen="selectedAsesmen"
+                    v-if="formAnalisis"
+                    :open="formAnalisis"
+                    @close="closeAnalisis"
+                />
+            </Teleport>
         </template>
     </DashLayout>
-    <Teleport to="body">
-        <FormKunciJawaban
-            :asesmen="selectedAsesmen"
-            v-if="showFormKunci"
-            :open="showFormKunci"
-            @close="showFormKunci = !showFormKunci"
-        />
-    </Teleport>
-
-    <Teleport to="body">
-        <FormAnalisis
-            :asesmen="selectedAsesmen"
-            v-if="formAnalisis"
-            :open="formAnalisis"
-            @close="closeAnalisis"
-        />
-    </Teleport>
 </template>
