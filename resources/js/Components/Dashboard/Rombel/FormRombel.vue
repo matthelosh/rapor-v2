@@ -146,9 +146,11 @@ watch(
             rombel.value.label =
                 "Kelas " +
                 romawi(newV.value.tingkat) +
+                ` (${toString(newV.value.tingkat)}` +
                 (newV.value.pararel == "0"
                     ? ""
-                    : newV.value.pararel.toUpperCase());
+                    : " " + newV.value.pararel.toUpperCase()) +
+                ")";
             rombel.value.tapel = page.props.periode.tapel.kode;
             rombel.value.fase = setFase(newV.value.tingkat);
         }

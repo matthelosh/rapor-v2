@@ -230,7 +230,7 @@ class HandleInertiaRequests extends Middleware
                             })
                                 ->where("tapel", Periode::tapel()->kode)
                                 ->first();
-                            $tingkat = $rombel->tingkat;
+                            $tingkat = $rombel ? $rombel->tingkat : "1";
                             $m->whereNotIn("kode", [
                                 "pabp",
                                 "pjok",
