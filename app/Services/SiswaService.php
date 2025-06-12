@@ -112,7 +112,7 @@ class SiswaService
                     "alamat" => $data["alamat"],
                     "rt" => $data["rt"] ?? null,
                     "rw" => $data["rw"] ?? null,
-                    "desa" => $data["desa"],
+                    "desa" => $data["desa"] ?? $data["kelurahan"],
                     "kecamatan" => $data["kecamatan"] ?? null,
                     "kode_pos" => $data["kode_pos"] ?? "65158",
                     "kabupaten" => $data["kabupaten"] ?? "Malang",
