@@ -397,6 +397,8 @@ const generateKode = (lastTp) => {
 const addRow = () => {
     // alert(defaultTp.value.mapel_id)
     let item = { ...defaultTp.value };
+    item.fase = page.props.rombels[0].fase;
+    item.tingkat = page.props.rombels[0].tingkat;
     item.mapel_id = selectedMapel.value.kode;
     item.semester = page.props.periode.semester.kode;
     // console.log(item)
@@ -443,7 +445,11 @@ onBeforeMount(() => {
 <template>
     <Head title="Pembelajaran" />
     <DashLayout>
-        <template #header> Pembelajaran </template>
+        <template #header>
+            <p class="uppercase">
+                Pembelajaran {{ page.props.rombels[0].label }}
+            </p>
+        </template>
         <el-card shadow="never" v-loading="loading">
             <template #header>
                 <span class="title font-bold text-lg">Konten Pembelajaran</span>
@@ -996,7 +1002,7 @@ onBeforeMount(() => {
                                 type="textarea"
                                 placeholder="Teks Tujuan Pembelajaran"
                                 v-model="newTp.teks"
-                                rows="4"
+                                :rows="4"
                             ></el-input>
                         </el-col>
                     </el-row>
@@ -1142,7 +1148,7 @@ onBeforeMount(() => {
                                             type="textarea"
                                             placeholder="Teks Tujuan Pembelajaran"
                                             v-model="tp.teks"
-                                            rows="1"
+                                            :rows="1"
                                             autosize
                                         ></el-input>
                                     </td>

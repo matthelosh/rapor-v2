@@ -218,17 +218,26 @@ class HandleInertiaRequests extends Middleware
             return Sekolah::where("id", $user->userable->sekolahs[0]->id)
                 ->with("ks", "ekskuls", "gugus")
                 ->with([
-                    "mapels" => function ($m) use ($role) {
+                    "mapels" => function ($m) use ($role, $user) {
                         if ($role == "guru_kelas") {
+                            $nip = $user->userable->nip;
+                            $rombel = Rombel::whereHas("wali_kelas", function (
+                                $w
+                            ) use ($nip) {
+                                $w->where("nip", $nip);
+                            })
+                                ->where("tapel", Periode::tapel()->kode)
+                                ->first();
+                            $tingkat = $rombel->tingkat;
                             $m->whereNotIn("kode", [
                                 "pabp",
                                 "pjok",
                                 "bing",
-                            ])->with("tps", function ($t) {
+                            ])->with("tps", function ($t) use ($tingkat) {
                                 $t->where(
                                     "semester",
                                     Periode::semester()->kode
-                                );
+                                )->where("tingkat", $tingkat);
                             });
                         } elseif ($role == "guru_agama") {
                             $m->where("kode", "pabp")->with("tps", function (
