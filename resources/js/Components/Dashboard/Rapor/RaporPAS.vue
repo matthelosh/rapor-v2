@@ -203,7 +203,8 @@ onBeforeUnmount(() => {
                                                 !route().params.semester
                                                     ? page.props.periode
                                                           .semester.label
-                                                    : route().params.semester == "1"
+                                                    : route().params.semester ==
+                                                        "1"
                                                       ? "Ganjil"
                                                       : "Genap"
                                             }}
@@ -286,7 +287,11 @@ onBeforeUnmount(() => {
                                     <td
                                         class="print:break-inside-avoid-page border align-top border-black px-2 text-left"
                                     >
-                                        <ul class="list-disc pl-4">
+                                        <!-- {{ typeof nilai.na }} -->
+                                        <ul
+                                            class="list-disc pl-4"
+                                            v-if="nilai.na != 0"
+                                        >
                                             <li class="my-2 text-justify">
                                                 Ananda
                                                 {{ props.siswa.nama }}
@@ -414,13 +419,28 @@ onBeforeUnmount(() => {
                         </table>
                     </div>
                     <div class="text-left col-span-4">
-                        <div v-if="page.props.periode.semester.kode =='2'">
+                        <div
+                            v-if="page.props.periode.semester.kode == '2'"
+                            class="border p-2 border-black"
+                        >
                             <p class="font-bold">Keputusan:</p>
                             <p>Berdasarkan hasil belajar yang telah dicapai,</p>
-                            <p>
+                            <p v-if="props.rombel.tingkat < 6">
                                 Ananda {{ props.siswa.nama }}, dinyatakan Naik
                                 ke kelas
                                 {{ parseInt(props.rombel.tingkat) + 1 }}
+                            </p>
+                            <p v-else>
+                                Ananda {{ props.siswa.nama }}, dinyatakan
+                                <span class="font-bold">Lulus</span>/<span
+                                    class="font-bold"
+                                    >Tidak Lulus</span
+                                >
+                                dan <span class="font-bold">Tidak</span>/<span
+                                    class="font-bold"
+                                    >Dapat</span
+                                >
+                                melanjutkan ke jenjang pendidikan selanjutnya.
                             </p>
                         </div>
                     </div>
