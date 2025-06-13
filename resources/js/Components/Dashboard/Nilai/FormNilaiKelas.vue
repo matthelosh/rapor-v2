@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount, onMounted, markRaw } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { ElDialog, ElNotification } from "element-plus";
-import {Warning} from '@element-plus/icons-vue'
+import { Warning } from "@element-plus/icons-vue";
 import { Icon } from "@iconify/vue";
 import axios from "axios";
 import { read, utils, writeFile } from "xlsx";
@@ -33,7 +33,8 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: route().params.semester ?? page.props.periode.semester.kode,
+                semester:
+                    route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "all",
             },
@@ -65,7 +66,7 @@ const simpan = async () => {
                 });
             },
             onFinish: () => (loading.value = false),
-        }
+        },
     );
 };
 
@@ -79,47 +80,53 @@ const getTps = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: route().params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        route().params.semester ??
+                        page.props.periode.semester.kode,
                 },
-            })
+            }),
         )
         .then((res) => {
             tps.value = res.data.tps;
-        if (res.data.tps.length < 1) {
-            ElMessageBox.alert(
-                `Isi dulu TP Mapel ${props.mapel.label} Semester ${page.props.periode.semester.label}`,
-                'Peringatan', {
-                    type: 'warning',
-                    icon: markRaw(Warning),
-                    confirmButton: 'Ya',
-                    callback: () => {
-                        router.visit('/dashboard/pembelajaran')
-                    }
-                }
-            )
-        } else {
-            // loading.value = false;
-            let raws = []
-            props.rombel.siswas.forEach((siswa, s) => {
-                let ns = {};
-                tps.value.forEach((tp, t) => (ns[tp.kode] = 0));
-                ns["ts"] = 0;
-                ns["as"] = 0;
-                raws.push({
-                    id: siswa.id,
-                    nisn: siswa.nisn,
-                    nama: siswa.nama,
-                    nilais: ns,
-                    jk: siswa.jk,
-                    agama: siswa.agama,
+            if (res.data.tps.length < 1) {
+                ElMessageBox.alert(
+                    `Isi dulu TP Mapel ${props.mapel.label} Semester ${page.props.periode.semester.label}`,
+                    "Peringatan",
+                    {
+                        type: "warning",
+                        icon: markRaw(Warning),
+                        confirmButton: "Ya",
+                        callback: () => {
+                            router.visit("/dashboard/pembelajaran");
+                        },
+                    },
+                );
+            } else {
+                // loading.value = false;
+                let raws = [];
+                props.rombel.siswas.forEach((siswa, s) => {
+                    let ns = {};
+                    tps.value.forEach((tp, t) => (ns[tp.kode] = 0));
+                    ns["ts"] = 0;
+                    ns["as"] = 0;
+                    raws.push({
+                        id: siswa.id,
+                        nisn: siswa.nisn,
+                        nama: siswa.nama,
+                        nilais: ns,
+                        jk: siswa.jk,
+                        agama: siswa.agama,
+                    });
                 });
-            });
-            siswas.value = raws.sort((a,b) => a.nama.localeCompare(b.nama))
-        }
-    }).finally(() => loading.value = false);
+                siswas.value = raws.sort((a, b) =>
+                    a.nama.localeCompare(b.nama),
+                );
+            }
+        })
+        .finally(() => (loading.value = false));
 };
 
-const params = route().params
+const params = route().params;
 
 const getNilaiUh = async () => {
     await axios
@@ -132,11 +139,12 @@ const getNilaiUh = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "uh",
                 },
-            })
+            }),
         )
         .then((res) => {
             if (res.data.length > 0) {
@@ -163,11 +171,12 @@ const getNilaiAs = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "as",
                 },
-            })
+            }),
         )
         .then((res) => {
             if (res.data.length > 0) {
@@ -194,11 +203,12 @@ const getNilaiTs = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "ts",
                 },
-            })
+            }),
         )
         .then((res) => {
             if (res.data.length > 0) {
@@ -275,7 +285,7 @@ const unduhFormat = async () => {
             page.props.periode.semester.label +
             " " +
             page.props.periode.tapel.label +
-            ".xlsx"
+            ".xlsx",
     );
 };
 
@@ -313,8 +323,8 @@ onBeforeMount(async () => {
                                 props.mapel.label
                                     ? props.mapel.label
                                     : !props.mapel.kode.includes("pabp")
-                                    ? props.mapel.kode.toUpperCase()
-                                    : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                      ? props.mapel.kode.toUpperCase()
+                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
                             }}
                         </p>
                         <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->
@@ -418,9 +428,21 @@ onBeforeMount(async () => {
                         <tr>
                             <th
                                 class="border-e border-b p-2 w-[100px]"
-                                v-for="(tp, t) in tps" :key="`tp-${tp.kode}`"
+                                v-for="(tp, t) in tps"
+                                :key="`tp-${tp.kode}`"
                             >
-                                {{ tp.kode }}
+                                <el-popover
+                                    placement="bottom"
+                                    :title="tp.kode"
+                                    :content="tp.teks"
+                                >
+                                    <template #reference>
+                                        <span
+                                            class="text-sky-700 font-bold cursor-pointer"
+                                            >{{ tp.kode }}</span
+                                        >
+                                    </template>
+                                </el-popover>
                             </th>
                         </tr>
                     </thead>
@@ -438,7 +460,10 @@ onBeforeMount(async () => {
                             <td class="p-3 border-b bg-slate-100">
                                 {{ siswa.jk }}
                             </td>
-                            <template v-for="(tp, t) in tps" :key="`tp-${tp.kode}`">
+                            <template
+                                v-for="(tp, t) in tps"
+                                :key="`tp-${tp.kode}`"
+                            >
                                 <td
                                     class="p-3 border-b"
                                     :class="

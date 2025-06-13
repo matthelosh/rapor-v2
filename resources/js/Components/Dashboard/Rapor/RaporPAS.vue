@@ -30,6 +30,7 @@ const showNext = async () => {
     getNilaiPAS();
 };
 const showPrev = async () => {
+    nilai.value = [];
     emit("prevSiswa");
     getNilaiPAS();
 };
@@ -292,13 +293,19 @@ onBeforeUnmount(() => {
                                             class="list-disc pl-4"
                                             v-if="nilai.na != 0"
                                         >
-                                            <li class="my-2 text-justify">
+                                            <li
+                                                class="my-2 text-justify"
+                                                v-if="nilai.maxu?.tp?.teks"
+                                            >
                                                 Ananda
                                                 {{ props.siswa.nama }}
                                                 menunjukkan penguasaan dalam
                                                 {{ nilai.maxu?.tp?.teks }}
                                             </li>
-                                            <li class="text-justify">
+                                            <li
+                                                class="text-justify"
+                                                v-if="nilai.minu?.tp?.teks"
+                                            >
                                                 Ananda
                                                 {{ props.siswa.nama }} perlu
                                                 bantuan dalam
