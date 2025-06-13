@@ -51,14 +51,15 @@ const profil = computed(() => page.props.auth.user.userable);
                                 >
                                     #
                                 </th>
-                                 <th
+                                <th
                                     class="border-b-2 p-2 border-double border-black text-left"
                                 >
                                     Rombel
-                                </th><th
+                                </th>
+                                <th
                                     class="border-b-2 p-2 border-double border-black text-left"
                                 >
-                                  Wali Kelas
+                                    Wali Kelas
                                 </th>
                                 <th
                                     class="border-b-2 p-2 border-double border-black"
@@ -69,7 +70,13 @@ const profil = computed(() => page.props.auth.user.userable);
                         </thead>
                         <tbody>
                             <template
-                                v-for="(rombel, r) in data.sekolah.rombels.filter(rombel => rombel.wali_kelas[0].nip == page.props.auth.user.userable.nip)"
+                                v-for="(
+                                    rombel, r
+                                ) in data.sekolah.rombels.filter(
+                                    (rombel) =>
+                                        rombel.wali_kelas.nip ==
+                                        page.props.auth.user.userable.nip,
+                                )"
                                 :key="r"
                             >
                                 <tr>
@@ -82,22 +89,40 @@ const profil = computed(() => page.props.auth.user.userable);
                                         {{ rombel.label }}
                                     </td>
                                     <td class="border-b border-gray-400 p-2">
-                                        {{ rombel.wali_kelas[0].nama }}, {{rombel.wali_kelas[0].gelar_belakang}}
+                                        {{ rombel.wali_kelas.nama }},
+                                        {{ rombel.wali_kelas.gelar_belakang }}
                                     </td>
                                     <td
                                         class="border-b border-gray-400 p-2 text-center"
                                     >
                                         <el-tag type="primary">
-                                            {{ rombel.siswas ? rombel.siswas.filter(s => s.jk=='Laki-laki').length : '0' }}
+                                            {{
+                                                rombel.siswas
+                                                    ? rombel.siswas.filter(
+                                                          (s) =>
+                                                              s.jk ==
+                                                              "Laki-laki",
+                                                      ).length
+                                                    : "0"
+                                            }}
                                         </el-tag>
-                                        <el-tag type="error">
-                                            {{ rombel.siswas ? rombel.siswas.filter(s => s.jk=='Perempuan').length : '0' }}
+                                        <el-tag type="danger">
+                                            {{
+                                                rombel.siswas
+                                                    ? rombel.siswas.filter(
+                                                          (s) =>
+                                                              s.jk ==
+                                                              "Perempuan",
+                                                      ).length
+                                                    : "0"
+                                            }}
                                         </el-tag>
-                                        <el-tag type="success" class="font-bold">
-                                        {{ rombel.siswas?.length }}
+                                        <el-tag
+                                            type="success"
+                                            class="font-bold"
+                                        >
+                                            {{ rombel.siswas?.length }}
                                         </el-tag>
-
-
                                     </td>
                                 </tr>
                             </template>

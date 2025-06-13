@@ -25,6 +25,8 @@ return new class extends Migration {
             $table->text("keputusan")->nullable();
             $table->json("absensi")->nullable();
             $table->json("ttd");
+            $table->date("tanggal_rapor");
+            $table->boolean("is_tuntas")->default(true);
             $table->enum("status", ["temp", "permanen"])->default("permanen");
         });
     }

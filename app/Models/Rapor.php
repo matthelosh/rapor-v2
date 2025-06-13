@@ -23,6 +23,8 @@ class Rapor extends Model
         "keputusan",
         "absensi",
         "ttd",
+        "tanggal_rapor",
+        "is_tuntas",
         "status",
     ];
 

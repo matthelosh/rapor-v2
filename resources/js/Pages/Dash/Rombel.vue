@@ -119,7 +119,6 @@ const fotoGuru = (guru) => {
             : "/img/user_p.png";
 };
 const init = async () => {
-
     await page.props.rombels.forEach((rombel, r) => {
         if (rombel.kktps.length > 0) {
             rombels.value.push(rombel);
@@ -234,23 +233,24 @@ onBeforeMount(async () => {
                     <el-table-column label="Wali Kelas">
                         <template #default="scope">
                             <p>
-                                {{scope.row.wali_kelas ? scope.row.wali_kelas[0]?.nama : '-'}}
+                                {{ scope.row.wali_kelas?.nama }}
                             </p>
                         </template>
                     </el-table-column>
                     <el-table-column label="Guru Pengajar">
                         <template #default="scope">
                             <ul class="list-decimal pl-4">
-                                <li
-                                    v-for="(gp, i) in scope.row.gurus"
-                                    :key="i"
-                                >
+                                <li v-for="(gp, i) in scope.row.gurus" :key="i">
                                     <el-popover>
                                         <div>
                                             <img
                                                 :src="fotoGuru(gp)"
                                                 alt="Foto Guru"
-                                                :onerror="(e) => e.target.src = defaultFoto(gp)"
+                                                :onerror="
+                                                    (e) =>
+                                                        (e.target.src =
+                                                            defaultFoto(gp))
+                                                "
                                             />
                                         </div>
                                         <template #reference>
@@ -324,7 +324,11 @@ onBeforeMount(async () => {
                     <el-table-column label="Status" width="60">
                         <template #default="scope">
                             <Icon
-                                :icon="scope.row.is_active == '1' ? 'mdi:check-circle' : 'mdi:close-circle'"
+                                :icon="
+                                    scope.row.is_active == '1'
+                                        ? 'mdi:check-circle'
+                                        : 'mdi:close-circle'
+                                "
                                 :class="
                                     scope.row.is_active == '1'
                                         ? 'text-green-600'

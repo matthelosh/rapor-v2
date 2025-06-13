@@ -70,15 +70,7 @@ class Rombel extends Model
 
     public function wali_kelas()
     {
-        return $this->belongsToMany(
-            Guru::class,
-            "guru_rombel",
-            "rombel_id",
-            "guru_id",
-            "kode",
-            "nip"
-        )->withPivot("status")
-        ->wherePivot("status", "wali");
+        return $this->belongsTo(Guru::class, "guru_id", "id");
     }
     /* public function getWaliAttribute() { */
     /*     return $this->waliKelas->first(); */
@@ -92,8 +84,9 @@ class Rombel extends Model
             "guru_id",
             "kode",
             "nip"
-        )->withPivot("status")
-        ->wherePivot("status", "pengajar");
+        )
+            ->withPivot("status")
+            ->wherePivot("status", "pengajar");
     }
 
     public function sekolah()

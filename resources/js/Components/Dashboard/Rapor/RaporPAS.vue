@@ -62,6 +62,7 @@ const cetak = async () => {
     }, 1500);
 };
 
+const is_tuntas = ref(1);
 const getNilaiPAS = async () => {
     loading.value = true;
     await axios
@@ -433,14 +434,63 @@ onBeforeUnmount(() => {
                             <p class="font-bold">Keputusan:</p>
                             <p>Berdasarkan hasil belajar yang telah dicapai,</p>
                             <p v-if="props.rombel.tingkat < 6">
-                                Ananda {{ props.siswa.nama }}, dinyatakan Naik
-                                ke kelas
+                                Ananda
+                                <span class="font-bold">{{
+                                    props.siswa.nama
+                                }}</span
+                                >, dinyatakan
+                                <el-popconfirm
+                                    title="Ketuntasan Belajar"
+                                    width="300"
+                                    confirm-button-text="Tuntas"
+                                    cancel-button-text="Belum Tuntas"
+                                    @confirm="is_tuntas = true"
+                                    @cancel="is_tuntas = false"
+                                >
+                                    <template #reference>
+                                        <span
+                                            class="cursor-pointer bg-sky-100 print:bg-white"
+                                        >
+                                            <span
+                                                class="font-bold"
+                                                :class="
+                                                    is_tuntas
+                                                        ? 'no-underline'
+                                                        : 'line-through'
+                                                "
+                                                >Naik</span
+                                            >/<span
+                                                class="font-bold"
+                                                :class="
+                                                    !is_tuntas
+                                                        ? 'no-underline'
+                                                        : 'line-through'
+                                                "
+                                                >Tidak Naik</span
+                                            >
+                                        </span>
+                                    </template>
+                                </el-popconfirm>
+                                ke Kelas
                                 {{ parseInt(props.rombel.tingkat) + 1 }}
                             </p>
                             <p v-else>
                                 Ananda {{ props.siswa.nama }}, dinyatakan
-                                <span class="font-bold">Lulus</span>/<span
+                                <span
                                     class="font-bold"
+                                    :class="
+                                        is_tuntas
+                                            ? 'no-underline'
+                                            : 'line-through'
+                                    "
+                                    >Lulus</span
+                                >/<span
+                                    class="font-bold"
+                                    :class="
+                                        !is_tuntas
+                                            ? 'no-underline'
+                                            : 'line-through'
+                                    "
                                     >Tidak Lulus</span
                                 >
                                 dan <span class="font-bold">Tidak</span>/<span
@@ -456,7 +506,7 @@ onBeforeUnmount(() => {
                 <div class="ttd grid grid-cols-6 mt-14">
                     <div class="col-span-3">
                         <p>&nbsp;</p>
-                        <p>TTD Orang Tua Peserta Didik</p>
+                        <p>Orang Tua Peserta Didik</p>
                         <p
                             class="font-bold uppercase underline leading-4 mt-20"
                         >
@@ -467,11 +517,16 @@ onBeforeUnmount(() => {
                     <div class="col-span-3">
                         <p>
                             {{ capitalize(sekolah.desa) }},
-                            {{
-                                dayjs(nilai.tanggal?.tanggal)
-                                    .locale("id")
-                                    .format("DD MMMM YYYY")
-                            }}
+                            <span
+                                contenteditable="true"
+                                class="bg-sky-100 print:bg-white"
+                            >
+                                {{
+                                    dayjs(nilai.tanggal?.tanggal)
+                                        .locale("id")
+                                        .format("DD MMMM YYYY")
+                                }}
+                            </span>
                         </p>
                         <p>Wali Kelas {{ rombel.label }}</p>
 

@@ -160,7 +160,28 @@ watch(
 
 onBeforeMount(() => {
     if (props.selectedRombel !== null) {
-        rombel.value = props.selectedRombel;
+        const {
+            id,
+            kode,
+            label,
+            guru_id,
+            gurus,
+            tapel,
+            fase,
+            tingkat,
+            pararel,
+        } = props.selectedRombel;
+        rombel.value = {
+            id: id,
+            kode: kode,
+            label: label,
+            guru_id: guru_id,
+            pengajars: gurus.map((g) => g.nip),
+            tapel: tapel,
+            fase: fase,
+            tingkat: tingkat,
+            pararel: pararel,
+        };
     }
 
     getGurus();
@@ -181,7 +202,7 @@ const toString = (num) => {
         @close="closeMe"
         draggable
     >
-        <!-- {{ gurus }} -->
+        <!-- {{ rombel.gurus }} -->
         <el-form label-position="top" size="small">
             <el-row :gutter="6">
                 <el-col :span="4">

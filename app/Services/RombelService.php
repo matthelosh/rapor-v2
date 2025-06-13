@@ -47,11 +47,9 @@ class RombelService
                 "sekolah_id",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->whereHas('wali_kelas', function($q) use($nip){
-                    $q->where('nip',$nip );
-                })
-                /* ->where("guru_id", $user->userable->id) */
-                ->with("sekolah", "gurus", "siswas")
+                // ->whereHas("wali_kelas")
+                ->where("guru_id", $user->userable->id)
+                ->with("sekolah", "gurus", "siswas", "wali_kelas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
                 })
@@ -99,15 +97,18 @@ class RombelService
             $store->gurus()->attach($wali->nip, ["status" => "wali"]);
             $store
                 ->gurus()
-                ->attach(
-                    collect(explode(",", $data["pengajars"]))->mapWithKeys(
-                        fn($nip) => [$nip => ["status" => "pengajar"]]
-                    )
-                );
+                ->syncWithPivotValues(explode(",", $data["pengajars"]), [
+                    "status" => "pengajar",
+                ]);
+            // ->sync(
+            //     collect(explode(",", $data["pengajars"]))->mapWithKeys(
+            //         fn($nip) => [$nip => ["status" => "pengajar"]]
+            //     )
+            // );
             return back()->with("success", true);
         } catch (\Exception $e) {
-            dd($e);
-            // return back()->withErrors(["errors" => $e->getMessage()]);
+            // dd($e);
+            return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }
 
