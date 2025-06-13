@@ -120,6 +120,7 @@ const confirmSimpan = async () => {
     );
 };
 onBeforeMount(() => {
+    // console.log(page.props);
     rombel.value = page.props.rombels[0];
     selectedSemester.value =
         route().params.semester ?? page.props.periode.semester.kode;
@@ -138,7 +139,8 @@ onBeforeMount(() => {
             <template #header>
                 <div class="flex items-center justify-between w-full">
                     <h3 class="uppercase font-bold text-slate-600">
-                        Rapor Siswa {{ rombel.label }} {{ rombel.sekolah.nama }}
+                        Rapor Siswa {{ rombel?.label }}
+                        {{ rombel?.sekolah?.nama }}
                     </h3>
                     <div
                         class="header-items flex-grow flex items-center gap-2 justify-end"
@@ -182,7 +184,7 @@ onBeforeMount(() => {
                 </div>
             </template>
             <div class="card-body">
-                <!--   {{page.props.tapels}} -->
+                <!-- {{ JSON.stringify(page.props) }} -->
                 <el-table :data="rombel.siswas" height="80vh" size="small">
                     <el-table-column
                         label="#"
