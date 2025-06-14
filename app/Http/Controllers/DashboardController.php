@@ -43,9 +43,9 @@ class DashboardController extends Controller
                     ->with([
                         "rombels" => function ($q) use ($tapel) {
                             $q->whereTapel($tapel);
-                            $q->with("siswas", function ($s) {
-                                $s->where("status", "aktif");
-                            });
+                            // $q->with("siswas", function ($s) {
+                            //     $s->where("status", "aktif");
+                            // });
                         },
                         // "siswas" => fn($s) => $s->whereStatus("aktif"),
                     ])
