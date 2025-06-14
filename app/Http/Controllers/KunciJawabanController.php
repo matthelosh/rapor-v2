@@ -33,7 +33,6 @@ class KunciJawabanController extends Controller
                         ? json_encode($request["pgk"])
                         : null,
                     "ps" => $request["ps"] ? json_encode($request["ps"]) : null,
-                    "bs" => $request["bs"] ? json_encode($request["bs"]) : null,
                     "is" => $request["is"] ? json_encode($request["is"]) : null,
                     "ur" => $request["ur"] ? json_encode($request["ur"]) : null,
                 ]

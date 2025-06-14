@@ -24,6 +24,10 @@ const inputKunci = (row) => {
 // Analisis
 const formAnalisis = ref(false);
 const showAnalises = (item) => {
+    if (!item.kunci) {
+        ElMessageBox.alert("Isi Kunci Jawaban Dulu", { type: "error" });
+        return false;
+    }
     selectedAsesmen.value = item;
     formAnalisis.value = true;
 };
