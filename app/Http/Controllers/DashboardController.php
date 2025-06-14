@@ -56,7 +56,7 @@ class DashboardController extends Controller
             //         "siswas" => fn($s) => $s->whereStatus("aktif"),
             //     ])
             //     ->get();
-            $data['sekolahs'] => Sekolah::all();
+            $data["sekolahs"] = Sekolah::all();
         } elseif ($user->hasRole("ops")) {
             $data["sekolah"] = Sekolah::where(
                 "npsn",
