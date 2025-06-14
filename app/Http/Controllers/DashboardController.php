@@ -39,18 +39,18 @@ class DashboardController extends Controller
         // dd($response);
         try {
             if ($request->user()->hasRole(["superadmin", "admin"])) {
-                // $data["sekolahs"] = Sekolah::with("ks", "gurus")
-                //     ->with([
-                //         "rombels" => function ($q) use ($tapel) {
-                //             $q->whereTapel($tapel);
-                //             $q->with("siswas", function ($s) {
-                //                 $s->where("status", "aktif");
-                //             });
-                //         },
-                //         "siswas" => fn($s) => $s->whereStatus("aktif"),
-                //     ])
-                //     ->get();
-                $data["sekolahs"] = Sekolah::all();
+                $data["sekolahs"] = Sekolah::with("ks", "gurus")
+                    ->with([
+                        "rombels" => function ($q) use ($tapel) {
+                            $q->whereTapel($tapel);
+                            $q->with("siswas", function ($s) {
+                                $s->where("status", "aktif");
+                            });
+                        },
+                        // "siswas" => fn($s) => $s->whereStatus("aktif"),
+                    ])
+                    ->get();
+                // $data["sekolahs"] = Sekolah::all();
             } elseif ($user->hasRole("ops")) {
                 $data["sekolah"] = Sekolah::where(
                     "npsn",
