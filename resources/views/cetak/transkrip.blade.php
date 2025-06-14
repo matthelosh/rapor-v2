@@ -20,7 +20,7 @@
         <div class="wrapper w-full md:w-[900px]  print:w-full mx-auto p-4 print:p-0 bg-white shadow print:shadow-none print:bg-white relative">
             <div class="kop grid grid-cols-5 border-black border-double border-b-4">
                 <div class="col-span-1 flex items-center justify-center">
-                    <img src="{{asset('img/malangkab.png') }}" alt="Logo" class="h-32" />
+                    <img src="{{asset('/img/malangkab.png') }}" alt="Logo" class="h-32" />
                 </div>
                 <div class="col-span-3">
                     <h1 class="text-center  font-black text-xl uppercase">Pemerintah Kabupaten Malang</h1>

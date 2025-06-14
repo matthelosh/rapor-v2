@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TanggalRapor;
 use App\Models\Tapel;
+use App\Models\Siswa;
 use App\Services\RaporService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,16 +13,14 @@ class RaporController extends Controller
 {
     public function home(Request $request)
     {
-
-        return Inertia::render('Dash/Rapor', [
-            'tapels' => Tapel::all()
+        return Inertia::render("Dash/Rapor", [
+            "tapels" => Tapel::all(),
         ]);
     }
 
     public function periodik(Request $request)
     {
-
-        return Inertia::render('Dash/Periodik', []);
+        return Inertia::render("Dash/Periodik", []);
     }
 
     public function raporPTS(Request $request, RaporService $raporService)
@@ -41,13 +40,13 @@ class RaporController extends Controller
         $nilaiPas = $raporService->nilaiPAS($queries);
         $catatan = $raporService->catatan($queries);
         return response()->json([
-            'absensi' => $absensis,
-            'ekskuls' => $ekskuls,
-            'pas' => $nilaiPas,
-            'catatan' => $catatan,
-            'tanggal' => TanggalRapor::where('semester', $queries['semester'])
-                ->where('tapel', $queries['tapel'])
-                ->where('tipe', 'pas')
+            "absensi" => $absensis,
+            "ekskuls" => $ekskuls,
+            "pas" => $nilaiPas,
+            "catatan" => $catatan,
+            "tanggal" => TanggalRapor::where("semester", $queries["semester"])
+                ->where("tapel", $queries["tapel"])
+                ->where("tipe", "pas")
                 ->first(),
         ]);
     }
@@ -56,10 +55,13 @@ class RaporController extends Controller
     {
         try {
             $rombelId = $request->rombelId;
-            $result = $raporService->simpanPermanen($rombelId, $request->tapel, $request->semester);
-            return back()->with("message", $result['message']);
-        } catch(\Throwable $th)
-        {
+            $result = $raporService->simpanPermanen(
+                $rombelId,
+                $request->tapel,
+                $request->semester
+            );
+            return back()->with("message", $result["message"]);
+        } catch (\Throwable $th) {
             return back()->withErrors($th->getMessage());
         }
     }
@@ -67,9 +69,9 @@ class RaporController extends Controller
     public function tanggal(Request $request)
     {
         try {
-            return Inertia::render('Dash/TanggalRapor', [
-                'tanggals' => TanggalRapor::with('tahun', 'sem')->get(),
-                'tapels' => Tapel::all(),
+            return Inertia::render("Dash/TanggalRapor", [
+                "tanggals" => TanggalRapor::with("tahun", "sem")->get(),
+                "tapels" => Tapel::all(),
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -79,22 +81,45 @@ class RaporController extends Controller
     public function storeTanggal(Request $request)
     {
         try {
-            $sekolahId = $request->query('sekolahId');
+            $sekolahId = $request->query("sekolahId");
             $data = $request->data;
             TanggalRapor::updateOrCreate(
                 [
-                    'sekolah_id' => null,
-                    'tapel' => $data['tapel'],
-                    'semester' => $data['semester'],
-                    'tipe' => $data['tipe']
+                    "sekolah_id" => null,
+                    "tapel" => $data["tapel"],
+                    "semester" => $data["semester"],
+                    "tipe" => $data["tipe"],
                 ],
                 [
-                    'tanggal' => $data['tanggal']
+                    "tanggal" => $data["tanggal"],
                 ]
             );
-            return back()->with('message', 'Tanggal Rapor Disimpan');
+            return back()->with("message", "Tanggal Rapor Disimpan");
         } catch (\Throwable $th) {
             throw $th;
+        }
+    }
+
+    // Cetak via blade
+    public function cetakRapor(Request $request, $page, $siswaId)
+    {
+        try {
+            switch ($page) {
+                default:
+                    $view = "coverrapor";
+                    break;
+                case "biodata":
+                    $view = "biodatarapor";
+                    break;
+            }
+            return view("cetak." . $view, [
+                "page" => $page,
+                "siswa" => Siswa::where("nisn", $siswaId)
+                    ->with("sekolah")
+                    ->first(),
+            ]);
+        } catch (\Exception $e) {
+            dd($e);
         }
     }
 
@@ -103,7 +128,7 @@ class RaporController extends Controller
         try {
             $tanggal = TanggalRapor::findOrFail($id);
             $tanggal->delete();
-            return back()->with('message', 'Tanggal Rapor dihapus');
+            return back()->with("message", "Tanggal Rapor dihapus");
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -476,25 +476,54 @@ onBeforeUnmount(() => {
                             </p>
                             <p v-else>
                                 Ananda {{ props.siswa.nama }}, dinyatakan
+                                <el-popconfirm
+                                    title="Ketuntasan Belajar"
+                                    width="300"
+                                    confirm-button-text="Tuntas"
+                                    cancel-button-text="Belum Tuntas"
+                                    @confirm="is_tuntas = true"
+                                    @cancel="is_tuntas = false"
+                                >
+                                    <template #reference>
+                                        <span
+                                            class="bg-sky-100 print:bg-white cursor-pointer"
+                                        >
+                                            <span
+                                                class="font-bold"
+                                                :class="
+                                                    is_tuntas
+                                                        ? 'no-underline'
+                                                        : 'line-through'
+                                                "
+                                                >Lulus</span
+                                            >/<span
+                                                class="font-bold"
+                                                :class="
+                                                    !is_tuntas
+                                                        ? 'no-underline'
+                                                        : 'line-through'
+                                                "
+                                                >Tidak Lulus</span
+                                            >
+                                        </span>
+                                    </template>
+                                </el-popconfirm>
+                                dan
                                 <span
-                                    class="font-bold"
-                                    :class="
-                                        is_tuntas
-                                            ? 'no-underline'
-                                            : 'line-through'
-                                    "
-                                    >Lulus</span
-                                >/<span
                                     class="font-bold"
                                     :class="
                                         !is_tuntas
                                             ? 'no-underline'
                                             : 'line-through'
                                     "
-                                    >Tidak Lulus</span
-                                >
-                                dan <span class="font-bold">Tidak</span>/<span
+                                    >Tidak</span
+                                >/<span
                                     class="font-bold"
+                                    :class="
+                                        is_tuntas
+                                            ? 'no-underline'
+                                            : 'line-through'
+                                    "
                                     >Dapat</span
                                 >
                                 melanjutkan ke jenjang pendidikan selanjutnya.

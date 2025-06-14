@@ -62,7 +62,10 @@ Route::prefix("")->group(function () {
             ])->name("verifikasi.transkrip");
         });
         Route::prefix("rapor")->group(function () {
-            Route::post("/permanen", [RaporController::class, 'makePermanent'])->name('dashboard.rapor.permanen');
+            Route::post("/permanen", [
+                RaporController::class,
+                "makePermanent",
+            ])->name("dashboard.rapor.permanen");
         });
     });
 
@@ -91,11 +94,13 @@ Route::middleware("auth")->group(function () {
             "tesReverb",
         ])->name("dashboard.home.tes");
 
-        Route::middleware("role:ops")->prefix("bukuinduk")->group(
-            function () {
-                Route::get("/", [BukuindukController::class, 'home'])->name('dashboard.bukuinduk.home');
-            }
-        );
+        Route::middleware("role:ops")
+            ->prefix("bukuinduk")
+            ->group(function () {
+                Route::get("/", [BukuindukController::class, "home"])->name(
+                    "dashboard.bukuinduk.home"
+                );
+            });
         Route::get("/", [DashboardController::class, "index"])
             ->middleware(["auth", "verified"])
             ->name("dashboard");
@@ -222,7 +227,10 @@ Route::middleware("auth")->group(function () {
             Route::post("/", [RombelController::class, "store"])->name(
                 "dashboard.rombel.store"
             );
-            Route::get("/{kode}/{tingkat}", [RombelController::class, "show"])->name("dashboard.rombel.show");
+            Route::get("/{kode}/{tingkat}", [
+                RombelController::class,
+                "show",
+            ])->name("dashboard.rombel.show");
             Route::post("/member/attach", [
                 RombelController::class,
                 "attachMember",
@@ -350,7 +358,10 @@ Route::middleware("auth")->group(function () {
                 ->middleware("can:update_asesmen")
                 ->name("dashboard.asesmen.soal.detach");
 
-            Route::post("/{kode}/kunci/store", [KunciJawabanController::class, 'store'])->name('dashboard.asesmen.kunci.store');
+            Route::post("/{kode}/kunci/store", [
+                KunciJawabanController::class,
+                "store",
+            ])->name("dashboard.asesmen.kunci.store");
 
             Route::put("/{id}", [AsesmenController::class, "update"])
                 ->middleware("can:update_asesmen")
@@ -365,8 +376,14 @@ Route::middleware("auth")->group(function () {
                 Route::get("/", [AnalisisController::class, "home"])->name(
                     "dashboard.analisis.home"
                 );
-                Route::post("/store", [AnalisisController::class, "store"])->name("dashboard.analisis.store");
-                Route::post('/cek-jawaban', [AnalisisController::class, 'cekJawaban'])->name('dashboard.analisis.cek-jawaban');
+                Route::post("/store", [
+                    AnalisisController::class,
+                    "store",
+                ])->name("dashboard.analisis.store");
+                Route::post("/cek-jawaban", [
+                    AnalisisController::class,
+                    "cekJawaban",
+                ])->name("dashboard.analisis.cek-jawaban");
             })
             ->middleware("role:guru_kelas|guru_agama|guru_inggris|guru_pjok");
 
@@ -699,7 +716,16 @@ Route::middleware("auth")->group(function () {
             CetakController::class,
             "cetakTranskrip",
         ]);
-        Route::get("/analisis-asesmen/{asesmenId}", [CetakController::class, "cetakAnalisisAsesmen"]);
+        Route::prefix("rapor")->group(function () {
+            Route::get("/{page}/{siswaId}", [
+                RaporController::class,
+                "cetakRapor",
+            ]);
+        });
+        Route::get("/analisis-asesmen/{asesmenId}", [
+            CetakController::class,
+            "cetakAnalisisAsesmen",
+        ]);
     });
 });
 
