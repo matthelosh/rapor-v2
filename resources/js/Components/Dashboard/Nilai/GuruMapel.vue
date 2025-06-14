@@ -40,19 +40,22 @@ const open = (rombel, komponen, sekolah) => {
 
     mode.value = komponen;
 };
-const params = route().params
+const params = route().params;
 const persen = (scope) => {};
-const selectedSemester = ref('')
+const selectedSemester = ref("");
 
 const onSemesterChanged = (e) => {
-    router.visit(`${window.location.pathname}?semester=${selectedSemester.value}`, {
-        reload: {only: ['nilais']},
-        preserveState: true
-    })
-}
+    router.visit(
+        `${window.location.pathname}?semester=${selectedSemester.value}`,
+        {
+            reload: { only: ["nilais"] },
+            preserveState: true,
+        },
+    );
+};
 onBeforeMount(() => {
-    selectedSemester.value = params.semester | page.props.periode.semester.kode
-})
+    selectedSemester.value = params.semester | page.props.periode.semester.kode;
+});
 </script>
 
 <template>
@@ -63,15 +66,29 @@ onBeforeMount(() => {
                     <div class="title">
                         <h3 class="text-lg font-bold">
                             Penilaian Semester
-                            {{ params.semester ?? page.props.periode.semester.kode }}
+                            {{
+                                params.semester ??
+                                page.props.periode.semester.kode
+                            }}
                             {{ page.props.periode.tapel.label }}
                         </h3>
                     </div>
-                    <div class="toolbar-items flex items-center justify-end gap-2">
-
+                    <div
+                        class="toolbar-items flex items-center justify-end gap-2"
+                    >
                         <p>Semester:</p>
-                        <el-select v-model="selectedSemester" placeholder="Pilih semester" style="width: 60px;" @change="onSemesterChanged">
-                            <el-option v-for="sem in ['1','2']" :key="`sem${sem}`" :value="sem" :label="sem" />
+                        <el-select
+                            v-model="selectedSemester"
+                            placeholder="Pilih semester"
+                            style="width: 60px"
+                            @change="onSemesterChanged"
+                        >
+                            <el-option
+                                v-for="sem in ['1', '2']"
+                                :key="`sem${sem}`"
+                                :value="sem"
+                                :label="sem"
+                            />
                         </el-select>
                     </div>
                 </div>
@@ -88,8 +105,12 @@ onBeforeMount(() => {
                                 >
                             </template>
                             <el-table :data="sekolah.rombels">
-                                <el-table-column label="Rombel" prop="label" />
-                                <el-table-column label="Jumlah Siswa">
+                                <el-table-column
+                                    label="Rombel"
+                                    prop="label"
+                                    width="100"
+                                />
+                                <el-table-column label="Jml Siswa" width="80">
                                     <template #default="scope">
                                         {{ scope.row.siswas?.length }}
                                     </template>
@@ -101,8 +122,10 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais ? scope.row.nilais[0]
-                                                            ?.uh : 0,
+                                                        scope.row.nilais
+                                                            ? scope.row
+                                                                  .nilais[0]?.uh
+                                                            : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
@@ -113,8 +136,11 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais ? scope.row.nilais[0]
-                                                            ?.pts : 0,
+                                                        scope.row.nilais
+                                                            ? scope.row
+                                                                  .nilais[0]
+                                                                  ?.pts
+                                                            : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *
@@ -125,8 +151,10 @@ onBeforeMount(() => {
                                             {{
                                                 Math.round(
                                                     (parseInt(
-                                                        scope.row.nilais ? scope.row.nilais[0]
-                                                            ?.as : 0,
+                                                        scope.row.nilais
+                                                            ? scope.row
+                                                                  .nilais[0]?.as
+                                                            : 0,
                                                     ) /
                                                         scope.row.siswas
                                                             ?.length) *

@@ -32,7 +32,8 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: route().params.semester ?? page.props.periode.semester.kode,
+                semester:
+                    route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "uh",
             },
@@ -64,7 +65,7 @@ const simpan = async () => {
                 });
             },
             onFinish: () => (loading.value = false),
-        }
+        },
     );
 };
 
@@ -78,9 +79,11 @@ const getTps = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: route().params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        route().params.semester ??
+                        page.props.periode.semester.kode,
                 },
-            })
+            }),
         )
         .then((res) => {
             tps.value = res.data.tps;
@@ -111,11 +114,13 @@ const getNilai = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: route().params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        route().params.semester ??
+                        page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "uh",
                 },
-            })
+            }),
         )
         .then((res) => {
             if (res.data.length > 0) {
@@ -190,7 +195,7 @@ const unduhFormat = async () => {
             page.props.periode.semester.label +
             " " +
             page.props.periode.tapel.label +
-            ".xlsx"
+            ".xlsx",
     );
 };
 
@@ -218,8 +223,8 @@ onBeforeMount(async () => {
                                 props.mapel.label
                                     ? props.mapel.label
                                     : !props.mapel.kode.includes("pabp")
-                                    ? props.mapel.kode.toUpperCase()
-                                    : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                      ? props.mapel.kode.toUpperCase()
+                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
                             }}
                         </span>
                         <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->
@@ -425,7 +430,15 @@ onBeforeMount(async () => {
                 </template>
                 <template #default>
                     <el-table
-                        :data="props.rombel.siswas"
+                        :data="
+                            props.mapel.kode == 'pabp'
+                                ? props.rombel.siswas.filter(
+                                      (siswa) =>
+                                          siswa.agama ==
+                                          page.props.auth.user.userable.agama,
+                                  )
+                                : props.rombel.siswas
+                        "
                         height="90vh"
                         size="small"
                     >

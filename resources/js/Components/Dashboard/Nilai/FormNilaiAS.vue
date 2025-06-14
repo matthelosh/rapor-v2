@@ -30,12 +30,14 @@ const simpan = async () => {
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
                     : null,
-                semester: route().params.semester ?? page.props.periode.semester.kode,
+                semester:
+                    route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
                 tipe: "as",
             },
         }),
-        { siswas: siswas.value },{
+        { siswas: siswas.value },
+        {
             onSuccess: (page) => {
                 router.reload({ only: ["nilais"] });
                 ElNotification({
@@ -56,7 +58,7 @@ const simpan = async () => {
                     }, 500);
                 });
             },
-        }
+        },
     );
 };
 
@@ -90,11 +92,13 @@ const getNilai = async () => {
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
                         : null,
-                    semester: route().params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        route().params.semester ??
+                        page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     tipe: "as",
                 },
-            })
+            }),
         )
         .then((res) => {
             if (res.data.length > 0) {
@@ -156,7 +160,7 @@ const unduhFormat = async () => {
             " Semester " +
             page.props.periode.semester.label +
             page.props.periode.tapel.label +
-            ".xlsx"
+            ".xlsx",
     );
 };
 
@@ -192,8 +196,8 @@ onBeforeMount(async () => {
                                 props.mapel.label
                                     ? props.mapel.label
                                     : !props.mapel.kode.includes("pabp")
-                                    ? props.mapel.kode.toUpperCase()
-                                    : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                      ? props.mapel.kode.toUpperCase()
+                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
                             }}
                         </p>
                         <p>
@@ -392,7 +396,15 @@ onBeforeMount(async () => {
                 </template>
                 <template #default>
                     <el-table
-                        :data="props.rombel.siswas"
+                        :data="
+                            props.mapel.kode == 'pabp'
+                                ? props.rombel.siswas.filter(
+                                      (siswa) =>
+                                          siswa.agama ==
+                                          page.props.auth.user.userable.agama,
+                                  )
+                                : props.rombel.siswas
+                        "
                         height="86.5vh"
                         size="small"
                     >
@@ -408,7 +420,13 @@ onBeforeMount(async () => {
                             width="120"
                             fixed
                         />
-                        <el-table-column label="Nama" prop="nama" fixed :sortable="true" width="200" />
+                        <el-table-column
+                            label="Nama"
+                            prop="nama"
+                            fixed
+                            :sortable="true"
+                            width="200"
+                        />
                         <el-table-column label="Jenis Kelamin" width="100">
                             <template #default="scope">
                                 {{ scope.row.jk }}

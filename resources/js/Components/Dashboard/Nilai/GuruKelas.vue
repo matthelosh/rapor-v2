@@ -130,6 +130,20 @@ onBeforeMount(() => {
                                                 type="primary"
                                                 rounded
                                                 size="small"
+                                                @click="
+                                                    openForm(
+                                                        scope.row,
+                                                        rombel,
+                                                        'nilai-kelas',
+                                                    )
+                                                "
+                                                >Nilai Kelas</el-button
+                                            >
+                                            <!-- <span class="flex items-center">
+                                            <el-button
+                                                type="primary"
+                                                rounded
+                                                size="small"
                                                 :disabled="
                                                     guruKelas &&
                                                     scope.row.kode == 'pabp'
@@ -142,7 +156,7 @@ onBeforeMount(() => {
                                                     )
                                                 "
                                                 >Nilai Kelas</el-button
-                                            >
+                                            > -->
                                             <el-button
                                                 type="primary"
                                                 :disabled="
@@ -162,10 +176,6 @@ onBeforeMount(() => {
                                             >
                                             <el-button
                                                 type="primary"
-                                                :disabled="
-                                                    guruKelas &&
-                                                    scope.row.kode == 'pabp'
-                                                "
                                                 rounded
                                                 size="small"
                                                 @click="
@@ -179,10 +189,6 @@ onBeforeMount(() => {
                                             >
                                             <el-button
                                                 type="primary"
-                                                :disabled="
-                                                    guruKelas &&
-                                                    scope.row.kode == 'pabp'
-                                                "
                                                 rounded
                                                 size="small"
                                                 @click="
