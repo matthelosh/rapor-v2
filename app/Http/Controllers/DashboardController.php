@@ -38,13 +38,7 @@ class DashboardController extends Controller
 
         // dd($response);
         try {
-            if (
-                in_array($request->user()->getRoleNames()[0], [
-                    "superadmin",
-                    "admin",
-                    "admin_tp",
-                ])
-            ) {
+            if ($request->user->hasRole(["superadmin", "admin"])) {
                 $data["sekolahs"] = Sekolah::with("ks", "gurus")
                     ->with([
                         "rombels" => function ($q) use ($tapel) {
