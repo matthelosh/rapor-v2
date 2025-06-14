@@ -16,6 +16,7 @@ const ttdUrl = ref(null);
 const guru = ref({
     nip: "1234556789",
     gelar_depan: "",
+    nuptk: "",
     nama: "Bejo",
     gelar_belakang: "S. Pd.",
     jk: "Laki-laki",
@@ -172,6 +173,14 @@ onBeforeMount(() => {
                                     v-model="guru.nip"
                                     placeholder="Masukkan NIP"
                                     required
+                                />
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="6">
+                            <el-form-item label="NUPTK">
+                                <el-input
+                                    v-model="guru.nuptk"
+                                    placeholder="Masukkan NUPTK"
                                 />
                             </el-form-item>
                         </el-col>
