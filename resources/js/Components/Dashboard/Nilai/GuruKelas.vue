@@ -34,16 +34,38 @@ const guruKelas = () => {
     return page.props.auth.roles[0].includes("guru_kelas");
 };
 
-const openForm = (mapel, rombel, komponen) => {
+const selectedAgama = ref(null);
+const openForm = async (mapel, rombel, komponen) => {
     // console.log(rombel, mapel, komponen)
     selectedRombel.value = rombel;
     selectedMapel.value = mapel;
-    mode.value = komponen;
+    if (mapel.kode == "pabp") {
+        ElMessageBox.prompt("Masukkan Agama", "Tip", {
+            confirmButtonText: "Lanjut",
+            cancelButtonText: "Batal",
+            inputPattern: /^(Islam|Kristen|Katolik|Hindu|Budha|Konghuchu)$/,
+            inputErrorMessage:
+                "Pilihan Agama: Islam, Kristen, Katolik, Hindu, Budha, Konghuchu",
+        })
+            .then(({ value }) => {
+                selectedAgama.value = value;
+                mode.value = komponen;
+            })
+            .catch(() => {
+                ElMessage({
+                    type: "info",
+                    message: "Batal",
+                });
+            });
+    } else {
+        mode.value = komponen;
+    }
 };
 
 const closeForm = () => {
     selectedRombel.value = {};
     selectedMapel.value = {};
+    selectedAgama.value = null;
     mode.value = "home";
 };
 
@@ -287,6 +309,7 @@ onBeforeMount(() => {
         />
         <FormNilaiKelas
             v-if="mode == 'nilai-kelas'"
+            :agama="selectedAgama"
             :rombel="selectedRombel"
             :mapel="selectedMapel"
             @close="closeForm"

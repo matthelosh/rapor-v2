@@ -13,6 +13,7 @@ const props = defineProps({
     open: Boolean,
     sekolah: Object,
     mapel: Object,
+    agama: String,
 });
 const emit = defineEmits(["close"]);
 const role = page.props.auth.roles[0];
@@ -32,7 +33,7 @@ const simpan = async () => {
                 mapelId: props.mapel?.kode,
                 agama: page.props.auth.roles.includes("guru_agama")
                     ? page.props.auth.user.userable.agama
-                    : null,
+                    : props.agama,
                 semester:
                     route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
@@ -79,7 +80,7 @@ const getTps = async () => {
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
-                        : null,
+                        : props.agama,
                     semester:
                         route().params.semester ??
                         page.props.periode.semester.kode,
@@ -104,7 +105,12 @@ const getTps = async () => {
             } else {
                 // loading.value = false;
                 let raws = [];
-                props.rombel.siswas.forEach((siswa, s) => {
+                const filteredSiswas = props.agama
+                    ? props.rombel.siswas.filter(
+                          (siswa) => siswa.agama == props.agama,
+                      )
+                    : props.rombel.siswas;
+                filteredSiswas.forEach((siswa, s) => {
                     let ns = {};
                     tps.value.forEach((tp, t) => (ns[tp.kode] = 0));
                     ns["ts"] = 0;
@@ -138,7 +144,7 @@ const getNilaiUh = async () => {
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
-                        : null,
+                        : props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
@@ -170,7 +176,7 @@ const getNilaiAs = async () => {
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
-                        : null,
+                        : props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
@@ -202,7 +208,7 @@ const getNilaiTs = async () => {
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
                         ? page.props.auth.user.userable.agama
-                        : null,
+                        : props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
