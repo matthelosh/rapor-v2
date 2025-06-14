@@ -612,10 +612,6 @@ onBeforeMount(() => {
                                                                         'superadmin',
                                                                         'admin',
                                                                         'admin_tp',
-                                                                        'guru_agama',
-                                                                        'guru_kelas',
-                                                                        'guru_pjok',
-                                                                        'guru_inggris',
                                                                     ].includes(
                                                                         role,
                                                                     )
@@ -636,10 +632,6 @@ onBeforeMount(() => {
                                                                         'superadmin',
                                                                         'admin',
                                                                         'admin_tp',
-                                                                        'guru_agama',
-                                                                        'guru_kelas',
-                                                                        'guru_pjok',
-                                                                        'guru_inggris',
                                                                     ].includes(
                                                                         role,
                                                                     )
@@ -723,6 +715,15 @@ onBeforeMount(() => {
                                                                         circle
                                                                         type="danger"
                                                                         size="small"
+                                                                        :disabled="
+                                                                            ![
+                                                                                'superadmin',
+                                                                                'admin',
+                                                                                'admin_tp',
+                                                                            ].includes(
+                                                                                role,
+                                                                            )
+                                                                        "
                                                                         @click="
                                                                             hapusTp(
                                                                                 scope
@@ -884,7 +885,11 @@ onBeforeMount(() => {
                         <el-button
                             type="success"
                             @click="$refs.fileTp.click()"
-                            :disabled="role !== 'admin_tp'"
+                            :disabled="
+                                !['superadmin', 'admin', 'admin_tp'].includes(
+                                    role,
+                                )
+                            "
                             >Impor TP</el-button
                         >
                         <el-button type="primary" @click="addRow">
