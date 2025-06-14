@@ -45,17 +45,18 @@ class DashboardController extends Controller
                 "admin_tp",
             ])
         ) {
-            $data["sekolahs"] = Sekolah::with("ks", "gurus")
-                ->with([
-                    "rombels" => function ($q) use ($tapel) {
-                        $q->whereTapel($tapel);
-                        $q->with('siswas', function($s) {
-                            $s->where('status', 'aktif');
-                        });
-                    },
-                    "siswas" => fn($s) => $s->whereStatus("aktif"),
-                ])
-                ->get();
+            // $data["sekolahs"] = Sekolah::with("ks", "gurus")
+            //     ->with([
+            //         "rombels" => function ($q) use ($tapel) {
+            //             $q->whereTapel($tapel);
+            //             $q->with("siswas", function ($s) {
+            //                 $s->where("status", "aktif");
+            //             });
+            //         },
+            //         "siswas" => fn($s) => $s->whereStatus("aktif"),
+            //     ])
+            //     ->get();
+            $data['sekolahs'] => Sekolah::all();
         } elseif ($user->hasRole("ops")) {
             $data["sekolah"] = Sekolah::where(
                 "npsn",
@@ -74,8 +75,8 @@ class DashboardController extends Controller
                 "npsn",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->with("rombels", function($r) {
-                    $r->where('tapel', Periode::tapel()->kode);
+                ->with("rombels", function ($r) {
+                    $r->where("tapel", Periode::tapel()->kode);
                     $r->with("wali_kelas", "siswas");
                 })
                 ->with("mapels")
