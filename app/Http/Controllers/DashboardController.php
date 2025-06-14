@@ -37,65 +37,73 @@ class DashboardController extends Controller
         //     ->get('http://192.168.1.14:5774/WebService/getPengguna', ['npsn' => '20518848']);
 
         // dd($response);
-
-        if (
-            in_array($request->user()->getRoleNames()[0], [
-                "superadmin",
-                "admin",
-                "admin_tp",
-            ])
-        ) {
-            // $data["sekolahs"] = Sekolah::with("ks", "gurus")
-            //     ->with([
-            //         "rombels" => function ($q) use ($tapel) {
-            //             $q->whereTapel($tapel);
-            //             $q->with("siswas", function ($s) {
-            //                 $s->where("status", "aktif");
-            //             });
-            //         },
-            //         "siswas" => fn($s) => $s->whereStatus("aktif"),
-            //     ])
-            //     ->get();
-            $data["sekolahs"] = Sekolah::all();
-        } elseif ($user->hasRole("ops")) {
-            $data["sekolah"] = Sekolah::where(
-                "npsn",
-                $user->userable->sekolahs[0]->npsn
-            )
-                ->with("gurus", "ks")
-                ->with("rombels", function ($q) use ($tapel) {
-                    $q->where("tapel", $tapel);
-                    $q->with("gurus", "wali_kelas");
-                    $q->with("siswas", fn($q) => $q->where("status", "aktif"));
-                })
-                ->with("mapels")
-                ->first();
-        } elseif ($user->hasRole("guru_kelas")) {
-            $data["sekolah"] = Sekolah::where(
-                "npsn",
-                $user->userable->sekolahs[0]->npsn
-            )
-                ->with("rombels", function ($r) {
-                    $r->where("tapel", Periode::tapel()->kode);
-                    $r->with("wali_kelas", "siswas");
-                })
-                ->with("mapels")
-                ->first();
-        } elseif ($user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])) {
-            $guruId = $user->userable->id;
-            $data["sekolahs"] = Sekolah::whereHas("gurus", function ($q) use (
-                $guruId
+        try {
+            if (
+                in_array($request->user()->getRoleNames()[0], [
+                    "superadmin",
+                    "admin",
+                    "admin_tp",
+                ])
             ) {
-                $q->where("gurus.id", $guruId);
-            })
-                ->with("rombels.siswas")
-                ->get();
-        } elseif ($user->hasRole("org")) {
-            // $data['org'] = Org::where
+                $data["sekolahs"] = Sekolah::with("ks", "gurus")
+                    ->with([
+                        "rombels" => function ($q) use ($tapel) {
+                            $q->whereTapel($tapel);
+                            $q->with("siswas", function ($s) {
+                                $s->where("status", "aktif");
+                            });
+                        },
+                        "siswas" => fn($s) => $s->whereStatus("aktif"),
+                    ])
+                    ->get();
+                // $data["sekolahs"] = Sekolah::all();
+            } elseif ($user->hasRole("ops")) {
+                $data["sekolah"] = Sekolah::where(
+                    "npsn",
+                    $user->userable->sekolahs[0]->npsn
+                )
+                    ->with("gurus", "ks")
+                    ->with("rombels", function ($q) use ($tapel) {
+                        $q->where("tapel", $tapel);
+                        $q->with("gurus", "wali_kelas");
+                        $q->with(
+                            "siswas",
+                            fn($q) => $q->where("status", "aktif")
+                        );
+                    })
+                    ->with("mapels")
+                    ->first();
+            } elseif ($user->hasRole("guru_kelas")) {
+                $data["sekolah"] = Sekolah::where(
+                    "npsn",
+                    $user->userable->sekolahs[0]->npsn
+                )
+                    ->with("rombels", function ($r) {
+                        $r->where("tapel", Periode::tapel()->kode);
+                        $r->with("wali_kelas", "siswas");
+                    })
+                    ->with("mapels")
+                    ->first();
+            } elseif (
+                $user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])
+            ) {
+                $guruId = $user->userable->id;
+                $data["sekolahs"] = Sekolah::whereHas("gurus", function (
+                    $q
+                ) use ($guruId) {
+                    $q->where("gurus.id", $guruId);
+                })
+                    ->with("rombels.siswas")
+                    ->get();
+            } elseif ($user->hasRole("org")) {
+                // $data['org'] = Org::where
+            }
+            return Inertia::render("Dashboard", [
+                "data" => $data,
+            ]);
+        } catch (\Throwable $th) {
+            dd($th);
         }
-        return Inertia::render("Dashboard", [
-            "data" => $data,
-        ]);
     }
 
     public function operator(Request $request)
