@@ -71,50 +71,12 @@ class HandleInertiaRequests extends Middleware
         ];
         if ($user) {
             $datas["sekolahs"] = $this->sekolahs($user);
-            // if ($user->hasRole(["superadmin", "admin"])) {
-            //     $data["rombels"] = Rombel::whereTapel(
-            //         Periode::tapel()->kode
-            //     )->get();
-            // } elseif ($user->hasRole("guru_kelas")) {
-            //     // $guru = Guru::where("nip", $user->userable->nip)
-            //     //     ->with("rombels")
-            //     //     ->first();
-            //     $nip = $user->userable->nip;
-            //     $rombels = Rombel::whereHas("wali_kelas", function ($w) use (
-            //         $nip
-            //     ) {
-            //         $w->where("guru_id", $nip);
-            //     })->get();
-            //     // $guru = Guru::where("nip", $nip)->with("rombels")->first();
-            //     // dd($rombels);
-            //     // $rombels = $guru->rombels;
-            //     $data["rombels"] = $rombels;
-            // } elseif ($user->hasRole("siswa")) {
-            //     $sekolah = Sekolah::where("npsn", $user->userable->sekolah_id)
-            //         ->with("rombels", function ($r) {
-            //             $r->where("tapel", Periode::tapel()->kode);
-            //         })
-            //         ->first();
-            //     $data["rombels"] = $sekolah->rombels;
-            // } else {
-            //     // dd("tes");
-            //     // $data["rombels"] = Rombel::whereHas("gurus", function ($g) use (
-            //     //     $user
-            //     // ) {
-            //     //     $g->where("nip", $user->userable->nip);
-            //     // })
-            //     //     ->with("sekolah")
-            //     //     ->with("siswas", function ($q) {
-            //     //         $q->with("ortus")->orderBy("nama", "ASC");
-            //     //     })
-            //     //     ->get();
-            // }
             $datas["rombels"] = $user->hasRole(["admin", "superadmin", "org"])
                 ? Rombel::whereTapel(Periode::tapel()->kode)->get()
                 : // :
                 ($user->hasRole("guru_kelas")
                     ? Rombel::whereHas("wali_kelas", function ($w) use ($user) {
-                        $w->where("guru_id", $user->userable->nip);
+                        $w->where("guru_id", $user->userable->id);
                     })
                         ->with("sekolah")
                         ->with("siswas", function ($q) {
@@ -222,15 +184,15 @@ class HandleInertiaRequests extends Middleware
                 ->with([
                     "mapels" => function ($m) use ($role, $user) {
                         if ($role == "guru_kelas") {
-                            $nip = $user->userable->nip;
+                            $guruId = $user->userable->id;
                             $rombel = Rombel::whereHas("wali_kelas", function (
                                 $w
-                            ) use ($nip) {
-                                $w->where("nip", $nip);
+                            ) use ($guruId) {
+                                $w->where("id", $guruId);
                             })
                                 ->where("tapel", Periode::tapel()->kode)
                                 ->first();
-                            $tingkat = $rombel->tingkat;
+                            $tingkat = $rombel ? $rombel->tingkat : "1";
                             $m->whereNotIn("kode", [
                                 "pabp",
                                 "pjok",
@@ -270,10 +232,10 @@ class HandleInertiaRequests extends Middleware
                             });
                         }
                     },
-                    "rombels" => function ($r) use ($tapel) {
-                        $r->where("tapel", $tapel);
-                        $r->with("wali_kelas", "gurus");
-                    },
+                    // "rombels" => function ($r) use ($tapel) {
+                    //     $r->where("tapel", $tapel);
+                    //     $r->with("wali_kelas", "gurus");
+                    // },
                 ])
                 ->get() ?? null;
         }
