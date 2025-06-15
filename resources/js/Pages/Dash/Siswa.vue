@@ -391,11 +391,7 @@ const param = computed(() => route().params);
             <h2
                 class="font-semibold text-xl text-gray-800 leading-tight uppercase"
             >
-                {{
-                    page.props.auth.roles[0] !== "admin"
-                        ? page.props.sekolahs[0]?.nama
-                        : "Admin"
-                }}
+                {{ page.props.auth.roles[0] }}
             </h2>
         </template>
         <div class="page">

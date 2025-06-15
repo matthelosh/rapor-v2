@@ -88,6 +88,10 @@ Route::middleware("auth")->group(function () {
         "profile.destroy"
     );
 
+    Route::get("/userdetail", function (Request $request) {
+        return response()->json(["userdetail" => $request->user()->userable]);
+    });
+
     Route::prefix("dashboard")->group(function () {
         Route::post("/tes-reverb", [
             DashboardController::class,
@@ -660,7 +664,9 @@ Route::middleware("auth")->group(function () {
                 Route::get("/", [
                     AdministrasiController::class,
                     "homeAkhirJenjang",
-                ])->name("dashboard.administrasi.akhirjenjang.home");
+                ])
+                    ->middleware("role:guru_kelas")
+                    ->name("dashboard.administrasi.akhirjenjang.home");
             });
         });
 

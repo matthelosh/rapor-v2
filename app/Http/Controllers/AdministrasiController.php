@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
 use App\Services\AJenjangService;
+use App\Models\Sekolah;
+use App\Helpers\SekolahHelper;
 
 class AdministrasiController extends Controller
 {
@@ -17,7 +19,7 @@ class AdministrasiController extends Controller
         try {
             $month = $request->query("bulan") ?? date("m");
             $tahun = $request->query("tahun") ?? date("Y");
-
+            $nip = $request->user()->userable->nip;
             $npsn =
                 $request->query("sekolahId") ??
                 $request->user()->userable->sekolahs[0]->npsn;
@@ -100,6 +102,11 @@ class AdministrasiController extends Controller
                 }
             }
 
+            // $sekolahs = Sekolah::whereHas("gurus", function ($g) use ($nip) {
+            //     $g->where("nip", $nip);
+            // })
+            //     ->with("ks")
+            //     ->get();
             return Inertia::render("Dash/Administrasi/PresensiGuru", [
                 "agendas" => $agendas,
                 "gurus" => Guru::whereHas("sekolahs", function ($s) use (
@@ -110,6 +117,7 @@ class AdministrasiController extends Controller
                     ->whereNot("jabatan", "Ops")
                     ->get(),
                 "weeks" => $hasil,
+                "sekolahs" => SekolahHelper::data($request->user()),
             ]);
         } catch (\Throwable $th) {
             throw $th;

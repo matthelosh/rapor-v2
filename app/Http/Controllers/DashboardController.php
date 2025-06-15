@@ -65,16 +65,19 @@ class DashboardController extends Controller
                     ->with("mapels")
                     ->first();
             } elseif ($user->hasRole("guru_kelas")) {
+                $guruId = $user->userable->id;
                 $data["sekolah"] = Sekolah::where(
                     "npsn",
                     $user->userable->sekolahs[0]->npsn
                 )
-                    ->with("rombels", function ($r) {
+                    ->with("rombels", function ($r) use ($guruId) {
                         $r->where("tapel", Periode::tapel()->kode);
+                        $r->where("guru_id", $guruId);
                         $r->with("wali_kelas", "siswas");
                     })
                     ->with("mapels")
                     ->first();
+                // dd($data["sekolah"]);
             } elseif (
                 $user->hasRole(["guru_agama", "guru_pjok", "guru_inggris"])
             ) {

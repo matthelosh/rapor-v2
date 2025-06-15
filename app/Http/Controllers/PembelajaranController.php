@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Models\Rombel;
 use App\Helpers\Periode;
+use App\Helpers\SekolahHelper;
 
 class PembelajaranController extends Controller implements HasMiddleware
 {
@@ -102,6 +103,7 @@ class PembelajaranController extends Controller implements HasMiddleware
             "mapels" => $mapels,
             "elemens" => Elemen::all(),
             "ekskuls" => Ekskul::all(),
+            "sekolahs" => \App\Helpers\SekolahHelper::data($request->user()),
         ]);
     }
 

@@ -90,7 +90,7 @@ onBeforeMount(() => {
                 <div class="card-toolbar flex items-center justify-between">
                     <div class="title">
                         <h3 class="text-lg font-bold">
-                            Penilaian {{ page.props.rombels[0].label }} Semester
+                            Penilaian Semester
                             {{ page.props.periode.semester.label }}
                             {{ page.props.periode.tapel.deskripsi }}
                         </h3>
@@ -121,7 +121,7 @@ onBeforeMount(() => {
                     class="hidden"
                     @change="onFileNilaiChange($event)"
                 />
-                <el-collapse accordion>
+                <!-- <el-collapse accordion>
                     <template
                         v-for="(rombel, r) in page.props.rombels"
                         :key="r"
@@ -161,24 +161,6 @@ onBeforeMount(() => {
                                                 "
                                                 >Nilai Kelas</el-button
                                             >
-                                            <!-- <span class="flex items-center">
-                                            <el-button
-                                                type="primary"
-                                                rounded
-                                                size="small"
-                                                :disabled="
-                                                    guruKelas &&
-                                                    scope.row.kode == 'pabp'
-                                                "
-                                                @click="
-                                                    openForm(
-                                                        scope.row,
-                                                        rombel,
-                                                        'nilai-kelas',
-                                                    )
-                                                "
-                                                >Nilai Kelas</el-button
-                                            > -->
                                             <el-button
                                                 type="primary"
                                                 :disabled="
@@ -268,8 +250,8 @@ onBeforeMount(() => {
                             </el-table>
                         </el-collapse-item>
                     </template>
-                </el-collapse>
-                <!-- {{ page.props.rombels }} -->
+                </el-collapse> -->
+                {{ page.props.datas }}
             </div>
         </el-card>
         <FormNilaiHarian
