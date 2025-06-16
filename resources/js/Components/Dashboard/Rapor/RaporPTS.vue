@@ -16,9 +16,7 @@ const Kop = defineAsyncComponent(
     () => import("@/Components/Dashboard/Kop.vue"),
 );
 const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
-const periode = computed(() => {
-
-})
+const periode = computed(() => {});
 
 const sekolah = computed(() => page.props.sekolahs[0]);
 const nilais = ref([]);
@@ -48,7 +46,11 @@ const cetak = async () => {
 
 				</html>
 	`;
-    let win = window.open(page.props.appUrl + "/print", "_blank", "height=600,width=1500");
+    let win = window.open(
+        page.props.appUrl + "/print",
+        "_blank",
+        "height=600,width=1500",
+    );
     win.document.write(html);
     setTimeout(() => {
         win.print();
@@ -63,7 +65,9 @@ const getNilaiPTS = async () => {
             route("dashboard.rapor.pts", {
                 _query: {
                     rombelId: props.rombel.kode,
-                    semester: route().params.semester ?? page.props.periode.semester.kode,
+                    semester:
+                        route().params.semester ??
+                        page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
                     siswaId: props.siswa.nisn,
                     sekolahId: sekolah.value.npsn,
@@ -95,7 +99,11 @@ onBeforeMount(async () => {
         class="toolbar h-12 bg-slate-200 w-full flex items-center justify-between print:hidden px-4"
     >
         <span>
-            Cetak Rapor PTS {{ route().params.semester ?? page.props.periode.semester.label }} Tahun
+            Cetak Rapor PTS
+            {{
+                route().params.semester ?? page.props.periode.semester.label
+            }}
+            Tahun
             {{ page.props.periode.tapel.label }}
         </span>
         <div class="toolbar-items flex items-center">
@@ -156,14 +164,14 @@ onBeforeMount(async () => {
                                     <td>Semester</td>
                                     <td class="px-1">:</td>
                                     <td>
-                                        {{ nilais['semester']?.label }}
+                                        {{ nilais["semester"]?.label }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Tahun Ajaran</td>
                                     <td class="px-1">:</td>
                                     <td>
-                                        {{ nilais['tapel']?.label }}
+                                        {{ nilais["tapel"]?.label }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -239,15 +247,15 @@ onBeforeMount(async () => {
 
                     <p class="font-bold underline leading-4 mt-20">
                         <span class="uppercase">{{
-                            page.props.auth.user.userable.nama
+                            rombel.wali_kelas.nama
                         }}</span
-                        >, {{ page.props.auth.user.userable.gelar_belakang }}
+                        >, {{ rombel.wali_kelas.gelar_belakang }}
                     </p>
                     <p
                         class="leading-4 mb-8"
-                        v-if="page.props.auth.user.userable.status !== 'gtt'"
+                        v-if="rombel.wali_kelas.status !== 'gtt'"
                     >
-                        NIP. {{ page.props.auth.user.userable.nip }}
+                        NIP. {{ rombel.wali_kelas.nip }}
                     </p>
                 </div>
             </div>

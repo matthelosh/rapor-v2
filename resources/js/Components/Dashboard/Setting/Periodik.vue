@@ -1,76 +1,124 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { usePage, Head, router } from '@inertiajs/vue3'
-import { Icon } from '@iconify/vue'
+import { ref, computed } from "vue";
+import { usePage, Head, router } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
 
-const page = usePage()
+const page = usePage();
 
-const data = computed(() => page.props.data)
+const data = computed(() => page.props.data);
 
-const onTapelChange = async(e, item) => {
-    await router.post(route('dashboard.tapel.toggle', {id: item.id}), {status: e, _method: 'put'}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['tapels']})
+const onTapelChange = async (e, item) => {
+    router.post(
+        route("dashboard.tapel.toggle", { id: item.id }),
+        { status: e, _method: "put" },
+        {
+            onSuccess: (page) => {
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: "success",
+                });
+                router.reload({ only: ["tapels"] });
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => {
+                    setTimeout(() => {
+                        ElNotification({
+                            title: "Error",
+                            message: errs[k],
+                            type: "error",
+                        });
+                    }, 500);
+                });
+            },
         },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-}
-const onSemesterChange = async(e, item) => {
-    await router.post(route('dashboard.semester.toggle', {id: item.id}), {status: e, _method: 'put'}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['semester']})
+    );
+};
+const onSemesterChange = async (e, item) => {
+    router.post(
+        route("dashboard.semester.toggle", { id: item.id }),
+        { status: e, _method: "put" },
+        {
+            onSuccess: (page) => {
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: "success",
+                });
+                router.reload({ only: ["semester"] });
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => {
+                    setTimeout(() => {
+                        ElNotification({
+                            title: "Error",
+                            message: errs[k],
+                            type: "error",
+                        });
+                    }, 500);
+                });
+            },
         },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-}
-const tapel = ref({})
+    );
+};
+const tapel = ref({});
 
-const simpanTapel = async() => {
-    router.post(route('dashboard.tapel.store'), {data: tapel.value}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['tapels']})
+const simpanTapel = async () => {
+    router.post(
+        route("dashboard.tapel.store"),
+        { data: tapel.value },
+        {
+            onSuccess: (page) => {
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: "success",
+                });
+                router.reload({ only: ["tapels"] });
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => {
+                    setTimeout(() => {
+                        ElNotification({
+                            title: "Error",
+                            message: errs[k],
+                            type: "error",
+                        });
+                    }, 500);
+                });
+            },
         },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-} 
-const semester = ref({})
+    );
+};
+const semester = ref({});
 
-const simpanSemester = async() => {
-    router.post(route('dashboard.semester.store'), {data: semester.value}, {
-        onSuccess: page => {
-            ElNotification({title: "Info", message: page.props.flash.message, type: 'success'})
-            router.reload({only:['semester']})
+const simpanSemester = async () => {
+    router.post(
+        route("dashboard.semester.store"),
+        { data: semester.value },
+        {
+            onSuccess: (page) => {
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: "success",
+                });
+                router.reload({ only: ["semester"] });
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => {
+                    setTimeout(() => {
+                        ElNotification({
+                            title: "Error",
+                            message: errs[k],
+                            type: "error",
+                        });
+                    }, 500);
+                });
+            },
         },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: "Error", message: errs[k], type: 'error'})
-                }, 500);
-            })
-        }
-    })
-} 
+    );
+};
 </script>
 
 <template>
@@ -99,17 +147,39 @@ const simpanSemester = async() => {
                             </el-button>
                         </template>
                         <div class="form-tapel">
-                            <el-form v-model="tapel" label-position="top" size="small">
+                            <el-form
+                                v-model="tapel"
+                                label-position="top"
+                                size="small"
+                            >
                                 <el-form-item label="Kode">
-                                    <el-input v-model="tapel.kode" placeholder="Kode Tapel" size="small"></el-input>
+                                    <el-input
+                                        v-model="tapel.kode"
+                                        placeholder="Kode Tapel"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
                                 <el-form-item label="Label">
-                                    <el-input v-model="tapel.label" placeholder="Label" size="small"></el-input>
+                                    <el-input
+                                        v-model="tapel.label"
+                                        placeholder="Label"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
                                 <el-form-item label="Deskripsi">
-                                    <el-input v-model="tapel.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
+                                    <el-input
+                                        v-model="tapel.deskripsi"
+                                        placeholder="Deskripsi"
+                                        type="textarea"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
-                                <el-button class="mx-auto" type="primary" @click="simpanTapel">Simpan</el-button>
+                                <el-button
+                                    class="mx-auto"
+                                    type="primary"
+                                    @click="simpanTapel"
+                                    >Simpan</el-button
+                                >
                             </el-form>
                         </div>
                     </el-popover>
@@ -121,7 +191,13 @@ const simpanSemester = async() => {
                 <el-table-column label="Label" prop="label"></el-table-column>
                 <el-table-column label="Status" align="center">
                     <template #default="scope">
-                        <el-switch v-model="scope.row.is_active" size="small" :active-value="1" :inactive-value="0" @change="onTapelChange($event, scope.row)"></el-switch>
+                        <el-switch
+                            v-model="scope.row.is_active"
+                            size="small"
+                            :active-value="1"
+                            :inactive-value="0"
+                            @change="onTapelChange($event, scope.row)"
+                        ></el-switch>
                     </template>
                 </el-table-column>
             </el-table>
@@ -137,17 +213,39 @@ const simpanSemester = async() => {
                             </el-button>
                         </template>
                         <div class="form-semester">
-                            <el-form v-model="semester" label-position="top" size="small">
+                            <el-form
+                                v-model="semester"
+                                label-position="top"
+                                size="small"
+                            >
                                 <el-form-item label="Kode">
-                                    <el-input v-model="semester.kode" placeholder="Kode Semester" size="small"></el-input>
+                                    <el-input
+                                        v-model="semester.kode"
+                                        placeholder="Kode Semester"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
                                 <el-form-item label="Label">
-                                    <el-input v-model="semester.label" placeholder="Label" size="small"></el-input>
+                                    <el-input
+                                        v-model="semester.label"
+                                        placeholder="Label"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
                                 <el-form-item label="Deskripsi">
-                                    <el-input v-model="semester.deskripsi" placeholder="Deskripsi" type="textarea" size="small"></el-input>
+                                    <el-input
+                                        v-model="semester.deskripsi"
+                                        placeholder="Deskripsi"
+                                        type="textarea"
+                                        size="small"
+                                    ></el-input>
                                 </el-form-item>
-                                <el-button class="mx-auto" type="primary" @click="simpanSemester">Simpan</el-button>
+                                <el-button
+                                    class="mx-auto"
+                                    type="primary"
+                                    @click="simpanSemester"
+                                    >Simpan</el-button
+                                >
                             </el-form>
                         </div>
                     </el-popover>
@@ -160,7 +258,13 @@ const simpanSemester = async() => {
                 <el-table-column label="Status" align="center">
                     <template #default="scope">
                         <!-- {{ scope.row.is_active }} -->
-                        <el-switch v-model="scope.row.is_active" size="small" :active-value="1" :inactive-value="0" @change="onSemesterChange($event, scope.row)"></el-switch>
+                        <el-switch
+                            v-model="scope.row.is_active"
+                            size="small"
+                            :active-value="1"
+                            :inactive-value="0"
+                            @change="onSemesterChange($event, scope.row)"
+                        ></el-switch>
                     </template>
                 </el-table-column>
             </el-table>

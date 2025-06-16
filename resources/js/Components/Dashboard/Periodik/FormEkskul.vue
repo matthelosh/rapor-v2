@@ -1,93 +1,126 @@
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue'
-import { router, usePage } from '@inertiajs/vue3'
-import { Icon } from '@iconify/vue';
-import axios from 'axios'
-import { ElNotification } from 'element-plus';
+import { ref, computed, onBeforeMount } from "vue";
+import { router, usePage } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
+import axios from "axios";
+import { ElNotification } from "element-plus";
 
-const page = usePage()
-const props = defineProps({siswa: Object, rombel: Object, open: Boolean})
-const emit = defineEmits(['close', 'nextSiswa', 'prevSiswa'])
-const ekskuls = ref([])
-const nilais = ref([
+const page = usePage();
+const props = defineProps({ siswa: Object, rombel: Object, open: Boolean });
+const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
+const ekskuls = ref([]);
+const nilais = ref([]);
 
-])
+const getEkskuls = async () => {
+    await axios
+        .get(
+            route("dashboard.pembelajaran.ekskul", {
+                _query: {
+                    sekolahId: page.props.sekolahs[0].npsn,
+                },
+            }),
+        )
+        .then((res) => {
+            ekskuls.value = res.data.ekskuls;
+            res.data.ekskuls.forEach((item) => {
+                nilais.value.push({
+                    ekskulId: item.id,
+                    nilai: "",
+                    deskripsi: "",
+                });
+            });
+        })
+        .catch((err) => console.log(err));
+};
 
-const getEkskuls = async() => {
-    await axios.get(route('dashboard.pembelajaran.ekskul', {
-            _query: {
-                sekolahId: page.props.sekolahs[0].npsn
-            }
-        })).then(res => {
-            ekskuls.value = res.data.ekskuls
-            res.data.ekskuls.forEach(item => {
-                nilais.value.push({ekskulId: item.id, nilai: '', deskripsi: ''})
-            })
-        }).catch(err => console.log(err))
-
-}
-
-const getNilai = async() => {
-    await axios.get(route('dashboard.nilai.ekskul.index', {
-            _query: {
-                sekolahId: page.props.sekolahs[0].npsn,
-                siswaId: props.siswa.nisn,
-                tapel: page.props.periode.tapel.kode,
-                semester: page.props.periode.semester.kode,
-            }
-        })).then(res => {
+const getNilai = async () => {
+    await axios
+        .get(
+            route("dashboard.nilai.ekskul.index", {
+                _query: {
+                    sekolahId: page.props.sekolahs[0].npsn,
+                    siswaId: props.siswa.nisn,
+                    tapel: page.props.periode.tapel.kode,
+                    semester: page.props.periode.semester.kode,
+                },
+            }),
+        )
+        .then((res) => {
             if (res.data.nilais || res.data.nilais.length > 0) {
-                res.data.nilais.forEach(nilai => {
-                    const index = nilais.value.findIndex(n => n.ekskulId == nilai.ekskul_id)
-                    nilais.value[index].nilai = nilai.nilai
-                    nilais.value[index].deskripsi = nilai.deskripsi
+                res.data.nilais.forEach((nilai) => {
+                    const index = nilais.value.findIndex(
+                        (n) => n.ekskulId == nilai.ekskul_id,
+                    );
+                    nilais.value[index].nilai = nilai.nilai;
+                    nilais.value[index].deskripsi = nilai.deskripsi;
                     // console.log(index)
-                })
+                });
             }
             // ekskuls.value = res.data.ekskuls
             // res.data.ekskuls.forEach(item => {
             //     nilais.value.push({ekskulId: item.id, nilai: '', deskripsi: ''})
             // })
             // console.log(res)
-            
-        }).catch(err => console.log(err))
-}
+        })
+        .catch((err) => console.log(err));
+};
 
-const simpan = async() => {
-    router.post(route('dashboard.nilai.ekskul.store', {
-        _query: {
-            siswaId: props.siswa.nisn,
-            tapel: page.props.periode.tapel.kode,
-            semester: page.props.periode.semester.kode,
-        }
-    }), {nilais: nilais.value}, {
-        onSuccess: page => {
-            ElNotification({title: 'Info', message: page.props.flash.message, type:' success'})
+const simpan = async () => {
+    router.post(
+        route("dashboard.nilai.ekskul.store", {
+            _query: {
+                siswaId: props.siswa.nisn,
+                tapel: page.props.periode.tapel.kode,
+                semester: page.props.periode.semester.kode,
+            },
+        }),
+        { nilais: nilais.value },
+        {
+            onSuccess: (page) => {
+                ElNotification({
+                    title: "Info",
+                    message: page.props.flash.message,
+                    type: " success",
+                });
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => {
+                    setTimeout(() => {
+                        ElNotification({
+                            title: "Error",
+                            message: errs[k],
+                            type: "error",
+                        });
+                    }, 500);
+                });
+            },
         },
-        onError: errs => {
-            Object.keys(errs).forEach(k => {
-                setTimeout(() => {
-                    ElNotification({title: 'Error', message: errs[k], type: 'error'})
-                }, 500)
-            })
-        }
-    })
-}
-
+    );
+};
 
 onBeforeMount(async () => {
-    await getEkskuls()
-    getNilai()
-})
+    await getEkskuls();
+    getNilai();
+});
 </script>
 
 <template>
-    <el-dialog v-model="props.open" :show-close="false" :body-style="{background: '#aaa'}">
-        <template #header="{close}">
+    <el-dialog
+        v-model="props.open"
+        :show-close="false"
+        :body-style="{ background: '#aaa' }"
+    >
+        <template #header="{ close }">
             <div class="toolbar flex items-center justify-between">
-                <span class="uppercase">Isi Nilai Ekstrakurikuler {{ props.siswa.nama }}</span>
+                <span class="uppercase"
+                    >Isi Nilai Ekstrakurikuler {{ props.siswa.nama }}</span
+                >
                 <div class="toolbar-items flex items-center">
-                    <el-button type="danger" @click="emit('close')" size="small">
+                    <el-button
+                        type="danger"
+                        @click="emit('close')"
+                        size="small"
+                    >
                         <Icon icon="mdi:close" />
                     </el-button>
                 </div>
@@ -95,17 +128,34 @@ onBeforeMount(async () => {
         </template>
         <div class="dialog-body">
             <el-table :data="ekskuls">
-                <el-table-column label="Nama Ekskul" prop="nama" width="200"></el-table-column>
+                <el-table-column
+                    label="Nama Ekskul"
+                    prop="nama"
+                    width="200"
+                ></el-table-column>
                 <el-table-column label="Nilai" width="150">
                     <template #default="scope">
-                        <el-select v-model="nilais[scope.$index].nilai" placeholder="Pilih Nilai">
-                            <el-option v-for="nilai in ['A','B','C','D']" :key="nilai" :value="nilai" />
+                        <el-select
+                            v-model="nilais[scope.$index].nilai"
+                            placeholder="Pilih Nilai"
+                        >
+                            <el-option
+                                v-for="nilai in ['A', 'B', 'C', 'D']"
+                                :key="nilai"
+                                :value="nilai"
+                            />
                         </el-select>
                     </template>
                 </el-table-column>
-                <el-table-column label="Deskripsi" >
+                <el-table-column label="Deskripsi">
                     <template #default="scope">
-                        <el-input type="textarea" rows="1" autosize v-model="nilais[scope.$index].deskripsi" placeholder="Isikan deskripsi capaian"></el-input>
+                        <el-input
+                            type="textarea"
+                            :rows="1"
+                            autosize
+                            v-model="nilais[scope.$index].deskripsi"
+                            placeholder="Isikan deskripsi capaian"
+                        ></el-input>
                     </template>
                 </el-table-column>
             </el-table>

@@ -218,10 +218,10 @@ onBeforeMount(() => {
                         <p>Menyetujui,</p>
 
                         <p class="font-black underline mt-16">
-                            {{ page.props.auth.user.userable.nama }},
-                            {{ page.props.auth.user.userable.gelar_belakang }}
+                            {{ rombel.wali_kelas.nama }},
+                            {{ rombel.wali_kelas.gelar_belakang }}
                         </p>
-                        <p>NIP. {{ page.props.auth.user.userable.nip }}</p>
+                        <p>NIP. {{ rombel.wali_kelas.nip }}</p>
                     </div>
                     <div class="kosong"></div>
                     <div class="ttd-ortu">

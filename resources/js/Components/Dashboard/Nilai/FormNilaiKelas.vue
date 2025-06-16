@@ -31,9 +31,7 @@ const simpan = async () => {
                 rombelId: props.rombel.kode,
                 tingkat: props.rombel.tingkat,
                 mapelId: props.mapel?.kode,
-                agama: page.props.auth.roles.includes("guru_agama")
-                    ? page.props.auth.user.userable.agama
-                    : props.agama,
+                agama: props.agama,
                 semester:
                     route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
@@ -78,9 +76,7 @@ const getTps = async () => {
                 _query: {
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
-                    agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
-                        : props.agama,
+                    agama: props.agama,
                     semester:
                         route().params.semester ??
                         page.props.periode.semester.kode,
@@ -142,9 +138,7 @@ const getNilaiUh = async () => {
                     rombelId: props.rombel.kode,
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
-                    agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
-                        : props.agama,
+                    agama: props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
@@ -174,9 +168,7 @@ const getNilaiAs = async () => {
                     rombelId: props.rombel.kode,
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
-                    agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
-                        : props.agama,
+                    agama: props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
@@ -206,9 +198,7 @@ const getNilaiTs = async () => {
                     rombelId: props.rombel.kode,
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
-                    agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
-                        : props.agama,
+                    agama: props.agama,
                     semester:
                         params.semester ?? page.props.periode.semester.kode,
                     tapel: page.props.periode.tapel.kode,
@@ -326,20 +316,20 @@ onBeforeMount(async () => {
                         <p>
                             Nilai Harian
                             {{
-                                props.mapel.label
+                                props.mapel != "pabp" && !props.agama
                                     ? props.mapel.label
-                                    : !props.mapel.kode.includes("pabp")
-                                      ? props.mapel.kode.toUpperCase()
-                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                    : `PENDIDIKAN AGAMA ${props.agama}`
                             }}
                         </p>
-                        <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->
                         <p>
                             {{ props.rombel.label }}
                             <span>{{
-                                role !== "guru_kelas"
-                                    ? props.sekolah.nama
-                                    : page.props.sekolahs[0].nama
+                                // role !== "guru_kelas"
+                                //     ? props.sekolah.nama
+                                //     : page.props.sekolahs[0].nama
+                                // role +
+                                // " | " +
+                                page.props.datas["sekolah"][0]["nama"]
                             }}</span>
                         </p>
                     </div>

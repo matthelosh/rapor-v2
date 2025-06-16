@@ -17,10 +17,10 @@ const unduh = async (target, rombel, tapel) => {
     loading.value = true;
     const el = document.querySelector(`.${target}`);
     const table = el.querySelector("table");
-    let wb = await utils.table_to_book(table);
+    let wb = utils.table_to_book(table);
     await writeFile(
         wb,
-        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0].nama} ${page.props.periode.tapel.deskripsi}.xlsx`
+        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0].nama} ${page.props.periode.tapel.deskripsi}.xlsx`,
     );
     setTimeout(() => {
         loading.value = false;
@@ -47,7 +47,7 @@ const cetak = async (target) => {
 				</html>
 	`;
     let win = window.open(host + "/print", "_blank", "height=900,width=1000");
-    await win.document.write(html);
+    win.document.write(html);
     setTimeout(() => {
         win.print();
         win.close();
@@ -101,7 +101,7 @@ onBeforeMount(async () => {});
                                         class="text-lg font-bold uppercase print:text-center"
                                     >
                                         Ledger Nilai {{ rombel.label }}
-                                        {{ page.props.sekolahs[0].nama }}
+                                        {{ rombel.sekolah.nama }}
                                         {{ page.props.periode.tapel.deskripsi }}
                                     </h3>
                                     <div class="flex items-center">
@@ -124,7 +124,7 @@ onBeforeMount(async () => {});
                                                 unduh(
                                                     `cetak-${rombel.kode}`,
                                                     rombel.label,
-                                                    rombel.tapel
+                                                    rombel.tapel,
                                                 )
                                             "
                                             class="print:hidden"

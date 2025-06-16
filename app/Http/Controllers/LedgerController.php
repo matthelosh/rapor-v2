@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Mapel;
 use App\NilaiTrait;
 use Illuminate\Http\Request;
+use App\Helpers\RombelHelper;
 
 class LedgerController extends Controller
 {
@@ -15,8 +16,9 @@ class LedgerController extends Controller
     {
         // dd($request->query());
         return Inertia::render("Dash/Ledger", [
-            'mapels' => Mapel::all(),
-            'nilais' => $this->ledger($request),
+            "mapels" => Mapel::all(),
+            "nilais" => $this->ledger($request),
+            "rombels" => RombelHelper::data($request->user()),
         ]);
     }
 }

@@ -8,19 +8,26 @@ use App\Models\Siswa;
 use App\Services\RaporService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Helpers\RombelHelper;
+use App\Helpers\SekolahHelper;
 
 class RaporController extends Controller
 {
     public function home(Request $request)
     {
         return Inertia::render("Dash/Rapor", [
+            "rombels" => RombelHelper::data($request->user()),
+            "sekolahs" => SekolahHelper::data($request->user()),
             "tapels" => Tapel::all(),
         ]);
     }
 
     public function periodik(Request $request)
     {
-        return Inertia::render("Dash/Periodik", []);
+        return Inertia::render("Dash/Periodik", [
+            "rombels" => RombelHelper::data($request->user()),
+            "sekolahs" => SekolahHelper::data($request->user()),
+        ]);
     }
 
     public function raporPTS(Request $request, RaporService $raporService)
