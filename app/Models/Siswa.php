@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  *
@@ -83,7 +85,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Siswa extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         "dapo_id",
@@ -110,6 +112,15 @@ class Siswa extends Model
         "sekolah_id",
         "status",
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName("siswa")
+            ->logOnly(["nisn", "nama", "jk", "sekolah_id"]) // sesuaikan dengan kolommu
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function sekolah()
     {

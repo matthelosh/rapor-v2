@@ -22,6 +22,7 @@
         "pusher/pusher-php-server": "^7.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/db-dumper": "^3.6",
+        "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-backup": "^9.2",
         "spatie/laravel-permission": "^6.7",
         "staudenmeir/belongs-to-through": "^2.5",

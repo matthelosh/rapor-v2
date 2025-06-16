@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  *
@@ -66,8 +68,12 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  */
 class Guru extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
+    protected static $logName = "guru";
+    protected static $logAttributes = ["nama", "nip"];
+    protected static $logOnlyDirty = true;
+    protected static $submitEmptyLogs = false;
     protected $fillable = [
         "nip",
         "dapo_id",
@@ -97,6 +103,20 @@ class Guru extends Model
     // protected $primaryKey = "nip";
     // public $incrementing = false;
     // protected $keyType = "string";
+    //
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName("guru")
+            ->logOnly(["name", "nip"])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+    public function getDescriptionForEvent(string $eventName): string
+    {
+        return "Guru telah di {$eventName}";
+    }
 
     public function user(): MorphOne
     {

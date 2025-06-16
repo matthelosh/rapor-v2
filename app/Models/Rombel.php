@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 /**
  *
@@ -49,7 +51,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rombel extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         "tapel",
@@ -67,6 +69,15 @@ class Rombel extends Model
     // protected $primaryKey = "nip";
     // public $incrementing = false;
     // protected $keyType = "string";
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->useLogName("rombel")
+            ->logOnly(["kode", "nama", "tingkat", "tapel", "sekolah_id"]) // sesuaikan dengan kolommu
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function wali_kelas()
     {
