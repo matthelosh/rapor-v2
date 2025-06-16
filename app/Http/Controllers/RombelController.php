@@ -119,7 +119,7 @@ class RombelController extends Controller
             $delete = $rombel->delete();
             DB::table("logs")->create([
                 "user_id" => Auth::user()->name,
-                "keterangan" => $dataRombel . " dihapus",
+                "keterangan" => $dataRombel . " dihapus.",
             ]);
             return back()->with("success", true);
         } catch (\Exception $e) {
