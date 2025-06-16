@@ -221,23 +221,23 @@ onBeforeMount(async () => {
                         <template #default="scope">
                             <el-button
                                 type="primary"
-                                text
+                                plain
                                 size="small"
                                 @click="edit(scope.row)"
                                 >{{ scope.row.kode }}</el-button
                             >
                         </template>
                     </el-table-column>
-                    <el-table-column label="Label" prop="label" width="80" />
+                    <el-table-column label="Label" prop="label" width="150" />
 
-                    <el-table-column label="Wali Kelas">
+                    <el-table-column label="Wali Kelas" width="250">
                         <template #default="scope">
                             <p>
                                 {{ scope.row.wali_kelas?.nama }}
                             </p>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Guru Pengajar">
+                    <el-table-column label="Guru Pengajar" width="300">
                         <template #default="scope">
                             <ul class="list-decimal pl-4">
                                 <li v-for="(gp, i) in scope.row.gurus" :key="i">
@@ -261,7 +261,7 @@ onBeforeMount(async () => {
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column label="KKTP">
+                    <el-table-column label="KKTP" width="100">
                         <template #default="scope">
                             <el-popover width="400px" trigger="click">
                                 <template #reference>
@@ -298,57 +298,35 @@ onBeforeMount(async () => {
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Siswa" width="150">
+                    <el-table-column label="Anggota Rombel" width="180">
                         <template #default="scope">
-                            <div>
-                                <span
+                            <div class="text-center">
+                                <el-tag type="primary"
                                     >Lk:
                                     {{
                                         scope.row.siswas?.filter(
                                             (sa) => sa.jk == "Laki-laki",
                                         ).length
                                     }},
-                                </span>
-                                <span
+                                </el-tag>
+                                <el-tag type="danger"
                                     >Pr:
                                     {{
                                         scope.row.siswas?.filter(
                                             (sa) => sa.jk == "Perempuan",
                                         ).length
                                     }},
-                                </span>
-                                <span>Jml: {{ scope.row.siswas?.length }}</span>
-                            </div>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="Status" width="60">
-                        <template #default="scope">
-                            <Icon
-                                :icon="
-                                    scope.row.is_active == '1'
-                                        ? 'mdi:check-circle'
-                                        : 'mdi:close-circle'
-                                "
-                                :class="
-                                    scope.row.is_active == '1'
-                                        ? 'text-green-600'
-                                        : 'text-red-600'
-                                "
-                                class="text-xl"
-                            />
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="Opsi" width="100" fixed="right">
-                        <template #default="scope">
-                            <div class="flex items-center gap-1">
-                                <span>
+                                </el-tag>
+                                <el-tag type="info"
+                                    >Jml: {{ scope.row.siswas?.length }}</el-tag
+                                >
+                                <div class="my-2">
                                     <el-tooltip
                                         size="small"
                                         :content="`Masukkan Siswa ke ${scope.row.label}?`"
                                         placement="left"
                                     >
                                         <el-button
-                                            circle
                                             type="primary"
                                             size="small"
                                             @click="mgmSiswa(scope.row)"
@@ -359,10 +337,38 @@ onBeforeMount(async () => {
                                         >
                                             <Icon
                                                 icon="mdi:account-plus-outline"
+                                                class="mr-1"
                                             />
+                                            Anggota
                                         </el-button>
                                     </el-tooltip>
-                                </span>
+                                </div>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Status" width="200">
+                        <template #default="scope">
+                            <span class="flex gap-2">
+                                <Icon
+                                    :icon="
+                                        scope.row.is_active == '1'
+                                            ? 'mdi:check-circle'
+                                            : 'mdi:close-circle'
+                                    "
+                                    :class="
+                                        scope.row.is_active == '1'
+                                            ? 'text-green-600'
+                                            : 'text-red-600'
+                                    "
+                                    class="text-xl"
+                                />
+                                {{ scope.row.is_active ? "AKTIF" : "NONAKTIF" }}
+                            </span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Opsi" width="150" fixed="right">
+                        <template #default="scope">
+                            <div class="flex items-center gap-1">
                                 <el-popconfirm
                                     size="small"
                                     :title="`Yakin menghapus data ${scope.row.nama}?`"
@@ -370,12 +376,12 @@ onBeforeMount(async () => {
                                     v-if="page.props.auth.roles[0] == 'ops'"
                                 >
                                     <template #reference>
-                                        <el-button
-                                            circle
-                                            type="danger"
-                                            size="small"
-                                        >
-                                            <Icon icon="mdi:delete" />
+                                        <el-button type="danger" size="small">
+                                            <Icon
+                                                icon="mdi:delete"
+                                                class="mr-1"
+                                            />
+                                            Hapus
                                         </el-button>
                                     </template>
                                 </el-popconfirm>
