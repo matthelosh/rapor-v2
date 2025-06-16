@@ -68,9 +68,10 @@ const getSiswa = () => {
 const skorPg = (s) => {
     let skor = 0;
     for (let i = 0; i < analisis.value[s].pg.jawabans.length; i++) {
-        skor +=
-            analisis.value[s].pg.jawabans[i].toUpperCase() ==
-            kunci.value.pg.kunci[i].toUpperCase();
+        skor += analisis.value[s].pg.jawabans[i]
+            ? analisis.value[s].pg.jawabans[i].toUpperCase() ==
+              kunci.value.pg.kunci[i].toUpperCase()
+            : 0;
     }
 
     return skor;

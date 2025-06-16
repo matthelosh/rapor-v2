@@ -167,7 +167,14 @@ const unduhFormat = async () => {
 onBeforeMount(async () => {
     // loading.value = true
     // await getTps()
-    props.rombel.siswas.forEach((siswa) => {
+
+    const filteredSiswas =
+        props.mapel.kode !== "pabp"
+            ? props.rombel.siswas
+            : props.rombel.siswas.filter(
+                  (siswa) => siswa.agama == page.props.auth.user.userable.agama,
+              );
+    filteredSiswas.forEach((siswa) => {
         siswa.nilai = 0;
         siswas.value.push(siswa);
     });
@@ -395,19 +402,7 @@ onBeforeMount(async () => {
                     </div>
                 </template>
                 <template #default>
-                    <el-table
-                        :data="
-                            props.mapel.kode == 'pabp'
-                                ? props.rombel.siswas.filter(
-                                      (siswa) =>
-                                          siswa.agama ==
-                                          page.props.auth.user.userable.agama,
-                                  )
-                                : props.rombel.siswas
-                        "
-                        height="86.5vh"
-                        size="small"
-                    >
+                    <el-table :data="siswas" height="86.5vh" size="small">
                         <el-table-column
                             type="index"
                             label="#"

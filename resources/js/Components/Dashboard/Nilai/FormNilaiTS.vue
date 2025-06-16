@@ -170,7 +170,13 @@ const unduhFormat = async () => {
 onBeforeMount(async () => {
     // loading.value = true
     // await getTps()
-    props.rombel.siswas.forEach((siswa) => {
+    const filteredSiswas =
+        props.mapel.kode !== "pabp"
+            ? props.rombel.siswas
+            : props.rombel.siswas.filter(
+                  (siswa) => siswa.agama == page.props.auth.user.userable.agama,
+              );
+    filteredSiswas.forEach((siswa) => {
         siswa.nilai = 0;
         siswas.value.push(siswa);
     });

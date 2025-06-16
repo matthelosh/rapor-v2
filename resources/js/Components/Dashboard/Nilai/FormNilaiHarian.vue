@@ -88,7 +88,15 @@ const getTps = async () => {
         .then((res) => {
             tps.value = res.data.tps;
             loading.value = false;
-            props.rombel.siswas.forEach((siswa, s) => {
+            const filteredSiswas =
+                props.mapel.kode !== "pabp"
+                    ? props.rombel.siswas
+                    : props.rombel.siswas.filter(
+                          (siswa) =>
+                              siswa.agama ==
+                              page.props.auth.user.userable.agama,
+                      );
+            filteredSiswas.forEach((siswa, s) => {
                 let ns = {};
                 tps.value.map((tp, t) => (ns[tp.kode] = 0));
                 siswas.value.push({
@@ -431,13 +439,14 @@ onBeforeMount(async () => {
                 <template #default>
                     <el-table
                         :data="
-                            props.mapel.kode == 'pabp'
-                                ? props.rombel.siswas.filter(
-                                      (siswa) =>
-                                          siswa.agama ==
-                                          page.props.auth.user.userable.agama,
-                                  )
-                                : props.rombel.siswas
+                            // props.mapel.kode == 'pabp'
+                            //     ? props.rombel.siswas.filter(
+                            //           (siswa) =>
+                            //               siswa.agama ==
+                            //               page.props.auth.user.userable.agama,
+                            //       )
+                            //     :
+                            siswas
                         "
                         height="90vh"
                         size="small"
