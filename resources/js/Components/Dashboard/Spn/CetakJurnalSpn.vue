@@ -2,7 +2,9 @@
 import { Icon } from "@iconify/vue";
 import { usePage, router } from "@inertiajs/vue3";
 import { defineAsyncComponent, onBeforeMount, ref } from "vue";
-const Kop = defineAsyncComponent(() => import("@/Components/Dashboard/Kop.vue"));
+const Kop = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Kop.vue"),
+);
 const page = usePage();
 const props = defineProps({ jilid: Object });
 const emit = defineEmits(["close"]);
@@ -10,9 +12,6 @@ const show = ref(false);
 import dayjs from "dayjs";
 import "dayjs/locale/id";
 dayjs.locale("id");
-import html2pdf from "html2pdf.js";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 const savedJurnals = ref([]);
 const jurnals = ref([]);
@@ -52,19 +51,19 @@ const cetak = () => {
 
 const unduhPdf = () => {
     const element = document.querySelector(".cetak");
-    const optios = {
-        filename: "Testing html2pdf",
-        margin: 0,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait",
-        },
-    };
+    // const optios = {
+    //     filename: "Testing html2pdf",
+    //     margin: 0,
+    //     image: { type: "jpeg", quality: 0.98 },
+    //     html2canvas: { scale: 2 },
+    //     jsPDF: {
+    //         unit: "mm",
+    //         format: "a4",
+    //         orientation: "portrait",
+    //     },
+    // };
 
-    html2pdf().from(element).set(optios).save();
+    // html2pdf().from(element).set(optios).save();
 };
 
 const removeJurnal = (index) => {
@@ -210,9 +209,9 @@ onBeforeMount(() => {
                                                         >
                                                             {{
                                                                 dayjs(
-                                                                    jurnal.created_at
+                                                                    jurnal.created_at,
                                                                 ).format(
-                                                                    "DD MMMM YYYY"
+                                                                    "DD MMMM YYYY",
                                                                 )
                                                             }}
                                                         </h3>
@@ -263,26 +262,26 @@ onBeforeMount(() => {
                                                         >
                                                             <template
                                                                 v-for="nisn in jurnal.absensis.split(
-                                                                    ','
+                                                                    ',',
                                                                 )"
                                                             >
                                                                 <li>
                                                                     {{
                                                                         jilid.siswas.find(
                                                                             (
-                                                                                siswa
+                                                                                siswa,
                                                                             ) =>
                                                                                 siswa.nisn ==
-                                                                                nisn
+                                                                                nisn,
                                                                         ).nama
                                                                     }}
                                                                     ({{
                                                                         jilid.siswas.find(
                                                                             (
-                                                                                siswa
+                                                                                siswa,
                                                                             ) =>
                                                                                 siswa.nisn ==
-                                                                                nisn
+                                                                                nisn,
                                                                         )
                                                                             .rombels[0]
                                                                             .label
@@ -306,14 +305,14 @@ onBeforeMount(() => {
                                                         <div
                                                             :class="`grid grid-cols-${
                                                                 jurnal.fotos.split(
-                                                                    ','
+                                                                    ',',
                                                                 ).length
                                                             }`"
                                                             class="gap-4 p-2"
                                                         >
                                                             <template
                                                                 v-for="foto in jurnal.fotos.split(
-                                                                    ','
+                                                                    ',',
                                                                 )"
                                                             >
                                                                 <el-image
@@ -367,7 +366,7 @@ onBeforeMount(() => {
                                         Malang,
                                         {{
                                             dayjs(new Date()).format(
-                                                "DD MMMM YYYY"
+                                                "DD MMMM YYYY",
                                             )
                                         }}
                                     </p>
@@ -417,7 +416,7 @@ onBeforeMount(() => {
                                 </el-button>
                                 {{
                                     dayjs(jurnal.created_at).format(
-                                        "DD/MM/YYYY"
+                                        "DD/MM/YYYY",
                                     )
                                 }}
                                 | {{ jurnal.materi }}
