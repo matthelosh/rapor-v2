@@ -726,6 +726,13 @@ Route::middleware("auth")->group(function () {
             CetakController::class,
             "cetakAnalisisAsesmen",
         ]);
+
+        Route::prefix("rekap")->group(function () {
+            Route::get("/sekolah/rombel/siswa", [
+                CetakController::class,
+                "cetakRekapSekolahRombelSiswa",
+            ]);
+        });
     });
 });
 

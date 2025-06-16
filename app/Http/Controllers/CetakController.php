@@ -6,6 +6,7 @@ use App\Models\Asesmen;
 use App\Models\Sekolah;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use App\Models\Tapel;
 
 class CetakController extends Controller
 {
@@ -52,10 +53,32 @@ class CetakController extends Controller
 
     public function cetakAnalisisAsesmen(Request $request, $asesmenId)
     {
-        $asesmen = Asesmen::where('kode', $asesmenId)->first();
+        $asesmen = Asesmen::where("kode", $asesmenId)->first();
         /* dd($asesmen); */
         return view("cetak.analisis_asesmen", [
-            'asesmen' => $asesmen,
+            "asesmen" => $asesmen,
+        ]);
+    }
+
+    public function cetakRekapSekolahRombelSiswa(Request $request)
+    {
+        $tapel = Tapel::whereIsActive(1)->first();
+        $tapelId = $tapel->kode;
+        $sekolahs = Sekolah::whereNot("npsn", "20518473")
+            ->with([
+                "rombels" => function ($r) use ($tapelId) {
+                    $r->where("tapel", $tapelId)->with("siswas", function ($s) {
+                        $s->where("status", "aktif");
+                    });
+                },
+                "siswas" => function ($s) {
+                    $s->where("status", "aktif");
+                },
+            ])
+            ->get();
+
+        return view("cetak.rekap.sekolahrombelsiswa", [
+            "sekolahs" => $sekolahs,
         ]);
     }
 }

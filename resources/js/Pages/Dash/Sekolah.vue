@@ -118,6 +118,14 @@ const showGurus = (item) => {
 const onClosedDialogGurus = () => {
     selectedSekolah.value = {};
 };
+
+const Cetak = () => {
+    let win = window.open(
+        "/cetak/rekap/sekolah/rombel/siswa",
+        "_blank",
+        "width=1024,height=900",
+    );
+};
 </script>
 <template>
     <Head title="Data Sekolah" />
@@ -145,19 +153,20 @@ const onClosedDialogGurus = () => {
                             <span>Data Sekolah</span>
                         </div>
                         <div
-                            class="card-toolbar--items flex items-center gap-1"
+                            class="card-toolbar--items flex justify-end items-center gap-1 flex-grow"
                         >
                             <el-input
                                 v-model="search"
                                 placeholder="Cari Sekolah"
                                 clearable
                                 class="hidden-sm-and-down"
+                                style="width: 200px"
                             >
                                 <template #suffix>
                                     <Icon icon="mdi:magnify" />
                                 </template>
                             </el-input>
-                            <el-button-group class="flex-grow md:w-[300px]">
+                            <el-button-group>
                                 <el-button
                                     type="primary"
                                     @click="formSekolah = true"
@@ -182,6 +191,19 @@ const onClosedDialogGurus = () => {
                                 >
                                     <Icon icon="mdi-file-excel" />
                                     Impor
+                                </el-button>
+                                <el-button
+                                    type="danger"
+                                    @click="Cetak"
+                                    :disabled="
+                                        !page.props.auth.can.includes(
+                                            'add_school',
+                                        )
+                                    "
+                                    class="hidden-sm-and-down"
+                                >
+                                    <Icon icon="mdi-printer" />
+                                    Cetak
                                 </el-button>
                             </el-button-group>
                             <el-button type="success" text @click="showTutor">
@@ -226,6 +248,13 @@ const onClosedDialogGurus = () => {
                                 @click="showGurus(scope.row)"
                             >
                                 {{ scope.row.gurus?.length }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="Jumlah Siswa">
+                        <template #default="scope">
+                            <el-tag class="cursor-pointer">
+                                {{ scope.row.siswas?.length }}
                             </el-tag>
                         </template>
                     </el-table-column>
