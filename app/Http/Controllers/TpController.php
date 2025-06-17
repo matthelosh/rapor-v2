@@ -15,13 +15,13 @@ class TpController extends Controller
     public function index(Request $request)
     {
         try {
-            $tps  = Tp::where([
-                ['mapel_id', '=', $request->mapelId],
-                ['tingkat', '=', $request->tingkat],
-                ['semester', '=', $request->semester],
-                ['agama', '=', $request->agama],
+            $tps = Tp::where([
+                ["mapel_id", "=", $request->mapelId],
+                ["tingkat", "=", $request->tingkat],
+                ["semester", "=", $request->semester],
+                ["agama", "=", $request->agama],
             ])->get();
-            return response()->json(['tps' => $tps]);
+            return response()->json(["tps" => $tps]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -35,21 +35,32 @@ class TpController extends Controller
         try {
             /* $mapel_id = $request->tps[0]['mapel_id']; */
             foreach ($request->tps as $tp) {
-                $guruId = $tp['guru_id'] ?? ($request->user()->hasRole(['guru_kelas', 'guru_agama', 'guru_pjok', 'guru_inggris']) ? $request->user()->userable->nip : null);
+                $guruId =
+                    $tp["guru_id"] ??
+                    ($request
+                        ->user()
+                        ->hasRole([
+                            "guru_kelas",
+                            "guru_agama",
+                            "guru_pjok",
+                            "guru_inggris",
+                        ])
+                        ? $request->user()->userable->nip
+                        : null);
 
                 Tp::updateOrCreate(
                     [
-                        'kode' => $tp['kode'],
+                        "kode" => $tp["kode"],
                     ],
                     [
-                        'mapel_id' => $tp['mapel_id'],
-                        'teks' => $tp['teks'],
-                        'elemen' => $tp['elemen'],
-                        'fase' => $tp['fase'],
-                        'tingkat' => $tp['tingkat'],
-                        'semester' => $tp['semester'],
-                        'agama' => $tp['agama'] ?? null,
-                        'guru_id' => $guruId
+                        "mapel_id" => $tp["mapel_id"],
+                        "teks" => $tp["teks"],
+                        "elemen" => $tp["elemen"],
+                        "fase" => $tp["fase"],
+                        "tingkat" => $tp["tingkat"],
+                        "semester" => $tp["semester"],
+                        "agama" => $tp["agama"] ?? null,
+                        "guru_id" => $guruId,
                     ]
                 );
             }
@@ -62,25 +73,31 @@ class TpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(TpRequest $request)
+    public function store(Request $request)
     {
         try {
             Tp::updateOrCreate(
                 [
-                    'id' => $request['id'] ?? null,
+                    "id" => $request["id"] ?? null,
                 ],
                 [
-                    'mapel_id' => $request['mapel_id'],
-                    'kode' => $request['kode'] ?? strtolower(Str::random(8)),
-                    'teks' => $request['teks'],
-                    'elemen' => $request['elemen'],
-                    'fase' => $request['fase'] ?? (in_array($request['tingkat'], ['1', '2']) ? 'A' : (in_array($request['tingkat'], ['3', '4']) ? 'B' : 'C')),
-                    'tingkat' => $request['tingkat'],
-                    'semester' => $request['semester'],
-                    'agama' => $request['agama'] ?? null,
+                    "mapel_id" => $request["mapel_id"],
+                    "kode" => $request["kode"] ?? strtolower(Str::random(8)),
+                    "teks" => $request["teks"],
+                    "elemen" => $request["elemen"],
+                    "fase" =>
+                        $request["fase"] ??
+                        (in_array($request["tingkat"], ["1", "2"])
+                            ? "A"
+                            : (in_array($request["tingkat"], ["3", "4"])
+                                ? "B"
+                                : "C")),
+                    "tingkat" => $request["tingkat"],
+                    "semester" => $request["semester"],
+                    "agama" => $request["agama"] ?? null,
                 ]
             );
-            return back()->with('message', "TP Disimpan");
+            return back()->with("message", "TP Disimpan");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -118,7 +135,7 @@ class TpController extends Controller
         try {
             $tp->destroy($id);
 
-            return back()->with('message', 'Tp Dihapus');
+            return back()->with("message", "Tp Dihapus");
         } catch (\Throwable $th) {
             throw $th;
         }

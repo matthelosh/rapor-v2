@@ -80,6 +80,7 @@ class PembelajaranController extends Controller implements HasMiddleware
                 })
                 /* ->with('tps') */
                 ->get();
+            // dd($mapels);
         } else {
             /* dd("tes"); */
             $mapelId = $request->user()->hasRole("guru_agama")
@@ -89,21 +90,17 @@ class PembelajaranController extends Controller implements HasMiddleware
                     : "bing");
             // $agama = $mapelId == 'pabp' ? $request->user()->userable->agama : null;
             $guruId = $request->user()->userable->nip;
+            $agamaGuru = $request->user()->userable->agama;
+            $agamaQuery =
+                $mapelId == "pabp"
+                    ? ["agama", "=", $agamaGuru]
+                    : ["agama", "=", null];
             $mapels = Mapel::whereKode($mapelId)
-                ->with("tps", function ($t) {
+                ->with("tps", function ($t) use ($agamaQuery) {
                     $t->where("semester", Periode::semester()->kode);
+                    $t->where([$agamaQuery]);
                 })
                 ->get();
-            /* dd($mapels); */
-            if ($mapelId == "pabp") {
-                $agamaGuru = $request->user()->userable->agama;
-                $mapels = $mapels->filter(function ($mapel) use ($agamaGuru) {
-                    $mapel->tps = $mapel->tps->filter(
-                        fn($agama) => $agama == $agamaGuru
-                    );
-                    return $mapel->tps->isNotEmpty();
-                });
-            }
         }
         return Inertia::render("Dash/Pembelajaran", [
             "mapels" => $mapels,

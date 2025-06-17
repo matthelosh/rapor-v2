@@ -576,8 +576,7 @@ onBeforeMount(() => {
                                 >
                                     <!-- <template v-for="(mapel, m) in ['superadmin', 'admin', 'admin_tp'].includes(role) ? page.props.mapels : page.props.sekolahs[0].mapels" :key="m"> -->
                                     <template
-                                        v-for="(mapel, m) in page.props
-                                            .sekolahs[0].mapels"
+                                        v-for="(mapel, m) in page.props.mapels"
                                         :key="m"
                                     >
                                         <el-collapse accordion>
