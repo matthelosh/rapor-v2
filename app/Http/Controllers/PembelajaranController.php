@@ -96,6 +96,13 @@ class PembelajaranController extends Controller implements HasMiddleware
                 ->get();
             /* dd($mapels); */
             if ($mapelId == "pabp") {
+                $agamaGuru = $request->user()->userable->agama;
+                $mapels = $mapels->filter(function ($mapel) use ($agamaGuru) {
+                    $mapel->tps = $mapel->tps->filter(
+                        fn($agama) => $agama == $agamaGuru
+                    );
+                    return $mapel->tps->isNotEmpty();
+                });
             }
         }
         return Inertia::render("Dash/Pembelajaran", [

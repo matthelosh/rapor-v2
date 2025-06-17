@@ -677,7 +677,7 @@ onBeforeMount(() => {
                                                         />
                                                         <el-table-column
                                                             label="Kode"
-                                                            width="125"
+                                                            width="150"
                                                         >
                                                             <template
                                                                 #default="scope"
