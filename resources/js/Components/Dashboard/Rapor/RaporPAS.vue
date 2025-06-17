@@ -431,7 +431,7 @@ onBeforeUnmount(() => {
                             v-if="page.props.periode.semester.kode == '2'"
                             class="border p-2 border-black"
                         >
-                            <p class="font-bold">Keputusan:</p>
+                            <p class="font-bold">Keputusan: {{ is_tuntas }}</p>
                             <p>Berdasarkan hasil belajar yang telah dicapai,</p>
                             <p v-if="props.rombel.tingkat < 6">
                                 Ananda
