@@ -65,71 +65,6 @@ trait NilaiTrait
             $siswas = $request->siswas;
             $query = $request->query();
 
-            // foreach ($siswas as $siswa) {
-            //     if ($query['tipe'] == 'uh') {
-            //         foreach ($siswa['nilais'] as $k => $v) {
-            //             $tp = Tp::whereKode($k)->first();
-            //             if ($v !== null || $tp) {
-            //                 $store = Nilai::updateOrCreate(
-            //                     [
-            //                         'tapel' => $query['tapel'],
-            //                         'semester' => $query['semester'],
-            //                         'siswa_id' => $siswa['nisn'],
-            //                         'guru_id' => auth()->user()->userable->nip,
-            //                         'rombel_id' => $query['rombelId'],
-            //                         'mapel_id' => $query['mapelId'],
-            //                         'agama' => $query['agama'] ?? null,
-            //                         'tp_id' => $k,
-            //                         'tipe' =>  'uh',
-            //                     ],
-            //                     [
-            //                         'skor' => $v !== 'null' ? $v : 0
-            //                     ]
-            //                 );
-            //             }
-            //         }
-            //     } elseif ($query['tipe'] == 'all') {
-            //         foreach ($siswa['nilais'] as $k => $v) {
-            //             $tp = Tp::whereKode($k)->first();
-            //             if ($v !== null || $tp) {
-            //                 $store = Nilai::updateOrCreate(
-            //                     [
-            //                         'tapel' => $query['tapel'],
-            //                         'semester' => $query['semester'],
-            //                         'siswa_id' => $siswa['nisn'],
-            //                         'guru_id' => auth()->user()->userable->nip,
-            //                         'rombel_id' => $query['rombelId'],
-            //                         'mapel_id' => $query['mapelId'],
-            //                         'agama' => $query['agama'] ?? null,
-            //                         'tp_id' => \in_array($k, ['ts', 'as']) ? null : $k,
-            //                         'tipe' => \in_array($k, ['ts', 'as']) ? $k : 'uh',
-            //                     ],
-            //                     [
-            //                         'skor' => $v !== 'null' ? $v : 0
-            //                     ]
-            //                 );
-            //             }
-            //         }
-            //     } else {
-            //         $store = Nilai::updateOrCreate(
-            //             [
-            //                 'tapel' => $query['tapel'],
-            //                 'semester' => $query['semester'],
-            //                 'siswa_id' => $siswa['nisn'],
-            //                 'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
-            //                 'rombel_id' => $query['rombelId'],
-            //                 'mapel_id' => $query['mapelId'],
-            //                 'agama' => $query['agama'] ?? null,
-            //                 'tp_id' => null,
-            //                 'tipe' => $query['tipe'],
-            //             ],
-            //             [
-            //                 'skor' => $siswa['nilai']
-            //             ]
-            //         );
-            //     }
-            // }
-            // return $query['tipe'];
             switch ($query["tipe"]) {
                 case "ts":
                 case "as":
@@ -254,103 +189,177 @@ trait NilaiTrait
     public function ledger($request)
     {
         $user = $request->user();
+        $datas = [];
+        $list1 = [];
+        $list2 = [];
+
         if ($user->hasRole("guru_kelas")) {
-            $rombel = Rombel::where("guru_id", $request->user()->userable->id)
-                ->whereTapel($this->periode()["tapel"]["kode"])
+            $tapel = $this->periode()["tapel"]["kode"];
+            $semesterList = [1, 2];
+
+            // Ambil rombel dan siswa
+            $rombel = Rombel::where("guru_id", $user->userable->id)
+                ->where("tapel", $tapel)
                 ->with("siswas")
                 ->first();
-            $nilais = Nilai::where([
-                ["tapel", "=", $this->periode()["tapel"]["kode"]],
-                ["semester", "=", $this->periode()["tapel"]["semester"]],
-                ["rombel_id", "=", $rombel->kode],
-            ])
-                // ->select("")
-                // ->selectRaw("AVG(skor) AS rerata")
-                // ->groupBy('siswa_id','mapel_id')
-                ->get();
 
-            $npsn = $request->user()->userable->sekolahs[0]->npsn;
-            $datas = [];
+            $siswas = $rombel->siswas;
+            $mapels = $this->mapels($user, $rombel);
 
-            $mapels = $this->mapels($request->user(), $rombel);
-            // siswa = [
-            //      'nilais' => [
-            //          'pabp' => ['sem1' => 90, 'sem2' => 98]
-            //      ]
-            // ]
-            $list1 = [];
-            $list2 = [];
-            foreach ($rombel->siswas as $siswa) {
+            // Ambil semua nilai sekaligus
+            $allNilai = Nilai::whereIn("siswa_id", $siswas->pluck("nisn"))
+                ->where("rombel_id", $rombel->kode)
+                ->where("tapel", $tapel)
+                ->whereIn("semester", $semesterList)
+                ->whereIn("mapel_id", $mapels->pluck("kode"))
+                ->get()
+                ->groupBy(
+                    fn(
+                        $n
+                    ) => "{$n->siswa_id}-{$n->semester}-{$n->mapel_id}-{$n->tipe}"
+                );
+
+            foreach ($siswas as $siswa) {
                 $data = [];
                 $data["nisn"] = $siswa->nisn;
                 $data["nama"] = $siswa->nama;
                 $sum1 = 0;
                 $sum2 = 0;
+
                 foreach ($mapels as $mapel) {
-                    $nas1 = Nilai::where([
-                        ["siswa_id", "=", $siswa->nisn],
-                        ["rombel_id", "=", $rombel->kode],
-                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
-                        ["semester", "=", "1"],
-                        ["mapel_id", "=", $mapel->kode],
-                        ["tipe", "=", "as"],
-                    ])->first();
+                    $keyNas1 = "{$siswa->nisn}-1-{$mapel->kode}-as";
+                    $keyUh1 = "{$siswa->nisn}-1-{$mapel->kode}-uh";
+                    $keyNas2 = "{$siswa->nisn}-2-{$mapel->kode}-as";
+                    $keyUh2 = "{$siswa->nisn}-2-{$mapel->kode}-uh";
 
-                    $avgUh1 = Nilai::where([
-                        ["siswa_id", "=", $siswa->nisn],
-                        ["rombel_id", "=", $rombel->kode],
-                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
-                        ["semester", "=", "1"],
-                        ["mapel_id", "=", $mapel->kode],
-                        ["tipe", "=", "uh"],
-                    ])->avg("skor");
+                    $nas1 = $allNilai[$keyNas1][0] ?? null;
+                    $nas2 = $allNilai[$keyNas2][0] ?? null;
+                    $uh1 = $allNilai[$keyUh1] ?? collect();
+                    $uh2 = $allNilai[$keyUh2] ?? collect();
 
-                    $na1 = round(
-                        ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
-                    );
-                    $nas2 = Nilai::where([
-                        ["siswa_id", "=", $siswa->nisn],
-                        ["rombel_id", "=", $rombel->kode],
-                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
-                        ["semester", "=", "2"],
-                        ["mapel_id", "=", $mapel->kode],
-                        ["tipe", "=", "as"],
-                    ])->first();
+                    $avgUh1 = round($uh1->avg("skor"));
+                    $avgUh2 = round($uh2->avg("skor"));
 
-                    $avgUh2 = Nilai::where([
-                        ["siswa_id", "=", $siswa->nisn],
-                        ["rombel_id", "=", $rombel->kode],
-                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
-                        ["semester", "=", "2"],
-                        ["mapel_id", "=", $mapel->kode],
-                        ["tipe", "=", "uh"],
-                    ])->avg("skor");
+                    $na1 = round(($avgUh1 + ($nas1?->skor ?? 0)) / 2);
+                    $na2 = round(($avgUh2 + ($nas2?->skor ?? 0)) / 2);
 
-                    $na1 = round(
-                        ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
-                    );
-                    $na2 = round(
-                        ($avgUh2 + ($nas2 !== null ? $nas2->skor : 0)) / 2
-                    );
                     $sum1 += $na1;
                     $sum2 += $na2;
+
                     $data[$mapel->kode] = [
                         "sem1" => $na1,
                         "sem2" => $na2,
                     ];
                 }
+
                 $data["sum1"] = $sum1;
                 $data["sum2"] = $sum2;
-                \array_push($list1, $sum1);
-                \array_push($list2, $sum2);
-                array_push($datas, $data);
+
+                $list1[] = $sum1;
+                $list2[] = $sum2;
+
+                $datas[] = $data;
             }
-        } else {
-            $datas = [];
         }
 
         return ["datas" => $datas, "lists" => [$list1, $list2]];
     }
+
+    // {
+    //     $user = $request->user();
+    //     if ($user->hasRole("guru_kelas")) {
+    //         $rombel = Rombel::where("guru_id", $request->user()->userable->id)
+    //             ->whereTapel($this->periode()["tapel"]["kode"])
+    //             ->with("siswas")
+    //             ->first();
+    //         $nilais = Nilai::where([
+    //             ["tapel", "=", $this->periode()["tapel"]["kode"]],
+    //             ["semester", "=", $this->periode()["tapel"]["semester"]],
+    //             ["rombel_id", "=", $rombel->kode],
+    //         ])
+    //             ->get();
+
+    //         $npsn = $request->user()->userable->sekolahs[0]->npsn;
+    //         $datas = [];
+
+    //         $mapels = $this->mapels($request->user(), $rombel);
+    //         $list1 = [];
+    //         $list2 = [];
+    //         foreach ($rombel->siswas as $siswa) {
+    //             $data = [];
+    //             $data["nisn"] = $siswa->nisn;
+    //             $data["nama"] = $siswa->nama;
+    //             $sum1 = 0;
+    //             $sum2 = 0;
+    //             foreach ($mapels as $mapel) {
+    //                 $nas1 = Nilai::where([
+    //                     ["siswa_id", "=", $siswa->nisn],
+    //                     ["rombel_id", "=", $rombel->kode],
+    //                     ["tapel", "=", $this->periode()["tapel"]["kode"]],
+    //                     ["semester", "=", "1"],
+    //                     ["mapel_id", "=", $mapel->kode],
+    //                     ["tipe", "=", "as"],
+    //                 ])->first();
+
+    //                 $avgUh1 = Nilai::whereHas("tp")
+    //                     ->where([
+    //                         ["siswa_id", "=", $siswa->nisn],
+    //                         ["rombel_id", "=", $rombel->kode],
+    //                         ["tapel", "=", $this->periode()["tapel"]["kode"]],
+    //                         ["semester", "=", "1"],
+    //                         ["mapel_id", "=", $mapel->kode],
+    //                         ["tipe", "=", "uh"],
+    //                     ])
+    //                     ->avg("skor");
+
+    //                 $na1 = round(
+    //                     ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
+    //                 );
+    //                 $nas2 = Nilai::where([
+    //                     ["siswa_id", "=", $siswa->nisn],
+    //                     ["rombel_id", "=", $rombel->kode],
+    //                     ["tapel", "=", $this->periode()["tapel"]["kode"]],
+    //                     ["semester", "=", "2"],
+    //                     ["mapel_id", "=", $mapel->kode],
+    //                     ["tipe", "=", "as"],
+    //                 ])->first();
+
+    //                 $avgUh2 = Nilai::whereHas("tp")
+    //                     ->where([
+    //                         ["siswa_id", "=", $siswa->nisn],
+    //                         ["rombel_id", "=", $rombel->kode],
+    //                         ["tapel", "=", $this->periode()["tapel"]["kode"]],
+    //                         ["semester", "=", "2"],
+    //                         ["mapel_id", "=", $mapel->kode],
+    //                         ["tipe", "=", "uh"],
+    //                     ])
+    //                     ->avg("skor");
+
+    //                 $na1 = round(
+    //                     ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
+    //                 );
+    //                 $na2 = round(
+    //                     ($avgUh2 + ($nas2 !== null ? $nas2->skor : 0)) / 2
+    //                 );
+    //                 $sum1 += $na1;
+    //                 $sum2 += $na2;
+    //                 $data[$mapel->kode] = [
+    //                     "sem1" => $na1,
+    //                     "sem2" => $na2,
+    //                 ];
+    //             }
+    //             $data["sum1"] = $sum1;
+    //             $data["sum2"] = $sum2;
+    //             \array_push($list1, $sum1);
+    //             \array_push($list2, $sum2);
+    //             array_push($datas, $data);
+    //         }
+    //     } else {
+    //         $datas = [];
+    //     }
+
+    //     return ["datas" => $datas, "lists" => [$list1, $list2]];
+    // }
 
     public function prosentase($user)
     {

@@ -457,6 +457,9 @@ Route::middleware("auth")->group(function () {
             Route::get("/", [LedgerController::class, "home"])
                 ->name("dashboard.ledger")
                 ->middleware("role:guru_kelas");
+            Route::post("/", [LedgerController::class, "index"])
+                ->name("dashboard.ledger.index")
+                ->middleware("role:guru_kelas");
         });
 
         Route::prefix("rapor")->group(function () {

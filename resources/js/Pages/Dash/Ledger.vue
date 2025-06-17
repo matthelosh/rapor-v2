@@ -3,6 +3,7 @@ import { ref, computed, onBeforeMount } from "vue";
 import { Head, router, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { writeFile, utils } from "xlsx";
+import axios from "axios";
 import DashLayout from "@/Layouts/DashLayout.vue";
 const page = usePage();
 
@@ -10,17 +11,17 @@ const activeCollapse = ref(0);
 
 const loading = ref(false);
 const mapels = (tingkat) => {
-    return page.props.mapels.filter((mapel) => mapel.tingkat == tingkat);
+    return mapelsRaw.filter((mapel) => mapel.tingkat == tingkat);
 };
 
 const unduh = async (target, rombel, tapel) => {
     loading.value = true;
     const el = document.querySelector(`.${target}`);
     const table = el.querySelector("table");
-    let wb = await utils.table_to_book(table);
+    let wb = utils.table_to_book(table);
     await writeFile(
         wb,
-        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0].nama} ${page.props.periode.tapel.deskripsi}.xlsx`
+        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0].nama} ${page.props.periode.tapel.deskripsi}.xlsx`,
     );
     setTimeout(() => {
         loading.value = false;
@@ -55,13 +56,35 @@ const cetak = async (target) => {
 };
 
 const rankMe = (nilai, sem) => {
-    const list = page.props.nilais.lists[sem - 1];
+    const list = nilais.value.lists[sem - 1];
     let sorted = list.sort((a, b) => b - a);
     let index = sorted.findIndex((n) => n == parseInt(nilai));
     return [...list].reduce((a, c) => a + c, 0) > 0 ? index + 1 : index;
 };
+const mapelsRaw = ref([]);
+const lists = ref([]);
+const nilais = ref([]);
+const getLedger = async () => {
+    const loading = ElLoading.service({
+        lock: true,
+        text: "Loading",
+        background: "rgba(0, 0, 0, 0.7)",
+    });
+    axios
+        .post(route("dashboard.ledger.index"))
+        .then((res) => {
+            nilais.value = res.data.nilais;
+            mapelsRaw.value = res.data.mapels;
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+        .finally(() => loading.close());
+};
 
-onBeforeMount(async () => {});
+onBeforeMount(async () => {
+    await getLedger();
+});
 </script>
 
 <template>
@@ -124,7 +147,7 @@ onBeforeMount(async () => {});
                                                 unduh(
                                                     `cetak-${rombel.kode}`,
                                                     rombel.label,
-                                                    rombel.tapel
+                                                    rombel.tapel,
                                                 )
                                             "
                                             class="print:hidden"
@@ -162,8 +185,7 @@ onBeforeMount(async () => {});
                                                 Nama
                                             </th>
                                             <template
-                                                v-for="(mapel, m) in page.props
-                                                    .mapels"
+                                                v-for="(mapel, m) in mapelsRaw"
                                                 :key="m"
                                             >
                                                 <th
@@ -188,8 +210,7 @@ onBeforeMount(async () => {});
                                         </tr>
                                         <tr>
                                             <template
-                                                v-for="(mapel, m) in page.props
-                                                    .mapels"
+                                                v-for="(mapel, m) in mapelsRaw"
                                                 :key="m"
                                             >
                                                 <th
@@ -214,8 +235,7 @@ onBeforeMount(async () => {});
                                         </tr>
                                         <tr>
                                             <template
-                                                v-for="(mapel, m) in page.props
-                                                    .mapels"
+                                                v-for="(mapel, m) in mapelsRaw"
                                                 :key="m"
                                             >
                                                 <th class="border border-black">
@@ -249,8 +269,7 @@ onBeforeMount(async () => {});
                                     </thead>
                                     <tbody>
                                         <template
-                                            v-for="(nilai, n) in page.props
-                                                .nilais.datas"
+                                            v-for="(nilai, n) in nilais.datas"
                                             :key="n"
                                         >
                                             <tr>
@@ -270,8 +289,9 @@ onBeforeMount(async () => {});
                                                     {{ nilai.nama }}
                                                 </td>
                                                 <template
-                                                    v-for="(mapel, m) in page
-                                                        .props.mapels"
+                                                    v-for="(
+                                                        mapel, m
+                                                    ) in mapelsRaw"
                                                     :key="m"
                                                 >
                                                     <td
@@ -327,17 +347,5 @@ onBeforeMount(async () => {});
 
             <!-- <div>{{ page.props.nilais }}</div> -->
         </el-card>
-        <!-- {{page.props.mapels}} -->
-        <Teleport to="body">
-            <div
-                class="z-[999999] backdrop-blur fixed top-0 right-0 bottom-0 left-0 bg-slate-700 bg-opacity-30 flex items-center justify-center"
-                v-if="loading"
-            >
-                <Icon
-                    icon="mdi:loading"
-                    class="animate-spin text-8xl text-white"
-                />
-            </div>
-        </Teleport>
     </DashLayout>
 </template>
