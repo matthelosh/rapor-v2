@@ -180,7 +180,7 @@ class GuruService
         }
         $guru = Guru::whereId($data["id"])->with("rombels")->first();
         $rombels = $guru->rombels->map(fn($rombel) => $rombel->kode);
-        $guru->rombels()->delete();
+        // $guru->rombels()->delete();
         $guru->update([
             "nip" => $data["nip"],
             "nuptk" => $data["nuptk"] ?? null,
