@@ -189,12 +189,12 @@ class RaporService
                     ->with("tp")
                     ->first();
 
-                $na = round(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
+                $na = ($avgUh + ($nas !== null ? $nas->skor : 0)) / 2;
 
                 $nilais[$mapel["kode"]] = [
                     "nomor" => $nomor,
                     "mapel" => $mapel,
-                    "na" => $na,
+                    "na" => number_format($na, 2, ",", "."),
                     "minu" => $minUh,
                     "maxu" => $maxUh,
                     "kktp" => $kktp,

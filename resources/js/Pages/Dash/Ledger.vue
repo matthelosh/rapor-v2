@@ -35,7 +35,7 @@ const cetak = async (target) => {
     let html = `<!doctype html>
 				<html>
 					<head>
-						<title class="uppercase ">Ledger Nilai ${page.props.periode.tapel.deskripsi}</title>
+						<title class="uppercase">Ledger Nilai ${page.props.periode.tapel.deskripsi}</title>
 						<link rel="stylesheet" href="${cssUrl()}" />
 					</head>
 					<body>
