@@ -420,7 +420,8 @@ const elemens = () => {
             el.mapel_id == selectedMapel.value.kode &&
             el.agama ==
                 (page.props.auth.roles[0] == "guru_agama" ||
-                selectedMapel.value.kode == "pabp"
+                (selectedMapel.value.kode == "pabp" &&
+                    page.props.auth.roles[0] != "admin")
                     ? page.props.auth.user.userable.agama
                     : null)
         );

@@ -82,7 +82,7 @@ class GuruService
         }
 
         if ($ttd !== null) {
-            $store_ttd = $this > storeTtd($ttd);
+            $store_ttd = $this->storeTtd($ttd);
         }
 
         // dd($data);

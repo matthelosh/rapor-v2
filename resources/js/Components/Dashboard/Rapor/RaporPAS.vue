@@ -482,19 +482,11 @@ onBeforeUnmount(() => {
                                         >
                                             <span
                                                 class="font-bold"
-                                                :class="
-                                                    is_tuntas
-                                                        ? 'no-underline'
-                                                        : 'line-through'
-                                                "
+                                                :style="`text-decoration: ${is_tuntas ? 'none' : 'line-through'};`"
                                                 >Lulus</span
                                             >/<span
                                                 class="font-bold"
-                                                :class="
-                                                    !is_tuntas
-                                                        ? 'no-underline'
-                                                        : 'line-through'
-                                                "
+                                                :style="`text-decoration: ${!is_tuntas ? 'none' : 'line-through'};`"
                                                 >Tidak Lulus</span
                                             >
                                         </span>
