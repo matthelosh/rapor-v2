@@ -62,7 +62,7 @@ const cetak = async () => {
     }, 1500);
 };
 
-const is_tuntas = ref(1);
+const is_tuntas = ref(true);
 const getNilaiPAS = async () => {
     loading.value = true;
     await axios
@@ -431,7 +431,7 @@ onBeforeUnmount(() => {
                             v-if="page.props.periode.semester.kode == '2'"
                             class="border p-2 border-black"
                         >
-                            <p class="font-bold">Keputusan: {{ is_tuntas }}</p>
+                            <p class="font-bold">Keputusan:</p>
                             <p>Berdasarkan hasil belajar yang telah dicapai,</p>
                             <p v-if="props.rombel.tingkat < 6">
                                 Ananda
@@ -453,19 +453,11 @@ onBeforeUnmount(() => {
                                         >
                                             <span
                                                 class="font-bold"
-                                                :class="
-                                                    is_tuntas
-                                                        ? 'no-underline'
-                                                        : 'line-through'
-                                                "
+                                                :style="`text-decoration: ${is_tuntas ? 'none' : 'line-through'};`"
                                                 >Naik</span
                                             >/<span
                                                 class="font-bold"
-                                                :class="
-                                                    !is_tuntas
-                                                        ? 'no-underline'
-                                                        : 'line-through'
-                                                "
+                                                :style="`text-decoration: ${!is_tuntas ? 'none' : 'line-through'};`"
                                                 >Tidak Naik</span
                                             >
                                         </span>
