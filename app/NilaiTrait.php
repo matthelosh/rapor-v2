@@ -237,6 +237,8 @@ trait NilaiTrait
                     $uh1 = $allNilai[$keyUh1] ?? collect();
                     $uh2 = $allNilai[$keyUh2] ?? collect();
 
+                    $uh1 = $uh1->filter(fn($n) => $n->tp && $n->skor != 0);
+                    $uh2 = $uh2->filter(fn($n) => $n->tp && $n->skor != 0);
                     $avgUh1 = round($uh1->avg("skor"));
                     $avgUh2 = round($uh2->avg("skor"));
 

@@ -6,6 +6,7 @@ import { writeFile, utils } from "xlsx";
 import axios from "axios";
 import DashLayout from "@/Layouts/DashLayout.vue";
 const page = usePage();
+import { cssUrl } from "@/helpers/utils";
 
 const activeCollapse = ref(0);
 
@@ -30,16 +31,12 @@ const unduh = async (target, rombel, tapel) => {
 
 const cetak = async (target) => {
     const host = window.location.host;
-    let cssUrl =
-        page.props.app_env == "local"
-            ? "http://localhost:5173/resources/css/app.css"
-            : `/build/assets/app.css`;
     const el = document.querySelector(`.${target}`);
     let html = `<!doctype html>
 				<html>
 					<head>
-						<title class="uppercase">Ledger Nilai ${page.props.periode.tapel.deskripsi}</title>
-						<link rel="stylesheet" href="${cssUrl}" />
+						<title class="uppercase ">Ledger Nilai ${page.props.periode.tapel.deskripsi}</title>
+						<link rel="stylesheet" href="${cssUrl()}" />
 					</head>
 					<body>
 						${el.outerHTML}

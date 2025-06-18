@@ -200,7 +200,7 @@ class GuruService
             "pangkat" => $data["pangkat"] ?? null,
             "jabatan" => $data["jabatan"] ?? null,
         ]);
-        $guru->rombels()->attach($rombels);
+        $guru->rombels()->sync($rombels);
         if ($guru->sekolahs->count() < 1) {
             if ($data["jabatan"] == "Ops") {
                 $sekolah = Sekolah::where("npsn", $data["nip"])->first();
