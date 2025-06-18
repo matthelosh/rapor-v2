@@ -86,10 +86,12 @@ class GuruController extends Controller
             );
             return back()->with("message", $store);
         } catch (ValidationException $e) {
-            return back()
-                ->withErros($e->validator->errors())
-                ->withInput();
+            dd($e);
+            // return back()
+            //     ->withErros($e->validator->errors())
+            //     ->withInput();
         } catch (\Exception $e) {
+            dd($e);
             return back()->withErrors(["errors" => $e->getMessage()]);
         }
     }

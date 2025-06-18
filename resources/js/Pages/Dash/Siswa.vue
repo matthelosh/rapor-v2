@@ -96,14 +96,16 @@ const fieldOrtu = ref([
     "nama_ayah",
     "alamat_ayah",
     "hp_ayah",
+    "pekerjaan_ayah",
     "nik_ibu",
     "nama_ibu",
     "hp_ibu",
     "alamat_ibu",
+    "pekerjaan_ibu",
     "nik_wali",
     "nama_wali",
     "alamat_wali",
-    "alamat_wali",
+    "pekerjaan_wali",
 ]);
 
 const imporSiswa = () => {
@@ -543,6 +545,7 @@ const param = computed(() => route().params);
                     <el-table-column label="Orang Tua">
                         <template #default="scope">
                             <div>
+                                <!-- {{ scope.row.ortus }} -->
                                 <p>
                                     Ayah:
                                     {{

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Siswa;
 use App\Models\Tapel;
 use App\Models\User;
+use App\Models\Ortu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -94,13 +95,42 @@ class SiswaService
     {
         try {
             $datas = $request->datas;
+            // dd($datas);
             $items = [];
+            $ortus = [];
             foreach ($datas as $data) {
                 // $data["sekolah_id"] =
                 //     $request->user()->hasRole("admin") && $data["sekolah_id"]
                 //         ? $data["sekolah_id"]
                 //         : $request->user()->userable->sekolahs[0]->npsn;
                 // $store = $this->store($data, null);
+                $ortus[] = [
+                    // 'siswa_id' => $data['nisn'],
+                    [
+                        "siswa_id" => $data["nisn"],
+                        "nama" => $data["nama_ayah"],
+                        "relasi" => "Ayah",
+                        "alamat" => $data["alamat"],
+                        "hp" => $data["hp"],
+                        "pekerjaan" => $data["pekerjaan_ayah"],
+                    ],
+                    [
+                        "siswa_id" => $data["nisn"],
+                        "nama" => $data["nama_ibu"],
+                        "relasi" => "Ibu",
+                        "alamat" => $data["alamat"],
+                        "hp" => $data["hp"],
+                        "pekerjaan" => $data["pekerjaan_ibu"],
+                    ],
+                    [
+                        "siswa_id" => $data["nisn"],
+                        "nama" => $data["nama_wali"],
+                        "relasi" => "Wali",
+                        "alamat" => $data["alamat"],
+                        "hp" => $data["hp"],
+                        "pekerjaan" => $data["pekerjaan_wali"],
+                    ],
+                ];
                 $items[] = [
                     "nisn" => $data["nisn"] ?? null,
                     "nis" => $data["nipd"] ?? null,
@@ -168,9 +198,26 @@ class SiswaService
                 ]
             );
 
+            foreach ($ortus as $dataOrtu) {
+                foreach ($dataOrtu as $ortu) {
+                    Ortu::updateOrCreate(
+                        [
+                            "siswa_id" => $ortu["siswa_id"],
+                            "relasi" => $ortu["relasi"],
+                        ],
+                        [
+                            "nama" => $ortu["nama"] ?? "-",
+                            "alamat" => $ortu["alamat"] ?? "-",
+                            "hp" => $ortu["hp"] ?? "-",
+                            "pekerjaan" => $ortu["pekerjaan"] ?? "-",
+                        ]
+                    );
+                }
+            }
+
             return true;
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            dd($e);
             return back()->withErrors($e->getMessage());
         }
     }

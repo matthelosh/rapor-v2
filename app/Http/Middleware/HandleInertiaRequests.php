@@ -163,24 +163,20 @@ class HandleInertiaRequests extends Middleware
         } elseif ($role == "ops") {
             // dd($user->userable->sekolahs);
             return Sekolah::where("id", $user->userable->sekolahs[0]->id)
-                ->with("mapels", function ($q) {
-                    $q->orderBy("id", "ASC");
-                    $q->with("tps");
-                })
-                /* ->with([ */
-                /*     "rombels" => function ($r) use ($tapel) { */
-                /*         $r->whereTapel($tapel); */
-                /*         $r->with('wali_kelas', 'gurus'); */
-                /*     }, */
-                /* ]) */
-                ->with("ks", "ekskuls", "gugus")
+                ->with([
+                    "mapels" => function ($q) {
+                        $q->orderBy("id", "ASC")->with("tps");
+                    },
+                    "ks",
+                    "ekskuls",
+                    "gugus",
+                ])
                 ->get();
         } elseif ($role == "siswa") {
             return Sekolah::whereNpsn("20518848")->get();
         } else {
             // dd($user);
             return Sekolah::where("id", $user->userable->sekolahs[0]->id)
-                ->with("ks", "ekskuls", "gugus")
                 ->with([
                     "mapels" => function ($m) use ($role, $user) {
                         if ($role == "guru_kelas") {
@@ -232,6 +228,9 @@ class HandleInertiaRequests extends Middleware
                             });
                         }
                     },
+                    "ks",
+                    "ekskuls",
+                    "gugus",
                     // "rombels" => function ($r) use ($tapel) {
                     //     $r->where("tapel", $tapel);
                     //     $r->with("wali_kelas", "gurus");
@@ -244,7 +243,7 @@ class HandleInertiaRequests extends Middleware
     private function user($user)
     {
         $account = User::where("id", $user->id)
-            ->with("roles.permissions", "userable")
+            ->with(["roles.permissions", "userable"])
             ->first();
         return $account;
     }

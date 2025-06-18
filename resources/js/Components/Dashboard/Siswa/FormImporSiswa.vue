@@ -15,6 +15,75 @@ const props = defineProps({
     url: String,
     query: Object,
 });
+
+const fields = [
+    "no",
+    "nama",
+    "nipd",
+    "jk",
+    "nisn",
+    "tempat_lahir",
+    "tanggal_lahir",
+    "nik",
+    "agama",
+    "alamat",
+    "rt",
+    "rw",
+    "dusun",
+    "kelurahan",
+    "kecamatan",
+    "kode_pos",
+    "jenis_tinggal",
+    "alat_transportasi",
+    "telepon",
+    "hp",
+    "email",
+    "skhun",
+    "penerima_kps",
+    "no_kps",
+    "nama_ayah",
+    "tahun_lahir_ayah",
+    "pendidikan_ayah",
+    "pekerjaan_ayah",
+    "penghasilan_ayah",
+    "nik_ayah",
+    "nama_ibu",
+    "tahun_lahir_ibu",
+    "pendidikan_ibu",
+    "pekerjaan_ibu",
+    "penghasilan_ibu",
+    "nik_ibu",
+    "nama_wali",
+    "tahun_lahir_wali",
+    "pendidikan_wali",
+    "pekerjaan_wali",
+    "penghasilan_wali",
+    "nik_wali",
+    "rombel_saat_ini",
+    "no_un",
+    "no_ijazah",
+    "penerima_kip",
+    "nomor_kip",
+    "nama_kip",
+    "no_kks",
+    "no_akta_lahir",
+    "bank",
+    "no_rekening_bank",
+    "rekening_atas_nama",
+    "layak_pip",
+    "alasan_layak_pip",
+    "kebutuhan_khusus",
+    "sekolah_asal",
+    "anak_ke",
+    "lintang",
+    "bujur",
+    "no_kk",
+    "berat_badan",
+    "tinggi_badan",
+    "lingkar_kepala",
+    "jml_saudara",
+    "jarak_rumah",
+];
 const emit = defineEmits(["close"]);
 const show = computed(() => props.open);
 const datas = ref([]);
@@ -34,16 +103,15 @@ const parseSheet = async (sheet, range, headers, onProgress) => {
         for (let r = i + startRow; r < batchEnd + startRow; r++) {
             const rowData = {};
             let isEmptyRow = true;
-            for (let col = 0; col < props.fields.length; col++) {
+            for (let col = 0; col < fields.length; col++) {
                 const cellAddress = utils.encode_cell({ r, c: col });
                 const cell = sheet[cellAddress];
                 const value = cell ? cell.v : null;
 
-                rowData[props.fields[col]] = value;
-                if (value !== null && value !== '') {
-                    isEmptyRow = false
+                rowData[fields[col]] = value;
+                if (value !== null && value !== "") {
+                    isEmptyRow = false;
                 }
-
             }
             if (!isEmptyRow) {
                 rows.push(rowData);
@@ -131,37 +199,61 @@ const closeMe = () => {
                         type="file"
                         @change="onFilePicked"
                         accept=".xlsx, .xls, .ods, .csv"
+                        class="mr-4 border border-sky-600 bg-slate-100 border-dashed"
                     />
                     <el-button
                         type="primary"
                         @click="kirim"
                         v-if="datas.length > 0"
                         :loading="loading"
+                        class="mr-4"
                         >Simpan</el-button
                     >
                 </div>
             </div>
         </template>
-        <div class="body">
-            <el-table
+        <div
+            class="body max-w-screen mx-h-[80vh] overflow-auto p-2 bg-slate-50"
+        >
+            <!-- <el-table
                 :data="datas"
                 max-height="78vh"
                 size="small"
                 :loading="loading"
             >
                 <el-table-column
-                    v-for="(field, f) in props.fields"
+                    v-for="(field, f) in fields"
                     :key="f"
                     :prop="field"
                     :label="field.toUpperCase()"
                 />
-            </el-table>
-            <!-- <el-alert v-else type="success">
-                <span class="font-bold text-sky-600 text-xl"
-                    >Pastikan File Excel dengan format kolom</span
-                >
-                <span class="text-sky-800 text-xl">{{ props.fields }}</span>
-            </el-alert> -->
+            </el-table> -->
+            <table class="bg-white">
+                <thead>
+                    <tr>
+                        <template
+                            v-for="(col, c) in fields"
+                            :key="`kolom-${c}`"
+                        >
+                            <th class="border border-black p-2">{{ col }}</th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(data, d) in datas" :key="`data-${d}`">
+                        <tr class="even:bg-slate-100">
+                            <template
+                                v-for="(col, c) in fields"
+                                :key="`data-c${c}`"
+                            >
+                                <td class="border border-black p-2">
+                                    {{ data[col] }}
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
         </div>
     </el-dialog>
     <Teleport to="body">

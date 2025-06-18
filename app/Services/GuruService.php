@@ -70,10 +70,14 @@ class GuruService
         return $foto;
     }
 
-    private function storeTtd($ttd)
+    private function storeTtd($ttd, $nip)
     {
-        $store_ttd = $ttd->storeAs("public/images/ttd/", $data["nip"] . ".png");
-        return $store_ttd;
+        try {
+            $store_ttd = $ttd->storeAs("public/images/ttd/", $nip . ".png");
+            return $store_ttd ? Storage::url($store_ttd) : null;
+        } catch (\Throwable $th) {
+            dd($th);
+        }
     }
     public function store($data, $file, $ttd)
     {
@@ -82,7 +86,7 @@ class GuruService
         }
 
         if ($ttd !== null) {
-            $store_ttd = $this->storeTtd($ttd);
+            $store_ttd = $this->storeTtd($ttd, $data["nip"]);
         }
 
         // dd($data);
@@ -172,7 +176,7 @@ class GuruService
         }
 
         if ($ttd !== null) {
-            $store_ttd = $this->storeTtd($ttd);
+            $store_ttd = $this->storeTtd($ttd, $data["nip"]);
         }
         $guru = Guru::whereId($data["id"])->with("rombels")->first();
         $rombels = $guru->rombels->map(fn($rombel) => $rombel->kode);
