@@ -172,7 +172,7 @@ class GuruService
         }
 
         if ($ttd !== null) {
-            $store_ttd = $this > storeTtd($ttd);
+            $store_ttd = $this->storeTtd($ttd);
         }
         $guru = Guru::whereId($data["id"])->with("rombels")->first();
         $rombels = $guru->rombels->map(fn($rombel) => $rombel->kode);
