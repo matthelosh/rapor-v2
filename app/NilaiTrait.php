@@ -59,6 +59,149 @@ trait NilaiTrait
      *  "tipe" => "ts"
      *]
      */
+    // public function simpanNilai($request)
+    // {
+    //     try {
+    //         $siswas = $request->siswas;
+    //         $query = $request->query();
+
+    //         switch ($query["tipe"]) {
+    //             case "ts":
+    //             case "as":
+    //                 foreach ($siswas as $siswa) {
+    //                     $nilai = $siswa["nilai"] ?? 0;
+    //                     $nilai = is_numeric($nilai) ? (float) $nilai : 0;
+    //                     $nilai = max(0, min(100, $nilai));
+    //                     $store = Nilai::updateOrCreate(
+    //                         [
+    //                             "tapel" => $query["tapel"],
+    //                             "semester" => $query["semester"],
+    //                             "siswa_id" => $siswa["nisn"],
+    //                             "guru_id" => auth()->user()
+    //                                 ? auth()->user()->userable->nip
+    //                                 : $query["guruId"] ?? null,
+    //                             "rombel_id" => $query["rombelId"],
+    //                             "mapel_id" => $query["mapelId"],
+    //                             "agama" => null,
+    //                             "tp_id" => null,
+    //                             "tipe" => $query["tipe"],
+    //                         ],
+    //                         [
+    //                             "skor" => $nilai,
+    //                         ]
+    //                     );
+    //                 }
+    //                 return "Nilai " .
+    //                     \strtoupper($query["tipe"]) .
+    //                     " disimpan.";
+    //                 break;
+    //             case "uh":
+    //                 $tpToSave = [];
+    //                 foreach ($siswas as $siswa) {
+    //                     foreach ($siswa["nilais"] as $k => $v) {
+    //                         if ($k !== "ts" && $k !== "as") {
+    //                             if (!isset($tpToSave[$k])) {
+    //                                 $tpToSave[$k] = [];
+    //                             }
+    //                             $nilai = $siswa["nilai"] ?? 0;
+    //                             $nilai = is_numeric($nilai)
+    //                                 ? (float) $nilai
+    //                                 : 0;
+    //                             $nilai = max(0, min(100, $nilai));
+    //                             $tpToSave[$k][] = $nilai;
+    //                         }
+    //                     }
+    //                 }
+    //                 $tpToSave = collect($tpToSave)
+    //                     ->filter(function ($values) {
+    //                         return collect($values)->sum() > 0;
+    //                     })
+    //                     ->toArray();
+
+    //                 foreach ($siswas as $siswa) {
+    //                     foreach ($siswa["nilais"] as $k => $v) {
+    //                         if (
+    //                             $k !== "ts" &&
+    //                             $k !== "as" &&
+    //                             isset($tpToSave[$k])
+    //                         ) {
+    //                             $tp = Tp::whereKode($k)->first();
+
+    //                             $nilai = $siswa["nilai"] ?? 0;
+    //                             $nilai = is_numeric($nilai)
+    //                                 ? (float) $nilai
+    //                                 : 0;
+    //                             $nilai = max(0, min(100, $nilai));
+    //                             if ($v !== null || $tp) {
+    //                                 $store = Nilai::updateOrCreate(
+    //                                     [
+    //                                         "tapel" => $query["tapel"],
+    //                                         "semester" => $query["semester"],
+    //                                         "siswa_id" => $siswa["nisn"],
+    //                                         "guru_id" => auth()->user()
+    //                                             ->userable->nip,
+    //                                         "rombel_id" => $query["rombelId"],
+    //                                         "mapel_id" => $query["mapelId"],
+    //                                         "agama" => $siswa["agama"] ?? null,
+    //                                         "tp_id" => $k,
+    //                                         "tipe" => "uh",
+    //                                     ],
+    //                                     [
+    //                                         "skor" => $nilai,
+    //                                     ]
+    //                                 );
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //                 // return "Nilai Ulangan Harian Disimpan";
+    //                 break;
+    //             default:
+    //                 foreach ($siswas as $siswa) {
+    //                     foreach ($siswa["nilais"] as $k => $v) {
+    //                         $tp = Tp::whereKode($k)->first();
+    //                         $nilai = $siswa["nilai"] ?? 0;
+    //                         $nilai = is_numeric($nilai) ? (float) $nilai : 0;
+    //                         $nilai = max(0, min(100, $nilai));
+    //                         if ($v !== null || $tp) {
+    //                             $store = Nilai::updateOrCreate(
+    //                                 [
+    //                                     "tapel" => $query["tapel"],
+    //                                     "semester" => $query["semester"],
+    //                                     "siswa_id" => $siswa["nisn"],
+    //                                     "guru_id" => auth()->user()->userable
+    //                                         ->nip,
+    //                                     "rombel_id" => $query["rombelId"],
+    //                                     "mapel_id" => $query["mapelId"],
+    //                                     "agama" => $siswa["agama"] ?? null,
+    //                                     "tp_id" => \in_array($k, ["ts", "as"])
+    //                                         ? null
+    //                                         : $k,
+    //                                     "tipe" => \in_array($k, ["ts", "as"])
+    //                                         ? $k
+    //                                         : "uh",
+    //                                 ],
+    //                                 [
+    //                                     "skor" => $nilai,
+    //                                 ]
+    //                             );
+    //                         }
+    //                     }
+    //                 }
+
+    //                 return "Nilai Disimpan";
+    //                 break;
+    //         }
+
+    //         Log::info("Completed simpanNilai successfully");
+    //     } catch (\Throwable $th) {
+    //         Log::error("Error in simpanNilai", [
+    //             "error" => $th->getMessage(),
+    //             "trace" => $th->getTraceAsString(),
+    //         ]);
+    //         throw $th;
+    //     }
+    // }
     public function simpanNilai($request)
     {
         try {
@@ -111,7 +254,7 @@ trait NilaiTrait
                                         "tipe" => "uh",
                                     ],
                                     [
-                                        "skor" => $v !== "null" ? $v : 0,
+                                        "skor" => $v !== null ? $v : 0,
                                     ]
                                 );
                             }
@@ -142,7 +285,7 @@ trait NilaiTrait
                                             : "uh",
                                     ],
                                     [
-                                        "skor" => $v !== "null" ? $v : 0,
+                                        "skor" => $v !== null ? $v : 0,
                                     ]
                                 );
                             }
@@ -239,11 +382,11 @@ trait NilaiTrait
 
                     $uh1 = $uh1->filter(fn($n) => $n->tp && $n->skor != 0);
                     $uh2 = $uh2->filter(fn($n) => $n->tp && $n->skor != 0);
-                    $avgUh1 = round($uh1->avg("skor"));
-                    $avgUh2 = round($uh2->avg("skor"));
+                    $avgUh1 = ceil($uh1->avg("skor"));
+                    $avgUh2 = ceil($uh2->avg("skor"));
 
-                    $na1 = round(($avgUh1 + ($nas1?->skor ?? 0)) / 2);
-                    $na2 = round(($avgUh2 + ($nas2?->skor ?? 0)) / 2);
+                    $na1 = ceil(($avgUh1 + ($nas1?->skor ?? 0)) / 2);
+                    $na2 = ceil(($avgUh2 + ($nas2?->skor ?? 0)) / 2);
 
                     $sum1 += $na1;
                     $sum2 += $na2;
@@ -314,7 +457,7 @@ trait NilaiTrait
     //                     ])
     //                     ->avg("skor");
 
-    //                 $na1 = round(
+    //                 $na1 = ceil(
     //                     ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
     //                 );
     //                 $nas2 = Nilai::where([
@@ -337,10 +480,10 @@ trait NilaiTrait
     //                     ])
     //                     ->avg("skor");
 
-    //                 $na1 = round(
+    //                 $na1 = ceil(
     //                     ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
     //                 );
-    //                 $na2 = round(
+    //                 $na2 = ceil(
     //                     ($avgUh2 + ($nas2 !== null ? $nas2->skor : 0)) / 2
     //                 );
     //                 $sum1 += $na1;

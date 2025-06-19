@@ -189,7 +189,7 @@ class RaporService
                     ->with("tp")
                     ->first();
 
-                $na = ($avgUh + ($nas !== null ? $nas->skor : 0)) / 2;
+                $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 
                 $nilais[$mapel["kode"]] = [
                     "nomor" => $nomor,
