@@ -135,7 +135,7 @@ onBeforeMount(() => {
                                 >
                             </template>
 
-                            <el-table :data="page.props.datas">
+                            <el-table :data="page.props.datas" stripe>
                                 <el-table-column
                                     label="Mata Pelajaran"
                                     prop="label"
@@ -179,7 +179,7 @@ onBeforeMount(() => {
                                                 "
                                                 >Nilai Kelas</el-button
                                             > -->
-                                            <el-button
+                                            <!-- <el-button
                                                 type="primary"
                                                 :disabled="
                                                     guruKelas &&
@@ -221,7 +221,7 @@ onBeforeMount(() => {
                                                     )
                                                 "
                                                 >PAS</el-button
-                                            >
+                                            > -->
                                             <el-button
                                                 type="primary"
                                                 :disabled="

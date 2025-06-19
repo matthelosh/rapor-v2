@@ -448,6 +448,7 @@ onBeforeMount(async () => {
                             //     :
                             siswas
                         "
+                        stripe
                         height="90vh"
                         size="small"
                     >

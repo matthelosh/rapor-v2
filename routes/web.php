@@ -431,6 +431,10 @@ Route::middleware("auth")->group(function () {
                     NilaiEkskulController::class,
                     "store",
                 ])->name("dashboard.nilai.ekskul.store");
+                Route::delete("/{id}", [
+                    NilaiEkskulController::class,
+                    "destroy",
+                ])->name("dashboard.nilai.ekskul.destroy");
             });
 
             Route::prefix("absen")->group(function () {

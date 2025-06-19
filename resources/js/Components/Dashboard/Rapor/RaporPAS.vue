@@ -121,14 +121,14 @@ onBeforeUnmount(() => {
             }}
         </span>
         <div class="toolbar-items flex items-center">
-            <el-button-group v-if="!props.arsip">
+            <!-- <el-button-group v-if="!props.arsip">
                 <el-button>
                     <Icon icon="mdi:chevron-double-left" @click="showPrev" />
                 </el-button>
                 <el-button @click="showNext">
                     <Icon icon="mdi:chevron-double-right" />
                 </el-button>
-            </el-button-group>
+            </el-button-group> -->
             <el-button @click="getNilaiPAS" v-if="props.arsip">
                 <Icon icon="mdi:reload" />
             </el-button>
@@ -147,10 +147,10 @@ onBeforeUnmount(() => {
             <div
                 class="relative page w-[60%] print:w-full bg-white mx-auto shadow-lg print:shadow-none pb-6 pt-4 print:pt-0"
             >
-                <img
+                <!-- <img
                     src="/img/tutwuri.png"
                     class="print-watermark fixed top-[30%]"
-                />
+                /> -->
                 <div class="meta my-6 print:my-0">
                     <h3 class="text-center font-bold text-xl uppercase">
                         Laporan Hasil Belajar
@@ -556,7 +556,8 @@ onBeforeUnmount(() => {
                         <p
                             class="leading-4"
                             v-if="
-                                page.props.auth.user.userable.status !== 'gtt'
+                                page.props.auth.user.userable.status.toLowerCase() !==
+                                'gtt'
                             "
                         >
                             NIP. {{ page.props.auth.user.userable.nip }}
@@ -584,7 +585,10 @@ onBeforeUnmount(() => {
                         </p>
                         <p
                             class="leading-4"
-                            v-if="page.props.sekolahs[0].ks.status !== 'gtt'"
+                            v-if="
+                                page.props.sekolahs[0].ks.status.toLowerCase() !==
+                                'gtt'
+                            "
                         >
                             NIP. {{ page.props.sekolahs[0].ks.nip }}
                         </p>
