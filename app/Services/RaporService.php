@@ -194,7 +194,7 @@ class RaporService
                 $nilais[$mapel["kode"]] = [
                     "nomor" => $nomor,
                     "mapel" => $mapel,
-                    "na" => number_format($na, 2, ",", "."),
+                    "na" => $na,
                     "minu" => $minUh,
                     "maxu" => $maxUh,
                     "kktp" => $kktp,

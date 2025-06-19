@@ -449,6 +449,12 @@ onBeforeMount(async () => {
                                         >
                                     </template>
                                 </el-popover>
+                                <el-button
+                                    size="small"
+                                    :native-type="null"
+                                    type="danger"
+                                    >Hapus</el-button
+                                >
                             </th>
                         </tr>
                     </thead>
