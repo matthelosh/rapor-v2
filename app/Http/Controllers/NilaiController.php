@@ -17,9 +17,9 @@ class NilaiController extends Controller
     {
         $semester = $request->semester ?? Periode::semester()->kode;
         $tapel = $request->tapel ?? Periode::tapel()->kode;
-        return Inertia::render('Dash/Nilai', [
-            'datas' => $nilaiService->home($semester, $tapel),
-            'nilais' => $this->prosentase($request->user())
+        return Inertia::render("Dash/Nilai", [
+            "datas" => $nilaiService->home($semester, $tapel),
+            "nilais" => $this->prosentase($request->user()),
         ]);
     }
 
@@ -48,9 +48,9 @@ class NilaiController extends Controller
         try {
             $store = $this->simpanNilai($request);
 
-            return back()->with('message', $store);
+            return back()->with("message", $store);
         } catch (\Throwable $th) {
-            throw ($th);
+            throw $th;
         }
     }
 
@@ -84,5 +84,16 @@ class NilaiController extends Controller
     public function destroy(Nilai $nilai)
     {
         //
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        try {
+            $delete = $this->hapusNilai($request);
+
+            return back()->with("message", $delete);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

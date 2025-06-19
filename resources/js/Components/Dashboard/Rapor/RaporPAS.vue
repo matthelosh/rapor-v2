@@ -142,11 +142,15 @@ onBeforeUnmount(() => {
     </div>
     <el-scrollbar height="88vh">
         <div
-            class="cetak bg-slate-100 print:bg-white w-full bg-cover pt-4 print:pt-0 pb-10 text-center font-serif"
+            class="cetak bg-slate-100 print:bg-white w-full bg-cover pt-4 print:pt-0 pb-10 text-center font-serif text-sm"
         >
             <div
-                class="page w-[60%] print:w-full bg-white mx-auto shadow-lg print:shadow-none pb-6 pt-4 print:pt-0"
+                class="relative page w-[60%] print:w-full bg-white mx-auto shadow-lg print:shadow-none pb-6 pt-4 print:pt-0"
             >
+                <img
+                    src="/img/tutwuri.png"
+                    class="print-watermark fixed top-[30%]"
+                />
                 <div class="meta my-6 print:my-0">
                     <h3 class="text-center font-bold text-xl uppercase">
                         Laporan Hasil Belajar
@@ -272,7 +276,7 @@ onBeforeUnmount(() => {
                                         {{ nilai.nomor }}
                                     </td>
                                     <td
-                                        class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[170px]"
+                                        class="print:break-inside-avoid-page border align-top border-black px-2 text-left w-[130px]"
                                     >
                                         {{ nilai.mapel?.deskripsi }}
                                     </td>
@@ -282,7 +286,7 @@ onBeforeUnmount(() => {
                                         {{ nilai.kktp?.minimal }}
                                     </td> -->
                                     <td
-                                        class="print:break-inside-avoid-page border align-top border-black px-2 w-[100px]"
+                                        class="print:break-inside-avoid-page border align-top border-black px-2 w-[55px]"
                                     >
                                         {{ nilai.na }}
                                     </td>
@@ -598,3 +602,23 @@ onBeforeUnmount(() => {
         </div>
     </Teleport>
 </template>
+<style>
+.print-watermark {
+    display: none;
+}
+@media print {
+    .print-watermark {
+        display: block;
+        position: fixed;
+        top: 40%;
+        left: 20%;
+        width: 60%;
+        text-align: center;
+        transform: rotate(-45deg);
+        font-size: 80px;
+        color: rgba(0, 0, 0, 0.07);
+        z-index: 0;
+        pointer-events: none;
+    }
+}
+</style>

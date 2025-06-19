@@ -107,6 +107,7 @@ class RaporService
     public function nilaiPAS($queries)
     {
         try {
+            $siswa = Siswa::where("nisn", $queries["siswaId"])->first();
             $rombel = Rombel::where("kode", $queries["rombelId"])->first();
             $fase = $rombel->fase;
             $sekolah = Sekolah::where("npsn", $queries["sekolahId"])
@@ -151,12 +152,20 @@ class RaporService
                 ])
                     ->with("tp")
                     ->get();
+                if ($mapel->kode == "pabp") {
+                    $nuhs->filter(fn($n) => $n->agama == $siswa->agama);
+                }
 
                 $avgUh = Nilai::where([
                     ["siswa_id", "=", $queries["siswaId"]],
                     ["rombel_id", "=", $queries["rombelId"]],
                     ["tapel", "=", $queries["tapel"]],
                     ["semester", "=", $queries["semester"]],
+                    [
+                        "agama",
+                        "=",
+                        $mapel->kode == "pabp" ? $siswa->agama : null,
+                    ],
                     ["mapel_id", "=", $mapel["kode"]],
                     ["tipe", "=", "uh"],
                 ])
@@ -169,6 +178,11 @@ class RaporService
                         ["siswa_id", "=", $queries["siswaId"]],
                         ["rombel_id", "=", $queries["rombelId"]],
                         ["tapel", "=", $queries["tapel"]],
+                        [
+                            "agama",
+                            "=",
+                            $mapel->kode == "pabp" ? $siswa->agama : null,
+                        ],
                         ["semester", "=", $queries["semester"]],
                         ["mapel_id", "=", $mapel["kode"]],
                         ["tipe", "=", "uh"],
@@ -183,12 +197,18 @@ class RaporService
                         ["tapel", "=", $queries["tapel"]],
                         ["semester", "=", $queries["semester"]],
                         ["mapel_id", "=", $mapel["kode"]],
+                        [
+                            "agama",
+                            "=",
+                            $mapel->kode == "pabp" ? $siswa->agama : null,
+                        ],
                         ["tipe", "=", "uh"],
                     ])
                     ->orderBy("skor", "ASC")
                     ->with("tp")
                     ->first();
 
+                // dd($avgUh, $nas->skor, $nuhs);
                 $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 
                 $nilais[$mapel["kode"]] = [

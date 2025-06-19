@@ -301,6 +301,69 @@ const unduhFormat = async () => {
 //         'Peringatan'
 //     )
 // })
+const hapusNilai = (jenis, tpId = null) => {
+    ElMessageBox.confirm(
+        `Yakin hapus nilai ${jenis} untuk mapel ${props.mapel.label} kelas ${props.rombel.label} semester ${page.props.periode.semester.label}`,
+        "Peringatan",
+        {
+            confirmButtonText: "Hapus",
+            cancelButtonText: "Batal",
+            type: "warning",
+        },
+    )
+        .then(() => {
+            const elloading = ElLoading.service({
+                text: "Loading...",
+                fullscreen: true,
+                background: "rgba(0, 0, 0, 0.7)",
+            });
+            router.post(
+                route(
+                    "dashboard.nilai.hapus.bulk",
+                    {
+                        rombelId: props.rombel.kode,
+                        mapelId: props.mapel.kode,
+                        jenis: jenis,
+                    },
+                    { tpId: tpId },
+                    {
+                        onStart: () => {
+                            elloading.start();
+                        },
+                        onSuccess: () => {
+                            ElMessage({
+                                type: "success",
+                                message: "Nilai berhasil dihapus",
+                            });
+                        },
+                        onFinish: () => {
+                            elloading.close();
+                        },
+                    },
+                ),
+            );
+        })
+        .catch(() => {
+            ElMessage({
+                type: "info",
+                message: "Hapus nilai dibatalkan",
+            });
+        });
+};
+
+const nilaiAkhir = (indexSiswa) => {
+    const { ts, as, ...rest } = siswas.value[indexSiswa].nilais;
+    let notNull = [];
+    Object.values(rest).forEach((v) => {
+        if (v !== 0) {
+            notNull.push(v);
+        }
+    });
+    const avgUh = notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length;
+
+    // return Object.values(rest).reduce((acc, cur) => acc + cur, 0);
+    return Math.ceil((avgUh + as) / 2);
+};
 
 onBeforeMount(async () => {
     loading.value = true;
@@ -426,9 +489,27 @@ onBeforeMount(async () => {
                                 rowspan="2"
                             >
                                 Nilai PTS
+
+                                <el-button
+                                    size="small"
+                                    :native-type="null"
+                                    type="danger"
+                                    @click="hapusNilai('ts')"
+                                    >Hapus</el-button
+                                >
                             </th>
                             <th class="end border-b p-2 w-[100px]" rowspan="2">
                                 Nilai PAS
+                                <el-button
+                                    size="small"
+                                    :native-type="null"
+                                    type="danger"
+                                    @click="hapusNilai('as')"
+                                    >Hapus</el-button
+                                >
+                            </th>
+                            <th class="end border-b p-2 w-[100px]" rowspan="2">
+                                N. Akhir
                             </th>
                         </tr>
                         <tr>
@@ -453,6 +534,7 @@ onBeforeMount(async () => {
                                     size="small"
                                     :native-type="null"
                                     type="danger"
+                                    @click="hapusNilai('uh', tp.kode)"
                                     >Hapus</el-button
                                 >
                             </th>
@@ -514,6 +596,13 @@ onBeforeMount(async () => {
                                     size="small"
                                 />
                                 <!-- {{ siswas[s] }} -->
+                            </td>
+                            <td
+                                class="p-3 border-b bg-sky-100 text-center font-bold text-xl"
+                            >
+                                <el-tag type="primary">
+                                    {{ nilaiAkhir(s) }}
+                                </el-tag>
                             </td>
                         </tr>
                     </tbody>

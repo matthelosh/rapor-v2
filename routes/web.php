@@ -451,6 +451,11 @@ Route::middleware("auth")->group(function () {
                     "store",
                 ])->name("dashboard.nilai.catatan.store");
             });
+
+            Route::post('/{rombelId}/{$mapelId}/{jenis}', [
+                NilaiController::class,
+                "bulkDelete",
+            ])->name("dashboard.nilai.hapus.bulk");
         });
 
         Route::prefix("ledger")->group(function () {
