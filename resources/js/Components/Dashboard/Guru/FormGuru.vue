@@ -9,7 +9,7 @@ const props = defineProps({ open: Boolean, selectedGuru: Object });
 const emit = defineEmits(["close"]);
 const show = computed(() => props.open);
 const loading = ref(false);
-const fotoUrl = ref("/img/tutwuri.png");
+const fotoUrl = ref("/img/user_l.png");
 const fileFoto = ref(null);
 const fileTTD = ref(null);
 const ttdUrl = ref(null);
@@ -83,7 +83,7 @@ const onFotoPicked = (e) => {
     let url = URL.createObjectURL(file);
     fileFoto.value = file;
     fotoUrl.value = url;
-    // console.log(e)
+    // console.log(url);
 };
 
 const onTTDPicked = (e) => {
@@ -101,7 +101,10 @@ onBeforeMount(() => {
     if (props.selectedGuru !== null) {
         guru.value = props.selectedGuru;
         guru.value.sekolahs = props.selectedGuru.sekolahs.map((s) => s.id);
-        ttdUrl.value = "/storage/images/ttd/" + props.selectedGuru.nip + ".png";
+        ttdUrl.value =
+            "https://is3.cloudhost.id/alsya/public/images/ttd/" +
+            props.selectedGuru.nip +
+            ".png";
     } else {
         if (page.props.auth.roles.includes("ops")) {
             guru.value.sekolahs = page.props.sekolahs.map((s) => s.id);
@@ -127,12 +130,15 @@ onBeforeMount(() => {
                 <div class="flex justify-center">
                     <!-- <img class="mx-auto w-24 hover:cursor-pointer" :src="fotoUrl" alt="Foto" @click="$refs.fotoInput.click()"> -->
                     <el-avatar
-                        :src="guru.foto"
                         @click="$refs.fotoInput.click()"
                         style="margin: 0 auto; cursor: pointer"
                         :size="100"
                     >
-                        <img :src="avatar(guru)" class="mx-auto" />
+                        <img
+                            :src="fotoUrl"
+                            class="mx-auto"
+                            onerror="this.error = false;this.src = '/img/user_l.png'"
+                        />
                     </el-avatar>
                     <input
                         type="file"

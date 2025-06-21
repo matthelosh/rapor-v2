@@ -472,6 +472,9 @@ Route::middleware("auth")->group(function () {
         });
 
         Route::prefix("rapor")->group(function () {
+            Route::get("/labelnama", [RaporController::class, "labelNama"])
+                ->name("dashboard.rapor.labelnama")
+                ->middleware(["role:guru_kelas"]);
             Route::get("/cetak", [RaporController::class, "home"])
                 ->name("dashboard.rapor.cetak")
                 ->middleware(["role:guru_kelas"]);

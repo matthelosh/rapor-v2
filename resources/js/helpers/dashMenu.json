@@ -1,5 +1,5 @@
 [
-     {
+    {
         "label": "Dashboard",
         "icon": "monitor-dashboard",
         "url": "/dashboard",
@@ -21,12 +21,7 @@
         "icon": "book-open",
         "url": "/dashboard/bukuinduk",
         "children": [],
-        "roles": [
-            "ops",
-            "kepala_sekolah",
-            "guru_kelas",
-            "siswa"
-        ]
+        "roles": ["ops", "kepala_sekolah", "guru_kelas", "siswa"]
     },
     {
         "label": "Data Utama",
@@ -91,7 +86,16 @@
                 "label": "Pembelajaran",
                 "icon": "bookshelf",
                 "url": "/dashboard/pembelajaran",
-                "roles": ["superadmin", "admin", "ops", "admin_tp", "guru_kelas", "guru_agama", "guru_pjok", "guru_inggris"]
+                "roles": [
+                    "superadmin",
+                    "admin",
+                    "ops",
+                    "admin_tp",
+                    "guru_kelas",
+                    "guru_agama",
+                    "guru_pjok",
+                    "guru_inggris"
+                ]
             }
         ]
     },
@@ -218,6 +222,12 @@
         "roles": ["guru_kelas", "ops", "admin"],
         "children": [
             {
+                "label": "Cetak Label Nama",
+                "icon": "tag",
+                "url": "/dashboard/rapor/labelnama",
+                "roles": ["guru_kelas"]
+            },
+            {
                 "label": "Data Periodik",
                 "icon": "chart-line",
                 "url": "/dashboard/rapor/periodik",
@@ -227,7 +237,7 @@
                 "label": "Cetak",
                 "icon": "printer",
                 "url": "/dashboard/rapor/cetak",
-                "roles": ["guru_kelas", "kepala_sekolah"]
+                "roles": ["guru_kelas"]
             },
             {
                 "label": "Tanggal Rapor",

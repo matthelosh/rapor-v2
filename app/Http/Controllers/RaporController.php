@@ -8,13 +8,27 @@ use App\Models\Siswa;
 use App\Services\RaporService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Rombel;
 
 class RaporController extends Controller
 {
     public function home(Request $request)
     {
-        return Inertia::render("Dash/Rapor", [
+        return Inertia::render("Dash/Rapor/", [
             "tapels" => Tapel::all(),
+        ]);
+    }
+
+    public function labelNama(Request $request)
+    {
+        $nip = $request->user()->userable->nip;
+        $rombels = Rombel::whereHas("wali_kelas", function ($query) use ($nip) {
+            $query->where("nip", $nip);
+        })
+            ->with("siswas", fn($s) => $s->select("nama", "nis", "nisn"))
+            ->get();
+        return Inertia::render("Dash/Rapor/Label", [
+            "rombels" => $rombels,
         ]);
     }
 

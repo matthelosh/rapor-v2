@@ -450,163 +450,181 @@ onBeforeMount(async () => {
                 class="dialog-content"
                 style="border-radius: 10px; max-height: 90vh; overflow-y: auto"
             >
-                <table class="w-full">
-                    <thead class="sticky top-0 bg-white z-30">
-                        <tr class="">
-                            <th
-                                class="border-e border-b border-b-double p-2 w-[80px]"
-                                rowspan="2"
-                            >
-                                No
-                            </th>
-                            <th
-                                class="border-e border-b border-b-double p-2 w-[200px]"
-                                rowspan="2"
-                            >
-                                NISN
-                            </th>
-                            <th
-                                class="border-e border-b border-b-double p-2"
-                                rowspan="2"
-                            >
-                                Nama
-                            </th>
-                            <th
-                                class="border-e border-b border-b-double p-2 w-[200px]"
-                                rowspan="2"
-                            >
-                                JK
-                            </th>
-                            <th
-                                v-if="tps.length > 0"
-                                class="border-e border-b p-2"
-                                :colspan="tps.length"
-                            >
-                                Nilai Harian
-                            </th>
-                            <th
-                                class="border-e border-b p-2 w-[100px]"
-                                rowspan="2"
-                            >
-                                Nilai PTS
+                <div class="w-full overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="sticky top-0 bg-white z-30">
+                            <tr class="">
+                                <th
+                                    class="border-e border-b border-b-double p-2 w-[80px]"
+                                    rowspan="2"
+                                >
+                                    No
+                                </th>
+                                <th
+                                    class="border-e border-b border-b-double p-2 w-[200px]"
+                                    rowspan="2"
+                                >
+                                    NISN
+                                </th>
+                                <th
+                                    class="border-e border-b border-b-double p-2"
+                                    rowspan="2"
+                                >
+                                    Nama
+                                </th>
+                                <th
+                                    class="border-e border-b border-b-double p-2 w-[200px]"
+                                    rowspan="2"
+                                >
+                                    JK
+                                </th>
+                                <th
+                                    v-if="tps.length > 0"
+                                    class="border-e border-b p-2"
+                                    :colspan="tps.length"
+                                >
+                                    Nilai Harian
+                                </th>
+                                <th
+                                    class="border-e border-b p-2 w-[100px]"
+                                    rowspan="2"
+                                >
+                                    Nilai PTS
 
-                                <el-button
-                                    size="small"
-                                    :native-type="null"
-                                    type="danger"
-                                    @click="hapusNilai('ts')"
-                                    >Hapus</el-button
+                                    <el-button
+                                        size="small"
+                                        :native-type="null"
+                                        type="danger"
+                                        @click="hapusNilai('ts')"
+                                        >Hapus</el-button
+                                    >
+                                </th>
+                                <th
+                                    class="end border-b p-2 w-[100px]"
+                                    rowspan="2"
                                 >
-                            </th>
-                            <th class="end border-b p-2 w-[100px]" rowspan="2">
-                                Nilai PAS
-                                <el-button
-                                    size="small"
-                                    :native-type="null"
-                                    type="danger"
-                                    @click="hapusNilai('as')"
-                                    >Hapus</el-button
+                                    Nilai PAS
+                                    <el-button
+                                        size="small"
+                                        :native-type="null"
+                                        type="danger"
+                                        @click="hapusNilai('as')"
+                                        >Hapus</el-button
+                                    >
+                                </th>
+                                <th
+                                    class="end border-b p-2 w-[100px]"
+                                    rowspan="2"
                                 >
-                            </th>
-                            <th class="end border-b p-2 w-[100px]" rowspan="2">
-                                N. Akhir
-                            </th>
-                        </tr>
-                        <tr>
-                            <th
-                                class="border-e border-b p-2 w-[100px]"
-                                v-for="(tp, t) in tps"
-                                :key="`tp-${tp.kode}`"
-                            >
-                                <el-popover
-                                    placement="bottom"
-                                    :title="tp.kode"
-                                    :content="tp.teks"
+                                    N. Akhir
+                                </th>
+                            </tr>
+                            <tr>
+                                <th
+                                    class="border-e border-b p-2 w-[100px]"
+                                    v-for="(tp, t) in tps"
+                                    :key="`tp-${tp.kode}`"
                                 >
-                                    <template #reference>
-                                        <span
-                                            class="text-sky-700 font-bold cursor-pointer"
-                                            >{{ tp.kode }}</span
-                                        >
-                                    </template>
-                                </el-popover>
-                                <el-button
-                                    size="small"
-                                    :native-type="null"
-                                    type="danger"
-                                    @click="hapusNilai('uh', tp.kode)"
-                                    >Hapus</el-button
-                                >
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(siswa, s) in siswas" :key="`sis-${s}`">
-                            <td class="p-3 text-center border-b bg-slate-50">
-                                {{ s + 1 }}
-                            </td>
-                            <td class="p-3 text-center border-b bg-slate-100">
-                                {{ siswa.nisn }}
-                            </td>
-                            <td class="p-3 border-b bg-slate-50">
-                                {{ siswa.nama }}
-                            </td>
-                            <td class="p-3 border-b bg-slate-100">
-                                {{ siswa.jk }}
-                            </td>
-                            <template
-                                v-for="(tp, t) in tps"
-                                :key="`tp-${tp.kode}`"
+                                    <el-popover
+                                        placement="bottom"
+                                        :title="tp.kode"
+                                        :content="tp.teks"
+                                    >
+                                        <template #reference>
+                                            <span
+                                                class="text-sky-700 font-bold cursor-pointer"
+                                                >{{ tp.kode }}</span
+                                            >
+                                        </template>
+                                    </el-popover>
+                                    <el-button
+                                        size="small"
+                                        :native-type="null"
+                                        type="danger"
+                                        @click="hapusNilai('uh', tp.kode)"
+                                        >Hapus</el-button
+                                    >
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="(siswa, s) in siswas"
+                                :key="`sis-${s}`"
+                                class="hover:bg-slate-200"
                             >
                                 <td
-                                    class="p-3 border-b"
-                                    :class="
-                                        t % 2 !== 0
-                                            ? 'bg-slate-100'
-                                            : 'bg-slate-50'
-                                    "
+                                    class="p-3 text-center border-b bg-slate-50"
                                 >
+                                    {{ s + 1 }}
+                                </td>
+                                <td
+                                    class="p-3 text-center border-b bg-slate-100"
+                                >
+                                    {{ siswa.nisn }}
+                                </td>
+                                <td class="p-3 border-b bg-slate-50">
+                                    {{ siswa.nama }}
+                                </td>
+                                <td class="p-3 border-b bg-slate-100">
+                                    {{ siswa.jk }}
+                                </td>
+                                <template
+                                    v-for="(tp, t) in tps"
+                                    :key="`tp-${tp.kode}`"
+                                >
+                                    <td
+                                        class="p-3 border-b"
+                                        :class="
+                                            t % 2 !== 0
+                                                ? 'bg-slate-100'
+                                                : 'bg-slate-50'
+                                        "
+                                    >
+                                        <el-input
+                                            v-model="siswas[s].nilais[tp.kode]"
+                                            type="number"
+                                            :tabindex="t"
+                                            min="0"
+                                            max="100"
+                                            size="small"
+                                        />
+                                    </td>
+                                </template>
+                                <td class="p-3 border-b bg-sky-100">
                                     <el-input
-                                        v-model="siswas[s].nilais[tp.kode]"
+                                        v-model="siswas[s].nilais['ts']"
                                         type="number"
-                                        :tabindex="t"
+                                        :tabindex="tps.length + s"
                                         min="0"
                                         max="100"
                                         size="small"
                                     />
                                 </td>
-                            </template>
-                            <td class="p-3 border-b bg-sky-100">
-                                <el-input
-                                    v-model="siswas[s].nilais['ts']"
-                                    type="number"
-                                    :tabindex="tps.length + s"
-                                    min="0"
-                                    max="100"
-                                    size="small"
-                                />
-                            </td>
-                            <td class="p-3 border-b bg-sky-100">
-                                <el-input
-                                    v-model="siswas[s].nilais['as']"
-                                    :tabindex="tps.length * siswas.length + s"
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    size="small"
-                                />
-                                <!-- {{ siswas[s] }} -->
-                            </td>
-                            <td
-                                class="p-3 border-b bg-sky-100 text-center font-bold text-xl"
-                            >
-                                <el-tag type="primary">
-                                    {{ nilaiAkhir(s) }}
-                                </el-tag>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                <td class="p-3 border-b bg-sky-100">
+                                    <el-input
+                                        v-model="siswas[s].nilais['as']"
+                                        :tabindex="
+                                            tps.length * siswas.length + s
+                                        "
+                                        type="number"
+                                        min="0"
+                                        max="100"
+                                        size="small"
+                                    />
+                                    <!-- {{ siswas[s] }} -->
+                                </td>
+                                <td
+                                    class="p-3 border-b bg-sky-100 text-center font-bold text-xl"
+                                >
+                                    <el-tag type="primary">
+                                        {{ nilaiAkhir(s) }}
+                                    </el-tag>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </el-card>
             <!-- </el-scrollbar> -->
         </template>

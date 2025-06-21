@@ -61,22 +61,31 @@ class GuruService
         return $gurus;
     }
 
-    private function storeFoto($file)
+    private function storeFoto($data, $file)
     {
         $foto_file = $file;
         $foto_name = $data["nip"] . "." . $foto_file->extension();
-        $store = $foto_file->storeAs("public/images/guru/", $foto_name);
-        $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+        // $store = $foto_file->storeAs("public/images/guru/", $foto_name);
+        $store = $foto_file->storePubliclyAs(
+            "public/images/guru",
+            $foto_name,
+            "s3"
+        );
+        $foto = $store ? Storage::url($store) : null;
         return $foto;
     }
 
     private function storeTtd($ttd, $nip)
     {
         try {
-            $store_ttd = $ttd->storeAs("public/images/ttd/", $nip . ".png");
+            $store_ttd = $ttd->storePubliclyAs(
+                "public/images/ttd",
+                $nip . ".png",
+                "s3"
+            );
             return $store_ttd ? Storage::url($store_ttd) : null;
         } catch (\Throwable $th) {
-            dd($th);
+            return $th->getMessage();
         }
     }
     public function store($data, $file, $ttd)
@@ -172,7 +181,7 @@ class GuruService
     public function update($data, $file, $ttd)
     {
         if ($file !== null) {
-            $foto = $this->storeFoto($file);
+            $foto = $this->storeFoto($data, $file);
         }
 
         if ($ttd !== null) {
