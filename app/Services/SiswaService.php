@@ -222,6 +222,13 @@ class SiswaService
         }
     }
 
+    /**
+     * Bulk create account for siswa
+     *
+     * @param int $sekolah_id
+     * @param int $rombel_id
+     * @return bool
+     */
     public function bulkAccount($sekolah_id, $rombel_id)
     {
         try {

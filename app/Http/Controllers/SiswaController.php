@@ -136,13 +136,18 @@ class SiswaController extends Controller
     {
         try {
             $siswa = Siswa::findorFail($request->id);
+            dd($siswa->email !== null);
             $user = User::updateOrCreate(
                 [
                     "name" => $siswa->nisn,
                 ],
                 [
                     "password" => Hash::make($siswa->nisn),
-                    "email" => $siswa->email ?? $siswa->nisn . "@e.mail",
+                    "email" =>
+                        $siswa->email &&
+                        ($siswa->email !== "null" || $siswa->email === null)
+                            ? $siswa->email
+                            : $siswa->nisn . "@e.mail",
                     "userable_id" => $siswa->id,
                     "userable_type" => "App\Models\Siswa",
                 ]

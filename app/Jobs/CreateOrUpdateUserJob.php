@@ -31,16 +31,21 @@ class CreateOrUpdateUserJob implements ShouldQueue
     {
         $user_siswa = User::updateOrCreate(
             [
-                'name' => $this->siswa->nisn,
+                "name" => $this->siswa->nisn,
             ],
             [
-                'password' => Hash::make($this->siswa->nisn),
-                'email' => $this->siswa->email ?? $this->siswa->nisn.'@e.mail',
-                'userable_id' => $this->siswa->id,
-                'userable_type' => Siswa::class
+                "password" => Hash::make($this->siswa->nisn),
+                "email" =>
+                    $this->siswa->email &&
+                    ($this->siswa->email !== "null" ||
+                        $this->siswa->email === null)
+                        ? $this->siswa->email
+                        : $this->siswa->nisn . "@e.mail",
+                "userable_id" => $this->siswa->id,
+                "userable_type" => Siswa::class,
             ]
         );
 
-        $user_siswa->assignRole('siswa');
+        $user_siswa->assignRole("siswa");
     }
 }
