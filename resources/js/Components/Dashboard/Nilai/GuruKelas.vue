@@ -61,7 +61,7 @@ const openForm = async (mapel, rombel, komponen) => {
         mode.value = komponen;
     }
 };
-
+const rombel = computed(() => page.props.datas.rombel);
 const closeForm = () => {
     selectedRombel.value = {};
     selectedMapel.value = {};
@@ -90,7 +90,7 @@ onBeforeMount(() => {
                 <div class="card-toolbar flex items-center justify-between">
                     <div class="title">
                         <h3 class="text-lg font-bold">
-                            Penilaian {{ page.props.rombels[0].label }} Semester
+                            Penilaian Semester
                             {{ page.props.periode.semester.label }}
                             {{ page.props.periode.tapel.deskripsi }}
                         </h3>
@@ -121,7 +121,7 @@ onBeforeMount(() => {
                     class="hidden"
                     @change="onFileNilaiChange($event)"
                 />
-                <el-collapse accordion>
+                <!-- <el-collapse accordion>
                     <template
                         v-for="(rombel, r) in page.props.rombels"
                         :key="r"
@@ -161,6 +161,7 @@ onBeforeMount(() => {
                                                 "
                                                 >Nilai Kelas</el-button
                                             >
+<<<<<<< HEAD
                                             <!-- <span class="flex items-center">
                                             <el-button
                                                 type="primary"
@@ -180,6 +181,9 @@ onBeforeMount(() => {
                                                 >Nilai Kelas</el-button
                                             > -->
                                             <!-- <el-button
+=======
+                                            <el-button
+>>>>>>> refactor/inertia-share-data
                                                 type="primary"
                                                 :disabled="
                                                     guruKelas &&
@@ -268,8 +272,87 @@ onBeforeMount(() => {
                             </el-table>
                         </el-collapse-item>
                     </template>
-                </el-collapse>
-                <!-- {{ page.props.rombels }} -->
+                </el-collapse> -->
+                <!-- {{ page.props.datas.mapels }} -->
+                <el-table :data="page.props.datas['mapels']">
+                    <el-table-column label="Mata Pelajaran" prop="label" />
+                    <el-table-column
+                        label="Kategori"
+                        prop="kategori"
+                        width="100"
+                    />
+                    <el-table-column label="Entri Nilai">
+                        <template #default="scope">
+                            <span class="flex items-center">
+                                <el-button
+                                    type="primary"
+                                    rounded
+                                    size="small"
+                                    @click="
+                                        openForm(
+                                            scope.row,
+                                            rombel,
+                                            'nilai-kelas',
+                                        )
+                                    "
+                                    >Nilai Kelas</el-button
+                                >
+                                <el-button
+                                    type="primary"
+                                    :disabled="
+                                        guruKelas && scope.row.kode == 'pabp'
+                                    "
+                                    rounded
+                                    size="small"
+                                    @click="
+                                        openForm(scope.row, rombel, 'harian')
+                                    "
+                                    >Nilai Harian</el-button
+                                >
+                                <el-button
+                                    type="primary"
+                                    rounded
+                                    size="small"
+                                    @click="openForm(scope.row, rombel, 'sts')"
+                                    >PTS</el-button
+                                >
+                                <el-button
+                                    type="primary"
+                                    rounded
+                                    size="small"
+                                    @click="openForm(scope.row, rombel, 'sas')"
+                                    >PAS</el-button
+                                >
+                                <el-button
+                                    type="primary"
+                                    :disabled="
+                                        guruKelas && scope.row.kode == 'pabp'
+                                    "
+                                    rounded
+                                    size="small"
+                                    v-if="rombel.tingkat == '6'"
+                                    @click="openForm(scope.row, rombel, 'psaj')"
+                                    >PSAJ</el-button
+                                >
+                                <el-button
+                                    type="primary"
+                                    :disabled="
+                                        guruKelas && scope.row.kode == 'pabp'
+                                    "
+                                    rounded
+                                    size="small"
+                                    v-if="
+                                        page.props.auth.roles.includes(
+                                            'guru_agama',
+                                        )
+                                    "
+                                    @click="openForm(scope.row, rombel, 'spn')"
+                                    >SPN</el-button
+                                >
+                            </span>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-card>
         <FormNilaiHarian

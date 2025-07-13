@@ -45,7 +45,7 @@ const cetak = async (target) => {
 				</html>
 	`;
     let win = window.open(host + "/print", "_blank", "height=900,width=1000");
-    await win.document.write(html);
+    win.document.write(html);
     setTimeout(() => {
         win.print();
         win.close();
@@ -121,7 +121,7 @@ onBeforeMount(async () => {
                                         class="text-lg font-bold uppercase print:text-center"
                                     >
                                         Ledger Nilai {{ rombel.label }}
-                                        {{ page.props.sekolahs[0].nama }}
+                                        {{ rombel.sekolah.nama }}
                                         {{ page.props.periode.tapel.deskripsi }}
                                     </h3>
                                     <div class="flex items-center">

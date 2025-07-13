@@ -65,6 +65,7 @@ const getNilai = async () => {
         .catch((err) => console.log(err));
 };
 
+<<<<<<< HEAD
 const hapus = async (id) => {
     ElLoading.service({
         text: "Loading...",
@@ -91,6 +92,8 @@ const hapus = async (id) => {
         });
 };
 
+=======
+>>>>>>> refactor/inertia-share-data
 const simpan = async () => {
     router.post(
         route("dashboard.nilai.ekskul.store", {
@@ -177,11 +180,16 @@ onBeforeMount(async () => {
                     <template #default="scope">
                         <el-input
                             type="textarea"
+<<<<<<< HEAD
                             rows="1"
+=======
+                            :rows="1"
+>>>>>>> refactor/inertia-share-data
                             autosize
                             v-model="nilais[scope.$index].deskripsi"
                             placeholder="Isikan deskripsi capaian"
                         ></el-input>
+<<<<<<< HEAD
                     </template>
                 </el-table-column>
                 <el-table-column label="Opsi">
@@ -193,6 +201,8 @@ onBeforeMount(async () => {
                         >
                             <Icon icon="mdi:delete" />
                         </el-button>
+=======
+>>>>>>> refactor/inertia-share-data
                     </template>
                 </el-table-column>
             </el-table>

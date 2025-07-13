@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Periode;
+<<<<<<< HEAD
+=======
+
+>>>>>>> refactor/inertia-share-data
 // use App\Http\Resources\SekolahResource;
 
 class RombelService
@@ -57,7 +61,7 @@ class RombelService
                 ->get();
         }
 
-        return ["rombels" => $rombels];
+        return ["rombels" => $rombels, 'sekolahs' => $user->userable->sekolahs];
     }
 
     // public function index($request) {

@@ -22,8 +22,7 @@ const inputRekap = () => {
 };
 
 const printRekap = () => {
-    // window.print();
-
+    window.print();
     let html = `<!doctype html>
         <html>
             <head>
@@ -73,7 +72,6 @@ const printRekap = () => {
                             </tr>
                         </tbody>
                     </table>
-
                     <table class="w-full">
                         <thead>
                             <tr>
@@ -90,7 +88,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Bangun Pagi"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Bangun Pagi"] > 15 && props.siswa.kebiasaan_count["Bangun Pagi"] < 23 ? "&#10003" : ""}
@@ -105,7 +102,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Beribadah"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Beribadah"] > 15 && props.siswa.kebiasaan_count["Beribadah"] < 23 ? "&#10003" : ""}
@@ -120,7 +116,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Berolahraga"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Berolahraga"] > 15 && props.siswa.kebiasaan_count["Berolahraga"] < 23 ? "&#10003" : ""}
@@ -135,7 +130,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Makan Sehat dan Bergizi"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Makan Sehat dan Bergizi"] > 15 && props.siswa.kebiasaan_count["Makan Sehat dan Bergizi"] < 23 ? "&#10003" : ""}
@@ -150,7 +144,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Gemar Belajar"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Gemar Belajar"] > 15 && props.siswa.kebiasaan_count["Gemar Belajar"] < 23 ? "&#10003" : ""}
@@ -165,7 +158,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Bermasyarakat"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Bermasyarakat"] > 15 && props.siswa.kebiasaan_count["Bermasyarakat"] < 23 ? "&#10003" : ""}
@@ -180,7 +172,6 @@ const printRekap = () => {
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Tidur Cepat"] <= 15 ? "&#10003;" : ""}
-
                                 </td>
                                 <td class="border border-black p-2 text-center">
                                     ${props.siswa.kebiasaan_count["Tidur Cepat"] > 15 && props.siswa.kebiasaan_count["Tidur Cepat"] < 23 ? "&#10003" : ""}
@@ -194,17 +185,15 @@ const printRekap = () => {
                     <div class="ttd grid grid-cols-3 my-16">
                         <div class="ttd-guru">
                             <p>Menyetujui,</p>
-
                             <p class="font-black underline mt-16">
-                                ${page.props.auth.user.userable.nama},
-                                ${page.props.auth.user.userable.gelar_belakang}
+                                ${props.rombel.wali_kelas.nama},
+                                ${props.rombel.wali_kelas.gelar_belakang}
                             </p>
-                            <p>NIP. ${page.props.auth.user.userable.nip}</p>
+                            <p>NIP. ${props.rombel.wali_kelas.nip}</p>
                         </div>
                         <div class="kosong"></div>
                         <div class="ttd-ortu">
                             <p>Mengetahui,</p>
-
                             <p class="font-black underline mt-16">
                                 ......................................................................
                             </p>

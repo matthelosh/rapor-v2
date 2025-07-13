@@ -2,7 +2,7 @@
 import { ref, computed, onBeforeMount } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { ElNotification } from "element-plus";
-import { avatar } from "@/helpers/Gambar.js";
+import { fotoGuru } from "@/helpers/Gambar.js";
 
 const page = usePage();
 const props = defineProps({ open: Boolean, selectedGuru: Object });
@@ -134,11 +134,15 @@ onBeforeMount(() => {
                         style="margin: 0 auto; cursor: pointer"
                         :size="100"
                     >
+<<<<<<< HEAD
                         <img
                             :src="fotoUrl"
                             class="mx-auto"
                             onerror="this.error = false;this.src = '/img/user_l.png'"
                         />
+=======
+                        <img :src="fotoGuru(guru)" class="mx-auto" />
+>>>>>>> refactor/inertia-share-data
                     </el-avatar>
                     <input
                         type="file"

@@ -1,15 +1,25 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { usePage, Head, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
+import axios from "axios";
 
-import { avatar } from "@/helpers/Gambar";
+import { fotoGuru } from "@/helpers/Gambar";
 
 const page = usePage();
 
 const data = computed(() => page.props.data);
 
-const profil = computed(() => page.props.auth.user.userable);
+const profil = ref({});
+
+onBeforeMount(() => {
+    axios
+        .get(page.props.appUrl + "/userdetail")
+        .then((res) => {
+            profil.value = res.data.userdetail;
+        })
+        .catch((err) => console.log(err));
+});
 </script>
 
 <template>
@@ -70,13 +80,7 @@ const profil = computed(() => page.props.auth.user.userable);
                         </thead>
                         <tbody>
                             <template
-                                v-for="(
-                                    rombel, r
-                                ) in data.sekolah.rombels.filter(
-                                    (rombel) =>
-                                        rombel.wali_kelas.nip ==
-                                        page.props.auth.user.userable.nip,
-                                )"
+                                v-for="(rombel, r) in data.sekolah.rombels"
                                 :key="r"
                             >
                                 <tr>
@@ -140,7 +144,7 @@ const profil = computed(() => page.props.auth.user.userable);
                 </template>
                 <div class="card-body">
                     <img
-                        :src="avatar(profil)"
+                        :src="fotoGuru(profil)"
                         alt="Foto Profil"
                         class="rounded-full w-[60%] mx-auto mb-4"
                     />
@@ -190,7 +194,7 @@ const profil = computed(() => page.props.auth.user.userable);
                             <tr>
                                 <td>Status Kepegawaian</td>
                                 <td class="px-1">:</td>
-                                <td>{{ profil.status.toUpperCase() }}</td>
+                                <td>{{ profil?.status?.toUpperCase() }}</td>
                             </tr>
                             <tr>
                                 <td>Pangkat</td>

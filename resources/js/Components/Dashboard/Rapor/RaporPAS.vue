@@ -549,18 +549,22 @@ onBeforeUnmount(() => {
 
                         <p class="font-bold underline leading-4 mt-20">
                             <span class="uppercase">
-                                {{ page.props.auth.user.userable.nama }},
+                                {{ rombel.wali_kelas.nama }},
                             </span>
-                            {{ page.props.auth.user.userable.gelar_belakang }}
+                            {{ rombel.wali_kelas.gelar_belakang }}
                         </p>
                         <p
                             class="leading-4"
+<<<<<<< HEAD
                             v-if="
                                 page.props.auth.user.userable.status.toLowerCase() !==
                                 'gtt'
                             "
+=======
+                            v-if="rombel.wali_kelas.status !== 'gtt'"
+>>>>>>> refactor/inertia-share-data
                         >
-                            NIP. {{ page.props.auth.user.userable.nip }}
+                            NIP. {{ rombel.wali_kelas.nip }}
                         </p>
                     </div>
                 </div>
@@ -569,28 +573,32 @@ onBeforeUnmount(() => {
                         <p class="mt-20">Mengetahui,</p>
                         <p>
                             Kepala
-                            {{ namaSekolah(page.props.sekolahs[0].nama) }}
+                            {{ namaSekolah(rombel.sekolah.nama) }}
                         </p>
 
                         <img
-                            :src="`/storage/images/ttd/${page.props.sekolahs[0].ks.nip}.png`"
+                            :src="`/storage/images/ttd/${rombel.sekolah.ks.nip}.png`"
                             alt=""
                             class="absolute left-[50%] -translate-x-[50%] -translate-y-2"
                         />
                         <p class="font-bold underline leading-4 mt-20">
                             <span class="uppercase">
-                                {{ page.props.sekolahs[0].ks.nama }},
+                                {{ rombel.sekolah.ks.nama }},
                             </span>
-                            {{ page.props.sekolahs[0].ks.gelar_belakang }}
+                            {{ rombel.sekolah.ks.gelar_belakang }}
                         </p>
                         <p
                             class="leading-4"
+<<<<<<< HEAD
                             v-if="
                                 page.props.sekolahs[0].ks.status.toLowerCase() !==
                                 'gtt'
                             "
+=======
+                            v-if="rombel.sekolah.ks.status !== 'gtt'"
+>>>>>>> refactor/inertia-share-data
                         >
-                            NIP. {{ page.props.sekolahs[0].ks.nip }}
+                            NIP. {{ rombel.sekolah.ks.nip }}
                         </p>
                     </div>
                 </div>

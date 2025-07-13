@@ -24,14 +24,25 @@ class NilaiService
 
             $rombel = Rombel::whereHas("wali_kelas", function ($g) use ($nip) {
                 $g->where("nip", $nip);
-            })->first();
+            })
+                ->with("siswas")
+                ->first();
             // dd($rombel);
             $sekolahId = $user->userable->sekolahs[0]->id;
-            $datas = Mapel::where("fase", "LIKE", "%" . $rombel->fase . "%")
-                ->whereHas("sekolah", function ($q) use ($sekolahId) {
-                    $q->where("sekolahs.id", $sekolahId);
-                })
-                ->get();
+            $datas = [
+                "sekolah" => \App\Helpers\SekolahHelper::data($user),
+                "rombel" => $rombel,
+                "mapels" => Mapel::where(
+                    "fase",
+                    "LIKE",
+                    "%" . $rombel->fase . "%"
+                )
+                    ->whereHas("sekolah", function ($q) use ($sekolahId) {
+                        $q->where("sekolahs.id", $sekolahId);
+                    })
+                    ->get(),
+            ];
+            // dd($datas);
         } elseif ($user->hasRole("guru_agama")) {
             $guruId = $user->userable->id;
             $agama = $user->userable->agama;

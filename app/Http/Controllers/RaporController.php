@@ -8,13 +8,20 @@ use App\Models\Siswa;
 use App\Services\RaporService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+<<<<<<< HEAD
 use App\Models\Rombel;
+=======
+use App\Helpers\RombelHelper;
+use App\Helpers\SekolahHelper;
+>>>>>>> refactor/inertia-share-data
 
 class RaporController extends Controller
 {
     public function home(Request $request)
     {
         return Inertia::render("Dash/Rapor", [
+            "rombels" => RombelHelper::data($request->user()),
+            "sekolahs" => SekolahHelper::data($request->user()),
             "tapels" => Tapel::all(),
         ]);
     }
@@ -34,7 +41,10 @@ class RaporController extends Controller
 
     public function periodik(Request $request)
     {
-        return Inertia::render("Dash/Periodik", []);
+        return Inertia::render("Dash/Periodik", [
+            "rombels" => RombelHelper::data($request->user()),
+            "sekolahs" => SekolahHelper::data($request->user()),
+        ]);
     }
 
     public function raporPTS(Request $request, RaporService $raporService)

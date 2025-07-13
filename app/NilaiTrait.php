@@ -208,6 +208,74 @@ trait NilaiTrait
             $siswas = $request->siswas;
             $query = $request->query();
 
+<<<<<<< HEAD
+=======
+            // foreach ($siswas as $siswa) {
+            //     if ($query['tipe'] == 'uh') {
+            //         foreach ($siswa['nilais'] as $k => $v) {
+            //             $tp = Tp::whereKode($k)->first();
+            //             if ($v !== null || $tp) {
+            //                 $store = Nilai::updateOrCreate(
+            //                     [
+            //                         'tapel' => $query['tapel'],
+            //                         'semester' => $query['semester'],
+            //                         'siswa_id' => $siswa['nisn'],
+            //                         'guru_id' => auth()->user()->userable->nip,
+            //                         'rombel_id' => $query['rombelId'],
+            //                         'mapel_id' => $query['mapelId'],
+            //                         'agama' => $query['agama'] ?? null,
+            //                         'tp_id' => $k,
+            //                         'tipe' =>  'uh',
+            //                     ],
+            //                     [
+            //                         'skor' => $v !== 'null' ? $v : 0
+            //                     ]
+            //                 );
+            //             }
+            //         }
+            //     } elseif ($query['tipe'] == 'all') {
+            //         foreach ($siswa['nilais'] as $k => $v) {
+            //             $tp = Tp::whereKode($k)->first();
+            //             if ($v !== null || $tp) {
+            //                 $store = Nilai::updateOrCreate(
+            //                     [
+            //                         'tapel' => $query['tapel'],
+            //                         'semester' => $query['semester'],
+            //                         'siswa_id' => $siswa['nisn'],
+            //                         'guru_id' => auth()->user()->userable->nip,
+            //                         'rombel_id' => $query['rombelId'],
+            //                         'mapel_id' => $query['mapelId'],
+            //                         'agama' => $query['agama'] ?? null,
+            //                         'tp_id' => \in_array($k, ['ts', 'as']) ? null : $k,
+            //                         'tipe' => \in_array($k, ['ts', 'as']) ? $k : 'uh',
+            //                     ],
+            //                     [
+            //                         'skor' => $v !== 'null' ? $v : 0
+            //                     ]
+            //                 );
+            //             }
+            //         }
+            //     } else {
+            //         $store = Nilai::updateOrCreate(
+            //             [
+            //                 'tapel' => $query['tapel'],
+            //                 'semester' => $query['semester'],
+            //                 'siswa_id' => $siswa['nisn'],
+            //                 'guru_id' => auth()->user() ? auth()->user()->userable->nip : ($query['guruId'] ?? null),
+            //                 'rombel_id' => $query['rombelId'],
+            //                 'mapel_id' => $query['mapelId'],
+            //                 'agama' => $query['agama'] ?? null,
+            //                 'tp_id' => null,
+            //                 'tipe' => $query['tipe'],
+            //             ],
+            //             [
+            //                 'skor' => $siswa['nilai']
+            //             ]
+            //         );
+            //     }
+            // }
+            // return $query['tipe'];
+>>>>>>> refactor/inertia-share-data
             switch ($query["tipe"]) {
                 case "ts":
                 case "as":
@@ -227,7 +295,11 @@ trait NilaiTrait
                                 "tipe" => $query["tipe"],
                             ],
                             [
+<<<<<<< HEAD
                                 "skor" => $siswa["nilai"] ?? 0,
+=======
+                                "skor" => $siswa["nilai"],
+>>>>>>> refactor/inertia-share-data
                             ]
                         );
                     }
@@ -254,7 +326,11 @@ trait NilaiTrait
                                         "tipe" => "uh",
                                     ],
                                     [
+<<<<<<< HEAD
                                         "skor" => $v !== null ? $v : 0,
+=======
+                                        "skor" => $v !== "null" ? $v : 0,
+>>>>>>> refactor/inertia-share-data
                                     ]
                                 );
                             }
@@ -285,7 +361,11 @@ trait NilaiTrait
                                             : "uh",
                                     ],
                                     [
+<<<<<<< HEAD
                                         "skor" => $v !== null ? $v : 0,
+=======
+                                        "skor" => $v !== "null" ? $v : 0,
+>>>>>>> refactor/inertia-share-data
                                     ]
                                 );
                             }
@@ -332,9 +412,26 @@ trait NilaiTrait
     public function ledger($request)
     {
         $user = $request->user();
+<<<<<<< HEAD
         $datas = [];
         $list1 = [];
         $list2 = [];
+=======
+        if ($user->hasRole("guru_kelas")) {
+            $rombel = Rombel::where("guru_id", $request->user()->userable->id)
+                ->whereTapel($this->periode()["tapel"]["kode"])
+                ->with("siswas")
+                ->first();
+            $nilais = Nilai::where([
+                ["tapel", "=", $this->periode()["tapel"]["kode"]],
+                ["semester", "=", $this->periode()["tapel"]["semester"]],
+                ["rombel_id", "=", $rombel->kode],
+            ])
+                // ->select("")
+                // ->selectRaw("AVG(skor) AS rerata")
+                // ->groupBy('siswa_id','mapel_id')
+                ->get();
+>>>>>>> refactor/inertia-share-data
 
         if ($user->hasRole("guru_kelas")) {
             $tapel = $this->periode()["tapel"]["kode"];
@@ -370,6 +467,7 @@ trait NilaiTrait
                 $sum2 = 0;
 
                 foreach ($mapels as $mapel) {
+<<<<<<< HEAD
                     $keyNas1 = "{$siswa->nisn}-1-{$mapel->kode}-as";
                     $keyUh1 = "{$siswa->nisn}-1-{$mapel->kode}-uh";
                     $keyNas2 = "{$siswa->nisn}-2-{$mapel->kode}-as";
@@ -388,6 +486,53 @@ trait NilaiTrait
                     $na1 = ceil(($avgUh1 + ($nas1?->skor ?? 0)) / 2);
                     $na2 = ceil(($avgUh2 + ($nas2?->skor ?? 0)) / 2);
 
+=======
+                    $nas1 = Nilai::where([
+                        ["siswa_id", "=", $siswa->nisn],
+                        ["rombel_id", "=", $rombel->kode],
+                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
+                        ["semester", "=", "1"],
+                        ["mapel_id", "=", $mapel->kode],
+                        ["tipe", "=", "as"],
+                    ])->first();
+
+                    $avgUh1 = Nilai::where([
+                        ["siswa_id", "=", $siswa->nisn],
+                        ["rombel_id", "=", $rombel->kode],
+                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
+                        ["semester", "=", "1"],
+                        ["mapel_id", "=", $mapel->kode],
+                        ["tipe", "=", "uh"],
+                    ])->avg("skor");
+
+                    $na1 = round(
+                        ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
+                    );
+                    $nas2 = Nilai::where([
+                        ["siswa_id", "=", $siswa->nisn],
+                        ["rombel_id", "=", $rombel->kode],
+                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
+                        ["semester", "=", "2"],
+                        ["mapel_id", "=", $mapel->kode],
+                        ["tipe", "=", "as"],
+                    ])->first();
+
+                    $avgUh2 = Nilai::where([
+                        ["siswa_id", "=", $siswa->nisn],
+                        ["rombel_id", "=", $rombel->kode],
+                        ["tapel", "=", $this->periode()["tapel"]["kode"]],
+                        ["semester", "=", "2"],
+                        ["mapel_id", "=", $mapel->kode],
+                        ["tipe", "=", "uh"],
+                    ])->avg("skor");
+
+                    $na1 = round(
+                        ($avgUh1 + ($nas1 !== null ? $nas1->skor : 0)) / 2
+                    );
+                    $na2 = round(
+                        ($avgUh2 + ($nas2 !== null ? $nas2->skor : 0)) / 2
+                    );
+>>>>>>> refactor/inertia-share-data
                     $sum1 += $na1;
                     $sum2 += $na2;
 
@@ -396,6 +541,7 @@ trait NilaiTrait
                         "sem2" => $na2,
                     ];
                 }
+<<<<<<< HEAD
 
                 $data["sum1"] = $sum1;
                 $data["sum2"] = $sum2;
@@ -404,9 +550,20 @@ trait NilaiTrait
                 $list2[] = $sum2;
 
                 $datas[] = $data;
+=======
+                $data["sum1"] = $sum1;
+                $data["sum2"] = $sum2;
+                \array_push($list1, $sum1);
+                \array_push($list2, $sum2);
+                array_push($datas, $data);
+>>>>>>> refactor/inertia-share-data
             }
         }
+<<<<<<< HEAD
 
+=======
+        // dd($datas, $list1, $list2);
+>>>>>>> refactor/inertia-share-data
         return ["datas" => $datas, "lists" => [$list1, $list2]];
     }
 

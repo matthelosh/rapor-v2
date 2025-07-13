@@ -1,19 +1,25 @@
 <script setup>
-import { ref, computed, onMounted, watch} from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { router, Link, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
-import { avatar } from "@/helpers/Gambar.js";
-
+// import { avatar } from "@/helpers/Gambar.js";
+import axios from "axios";
 import items from "@/helpers/dashMenu.json";
-
+const userDetail = ref({});
 const page = usePage();
 const goto = (url) => {
     router.visit(url);
 };
 
-// const avatar = () => {
-//     return page.props.auth.roles.includes('admin') ? '/img/user_l.png' : (page.props.auth.user.userable.jk == 'Laki-laki' ? '/img/user_l.png' : (page.props.auth.user.agama == 'Islam' ? '/img/user_p_is.png': '/img/user_p.png'))
-// }
+const avatar = () => {
+    return page.props.auth.roles.includes("admin")
+        ? "/img/user_l.png"
+        : userDetail.value.jk == "Laki-laki"
+          ? "/img/user_l.png"
+          : userDetail.value.agama == "Islam"
+            ? "/img/user_p_is.png"
+            : "/img/user_p.png";
+};
 // das
 const activeMenu = ref(null);
 
@@ -31,46 +37,55 @@ const showItem = (roles) => {
 const isChildRouteIsActive = (children) => {
     if (!children) return false;
     return children.some((child) => page.url === child.url);
-}
+};
 
 watch(
     () => page.url,
     () => {
         items.forEach((item, index) => {
-            if (item.children && item.children.length > 0 && isChildRouteIsActive(item.children)) {
-                activeMenu.value = index
+            if (
+                item.children &&
+                item.children.length > 0 &&
+                isChildRouteIsActive(item.children)
+            ) {
+                activeMenu.value = index;
             }
         });
     },
-    { immediate: true }
+    { immediate: true },
 );
 
-onMounted(() => {
+onMounted(async () => {
     items.forEach((item, index) => {
-        if (item.children && item.children.length > 0 && isChildRouteIsActive(item.children)) {
+        if (
+            item.children &&
+            item.children.length > 0 &&
+            isChildRouteIsActive(item.children)
+        ) {
             activeMenu.value = index;
         }
     });
 
+    axios
+        .get(page.props.appUrl + "/userdetail")
+        .then((res) => (userDetail.value = res.data.userdetail))
+        .catch((err) => console.log(err));
 });
-
 </script>
 
 <template>
     <div class="p-0">
         <div class="avatar relative py-4">
             <img
-                :src="avatar()"
+                :src="avatar(page.props.auth.user)"
                 class="rounded-full shadow-lg object-cover w-32 mx-auto clip-path"
             />
             <h3
-                class="text-center hover:bg-sky-600 p-2 hover:text-white font-bold text-slate-700 transition-all duration-300"
+                class="text-center bg-sky-600 p-2 text-white font-bold text-slate-700 transition-all duration-300"
             >
                 <Link :href="route('profile.edit')">
                     {{
-                        page.props.auth.user.userable
-                            ? page.props.auth.user.userable.nama
-                            : page.props.auth.user.name
+                        userDetail ? userDetail.nama : page.props.auth.user.name
                     }}
                 </Link>
             </h3>

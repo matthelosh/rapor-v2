@@ -17,6 +17,10 @@ class NilaiController extends Controller
     {
         $semester = $request->semester ?? Periode::semester()->kode;
         $tapel = $request->tapel ?? Periode::tapel()->kode;
+<<<<<<< HEAD
+=======
+        // dd($nilaiService->home($semester, $tapel));
+>>>>>>> refactor/inertia-share-data
         return Inertia::render("Dash/Nilai", [
             "datas" => $nilaiService->home($semester, $tapel),
             "nilais" => $this->prosentase($request->user()),

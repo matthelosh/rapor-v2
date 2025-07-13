@@ -100,7 +100,13 @@ onBeforeMount(async () => {
     >
         <span>
             Cetak Rapor PTS
+<<<<<<< HEAD
             {{ route().params.semester ?? page.props.periode.semester.label }}
+=======
+            {{
+                route().params.semester ?? page.props.periode.semester.label
+            }}
+>>>>>>> refactor/inertia-share-data
             Tahun
             {{ page.props.periode.tapel.label }}
         </span>
@@ -245,18 +251,22 @@ onBeforeMount(async () => {
 
                     <p class="font-bold underline leading-4 mt-20">
                         <span class="uppercase">{{
-                            page.props.auth.user.userable.nama
+                            rombel.wali_kelas.nama
                         }}</span
-                        >, {{ page.props.auth.user.userable.gelar_belakang }}
+                        >, {{ rombel.wali_kelas.gelar_belakang }}
                     </p>
                     <p
                         class="leading-4 mb-8"
+<<<<<<< HEAD
                         v-if="
                             page.props.auth.user.userable.status.toUpperCase() !==
                             'GTT'
                         "
+=======
+                        v-if="rombel.wali_kelas.status !== 'gtt'"
+>>>>>>> refactor/inertia-share-data
                     >
-                        NIP. {{ page.props.auth.user.userable.nip }}
+                        NIP. {{ rombel.wali_kelas.nip }}
                     </p>
                 </div>
             </div>

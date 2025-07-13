@@ -6,7 +6,7 @@ import { Head, usePage, router } from "@inertiajs/vue3";
 import { ElCard, ElNotification } from "element-plus";
 import { Icon } from "@iconify/vue";
 import { groupBy } from "lodash";
-import { avatar } from "@/helpers/Gambar.js";
+import { fotoGuru } from "@/helpers/Gambar.js";
 import { utils, writeFile } from "xlsx";
 
 const page = usePage();
@@ -69,7 +69,7 @@ const edit = (item) => {
 };
 
 const hapus = async (id) => {
-    await router.delete(route("dashboard.guru.destroy", { id: id }), {
+    router.delete(route("dashboard.guru.destroy", { id: id }), {
         onSuccess: (page) => {
             ElNotification({
                 title: "Info",
@@ -151,33 +151,22 @@ const unduhFormat = async () => {
             <h2
                 class="font-semibold text-xl text-gray-800 leading-tight uppercase"
             >
-                {{
-                    page.props.auth.roles[0] !== "admin"
-                        ? page.props.sekolahs[0]?.nama
-                        : "Admin"
-                }}
+                {{ page.props.auth.roles[0] }}
             </h2>
         </template>
 
         <div class="page">
             <el-card>
                 <template #header>
-                    <div class="card-toolbar flex items-center  justify-between">
+                    <div class="card-toolbar flex items-center justify-between">
                         <div class="card-title flex items-center">
                             <Icon icon="mdi:caccount-tie" class="mb-1" />
-                            <span class="uppercase"
-                                >Data Guru
-                                {{
-                                    page.props.auth.roles[0] !== "admin"
-                                        ? page.props.sekolahs[0]?.nama
-                                        : "Semua Sekolah"
-                                }}</span
-                            >
+                            <span class="uppercase">Data Guru</span>
                         </div>
                         <div
                             class="card-toolbar--items flex items-center gap-1 px-2 bg-slate-100"
                         >
-                            <el-button-group size="small" class="flex-grow-1 ">
+                            <el-button-group size="small" class="flex-grow-1">
                                 <el-button
                                     type="primary"
                                     @click="formGuru = true"
@@ -185,7 +174,11 @@ const unduhFormat = async () => {
                                     <Icon icon="mdi-plus" />
                                     Baru
                                 </el-button>
-                                <el-button type="warning" @click="unduhFormat" class="hidden-sm-and-down">
+                                <el-button
+                                    type="warning"
+                                    @click="unduhFormat"
+                                    class="hidden-sm-and-down"
+                                >
                                     <Icon icon="mdi-file-download" />
                                     Unduh Format
                                 </el-button>
@@ -199,7 +192,7 @@ const unduhFormat = async () => {
                                 </el-button>
                             </el-button-group>
                             <el-input
-                            size="small"
+                                size="small"
                                 v-model="search"
                                 placeholder="Cari Guru Berdasarkan Nama"
                                 clearable
@@ -222,7 +215,9 @@ const unduhFormat = async () => {
                 >
                     <el-table-column label="Foto" width="60">
                         <template #default="scope">
-                            <img :src="avatar(scope.row)" class="w-10" />
+                            <el-avatar>
+                                <img :src="fotoGuru(scope.row)" class="w-10" />
+                            </el-avatar>
                         </template>
                     </el-table-column>
                     <el-table-column

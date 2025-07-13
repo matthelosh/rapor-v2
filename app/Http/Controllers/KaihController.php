@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Kaih;
 use DB;
 use Carbon\Carbon;
+use App\Helpers\SekolahHelper;
 
 class KaihController extends Controller
 {
@@ -19,7 +20,7 @@ class KaihController extends Controller
 
             $rombels = Rombel::whereGuruId($guru->id)
                 ->whereTapel(Periode::tapel()->kode)
-                ->with(["siswas"])
+                ->with(["siswas", "wali_kelas"])
                 ->get();
             foreach ($rombels as $rombel) {
                 $rombel->siswas->each(function ($siswa) use ($request) {
@@ -69,6 +70,7 @@ class KaihController extends Controller
             }
             return Inertia::render("Dash/Kaih/Home", [
                 "rombels" => $rombels,
+                "sekolahs" => SekolahHelper::data($request->user()),
             ]);
         } catch (Throwable $th) {
             throw $th;
@@ -87,6 +89,7 @@ class KaihController extends Controller
             return response()->json([
                 "success" => true,
                 "kaihs" => $kaihs,
+                "sekolahs" => SekolahHelper::data($request->user()),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -145,6 +148,7 @@ class KaihController extends Controller
             return response()->json([
                 "success" => true,
                 "rekap" => $rekap,
+                "sekolahs" => SekolahHelper::data($request->user()),
             ]);
         } catch (\Throwable $th) {
             return response()->json([

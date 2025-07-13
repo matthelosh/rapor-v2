@@ -39,6 +39,7 @@ const showSemester = (item, rombel) => {
         kode: rombel.kode,
         label: rombel.label,
         tapel: rombel.tapel,
+        wali_kelas: rombel.wali_kelas,
     };
 };
 const showDetail = (item, rombel) => {
@@ -48,6 +49,7 @@ const showDetail = (item, rombel) => {
         kode: rombel.kode,
         label: rombel.label,
         tapel: rombel.tapel,
+        wali_kelas: rombel.wali_kelas,
     };
 };
 const formPerKebiasaan = ref(false);
@@ -61,6 +63,7 @@ const showPerKebiasaan = (row, rombel, kebiasaan) => {
         kode: rombel.kode,
         label: rombel.label,
         tapel: rombel.tapel,
+        wali_kelas: rombel.wali_kelas,
     };
 };
 
@@ -72,6 +75,7 @@ const showPerBulan = (row, rombel) => {
         kode: rombel.kode,
         label: rombel.label,
         tapel: rombel.tapel,
+        wali_kelas: rombel.wali_kelas,
     };
 };
 
@@ -208,7 +212,8 @@ const fetchData = () => {
                             >
                                 <template #title>
                                     <div class="p-4 text-lg font-black">
-                                        {{ rombel.label }}
+                                        {{ rombel.label }} |
+                                        {{ rombel.wali_kelas.nama }}
                                     </div>
                                 </template>
                                 <div class="px-6">
