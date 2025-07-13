@@ -17,7 +17,9 @@ const props = defineProps({
 import DashLayout from "@/Layouts/DashLayout.vue";
 import { computed, defineAsyncComponent, onMounted, ref } from "vue";
 
-const Kop = defineAsyncComponent(() => import("@/Components/Dashboard/Kop.vue"));
+const Kop = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Kop.vue"),
+);
 
 const months = [
     "Januari",
@@ -62,7 +64,7 @@ const getData = async () => {
         route("presensi.guru.index", {
             _query: {
                 sekolahId: page.props.sekolahs[0].npsn,
-                bulan: selectedBulan.value + 1,
+                bulan: parseInt(selectedBulan.value) + 1,
                 tahun: selectedTahun.value,
             },
         }),
@@ -73,7 +75,7 @@ const cetak = async () => {
     const lamans = document.querySelectorAll(".laman");
     let cssUrl =
         page.props.app_env == "local"
-            ? page.props.appUrl+":5173/resources/css/app.css"
+            ? page.props.appUrl + ":5173/resources/css/app.css"
             : `/build/assets/app.css`;
     let content = "";
     for (let laman in lamans) content += lamans[laman].outerHTML;
@@ -157,8 +159,15 @@ onMounted(() => {
                             <h3
                                 class="text-center uppercase font-black my-4 text-lg"
                             >
-                                PRESENSI BULAN {{ months[selectedBulan] }}
-                                {{ selectedTahun }} {{ params.bulan }}
+                                PRESENSI BULAN
+                                {{
+                                    months[
+                                        params.bulan
+                                            ? params.bulan - 1
+                                            : selectedBulan
+                                    ]
+                                }}
+                                {{ selectedTahun }}
                             </h3>
                             <p class="font-bold">Minggu Ke: {{ w + 1 }}</p>
                             <table class="w-[100%] border border-black">
@@ -267,9 +276,7 @@ onMounted(() => {
                                             >
                                                 {{ g + 1 }}
                                             </td>
-                                            <td
-                                                class="border p-2 border-black"
-                                            >
+                                            <td class="border p-2 border-black">
                                                 <p class="leading-4">
                                                     {{ guru.gelar_depan ?? "" }}
                                                     {{ guru.nama }},
@@ -323,10 +330,34 @@ onMounted(() => {
                                 <div
                                     class="col-span-1 p-4 ket border rounded-lg border-black"
                                 >
-                                    <p class="font-bold">Keterangan: </p>
+                                    <p class="font-bold">Keterangan:</p>
                                     <ol class="pl-4 list-decimal">
                                         <template v-for="agenda in agendas">
                                             <li
+                                                v-if="
+                                                    dayjs(
+                                                        agenda.mulai,
+                                                    ).month() ===
+                                                        selectedBulan - 1 &&
+                                                    dayjs(
+                                                        agenda.mulai,
+                                                    ).year() == selectedTahun
+                                                "
+                                            >
+                                                {{
+                                                    dayjs(agenda.mulai).format(
+                                                        "DD MMMM YYYY",
+                                                    )
+                                                }}:
+                                                <!-- {{ agenda.mulai }} ||
+                                                {{
+                                                    dayjs(agenda.mulai).month()
+                                                }}
+                                                || {{ selectedBulan - 1 }} ||
+                                                {{ params.bulan - 1 }} || -->
+                                                {{ agenda.deskripsi }}
+                                            </li>
+                                            <!-- <li
                                                 v-if="
                                                     (dayjs(
                                                         agenda.mulai,
@@ -338,7 +369,13 @@ onMounted(() => {
                                                             selectedBulan) &&
                                                     dayjs(
                                                         agenda.mulai,
-                                                        ).year() == selectedTahun && week.tanggals.map(tgl => tgl.tanggal).includes(agenda.mulai)
+                                                    ).year() == selectedTahun &&
+                                                    week.tanggals
+                                                        .map(
+                                                            (tgl) =>
+                                                                tgl.tanggal,
+                                                        )
+                                                        .includes(agenda.mulai)
                                                 "
                                             >
                                                 <span>
@@ -378,7 +415,7 @@ onMounted(() => {
                                                         : {{ agenda.deskripsi }}
                                                     </span>
                                                 </span>
-                                            </li>
+                                            </li> -->
                                         </template>
                                     </ol>
                                 </div>
@@ -397,7 +434,10 @@ onMounted(() => {
                                                         Wagir, ....
                                                         {{
                                                             months[
-                                                                selectedBulan
+                                                                params.bulan
+                                                                    ? params.bulan -
+                                                                      1
+                                                                    : selectedBulan
                                                             ]
                                                         }}
                                                         {{ selectedTahun }}

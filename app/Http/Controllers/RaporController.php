@@ -125,6 +125,9 @@ class RaporController extends Controller
                 case "biodata":
                     $view = "biodatarapor";
                     break;
+                case "pas":
+                    $view = "rapor.pas";
+                    break;
             }
             return view("cetak." . $view, [
                 "page" => $page,

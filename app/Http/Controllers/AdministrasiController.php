@@ -65,6 +65,33 @@ class AdministrasiController extends Controller
                 ->startOfMonth()
                 ->startOfWeek(Carbon::MONDAY);
             $end = $bulan->copy()->endOfMonth()->endOfWeek(Carbon::MONDAY);
+            $endDay = $end->dayOfWeek;
+            switch ($endDay) {
+                case Carbon::MONDAY:
+                    $end->addDays(5);
+                    break;
+                case Carbon::TUESDAY:
+                    $end->addDays(4);
+                    break;
+                case Carbon::WEDNESDAY:
+                    $end->addDays(3);
+                    break;
+                case Carbon::THURSDAY:
+                    $end->addDays(2);
+                    break;
+                case Carbon::FRIDAY:
+                    $end->addDays(1);
+                    break;
+                case Carbon::SATURDAY:
+                    $end->addDays(0);
+                    break;
+                case Carbon::SUNDAY:
+                    $end->addDays(6);
+                    break;
+                default:
+                    $end->addDays(0);
+                    break;
+            }
 
             $period = CarbonPeriod::create($start, $end);
             $mingguKe = 1;

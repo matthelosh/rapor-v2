@@ -13,16 +13,16 @@ class KaihController extends Controller
     {
         // dd($request->user());
         // return response()->json([
-        //     "user" => $request->user()->userable,
+        //     "queries" => $request->query(),
         // ]);
         try {
             $detail = $request->user()->userable;
 
             $datas = Kaih::where("siswa_id", $detail->nisn)
+                ->whereDate("waktu", $request->query("tanggal"))
                 ->orderBy("waktu", "DESC")
                 ->limit(10)
                 ->get();
-
             // $grouped = $datas->groupBy(function ($item) {
             //     return $item->created_at->format("Y-m-d");
             // });

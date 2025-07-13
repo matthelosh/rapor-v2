@@ -10,7 +10,7 @@ use App\Models\Rombel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
+use App\Helpers\Periode;
 // use App\Http\Resources\SekolahResource;
 
 class RombelService
@@ -35,6 +35,7 @@ class RombelService
                 "sekolah_id",
                 $user->userable->sekolahs[0]->npsn
             )
+                ->where('tapel', Periode::tapel()->kode)
                 ->with("sekolah", "gurus", "siswas", "wali_kelas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
