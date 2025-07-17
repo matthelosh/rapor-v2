@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\CreateOrUpdateUserJob;
+use App\Helpers\Periode;
 use DB;
 
 class SiswaService
@@ -33,9 +34,9 @@ class SiswaService
                 // $siswas = Siswa::all();
             } elseif ($user->hasRole("guru_kelas")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
-                    ->whereHas("rombels", function ($q) use ($user) {
+                    ->whereHas("rombels", function ($q) use ($user, $tapel) {
                         $q->where("rombels.guru_id", $user->userable->id);
-                        $q->where("rombels.is_active", "1");
+                        $q->where("rombels.tapel", $tapel);
                     })
                     ->with(["rombels", "ortus:id,siswa_id,nama,relasi", "user:name,email"])
                     ->cursorPaginate(15);

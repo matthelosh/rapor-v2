@@ -55,7 +55,8 @@ class RombelService
             )
                 // ->whereHas("wali_kelas")
                 ->where("guru_id", $user->userable->id)
-                ->with("sekolah", "gurus", "siswas", "wali_kelas")
+                ->where('tapel', Periode::tapel()->kode)
+                ->with(["sekolah", "gurus", "siswas", "wali_kelas"])
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
                 })
