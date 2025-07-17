@@ -181,6 +181,7 @@ Route::middleware("auth")->group(function () {
             Route::post("/", [SiswaController::class, "store"])->name(
                 "dashboard.siswa.store"
             );
+            
             Route::post("/account/add", [
                 SiswaController::class,
                 "addAccount",
@@ -200,6 +201,7 @@ Route::middleware("auth")->group(function () {
                 "dashboard.siswa.impor"
             );
             Route::post('/lulus', [SiswaController::class, 'luluskan'])->name('dashboard.siswa.lulus');
+            Route::post("/cari/{nisn}", [SiswaController::class, 'cariSiswa'])->name('dashboard.siswa.cari');
             Route::delete("/{id}", [SiswaController::class, "destroy"])->name(
                 "dashboard.siswa.destroy"
             );
@@ -302,6 +304,8 @@ Route::middleware("auth")->group(function () {
                     PembelajaranController::class,
                     "indexEkskul",
                 ])->name("dashboard.pembelajaran.ekskul");
+                Route::post('/store', [PembelajaranController::class, 'storeEkskul'])->name('dashboard.pembelajaran.ekskul.store');
+                Route::delete('/{id}', [PembelajaranController::class, 'destroyEkskul'])->name('dashboard.pembelajaran.ekskul.destroy');
                 Route::post("/impor", [
                     PembelajaranController::class,
                     "imporEkskul",
@@ -509,11 +513,19 @@ Route::middleware("auth")->group(function () {
                 ])->name("dashboard.rapor.tanggal.destroy");
             });
 
-            Route::prefix("arsip")->group(function () {
-                Route::get("/", [ArsipController::class, "home"])
+            // Route::prefix("arsip")->group(function () {
+            //     Route::get("/", [ArsipController::class, "home"])
+            //         ->name("dashboard.rapor.arsip")
+            //         ->middleware(["role:ops"]);
+            // });
+        });
+        Route::prefix("arsip")->group(function () {
+            Route::get("/rapor", [ArsipController::class, "homeRapor"])
                     ->name("dashboard.rapor.arsip")
                     ->middleware(["role:ops"]);
-            });
+            Route::get("/ijazah", [ArsipController::class, "homeIjazah"])
+                    ->name("dashboard.arsip.ijazah")
+                    ->middleware(["role:ops"]);
         });
 
         // 7 Kaih

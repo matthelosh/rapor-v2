@@ -127,4 +127,9 @@ class Sekolah extends Model
     {
         return $this->belongsTo(Gugus::class, 'gugus_id', 'id');
     }
+
+    function ijazahs()
+    {
+        return $this->hasMany(ArsipIjazah::class, 'sekolah_id', 'npsn');
+    }
 }

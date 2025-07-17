@@ -178,6 +178,12 @@ class SiswaController extends Controller
         return back()->with("message", "Data Siswa diperbarui");
     }
 
+    public function cariSiswa(Request $request, $nisn) {
+        return response()->json([
+            'siswa' => Siswa::where('nisn', $nisn)->first(),
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

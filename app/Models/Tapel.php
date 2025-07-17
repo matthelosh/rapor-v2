@@ -44,4 +44,9 @@ class Tapel extends Model
     {
         return $this->hasMany(Rombel::class, 'tapel', 'kode');
     }
+
+    public function ijazahs()
+    {
+        return $this->hasMany(ArsipIjazah::class, 'tapel', 'kode');
+    }
 }

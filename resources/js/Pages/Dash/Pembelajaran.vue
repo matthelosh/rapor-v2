@@ -374,6 +374,11 @@ const addMapel = () => {
     formMapel.value = true
 }
 
+const formEkskul = ref(false)
+const addEkskul = () => {
+    formEkskul.value = true
+}
+
 const defaultTp = ref({
     fase: "A",
     // page.props.auth.roles[0] == "guru_kelas"
@@ -840,6 +845,13 @@ onBeforeMount(() => {
                                             </template>
                                         </el-popover>
                                         <el-button
+                                            type="primary"
+                                            size="small"
+                                            @click="formEkskul = true"
+                                            :disabled="role !== 'admin'"
+                                            >Form Ekskul</el-button
+                                        >
+                                        <el-button
                                             type="success"
                                             size="small"
                                             @click="$refs.fileEkskul.click()"
@@ -1208,6 +1220,9 @@ onBeforeMount(() => {
         />
         <Teleport to="body">
             <Mapel v-if="formMapel" :open="formMapel" @close="formMapel = false" />
+        </Teleport>
+        <Teleport to="body">
+            <Ekskul v-if="formEkskul" :open="formEkskul" @close="formEkskul = false" />
         </Teleport>
     </DashLayout>
 </template>

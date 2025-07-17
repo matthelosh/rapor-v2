@@ -192,8 +192,7 @@
             "guru_kelas",
             "guru_agama",
             "guru_pjok",
-            "guru_inggris",
-            "ops"
+            "guru_inggris"
         ],
         "children": [
             {
@@ -219,7 +218,7 @@
         "label": "Rapor",
         "icon": "report",
         "url": "#",
-        "roles": ["guru_kelas", "ops", "admin"],
+        "roles": ["guru_kelas"],
         "children": [
             {
                 "label": "Cetak Label Nama",
@@ -264,6 +263,26 @@
                 "icon": "table",
                 "url": "/dashboard/kaih/home",
                 "roles": ["guru_kelas", "guru_agama"]
+            }
+        ]
+    },
+    {
+        "label": "Arsip",
+        "icon": "archive",
+        "url": "#",
+        "roles": ["ops"],
+        "children": [
+            {
+                "label": "Rapor",
+                "icon": "bookshelf",
+                "url": "/dashboard/arsip/rapor",
+                "roles": ["ops"]
+            },
+            {
+                "label": "Ijazah",
+                "icon": "certificate",
+                "url": "/dashboard/arsip/ijazah",
+                "roles": ["ops"]
             }
         ]
     },

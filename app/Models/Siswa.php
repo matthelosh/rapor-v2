@@ -161,4 +161,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Kaih::class, "siswa_id", "nisn");
     }
+
+    public function ijazah()
+    {
+        return $this->hasOne(ArsipIjazah::class, "siswa_id","nisn");
+    }
 }

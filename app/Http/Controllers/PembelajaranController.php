@@ -152,6 +152,27 @@ class PembelajaranController extends Controller implements HasMiddleware
             throw $th;
         }
     }
+
+    public function storeEkskul(Request $request)
+    {
+        try {
+            $store = Ekskul::updateOrCreate(
+                [
+                    'id' => $request->input('id'),
+                ],
+                [
+                    'kode' => $request->input('kode'),
+                    'nama' => $request->input('nama'),
+                    'keterangan' => $request->input('keterangan'),  
+                ]
+                );
+                return back()->with('message', 'Ekskul berhasil disimpan');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+
     public function imporEkskul(Request $request)
     {
         try {
@@ -185,6 +206,20 @@ class PembelajaranController extends Controller implements HasMiddleware
             "message",
             "Ekskul ditambahkan ke " . $sekolah->nama
         );
+    }
+
+    public function destroyEkskul(Request $request, $id)
+    {
+        try {
+            $ekskul = Ekskul::findOrFail($id);
+            $ekskul->sekolah()->detach();
+            $ekskul->delete();
+            return back()->with('message', 'Ekskul berhasil dihapus');
+        } catch(\Exception $e)
+        {
+            return back()->withErrors($e->getMessage());
+        }
+        
     }
 
     public function indexEkskul(Request $request)

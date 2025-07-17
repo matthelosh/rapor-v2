@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Mapel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MapelController extends Controller
 {
@@ -78,11 +79,17 @@ class MapelController extends Controller
     public function destroy(Mapel $mapel, $id)
     {
         try {
-            $mapel->findOrFail($id)->tps()->delete();
-            $mapel->destroy($id);
+            DB::beginTransaction();
+            $mapel = $mapel->findOrFail($id);
+            $mapel->tps()->delete();
+            $mapel->elemens()->delete();
+            $mapel->sekolah()->detach();
+            $mapel->delete();
+            DB::commit();
             return back()->with('message', 'Mapel berhasil dihapus');
         } catch(\Exception $e)
         {
+            DB::rollBack();
             dd($e->getMessage());
         }
     }
