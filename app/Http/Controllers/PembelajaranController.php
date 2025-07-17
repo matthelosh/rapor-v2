@@ -107,7 +107,7 @@ class PembelajaranController extends Controller implements HasMiddleware
             "mapels" => $mapels,
             "elemens" => Elemen::all(),
             "ekskuls" => Ekskul::all(),
-            "sekolahs" => \App\Helpers\SekolahHelper::data($request->user()),
+            "sekolahs" => \sekolahs($request->user()),
         ]);
     }
 

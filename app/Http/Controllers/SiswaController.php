@@ -28,9 +28,15 @@ class SiswaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function luluskan(Request $request, SiswaService $siswaService)
     {
-        //
+        try {
+            $lulus = $siswaService->luluskan($request->siswas);
+            return back()->with('message', 'Siswa diluluskan');
+        } catch(\Exception $e)
+        {
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function impor(Request $request, SiswaService $siswaService)
@@ -136,7 +142,7 @@ class SiswaController extends Controller
     {
         try {
             $siswa = Siswa::findorFail($request->id);
-            dd($siswa->email !== null);
+            // dd($siswa->email !== null);
             $user = User::updateOrCreate(
                 [
                     "name" => $siswa->nisn,

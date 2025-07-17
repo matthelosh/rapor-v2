@@ -144,6 +144,35 @@ const getOtherRombels = async () => {
         });
 };
 
+const luluskan = async() => {
+    await router.post(
+        route("dashboard.siswa.lulus", {
+            id: props.selectedRombel.id,
+        }),
+        { siswas: selectedMembers.value },
+        {
+            onStart: () => loading.value = true,
+            onSuccess: (page) => {
+                ElNotification({
+                    title: 'Success',
+                    message: page.props.flash.message,
+                    type: 'success',
+                })
+            },
+            onError: (errs) => {
+                Object.keys(errs).forEach(key => {
+                    ElNotification({
+                        title: 'Error',
+                        message: errs[key],
+                        type: 'error',
+                    })
+                })
+            },
+            onFinish: () => loading.value = false
+        }
+    );
+}
+
 onMounted(() => {
     getNonMember();
     members.value = props.selectedRombel.siswas;
@@ -184,7 +213,15 @@ onMounted(() => {
                                         />
                                         <el-button type="primary" size="small"
                                             @click="kirim"
+                                            v-if="!selectedMembers.length > 0"
                                             >Simpan</el-button
+                                        >
+                                        <el-button
+                                            type="success"
+                                            size="small"
+                                            v-if="selectedMembers.length > 0 && props.selectedRombel.tingkat == '6'"
+                                            @click="luluskan"
+                                            >Luluskan</el-button
                                         >
                                         <el-button
                                             type="danger"

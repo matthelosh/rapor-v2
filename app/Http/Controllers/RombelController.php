@@ -117,8 +117,8 @@ class RombelController extends Controller
             $dataRombel = "Rombel $rombel->label $rombel->sekolah->nama";
             $rombel->siswas()->detach();
             $delete = $rombel->delete();
-            DB::table("logs")->create([
-                "user_id" => Auth::user()->name,
+            DB::table("logs")->insert([
+                "user_id" => auth()->user()->name,
                 "keterangan" => $dataRombel . " dihapus.",
             ]);
             return back()->with("success", true);

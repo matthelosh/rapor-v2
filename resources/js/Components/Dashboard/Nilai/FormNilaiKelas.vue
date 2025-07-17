@@ -292,6 +292,11 @@ const unduhFormat = async () => {
 //     )
 // })
 const hapusNilai = (jenis, tpId = null) => {
+    const elloading1 = ElLoading.service({
+                text: "Loading...",
+                fullscreen: true,
+                background: "rgba(0, 0, 0, 0.7)",
+            });
     ElMessageBox.confirm(
         `Yakin hapus nilai ${jenis} untuk mapel ${props.mapel.label} kelas ${props.rombel.label} semester ${page.props.periode.semester.label}`,
         "Peringatan",
@@ -307,18 +312,15 @@ const hapusNilai = (jenis, tpId = null) => {
                 fullscreen: true,
                 background: "rgba(0, 0, 0, 0.7)",
             });
-            router.post(
-                route(
-                    "dashboard.nilai.hapus.bulk",
-                    {
-                        rombelId: props.rombel.kode,
-                        mapelId: props.mapel.kode,
-                        jenis: jenis,
-                    },
-                    { tpId: tpId },
-                    {
-                        onStart: () => {
-                            elloading.start();
+            router.post(route('dashboard.nilai.hapus.bulk', {
+                rombelId: props.rombel.kode,
+                mapelId: props.mapel.kode,
+                jenis: jenis,
+            }), 
+            { tpIp: tpId }, 
+            {
+                 onStart: () => {
+                            // elloading.start();
                         },
                         onSuccess: () => {
                             ElMessage({
@@ -329,16 +331,16 @@ const hapusNilai = (jenis, tpId = null) => {
                         onFinish: () => {
                             elloading.close();
                         },
-                    },
-                ),
-            );
+            })
         })
-        .catch(() => {
+        .catch((err) => {
+            console.log(err)
             ElMessage({
                 type: "info",
                 message: "Hapus nilai dibatalkan",
             });
-        });
+        })
+        .finally(() => elloading1.close());
 };
 
 const nilaiAkhir = (indexSiswa) => {

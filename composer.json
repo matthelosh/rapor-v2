@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -49,10 +52,15 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "files": ["app/Helpers/Periode.php", "app/Helpers/MapelHelper.php", "app/Helpers/RombelHelper.php", "app/Helpers/UserState.php"],
+        "files": [
+            "app/Helpers/Periode.php",
+            "app/Helpers/MapelHelper.php",
+            "app/Helpers/RombelHelper.php",
+            "app/Helpers/UserState.php",
+            "app/Helpers/SekolahHelper.php"
+        ],
         "files.associations": {
             "*.php": "php"
-
         }
     },
     "autoload-dev": {

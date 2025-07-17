@@ -15,6 +15,7 @@ class NilaiService
 
     public function home($semester, $tapel)
     {
+        $tapel = $tapel ?? Periode::tapel()->kode;
         /** @var \App\Models\User */
         $user = auth()->user();
         /* $semester = Periode::semester()->kode; */
@@ -25,12 +26,13 @@ class NilaiService
             $rombel = Rombel::whereHas("wali_kelas", function ($g) use ($nip) {
                 $g->where("nip", $nip);
             })
+                ->where('tapel', $tapel)
                 ->with("siswas")
                 ->first();
             // dd($rombel);
             $sekolahId = $user->userable->sekolahs[0]->id;
             $datas = [
-                "sekolah" => \App\Helpers\SekolahHelper::data($user),
+                "sekolah" => \sekolahs($user),
                 "rombel" => $rombel,
                 "mapels" => Mapel::where(
                     "fase",
@@ -52,6 +54,7 @@ class NilaiService
                 ->with("ks")
                 ->with([
                     "rombels" => function ($q) use ($agama, $semester) {
+                        $q->where('tapel', Periode::tapel()->kode);
                         $q->with("siswas", function ($s) use ($agama) {
                             $s->where("siswas.agama", $agama)->orderBy(
                                 "nama",

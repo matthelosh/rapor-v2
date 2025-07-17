@@ -144,7 +144,7 @@ class AdministrasiController extends Controller
                     ->whereNot("jabatan", "Ops")
                     ->get(),
                 "weeks" => $hasil,
-                "sekolahs" => SekolahHelper::data($request->user()),
+                "sekolahs" => \sekolahs($request->user()),
             ]);
         } catch (\Throwable $th) {
             throw $th;

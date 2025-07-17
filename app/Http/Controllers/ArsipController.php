@@ -16,12 +16,13 @@ class ArsipController extends Controller
             $tapels = Tapel::with([
                 "rombels" => function ($q) use ($sekolahId) {
                     $q->where("rombels.sekolah_id", $sekolahId);
-                    $q->with("siswas");
+                    $q->whereHas("wali_kelas");
+                    $q->with("siswas", "wali_kelas", "sekolah.ks");
                 },
             ])->get();
             return Inertia::render("Dash/Arsip", [
                 "tapels" => $tapels,
-                "sekolahs" => SekolahHelper::data($request->user()),
+                "sekolahs" => \sekolahs($request->user()),
             ]);
         } catch (\Throwable $th) {
             throw $th;

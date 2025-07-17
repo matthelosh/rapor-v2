@@ -16,25 +16,23 @@ class SoalController extends Controller
     {
         try {
             $user = $request->user();
-            if ($request->user()->hasRole('admin')) {
+            if ($request->user()->hasRole("admin")) {
                 $soals = Soal::all();
             } else {
-                $soals = Soal::whereGuruId($request->user()->userable->nip)->get();
+                $soals = Soal::whereGuruId(
+                    $request->user()->userable->nip
+                )->get();
             }
 
-
-            return Inertia::render(
-                'Dash/Soal/Home',
-                [
-                    'canAddSoal' => $user->can('add_soal'),
-                    'soals' => $soals,
-                ]
-            );
+            return Inertia::render("Dash/Soal/Home", [
+                "canAddSoal" => $user->can("add_soal"),
+                "soals" => $soals,
+                "sekolahs" => \sekolahs($user),
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-
 
     public function allSoal(Request $request)
     {
@@ -42,20 +40,26 @@ class SoalController extends Controller
             $asesmen_id = $request->asesmen_id;
             $asesmen = Asesmen::whereId($asesmen_id)->first();
             // dd($asesmen);
-            $agama = $request->agama ? $request->agama : ($asesmen->mapel_id == 'pabp' ? $request->user()->userable->agama : '%');
-            // dd($agama);  
-            $soals = Soal::whereDoesntHave('asesmen', function ($a) use ($asesmen_id) {
-                $a->where('asesmen_id', $asesmen_id);
+            $agama = $request->agama
+                ? $request->agama
+                : ($asesmen->mapel_id == "pabp"
+                    ? $request->user()->userable->agama
+                    : "%");
+            // dd($agama);
+            $soals = Soal::whereDoesntHave("asesmen", function ($a) use (
+                $asesmen_id
+            ) {
+                $a->where("asesmen_id", $asesmen_id);
             })
                 ->where([
-                    ['tingkat', '=', $request->tingkat],
-                    ['semester', '=', $asesmen->semester],
-                    ['mapel_id', '=', $request->mapel_id],
-                    ['agama', 'LIKE', $agama ?? "%"],
-
-                ])->get();
+                    ["tingkat", "=", $request->tingkat],
+                    ["semester", "=", $asesmen->semester],
+                    ["mapel_id", "=", $request->mapel_id],
+                    ["agama", "LIKE", $agama ?? "%"],
+                ])
+                ->get();
             return response()->json([
-                'soals' => $soals
+                "soals" => $soals,
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -66,12 +70,14 @@ class SoalController extends Controller
     {
         try {
             $image = $request->image;
-            $store = Storage::putFileAs('public/soal', $image, Str::random(8) . '.' . $image->extension());
-            return response()->json(
-                [
-                    'url' => Storage::url($store)
-                ]
+            $store = Storage::putFileAs(
+                "public/soal",
+                $image,
+                Str::random(8) . "." . $image->extension()
             );
+            return response()->json([
+                "url" => Storage::url($store),
+            ]);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -82,27 +88,30 @@ class SoalController extends Controller
         try {
             Soal::updateOrCreate(
                 [
-                    'id' => $request->id ?? null,
+                    "id" => $request->id ?? null,
                 ],
                 [
-                    'guru_id' => $request->user()->hasRole('admin') ? $request->user()->id : $request->user()->userable->nip,
-                    'tp_id' => $request->tp_id,
-                    'tingkat' => $request->tingkat,
-                    'semester' => $request->semester,
-                    'mapel_id' => $request->mapel_id,
-                    'agama' => $request->mapel_id == 'pabp' ? $request->agama : null,
-                    'pertanyaan' => $request->pertanyaan,
-                    'a' => $request->a,
-                    'b' => $request->b,
-                    'c' => $request->c,
-                    'd' => $request->d ?? null,
-                    'kunci' => $request->kunci,
-                    'tipe' => $request->tipe,
-                    'level' => $request->level
+                    "guru_id" => $request->user()->hasRole("admin")
+                        ? $request->user()->id
+                        : $request->user()->userable->nip,
+                    "tp_id" => $request->tp_id,
+                    "tingkat" => $request->tingkat,
+                    "semester" => $request->semester,
+                    "mapel_id" => $request->mapel_id,
+                    "agama" =>
+                        $request->mapel_id == "pabp" ? $request->agama : null,
+                    "pertanyaan" => $request->pertanyaan,
+                    "a" => $request->a,
+                    "b" => $request->b,
+                    "c" => $request->c,
+                    "d" => $request->d ?? null,
+                    "kunci" => $request->kunci,
+                    "tipe" => $request->tipe,
+                    "level" => $request->level,
                 ]
             );
 
-            return back()->with('message', 'Soal Disimpan');
+            return back()->with("message", "Soal Disimpan");
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -111,10 +120,10 @@ class SoalController extends Controller
     public function destroy(Soal $soal, $id)
     {
         try {
-            DB::table('asesmen_soal')->where('soal_id', $id)->delete();
+            DB::table("asesmen_soal")->where("soal_id", $id)->delete();
             $soal::find($id)->delete();
 
-            return back()->with('message', 'Soal dihapus');
+            return back()->with("message", "Soal dihapus");
         } catch (\Throwable $th) {
             throw $th;
         }

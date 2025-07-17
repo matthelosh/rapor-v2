@@ -122,6 +122,14 @@ class RaporService
                 ->where("fase", "LIKE", "%" . $rombel->fase . "%")
                 ->orderBy("id", "ASC")
                 ->get();
+            $nilaiRaw = Nilai::where('siswa_id', $queries['siswaId'])
+                ->where('rombel_id', $queries['rombelId'])
+                ->where('tapel', $queries['tapel'])
+                ->where('semester', $queries['semester'])
+                ->whereIn('tipe',['as','uh'])
+                ->with('tp')
+                ->get()
+                ->groupBy('mapel_id');
             $nilais = [];
             $nomor = 0;
             foreach ($mapels as $mapel) {
@@ -133,81 +141,13 @@ class RaporService
                     ->where("semester", $queries["semester"])
                     ->first();
 
-                $nas = Nilai::where([
-                    ["siswa_id", "=", $queries["siswaId"]],
-                    ["rombel_id", "=", $queries["rombelId"]],
-                    ["tapel", "=", $queries["tapel"]],
-                    ["semester", "=", $queries["semester"]],
-                    ["mapel_id", "=", $mapel["kode"]],
-                    ["tipe", "=", "as"],
-                ])->first();
+                $nas = $nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null;
 
-                $nuhs = Nilai::where([
-                    ["siswa_id", "=", $queries["siswaId"]],
-                    ["rombel_id", "=", $queries["rombelId"]],
-                    ["tapel", "=", $queries["tapel"]],
-                    ["semester", "=", $queries["semester"]],
-                    ["mapel_id", "=", $mapel["kode"]],
-                    ["tipe", "=", "uh"],
-                ])
-                    ->with("tp")
-                    ->get();
-                if ($mapel->kode == "pabp") {
-                    $nuhs->filter(fn($n) => $n->agama == $siswa->agama);
-                }
+                $avgUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->avg('skor');
 
-                $avgUh = Nilai::where([
-                    ["siswa_id", "=", $queries["siswaId"]],
-                    ["rombel_id", "=", $queries["rombelId"]],
-                    ["tapel", "=", $queries["tapel"]],
-                    ["semester", "=", $queries["semester"]],
-                    [
-                        "agama",
-                        "=",
-                        $mapel->kode == "pabp" ? $siswa->agama : null,
-                    ],
-                    ["mapel_id", "=", $mapel["kode"]],
-                    ["tipe", "=", "uh"],
-                ])
-                    ->whereHas("tp")
-                    ->whereNot("skor", 0)
-                    ->avg("skor");
+                $maxUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortByDesc('skor')->first();
 
-                $maxUh = Nilai::whereHas("tp")
-                    ->where([
-                        ["siswa_id", "=", $queries["siswaId"]],
-                        ["rombel_id", "=", $queries["rombelId"]],
-                        ["tapel", "=", $queries["tapel"]],
-                        [
-                            "agama",
-                            "=",
-                            $mapel->kode == "pabp" ? $siswa->agama : null,
-                        ],
-                        ["semester", "=", $queries["semester"]],
-                        ["mapel_id", "=", $mapel["kode"]],
-                        ["tipe", "=", "uh"],
-                    ])
-                    ->orderBy("skor", "DESC")
-                    ->with("tp")
-                    ->first();
-                $minUh = Nilai::whereHas("tp")
-                    ->where([
-                        ["siswa_id", "=", $queries["siswaId"]],
-                        ["rombel_id", "=", $queries["rombelId"]],
-                        ["tapel", "=", $queries["tapel"]],
-                        ["semester", "=", $queries["semester"]],
-                        ["mapel_id", "=", $mapel["kode"]],
-                        [
-                            "agama",
-                            "=",
-                            $mapel->kode == "pabp" ? $siswa->agama : null,
-                        ],
-                        ["tipe", "=", "uh"],
-                    ])
-                    ->orderBy("skor", "ASC")
-                    ->with("tp")
-                    ->first();
-
+                $minUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortBy('skor')->first();
                 // dd($avgUh, $nas->skor, $nuhs);
                 $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 

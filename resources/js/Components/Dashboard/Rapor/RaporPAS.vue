@@ -294,29 +294,29 @@ onBeforeUnmount(() => {
                                         class="print:break-inside-avoid-page border align-top border-black px-2 text-left"
                                     >
                                         <!-- {{ typeof nilai.na }} -->
-                                        <ul
-                                            class="list-disc pl-4"
+                                        <p
+                                            class="text-justify"
                                             v-if="nilai.na != 0"
                                         >
-                                            <li
+                                            <span
                                                 class="my-2 text-justify"
                                                 v-if="nilai.maxu?.tp?.teks"
                                             >
                                                 Ananda
-                                                {{ props.siswa.nama }}
+                                                <b>{{ capitalize(props.siswa.nama) }}</b>
                                                 menunjukkan penguasaan dalam
                                                 {{ nilai.maxu?.tp?.teks }}
-                                            </li>
-                                            <li
+                                            </span> dan
+                                            <span
                                                 class="text-justify"
                                                 v-if="nilai.minu?.tp?.teks"
                                             >
                                                 Ananda
-                                                {{ props.siswa.nama }} perlu
+                                                <b>{{ capitalize(props.siswa.nama) }}</b> perlu
                                                 bantuan dalam
                                                 {{ nilai.minu?.tp?.teks }}
-                                            </li>
-                                        </ul>
+                                        </span>
+                                        </p>
                                     </td>
                                 </tr>
                             </template>
@@ -555,14 +555,7 @@ onBeforeUnmount(() => {
                         </p>
                         <p
                             class="leading-4"
-<<<<<<< HEAD
-                            v-if="
-                                page.props.auth.user.userable.status.toLowerCase() !==
-                                'gtt'
-                            "
-=======
                             v-if="rombel.wali_kelas.status !== 'gtt'"
->>>>>>> refactor/inertia-share-data
                         >
                             NIP. {{ rombel.wali_kelas.nip }}
                         </p>
@@ -589,14 +582,7 @@ onBeforeUnmount(() => {
                         </p>
                         <p
                             class="leading-4"
-<<<<<<< HEAD
-                            v-if="
-                                page.props.sekolahs[0].ks.status.toLowerCase() !==
-                                'gtt'
-                            "
-=======
                             v-if="rombel.sekolah.ks.status !== 'gtt'"
->>>>>>> refactor/inertia-share-data
                         >
                             NIP. {{ rombel.sekolah.ks.nip }}
                         </p>

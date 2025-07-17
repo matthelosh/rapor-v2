@@ -52,10 +52,13 @@ class NilaiEkskulController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            NilaiEkskul::destroy($id);
-            return back()->with("message", "Nilai EKskul Dihapus");
+            $destroy = NilaiEkskul::destroy($id);
+            return response()->json(["message" => "Nilai EKskul Dihapus"]);
         } catch (\Throwable $th) {
-            throw $th;
+            return response()->json(
+                ["message" => $th->getMessage()],
+                $th->getCode()
+            );
         }
     }
 }

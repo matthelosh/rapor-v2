@@ -535,7 +535,7 @@ const param = computed(() => route().params);
                     </el-table-column>
                     <el-table-column label="Angkatan" width="100">
                         <template #default="scope">
-                            {{ scope.row.angkatan }}
+                            {{ scope.row.user }}
                         </template>
                     </el-table-column>
                     <el-table-column label="Orang Tua">
@@ -674,14 +674,14 @@ const param = computed(() => route().params);
                 <template #footer>
                     <div class="w-full flex items-center justify-between">
                         <p>Total: {{ siswas.total }}</p>
-                        <el-pagination
+                        <!-- <el-pagination
                             :total="siswas.total"
                             layout="prev,pager,next"
                             background
                             :default-current-page="siswas.current_page"
                             :page-count="siswas.last_page"
                             @current-change="onCurrentChange"
-                        ></el-pagination>
+                        ></el-pagination> -->
                     </div>
                 </template>
             </el-card>

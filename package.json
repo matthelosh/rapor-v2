@@ -41,12 +41,9 @@
         "element-plus": "^2.7.3",
         "element-tiptap-vue3-fixed": "^1.2.3",
         "html2canvas": "^1.4.1",
-<<<<<<< HEAD
-=======
         "html2pdf": "^0.0.11",
         "html2pdf.js": "^0.10.2",
         "jspdf": "^3.0.1",
->>>>>>> refactor/inertia-share-data
         "lodash": "^4.17.21",
         "qrcode-vue3": "^1.7.1",
         "v-calendar": "^3.1.2",

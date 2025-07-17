@@ -118,6 +118,14 @@ const fotoGuru = (guru) => {
             ? "/img/user_p_is.png"
             : "/img/user_p.png";
 };
+const params = computed(() => {
+    return route().params
+}
+)
+const selectedTapel = ref(null);
+// const reloadData = async() => {
+//     router.visit(route("dashboard.rombel.index", {_query: {tapel: selectedTapel.value}}))
+// }
 const init = async () => {
     await page.props.rombels.forEach((rombel, r) => {
         if (rombel.kktps.length > 0) {
@@ -161,13 +169,17 @@ onBeforeMount(async () => {
                                     page.props.auth.roles[0] !== "admin"
                                         ? ""
                                         : "Semua Sekolah"
-                                }}</span
+                                }} Tahun Pelajaran {{ params.tapel ?? page.props.periode.tapel.label }}</span
                             >
                         </div>
                         <div
                             class="card-toolbar--items flex items-center gap-1"
                             v-if="page.props.auth.roles[0] == 'ops'"
                         >
+                            <el-select v-model="selectedTapel" placeholder="Pilih Tapel" @change="reloadData">
+                                <el-option v-for="(tapel,t) in page.props.tapels" :key="t" :label="tapel.label" :value="tapel.kode" />
+                            
+                            </el-select>
                             <el-button-group class="flex-grow">
                                 <el-button
                                     type="primary"

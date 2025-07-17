@@ -39,8 +39,10 @@ class DashboardController extends Controller
         // dd($response);
         try {
             if ($request->user()->hasRole(["superadmin", "admin"])) {
-                $data["sekolahs"] = Sekolah::with("ks", "gurus")
-                    ->with([
+                $data["sekolahs"] = Sekolah::with([
+                    "ks",
+                    "gurus",
+                    "mapels",
                         "rombels" => function ($q) use ($tapel) {
                             $q->whereTapel($tapel);
                         },

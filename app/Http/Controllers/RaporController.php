@@ -8,12 +8,11 @@ use App\Models\Siswa;
 use App\Services\RaporService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-<<<<<<< HEAD
+
 use App\Models\Rombel;
-=======
+
 use App\Helpers\RombelHelper;
 use App\Helpers\SekolahHelper;
->>>>>>> refactor/inertia-share-data
 
 class RaporController extends Controller
 {
@@ -21,7 +20,7 @@ class RaporController extends Controller
     {
         return Inertia::render("Dash/Rapor", [
             "rombels" => RombelHelper::data($request->user()),
-            "sekolahs" => SekolahHelper::data($request->user()),
+            "sekolahs" => \sekolahs($request->user()),
             "tapels" => Tapel::all(),
         ]);
     }
@@ -43,7 +42,7 @@ class RaporController extends Controller
     {
         return Inertia::render("Dash/Periodik", [
             "rombels" => RombelHelper::data($request->user()),
-            "sekolahs" => SekolahHelper::data($request->user()),
+            "sekolahs" => \sekolahs($request->user()),
         ]);
     }
 

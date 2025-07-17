@@ -199,6 +199,7 @@ Route::middleware("auth")->group(function () {
             Route::post("/impor", [SiswaController::class, "impor"])->name(
                 "dashboard.siswa.impor"
             );
+            Route::post('/lulus', [SiswaController::class, 'luluskan'])->name('dashboard.siswa.lulus');
             Route::delete("/{id}", [SiswaController::class, "destroy"])->name(
                 "dashboard.siswa.destroy"
             );
@@ -265,6 +266,7 @@ Route::middleware("auth")->group(function () {
                 ElemenController::class,
                 "impor",
             ])->name("dashboard.pembelajaran.elemen.impor");
+            Route::post('/mapel/store', [MapelController::class, 'store'])->name('dashboard.mapel.store');
             Route::post("/mapel/assign", [
                 PembelajaranController::class,
                 "assignMapel",
@@ -273,7 +275,7 @@ Route::middleware("auth")->group(function () {
                 PembelajaranController::class,
                 "imporMapel",
             ])->name("dashboard.pembelajaran.mapel.impor");
-
+            Route::delete('/mapel/{id}', [MapelController::class, 'destroy'])->name('dashboard.mapel.destroy');
             Route::prefix("cp")->group(function () {
                 Route::post("/store", [CpController::class, "store"])->name(
                     "dashboard.cp.store"
@@ -460,7 +462,7 @@ Route::middleware("auth")->group(function () {
                 ])->name("dashboard.nilai.catatan.store");
             });
 
-            Route::post('/{rombelId}/{$mapelId}/{jenis}', [
+            Route::post('/{rombelId}/{mapelId}/{jenis}', [
                 NilaiController::class,
                 "bulkDelete",
             ])->name("dashboard.nilai.hapus.bulk");
@@ -482,9 +484,11 @@ Route::middleware("auth")->group(function () {
             Route::get("/cetak", [RaporController::class, "home"])
                 ->name("dashboard.rapor.cetak")
                 ->middleware(["role:guru_kelas"]);
-            Route::get("/periodik", [RaporController::class, "periodik"])
-                ->name("dashboard.rapor.periodik")
-                ->middleware(["role:guru_kelas"]);
+            Route::prefix("periodik")->group(function () {
+                Route::get("/", [RaporController::class, "periodik"])
+                    ->name("dashboard.rapor.periodik")
+                    ->middleware(["role:guru_kelas"]);
+            });
             Route::post("/pts", [RaporController::class, "raporPTS"])
                 ->name("dashboard.rapor.pts")
                 ->middleware(["role:guru_kelas"]);

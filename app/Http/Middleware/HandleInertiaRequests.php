@@ -152,9 +152,8 @@ class HandleInertiaRequests extends Middleware
     //         }
     //     }
 
-<<<<<<< HEAD
-        return $mapels;
-    }
+    // return $mapels;
+    // }
     private function sekolahs($user)
     {
         // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {
@@ -255,7 +254,7 @@ class HandleInertiaRequests extends Middleware
             ->first();
         return $account;
     }
-=======
+
     //     return $mapels;
     // }
     // private function sekolahs($user)
@@ -359,7 +358,6 @@ class HandleInertiaRequests extends Middleware
     //         ->first();
     //     return $account;
     // }
->>>>>>> refactor/inertia-share-data
 
     // private function periode()
     // {

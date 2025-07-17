@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Periode;
-<<<<<<< HEAD
-=======
+use App\Models\Tapel;
 
->>>>>>> refactor/inertia-share-data
+
+
+
 // use App\Http\Resources\SekolahResource;
 
 class RombelService
@@ -39,7 +40,7 @@ class RombelService
                 "sekolah_id",
                 $user->userable->sekolahs[0]->npsn
             )
-                ->where('tapel', Periode::tapel()->kode)
+                ->where('tapel', $request->tapel ?? Periode::tapel()->kode)
                 ->with("sekolah", "gurus", "siswas", "wali_kelas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
@@ -61,7 +62,7 @@ class RombelService
                 ->get();
         }
 
-        return ["rombels" => $rombels, 'sekolahs' => $user->userable->sekolahs];
+        return ["rombels" => $rombels, 'sekolahs' => $user->userable->sekolahs, 'tapels' => Tapel::get()];
     }
 
     // public function index($request) {

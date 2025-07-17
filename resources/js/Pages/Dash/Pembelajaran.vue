@@ -21,6 +21,13 @@ const page = usePage();
 const FormCp = defineAsyncComponent(
     () => import("@/Components/Dashboard/Pembelajaran/FormCp.vue"),
 );
+const Mapel = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Pembelajaran/Mapel.vue"),
+);
+const Ekskul = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Pembelajaran/Ekskul.vue"),
+);
+
 const formCp = reactive({
     show: false,
     mapel: null,
@@ -362,6 +369,11 @@ const onDialogClosed = () => {
     newTps.value = [];
 };
 
+const formMapel = ref(false)
+const addMapel = () => {
+    formMapel.value = true
+}
+
 const defaultTp = ref({
     fase: "A",
     // page.props.auth.roles[0] == "guru_kelas"
@@ -513,6 +525,13 @@ onBeforeMount(() => {
                                                 >
                                             </template>
                                         </el-popover>
+                                        <el-button
+                                            size="small"
+                                            type="primary"
+                                            @click="addMapel"
+                                            :disabled="role !== 'admin'"
+                                            >Form Mapel</el-button
+                                        >
                                         <el-button
                                             size="small"
                                             type="primary"
@@ -1187,6 +1206,9 @@ onBeforeMount(() => {
             :show="formCp.show"
             @close="formCp.show = false"
         />
+        <Teleport to="body">
+            <Mapel v-if="formMapel" :open="formMapel" @close="formMapel = false" />
+        </Teleport>
     </DashLayout>
 </template>
 

@@ -15,6 +15,7 @@ use App\Models\Siswa;
 use App\Models\Tapel;
 use App\Models\User;
 use App\Models\Mapel;
+use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -56,14 +57,14 @@ class AsesmenController extends Controller
             } elseif ($request->user()->hasRole("ops")) {
                 $asesmens = Asesmen::whereTapel($tapel)
                     ->whereIn("tingkat", ["lembaga", "gugus", "kecamatan"])
-                    ->with(
+                    ->with([
                         "soals",
                         "rombel",
                         "guru",
                         "mapel",
                         "semester",
-                        "tapel"
-                    )
+                        "tapel",
+                    ])
                     ->get();
                 // $canEdit =
             } elseif ($request->user()->hasRole("admin")) {
@@ -111,6 +112,14 @@ class AsesmenController extends Controller
                     ->get();
             }
             return Inertia::render("Dash/Asesmen/Home", [
+                "sekolahs" => Sekolah::whereHas("gurus", function ($q) {
+                    $q->where("gurus.id", auth()->user()->userable->id);
+                })
+                    ->with("mapels")
+                    ->with("rombels", function ($r) {
+                        $r->where("tapel", Periode::tapel()->kode);
+                    })
+                    ->get(),
                 "mapels" => Mapel::all(),
                 "asesmens" => $asesmens,
                 "canAddAsesmen" => $request->user()->can("add_asesmen"),
@@ -168,7 +177,9 @@ class AsesmenController extends Controller
                     "sekolah_id" => $request->sekolah_id,
                     "semester" => $request->semester,
                     "tapel" => $request->tapel,
-                    "guru_id" => $request->guru_id ?? $request->user()->id,
+                    "guru_id" => $request->user()->hasRole("admin")
+                        ? $request->user()->id
+                        : $request->user()->userable->id,
                 ]
             );
             return back()->with("message", "Asesmen Disimpan");

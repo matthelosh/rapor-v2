@@ -28,7 +28,24 @@ class MapelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $store = Mapel::updateOrCreate(
+                [
+                    'id' => $request->input('id') ?? null,
+                ],
+                [
+                    'kode' => $request->input('kode'),
+                    'label' => $request->input('label'),
+                    'fase' => $request->input('fase'),
+                    'kategori' => $request->input('kategori'),
+                    'deskripsi' => $request->input('deskripsi'),
+                ]
+                );
+            return back()->with('message', 'Mapel disimpan');
+        } catch(\Exception $e)
+        {
+            dd($e->getMessage());
+        }
     }
 
     /**
@@ -58,8 +75,15 @@ class MapelController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Mapel $mapel)
+    public function destroy(Mapel $mapel, $id)
     {
-        //
+        try {
+            $mapel->findOrFail($id)->tps()->delete();
+            $mapel->destroy($id);
+            return back()->with('message', 'Mapel berhasil dihapus');
+        } catch(\Exception $e)
+        {
+            dd($e->getMessage());
+        }
     }
 }

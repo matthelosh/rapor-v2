@@ -11,7 +11,7 @@ class AsesmenRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return \auth()->user()->can('add_asesmen');
+        return \auth()->user()->can("add_asesmen");
     }
 
     /**
@@ -22,17 +22,16 @@ class AsesmenRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kode' => 'unique:asesmens',
-            'nama' => 'required',
-            'deskripsi' => 'required',
-            'tanggal' => 'required',
-            'mulai' => 'required',
-            'selesai' => 'required',
-            'jenis' => 'required',
-            'sekolah_id' => 'required',
-            'semester' => 'required',
-            'tapel' => 'required',
-            'guru_id' => 'required'
+            "kode" => "unique:asesmens",
+            "nama" => "required",
+            "deskripsi" => "required",
+            "tanggal" => "required",
+            "mulai" => "required",
+            "selesai" => "required",
+            "jenis" => "required",
+            "sekolah_id" => "required",
+            "semester" => "required",
+            "tapel" => "required",
         ];
     }
 }

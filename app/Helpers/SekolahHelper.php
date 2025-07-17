@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Helpers;
 use App\Models\Sekolah;
 use App\Models\Rombel;
+use App\Helpers\Periode;
 
-class SekolahHelper
-{
-    public static function data($user)
+if (!function_exists("sekolahs")) {
+    function sekolahs($user)
     {
         // if ($user->hasRole('admin') || $user->hasRole('superadmin') ) {
         $role = $user->getRoleNames()[0];
@@ -16,8 +15,6 @@ class SekolahHelper
                 "mapels.tps",
                 "ks",
                 "ekskuls",
-                "gugus",
-                "siswas"
             )->get();
         } elseif ($role == "ops") {
             // dd($user->userable->sekolahs);

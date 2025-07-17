@@ -34,10 +34,10 @@ const simpanAsesmen = async () => {
     data.mulai = data.durasi[0];
     data.selesai = data.durasi[1];
     data.tanggal = dayjs(data.durasi[0]).format("YYYY-MM-DD");
-    data.guru_id =
-        page.props.auth.roles[0] !== "admin"
-            ? page.props.auth.user.userable.nip
-            : page.props.auth.user.id;
+    // data.guru_id =
+    //     page.props.auth.roles[0] !== "admin"
+    //         ? page.props.auth.user.userable.nip
+    //         : page.props.auth.user.id;
     data._method = asesmen.value.id ? "PUT" : "POST";
     // console.log(data)
     router.post(
@@ -142,8 +142,10 @@ const closeForm = () => {
 };
 
 const tingkats = computed(() => {
-    return page.props.auth.roles[0] == 'admin' ? ['kecamatan', 'gugus', 'lembaga'] : ['lembaga']
-})
+    return page.props.auth.roles[0] == "admin"
+        ? ["kecamatan", "gugus", "lembaga"]
+        : ["lembaga"];
+});
 </script>
 
 <template>
@@ -646,7 +648,7 @@ const tingkats = computed(() => {
                                 ></el-date-picker>
                             </el-form-item>
                         </el-col>
-                       <el-col :span="4" :xs="24">
+                        <el-col :span="4" :xs="24">
                             <el-form-item label="Jenis Asesmen">
                                 <el-select
                                     v-model="asesmen.jenis"

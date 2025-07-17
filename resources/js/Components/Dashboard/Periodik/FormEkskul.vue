@@ -51,6 +51,7 @@ const getNilai = async () => {
                     const index = nilais.value.findIndex(
                         (n) => n.ekskulId == nilai.ekskul_id,
                     );
+                    nilais.value[index].id = nilai.id;
                     nilais.value[index].nilai = nilai.nilai;
                     nilais.value[index].deskripsi = nilai.deskripsi;
                     // console.log(index)
@@ -65,7 +66,6 @@ const getNilai = async () => {
         .catch((err) => console.log(err));
 };
 
-<<<<<<< HEAD
 const hapus = async (id) => {
     ElLoading.service({
         text: "Loading...",
@@ -79,21 +79,22 @@ const hapus = async (id) => {
                 message: "Data berhasil dihapus",
                 type: "success",
             });
+            let nilai = nilais.value.lastIndexOf((nilai) => nilai.id === id);
+            nilais.value.splice(nilai, 1);
         })
         .catch((err) => {
             ElNotification({
                 title: "Error",
-                message: err.response.data.message,
+                message: err.response?.data?.message,
                 type: "error",
             });
+            console.log(err);
         })
         .finally(() => {
             ElLoading.service().close();
         });
 };
 
-=======
->>>>>>> refactor/inertia-share-data
 const simpan = async () => {
     router.post(
         route("dashboard.nilai.ekskul.store", {
@@ -109,7 +110,7 @@ const simpan = async () => {
                 ElNotification({
                     title: "Info",
                     message: page.props.flash.message,
-                    type: " success",
+                    type: "success",
                 });
             },
             onError: (errs) => {
@@ -180,29 +181,25 @@ onBeforeMount(async () => {
                     <template #default="scope">
                         <el-input
                             type="textarea"
-<<<<<<< HEAD
                             rows="1"
-=======
                             :rows="1"
->>>>>>> refactor/inertia-share-data
                             autosize
                             v-model="nilais[scope.$index].deskripsi"
                             placeholder="Isikan deskripsi capaian"
                         ></el-input>
-<<<<<<< HEAD
                     </template>
                 </el-table-column>
                 <el-table-column label="Opsi">
-                    <template #default="{ row }">
+                    <template #default="scope">
                         <el-button
+                            :disabled="!nilais[scope.$index].id"
                             type="danger"
-                            @click="hapus(row.id)"
+                            @click="hapus(nilais[scope.$index].id)"
                             size="small"
+                            circle
                         >
-                            <Icon icon="mdi:delete" />
+                            <Icon icon="mdi:close" class="text-lg" />
                         </el-button>
-=======
->>>>>>> refactor/inertia-share-data
                     </template>
                 </el-table-column>
             </el-table>

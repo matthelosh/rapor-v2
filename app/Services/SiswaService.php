@@ -22,14 +22,14 @@ class SiswaService
             $q = $request->query("q") ? "%" . $request->query("q") . "%" : "%";
             if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
-                    ->with("sekolah", "rombels", "ortus", "user")
-                    ->paginate(15);
+                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email"])
+                    ->cursorPaginate(15);
             } elseif ($user->hasRole("ops")) {
                 $siswas = Siswa::where("sekolah_id", $user->name)
                     ->where("nama", "LIKE", $q)
-                    ->with("sekolah", "ortus", "user")
+                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email"])
                     ->with("rombels", fn($r) => $r->where("tapel", $tapel))
-                    ->paginate(15);
+                    ->cursorPaginate(15);
                 // $siswas = Siswa::all();
             } elseif ($user->hasRole("guru_kelas")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
@@ -37,8 +37,8 @@ class SiswaService
                         $q->where("rombels.guru_id", $user->userable->id);
                         $q->where("rombels.is_active", "1");
                     })
-                    ->with("rombels", "ortus", "user")
-                    ->paginate(15);
+                    ->with(["rombels", "ortus:id,siswa_id,nama,relasi", "user:name,email"])
+                    ->cursorPaginate(15);
             }
             return $siswas;
         } catch (\Exception $e) {
@@ -260,6 +260,17 @@ class SiswaService
             dd($th);
         }
     }
+
+    public function luluskan($siswas)
+    {
+        foreach ($siswas as $siswa) {
+            $murid = Siswa::findorFail($siswa['id']);
+            $murid->user()->delete();
+            $murid->update(['status' => "lulus"]);
+        }
+        return true;
+    }
+
     public function tapel()
     {
         return Tapel::whereIsActive(true)->first();

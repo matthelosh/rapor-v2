@@ -77,7 +77,7 @@ const getTps = async () => {
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
+                        ? page.props.agama
                         : null,
                     semester:
                         route().params.semester ??
@@ -94,7 +94,7 @@ const getTps = async () => {
                     : props.rombel.siswas.filter(
                           (siswa) =>
                               siswa.agama ==
-                              page.props.auth.user.userable.agama,
+                              page.props.agama,
                       );
             filteredSiswas.forEach((siswa, s) => {
                 let ns = {};
@@ -120,7 +120,7 @@ const getNilai = async () => {
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
+                        ? page.props.agama
                         : null,
                     semester:
                         route().params.semester ??
@@ -232,7 +232,7 @@ onBeforeMount(async () => {
                                     ? props.mapel.label
                                     : !props.mapel.kode.includes("pabp")
                                       ? props.mapel.kode.toUpperCase()
-                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                      : `Pendidikan Agama ${page.props.agama}`
                             }}
                         </span>
                         <!-- <span v-if="role == 'guru_kelas'">{{ props.mapel.label }} </span> -->

@@ -61,6 +61,7 @@ const rankMe = (nilai, sem) => {
 const mapelsRaw = ref([]);
 const lists = ref([]);
 const nilais = ref([]);
+const rombels = ref([]);
 const getLedger = async () => {
     const loading = ElLoading.service({
         lock: true,
@@ -72,6 +73,7 @@ const getLedger = async () => {
         .then((res) => {
             nilais.value = res.data.nilais;
             mapelsRaw.value = res.data.mapels;
+            rombels.value = res.data.rombels;
         })
         .catch((err) => {
             console.log(err);
@@ -97,10 +99,7 @@ onBeforeMount(async () => {
             </template>
             <div class="card-body">
                 <el-collapse v-model="activeCollapse">
-                    <template
-                        v-for="(rombel, r) in page.props.rombels"
-                        :key="rombel.kode"
-                    >
+                    <template v-for="(rombel, r) in rombels" :key="rombel.kode">
                         <el-collapse-item :name="r">
                             <template #title>
                                 <div class="collapse-title">

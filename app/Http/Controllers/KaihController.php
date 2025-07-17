@@ -70,7 +70,7 @@ class KaihController extends Controller
             }
             return Inertia::render("Dash/Kaih/Home", [
                 "rombels" => $rombels,
-                "sekolahs" => SekolahHelper::data($request->user()),
+                "sekolahs" => \sekolahs($request->user()),
             ]);
         } catch (Throwable $th) {
             throw $th;
@@ -89,7 +89,7 @@ class KaihController extends Controller
             return response()->json([
                 "success" => true,
                 "kaihs" => $kaihs,
-                "sekolahs" => SekolahHelper::data($request->user()),
+                "sekolahs" => \sekolahs($request->user()),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -148,7 +148,7 @@ class KaihController extends Controller
             return response()->json([
                 "success" => true,
                 "rekap" => $rekap,
-                "sekolahs" => SekolahHelper::data($request->user()),
+                "sekolahs" => \sekolahs($request->user()),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
