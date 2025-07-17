@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Periode;
 use App\Models\Guru;
 use App\Models\Mapel;
 use App\Models\Nilai;
@@ -196,7 +197,7 @@ trait NilaiTrait
         $list2 = [];
 
         if ($user->hasRole("guru_kelas")) {
-            $tapel = $this->periode()["tapel"]["kode"];
+            $tapel = Periode::tapel()->kode;
             $semesterList = [1, 2];
 
             // Ambil rombel dan siswa
@@ -275,7 +276,7 @@ trait NilaiTrait
     {
         $userId = $user->id;
         $guruId = $user->userable->id;
-        $tapel = $this->periode()["tapel"]->kode;
+        $tapel = Periode::tapel()->kode;
         try {
             // If Guru !== Guru Kelas dan MErangkap
             $res = [];
@@ -355,12 +356,5 @@ trait NilaiTrait
         })
             ->where("fase", "LIKE", "%" . $rombel->fase . "%")
             ->get();
-    }
-    private function periode()
-    {
-        return [
-            "semester" => Semester::whereIsActive(1)->first(),
-            "tapel" => Tapel::whereisActive(1)->first(),
-        ];
     }
 }

@@ -265,7 +265,7 @@ onBeforeMount(async () => {
                                     </thead>
                                     <tbody>
                                         <template
-                                            v-for="(nilai, n) in nilais.datas"
+                                            v-for="(nilai, n) in nilais.datas.sort((a,b) => a.nama.localeCompare(b.nama))"
                                             :key="n"
                                         >
                                             <tr>
