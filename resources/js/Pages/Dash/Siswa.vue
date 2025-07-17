@@ -472,6 +472,7 @@ const param = computed(() => route().params);
                         </div>
                     </div>
                 </template>
+                <!-- <p>{{ siswas }}</p> -->
                 <el-table
                     :data="siswas.data"
                     max-height="75vh"
@@ -518,7 +519,7 @@ const param = computed(() => route().params);
                             {{ row.jk == "Laki-laki" ? "Lk" : "Pr" }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Tempat, Tanggal Lahir">
+                    <el-table-column label="Tempat, Tanggal Lahir" width="100">
                         <template #default="scope">
                             {{ scope.row.tempat_lahir }},
                             {{
@@ -528,7 +529,7 @@ const param = computed(() => route().params);
                             }}
                         </template>
                     </el-table-column>
-                    <el-table-column label="Kelas" width="60">
+                    <el-table-column label="Kelas" width="150">
                         <template #default="scope">
                             {{ scope.row.rombels[0]?.label }}
                         </template>
@@ -674,14 +675,14 @@ const param = computed(() => route().params);
                 <template #footer>
                     <div class="w-full flex items-center justify-between">
                         <p>Total: {{ siswas.total }}</p>
-                        <!-- <el-pagination
+                        <el-pagination
                             :total="siswas.total"
                             layout="prev,pager,next"
                             background
                             :default-current-page="siswas.current_page"
                             :page-count="siswas.last_page"
                             @current-change="onCurrentChange"
-                        ></el-pagination> -->
+                        ></el-pagination>
                     </div>
                 </template>
             </el-card>

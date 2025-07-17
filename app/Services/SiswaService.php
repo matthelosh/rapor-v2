@@ -24,13 +24,16 @@ class SiswaService
             if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
                     ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email"])
-                    ->cursorPaginate(15);
+                    ->orderBy('sekolah_id', 'ASC')
+                    ->orderBy('nama', 'ASC')
+                    ->paginate(15);
             } elseif ($user->hasRole("ops")) {
                 $siswas = Siswa::where("sekolah_id", $user->name)
                     ->where("nama", "LIKE", $q)
                     ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email"])
                     ->with("rombels", fn($r) => $r->where("tapel", $tapel))
-                    ->cursorPaginate(15);
+                    ->orderBy('nama', 'ASC')
+                    ->paginate(15);
                 // $siswas = Siswa::all();
             } elseif ($user->hasRole("guru_kelas")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
@@ -38,8 +41,15 @@ class SiswaService
                         $q->where("rombels.guru_id", $user->userable->id);
                         $q->where("rombels.tapel", $tapel);
                     })
-                    ->with(["rombels", "ortus:id,siswa_id,nama,relasi", "user:name,email"])
-                    ->cursorPaginate(15);
+                    ->with([
+                        "rombels" => function ($q) use($tapel) {
+                            $q->where('tapel', $tapel);
+                        }, 
+                        "ortus:id,siswa_id,nama,relasi", 
+                        "user:name,email"
+                        ])
+                    ->orderBy('nama', 'ASC')
+                    ->paginate(15);
             }
             return $siswas;
         } catch (\Exception $e) {
