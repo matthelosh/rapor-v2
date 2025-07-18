@@ -21,8 +21,8 @@ const page = usePage();
 const FormCp = defineAsyncComponent(
     () => import("@/Components/Dashboard/Pembelajaran/FormCp.vue"),
 );
-const Mapel = defineAsyncComponent(
-    () => import("@/Components/Dashboard/Pembelajaran/Mapel.vue"),
+const FormMapel = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Pembelajaran/FormMapel.vue"),
 );
 const Ekskul = defineAsyncComponent(
     () => import("@/Components/Dashboard/Pembelajaran/Ekskul.vue"),
@@ -1219,7 +1219,7 @@ onBeforeMount(() => {
             @close="formCp.show = false"
         />
         <Teleport to="body">
-            <Mapel v-if="formMapel" :open="formMapel" @close="formMapel = false" />
+            <FormMapel v-if="formMapel" :open="formMapel" @close="formMapel = false" />
         </Teleport>
         <Teleport to="body">
             <Ekskul v-if="formEkskul" :open="formEkskul" @close="formEkskul = false" />

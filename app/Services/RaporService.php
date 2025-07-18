@@ -30,6 +30,7 @@ class RaporService
             $sekolah = Sekolah::whereNpsn($sekolahId)
                 ->with([
                     "ekskuls",
+                    
                     "mapels" => function ($m) use ($fase) {
                         $m->where("mapels.fase", "LIKE", "%" . $fase . "%");
                         $m->orderBy("id", "ASC");
@@ -141,13 +142,13 @@ class RaporService
                     ->where("semester", $queries["semester"])
                     ->first();
 
-                $nas = $nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null;
+                $nas = isset($nilaiRaw[$mapel["kode"]]) ? ($nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null) : null;
 
-                $avgUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->avg('skor');
+                $avgUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->avg('skor') : 0;
 
-                $maxUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortByDesc('skor')->first();
+                $maxUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortByDesc('skor')->first() : null;
 
-                $minUh = $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortBy('skor')->first();
+                $minUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortBy('skor')->first() : null;
                 // dd($avgUh, $nas->skor, $nuhs);
                 $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 

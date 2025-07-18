@@ -77,6 +77,7 @@ declare module 'vue' {
     FormImpor: typeof import('./resources/js/Components/Dashboard/FormImpor.vue')['default']
     FormImporSiswa: typeof import('./resources/js/Components/Dashboard/Siswa/FormImporSiswa.vue')['default']
     FormKunciJawaban: typeof import('./resources/js/Components/Dashboard/Asesmen/FormKunciJawaban.vue')['default']
+    FormMapel: typeof import('./resources/js/Components/Dashboard/Pembelajaran/FormMapel.vue')['default']
     FormNilaiAS: typeof import('./resources/js/Components/Dashboard/Nilai/FormNilaiAS.vue')['default']
     FormNilaiHarian: typeof import('./resources/js/Components/Dashboard/Nilai/FormNilaiHarian.vue')['default']
     FormNilaiKelas: typeof import('./resources/js/Components/Dashboard/Nilai/FormNilaiKelas.vue')['default']

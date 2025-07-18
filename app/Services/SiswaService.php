@@ -240,14 +240,15 @@ class SiswaService
      * @param int $rombel_id
      * @return bool
      */
-    public function bulkAccount($sekolah_id, $rombel_id)
+    public function bulkAccount($sekolah_id, $rombelKode)
     {
         try {
-            if ($rombel_id) {
+            if ($rombelKode) {
                 $siswas = Siswa::where("sekolah_id", $sekolah_id)
-                    ->whereHas("rombels", function ($q) use ($rombel_id) {
-                        $q->where("rombels.kode", $rombel_id);
+                    ->whereHas("rombels", function ($q) use ($rombelKode) {
+                        $q->where("rombels.kode", $rombelKode);
                     })
+                    ->with('user') // Eager load user to avoid N+1 queries in the loop.
                     ->where("status", "aktif")
                     ->whereDoesntHave("user")
                     ->get();
@@ -258,14 +259,19 @@ class SiswaService
                     ->get();
             }
             /* dd($siswas); */
+            $count = 0;
             foreach ($siswas as $siswa) {
-                CreateOrUpdateUserJob::dispatch($siswa)->delay(
+                if (!$siswa->user) {
+                    CreateOrUpdateUserJob::dispatch($siswa)->delay(
                     now()->addSEconds(1)
-                );
+                    );
+                    $count++;
+                }
             }
             return [
                 "message" =>
-                    "Semua siswa aktif di lembaga anda diberikan akun [username: nisn, password: nisn",
+                    "{$count} siswa aktif yang belum memiliki akun akan diberikan akun dalam beberapa saat. " .
+                    "Username: NISN siswa, password awal: NISN (disarankan segera mengubah password setelah login).",
             ];
         } catch (\Throwable $th) {
             dd($th);

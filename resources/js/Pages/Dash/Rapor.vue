@@ -121,7 +121,7 @@ const confirmSimpan = async () => {
 };
 onBeforeMount(() => {
     // console.log(page.props);
-    rombel.value = page.props.rombels[0];
+    rombel.value = page.props.rombels;
     selectedSemester.value =
         route().params.semester ?? page.props.periode.semester.kode;
     selectedTapel.value = route().params.tapel ?? page.props.periode.tapel.kode;
@@ -140,7 +140,6 @@ onBeforeMount(() => {
                 <div class="flex items-center justify-between w-full">
                     <h3 class="uppercase font-bold text-slate-600">
                         Rapor Siswa {{ rombel?.label }}
-                        {{ rombel?.sekolah?.nama }}
                     </h3>
                     <div
                         class="header-items flex-grow flex items-center gap-2 justify-end"

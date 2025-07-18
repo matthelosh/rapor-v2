@@ -359,6 +359,11 @@ const closeSiswaDapodik = () => {
 };
 
 const bulkAccount = () => {
+    const elLoading = ElLoading.service({
+        lock: true,
+        text: "Mohon tunggu..",
+        background: "rgba(0, 0, 0, 0.7)",
+    })
     router.post(
         route("dashboard.siswa.account.bulk.add", {
             _query: {
@@ -379,6 +384,10 @@ const bulkAccount = () => {
                     type: "success",
                 });
             },
+            onFinish: () => (elLoading.close(), (loading.value = false)),
+            onError: (err) => {
+                console.log(err);
+            }
         },
     );
 };

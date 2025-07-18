@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\SiswaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use app\Helpers\RombelHelper;
 use Inertia\Inertia;
 
 class SiswaController extends Controller
@@ -22,6 +23,8 @@ class SiswaController extends Controller
 
         return Inertia::render("Dash/Siswa", [
             "siswas" => $siswas,
+            "sekolahs" => \sekolahs($request->user()),
+            "rombels" => RombelHelper::data($request->user()),
         ]);
     }
 

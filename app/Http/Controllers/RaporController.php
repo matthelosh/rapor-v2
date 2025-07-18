@@ -67,6 +67,7 @@ class RaporController extends Controller
             "ekskuls" => $ekskuls,
             "pas" => $nilaiPas,
             "catatan" => $catatan,
+            "sekolahs" => \sekolahs($request->user()),
             "tanggal" => TanggalRapor::where("semester", $queries["semester"])
                 ->where("tapel", $queries["tapel"])
                 ->where("tipe", "pas")

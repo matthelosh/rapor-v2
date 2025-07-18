@@ -570,21 +570,21 @@ onBeforeUnmount(() => {
                         </p>
 
                         <img
-                            :src="`/storage/images/ttd/${rombel.sekolah.ks.nip}.png`"
+                            :src="`/storage/images/ttd/${rombel.sekolah?.ks?.nip}.png`"
                             alt=""
                             class="absolute left-[50%] -translate-x-[50%] -translate-y-2"
                         />
                         <p class="font-bold underline leading-4 mt-20">
                             <span class="uppercase">
-                                {{ rombel.sekolah.ks.nama }},
+                                {{ rombel.sekolah.ks?.nama }},
                             </span>
-                            {{ rombel.sekolah.ks.gelar_belakang }}
+                            {{ rombel.sekolah.ks?.gelar_belakang }}
                         </p>
                         <p
                             class="leading-4"
-                            v-if="rombel.sekolah.ks.status !== 'gtt'"
+                            v-if="rombel.sekolah.ks?.status !== 'gtt'"
                         >
-                            NIP. {{ rombel.sekolah.ks.nip }}
+                            NIP. {{ rombel.sekolah.ks?.nip }}
                         </p>
                     </div>
                 </div>
