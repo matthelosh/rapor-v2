@@ -164,6 +164,6 @@ class Siswa extends Model
 
     public function ijazah()
     {
-        return $this->hasOne(ArsipIjazah::class, "siswa_id","nisn");
+        return $this->hasOne(ArsipIjazah::class, "siswa_id", "nisn");
     }
 }

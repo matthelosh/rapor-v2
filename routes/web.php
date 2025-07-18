@@ -523,9 +523,14 @@ Route::middleware("auth")->group(function () {
             Route::get("/rapor", [ArsipController::class, "homeRapor"])
                     ->name("dashboard.rapor.arsip")
                     ->middleware(["role:ops"]);
-            Route::get("/ijazah", [ArsipController::class, "homeIjazah"])
-                    ->name("dashboard.arsip.ijazah")
-                    ->middleware(["role:ops"]);
+            Route::prefix('ijazah')->group(function () {
+
+                Route::get("/", [ArsipController::class, "homeIjazah"])
+                        ->name("dashboard.arsip.ijazah")
+                        ->middleware(["role:ops"]);
+
+                Route::post('/store', [ArsipController::class, 'storeIjazah'])->name('dashboard.arsip.ijazah.store');
+            });
         });
 
         // 7 Kaih
