@@ -9,6 +9,7 @@ use App\Models\Siswa;
 use Illuminate\Http\Request;
 use App\Models\Tapel;
 use App\Models\Semester;
+use App\Models\TanggalRapor;
 
 class CetakController extends Controller
 {
@@ -101,6 +102,9 @@ class CetakController extends Controller
                 'nilai' => $request->query('nilai'),
                 'tapel' => Tapel::where('kode', $request->query('tapel'))->first(),
                 'semester' => Semester::where('kode', $request->query('semester'))->first(),
+                'tanggal_rapor' => TanggalRapor::where('tapel', $request->query('tapel'))
+                            ->where('semester', $request->query('semester'))
+                            ->where('tipe', 'pas')->first(),
             ]);
         } catch (\Throwable $th) {
             throw $th;

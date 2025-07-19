@@ -49,7 +49,6 @@ class LedgerController extends Controller
             "nilais" => $this->ledger($request),
 
             "mapels" => Mapel::all(),
-            // "nilais" => $this->ledger($request),
             "rombels" => RombelHelper::data($request->user(), $request->query('tapel') ?? null),
 
         ]);

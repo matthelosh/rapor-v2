@@ -58,7 +58,7 @@
                 <p class="text-center">NIP. {{ $siswa->sekolah->ks->status !== 'gtt' ? $siswa->sekolah->ks->nip : '-' }}</p>
             </div>
             <div class="text-center col-span-1">
-                <p>{{$siswa->sekolah->kecamatan}}, </p>
+                <p>{{$siswa->sekolah->kecamatan}}, {{\Carbon\Carbon::parse($tanggal_rapor->tanggal)->translatedFormat('d F Y') }}</p>
                 <p>Wali Kelas {{$rombel->label}}</p>
                 <p class="font-bold underline leading-4 mt-14"><span class="uppercase">{{$rombel->wali_kelas->nama}}</span>,{{$rombel->wali_kelas->gelar_belakang}}</p>
                 <p class="text-center">NIP. {{ $rombel->wali_kelas->status !== 'gtt' ? $rombel->wali_kelas->nip : '-' }}</p>
