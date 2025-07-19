@@ -18,6 +18,7 @@ class GuruController extends Controller
     {
         $gurus = $guruService->index($request);
         return Inertia::render("Dash/Guru", [
+            "sekolahs" => \sekolahs($request->user()),
             "gurus" => $gurus,
         ]);
     }
