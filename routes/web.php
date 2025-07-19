@@ -530,6 +530,8 @@ Route::middleware("auth")->group(function () {
                         ->middleware(["role:ops"]);
 
                 Route::post('/store', [ArsipController::class, 'storeIjazah'])->name('dashboard.arsip.ijazah.store');
+                Route::put('/{id}', [ArsipController::class, 'updateIjazah'])->name('dashboard.arsip.ijazah.update');
+                Route::delete('/{id}', [ArsipController::class, 'destroyIjazah'])->name('dashboard.arsip.ijazah.destroy');
             });
         });
 

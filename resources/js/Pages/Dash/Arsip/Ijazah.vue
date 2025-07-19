@@ -63,8 +63,23 @@ const editArsip = (item) => {
 }
 
 const hapusArsip = (id) => {
-    router.delete(route('dashboard.ijazah.destroy', {id: id}), {
-
+    const elLoading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)',
+    });
+    loading.value = true
+    router.delete(route('dashboard.arsip.ijazah.destroy', {id: id}), {
+        onStart: () => {
+            loading.value = true
+        },
+        onSuccess: () => {
+            router.reload({only: ['tapels']})
+        },
+        onFinish: () => {
+            loading.value = false
+            elLoading.close()
+        },
     })
 }
 
@@ -76,6 +91,10 @@ const simpanArsip = () => {
     });
     loading.value = true
     const formData = new FormData()
+    if (arsip.value.id) {
+        formData.append('id', arsip.value.id)
+        formData.append('_method', 'PUT')
+    }
     formData.append('no_seri', arsip.value.no_seri)
     formData.append('keterangan', arsip.value.keterangan)
     formData.append('siswa_id', arsip.value.siswa_id)
@@ -84,7 +103,7 @@ const simpanArsip = () => {
     formData.append('file_transkrip', fileTranskrip.value)
     formData.append('file_skl', fileSkl.value)
     axios.defaults.headers.common['Content-Type'] = 'multipart/form-data';
-    axios.post(route('dashboard.arsip.ijazah.store'), formData, {
+    axios.post(route(arsip.value.id ?'dashboard.arsip.ijazah.store' : 'dashboard.arsip.ijazah.update'), formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
