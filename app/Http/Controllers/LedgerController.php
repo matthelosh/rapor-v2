@@ -8,6 +8,7 @@ use App\NilaiTrait;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use App\Helpers\RombelHelper;
+use App\Models\Tapel;
 
 class LedgerController extends Controller
 {
@@ -20,8 +21,11 @@ class LedgerController extends Controller
         $sekolah = Sekolah::whereId(
             $request->user()->userable->sekolahs[0]->id
         )->first();
+        $npsn = $sekolah->npsn;
         return Inertia::render("Dash/Ledger", [
-
+            'tapels' => Tapel::whereHas('rombels', function($r) use($npsn) {
+                $r->where('rombels.sekolah_id', $npsn);
+            })->get(),
             // "mapels" => Mapel::whereHas("sekolah", function ($s) use (
             //     $sekolah
             // ) {
@@ -45,8 +49,8 @@ class LedgerController extends Controller
             "nilais" => $this->ledger($request),
 
             "mapels" => Mapel::all(),
-            "nilais" => $this->ledger($request),
-            "rombels" => RombelHelper::data($request->user()),
+            // "nilais" => $this->ledger($request),
+            "rombels" => RombelHelper::data($request->user(), $request->query('tapel') ?? null),
 
         ]);
     }

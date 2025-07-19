@@ -6,7 +6,7 @@ use App\Models\Sekolah;
 
 class RombelHelper
 {
-    public static function data($user)
+    public static function data($user, $tapel=null)
     {
         $guruId = auth()->user()->userable->id;
         $sekolah = Sekolah::whereHas('gurus', function($g) use($guruId) {
@@ -14,7 +14,7 @@ class RombelHelper
         })->first();
         if ($user->hasRole('ops'))
         {
-            return Rombel::where("tapel", Periode::tapel()->kode)
+            return Rombel::where("tapel", $tapel ??Periode::tapel()->kode)
                 ->with([
                     "sekolah" => function($s) {
                         $s->select('id','nama', 'alamat', 'npsn', 'ks_id');
@@ -33,7 +33,7 @@ class RombelHelper
                 ->get();
         } else if ($user->hasRole('guru_kelas')) {
             return Rombel::where("guru_id", $user->userable->id)
-                ->where("tapel", Periode::tapel()->kode)
+                ->where("tapel", $tapel ?? Periode::tapel()->kode)
                 ->with([
                     "sekolah" => function($s) {
                         $s->select('id','nama', 'alamat', 'npsn', 'ks_id');

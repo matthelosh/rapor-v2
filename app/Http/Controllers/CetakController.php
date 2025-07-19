@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asesmen;
+use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use App\Models\Tapel;
+use App\Models\Semester;
 
 class CetakController extends Controller
 {
@@ -80,5 +82,28 @@ class CetakController extends Controller
         return view("cetak.rekap.sekolahrombelsiswa", [
             "sekolahs" => $sekolahs,
         ]);
+    }
+
+    public function cetakPiagamRanking(Request $request) {
+        try {
+            // "nisn" => "3137260700"
+            // "rank" => "1"
+            // "nilai" => "824"
+            // "semester" => "1"
+            $kodeRombel = $request->query('rombel');
+            // "tapel" => "2425"
+            return view("cetak.ledger.piagam_ranking", [
+                'siswa' => Siswa::where('nisn', $request->query('nisn'))->with([
+                    'sekolah.ks',
+                ])->first(),
+                'rombel' => Rombel::where('kode', $kodeRombel)->with('wali_kelas')->first(),
+                'rank' => $request->query('rank'),
+                'nilai' => $request->query('nilai'),
+                'tapel' => Tapel::where('kode', $request->query('tapel'))->first(),
+                'semester' => Semester::where('kode', $request->query('semester'))->first(),
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

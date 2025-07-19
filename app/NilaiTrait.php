@@ -197,7 +197,7 @@ trait NilaiTrait
         $list2 = [];
 
         if ($user->hasRole("guru_kelas")) {
-            $tapel = Periode::tapel()->kode;
+            $tapel = $request->query('tapel') ?? Periode::tapel()->kode;
             $semesterList = [1, 2];
 
             // Ambil rombel dan siswa

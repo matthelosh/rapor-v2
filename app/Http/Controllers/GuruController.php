@@ -55,7 +55,7 @@ class GuruController extends Controller
             );
 
             return back()->with("message", $store);
-        } catch (ValidationException $e) {
+        } catch (\ValidationException $e) {
             return back()
                 ->withErros($e->validator->errors())
                 ->withInput();
@@ -86,7 +86,7 @@ class GuruController extends Controller
                 $request->file("file_ttd")
             );
             return back()->with("message", $store);
-        } catch (ValidationException $e) {
+        } catch (\ValidationException $e) {
             dd($e);
             // return back()
             //     ->withErros($e->validator->errors())

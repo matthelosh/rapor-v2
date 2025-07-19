@@ -777,6 +777,13 @@ Route::middleware("auth")->group(function () {
                 "cetakRekapSekolahRombelSiswa",
             ]);
         });
+
+        Route::prefix('ledger')->group(function () {
+            Route::get('/piagam', [
+                CetakController::class,
+                'cetakPiagamRanking',
+            ])->name('cetak.ledger.piagam');
+        });
     });
 });
 
