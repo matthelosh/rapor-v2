@@ -5,7 +5,7 @@ import { ElNotification } from "element-plus";
 import axios from "axios";
 
 const page = usePage();
-const props = defineProps({ open: Boolean, selectedRombel: Object });
+const props = defineProps({ open: Boolean, selectedRombel: Object, tapel: String });
 const emit = defineEmits(["close"]);
 const show = computed(() => props.open);
 const loading = ref(false);
@@ -137,21 +137,20 @@ watch(
             rombel.value.kode =
                 page.props.sekolahs[0].npsn +
                 "-" +
-                page.props.periode.tapel.kode +
+                (props.tapel ?? page.props.periode.tapel.kode) +
                 "-" +
                 newV.value.tingkat +
                 (newV.value.pararel == "0" || !newV.value.pararel
                     ? ""
                     : newV.value.pararel.toLocaleLowerCase());
             rombel.value.label =
-                "Kelas " +
                 romawi(newV.value.tingkat) +
                 ` (${toString(newV.value.tingkat)}` +
                 (newV.value.pararel == "0"
                     ? ""
                     : " " + newV.value.pararel.toUpperCase()) +
                 ")";
-            rombel.value.tapel = page.props.periode.tapel.kode;
+            rombel.value.tapel = (props.tapel ?? page.props.periode.tapel.kode);
             rombel.value.fase = setFase(newV.value.tingkat);
         }
     },

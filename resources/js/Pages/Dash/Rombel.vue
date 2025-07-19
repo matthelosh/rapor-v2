@@ -45,7 +45,12 @@ const closeMgmSiswa = () => {
 };
 
 const reloadData = () => {
-    router.reload({ only: ["rombels"] });
+    // router.reload({ only: ["rombels"] });
+    router.visit(`${window.location.pathname}?tapel=${selectedTapel.value}`, {
+        only: ['rombels'],
+        replace: true,
+        preserveState: true,
+    })
 };
 
 const hapus = async (id) => {
@@ -403,6 +408,7 @@ onBeforeMount(async () => {
             :open="formRombel"
             @close="closeForm"
             :selectedRombel="selectedRombel"
+            :tapel="selectedTapel"
             v-if="formRombel"
         />
         <RombelSiswa
