@@ -21,6 +21,8 @@ Route::get("/user", function (Request $request) {
 Route::apiResource("/posts", PostController::class);
 
 Route::apiResource("/sekolah", SekolahController::class);
+Route::get('/sekolah/subdomain/{subdomain}', [SekolahController::class, 'showBySubdomain'])
+    ->name('sekolah.showBySubdomain');
 
 //Route::get('/rombel', [RombelController::class, 'index'])->middleware(ApiKeyVerified::class);
 //});

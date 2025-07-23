@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Storage;
 
 class SekolahController extends Controller
 {
-    public function index(SekolahService $sekolahService)
+    public function index(Request $request, SekolahService $sekolahService)
     {
-        $sekolahs = $sekolahService->index();
+        $sekolahs = $sekolahService->index($request->user());
 
         return new SekolahResource(true, 'Data Sekolah', $sekolahs);
     }
@@ -45,6 +45,31 @@ class SekolahController extends Controller
         }
     }
 
+    public function showBySubdomain($subdomain)
+    {
+        $sekolah = Sekolah::where('subdomain', $subdomain)->with([
+            'ks',
+            'posts' => function($q) {
+                $q->where('status', 'published')->orderBy('created_at', 'DESC');
+                $q->with('author.userable');
+            },
+            'gurus',
+            'rombels' => function($r) {
+                $r->with([
+                    'wali_kelas',
+                    'siswas',
+                    'gurus'
+                ]);
+            }
+            ])->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Sekolah ditemukan',
+            'data' => $sekolah
+        ]);
+        // return new SekolahResource(true, 'Data Sekolah '.$sekolah->nama, $sekolah);
+    }
+
     public function show($id) {
         $sekolah = Sekolah::findOrFail($id);
 
@@ -59,7 +84,7 @@ class SekolahController extends Controller
         $update = $sekolah->update(['nama' => $request->nama]);
         $resource = new SekolahResource(true, 'Data Sekolah Diperbarui', $update);
         return $resource->response();
-        } catch(\Exception $e) 
+        } catch(\Exception $e)
         {
             dd($e);
         }

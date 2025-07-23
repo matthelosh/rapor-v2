@@ -129,7 +129,7 @@
         "label": "Berita",
         "icon": "typewriter",
         "url": "/dashboard/post",
-        "roles": ["superadmin", "admin"],
+        "roles": ["superadmin", "admin", "ops", "guru_agama", "guru_inggris", "guru_kelas", "guru_pjok"],
         "children": []
     },
     {

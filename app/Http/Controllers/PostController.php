@@ -33,7 +33,15 @@ class PostController extends Controller
 
     public function listFiles()
     {
-        $files = Storage::disk('public')->allFiles('post');
+        $files = Storage::disk('s3')->allFiles('public/post');
+        foreach ($files as $key => $file) {
+            $files[$key] = [
+                'name' => basename($file),
+                'url' => Storage::disk('s3')->url($file),
+                'size' => Storage::disk('s3')->size($file),
+                'lastModified' => Storage::disk('s3')->lastModified($file)
+            ];
+        }
         return response()->json([
             'files' => $files
         ]);
@@ -43,7 +51,7 @@ class PostController extends Controller
     {
         try {
             $image = $request->file('image');
-            $store = Storage::putFileAs('public/post', $image, $image->getClientOriginalName() . '.' . $image->extension());
+            $store = Storage::putFileAs('public/post', $image, $image->getClientOriginalName() . '.' . $image->extension(), 'public');
             return response()->json(
                 [
                     'url' => Storage::url($store)
@@ -93,17 +101,21 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+
         try {
+            $sekolah = !$request->user()->hasRole(['admin', 'sa']) ?  \sekolahs($request->user())[0] : null;
             $data = $request->data;
             $post = Post::updateOrCreate(
                 [
                     'id' => $data['id'] ?? null,
                 ],
                 [
-                    'cover'  => $data['cover'],
+                    'cover'  => $data['cover'] ?? null,
                     'category' => $data['category'],
                     'type' => $data['type'],
                     'slug' => strtolower(str_replace(" ", "-", $data['title'])),
+                    'sekolah_id' => $sekolah->id ?? null,
+                    'subdomain' => $sekolah->subdomain ?? null,
                     'title' => $data['title'],
                     'content' => $data['content'],
                     'user_id' => $request->user()->id,
@@ -113,7 +125,7 @@ class PostController extends Controller
 
             return back()->with('message', 'Tulisan disimpan');
         } catch (\Throwable $th) {
-            throw $th;
+            return back()->withErrors(['error' => 'Gagal menyimpan tulisan: ' . $th->getMessage()]);
         }
     }
 

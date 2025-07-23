@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $npsn
@@ -65,6 +65,7 @@ class Sekolah extends Model
     use HasFactory;
 
     protected $fillable = [
+
         'npsn',
         'nama',
         'logo',
@@ -77,7 +78,8 @@ class Sekolah extends Model
         'email',
         'website',
         'ks_id',
-        'gugus_id'
+        'gugus_id',
+        'subdomain'
     ];
 
 
@@ -131,5 +133,10 @@ class Sekolah extends Model
     function ijazahs()
     {
         return $this->hasMany(ArsipIjazah::class, 'sekolah_id', 'npsn');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'sekolah_id', 'id');
     }
 }

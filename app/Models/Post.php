@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $cover
@@ -46,6 +46,8 @@ class Post extends Model
         'cover',
         'category',
         'type',
+        'subdomain',
+        'sekolah_id',
         'slug',
         'title',
         'content',
@@ -63,5 +65,10 @@ class Post extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function sekolah()
+    {
+        return $this->belongsTo(Sekolah::class, 'sekolah_id', 'id');
     }
 }

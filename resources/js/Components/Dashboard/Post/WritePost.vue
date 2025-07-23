@@ -265,12 +265,12 @@ onBeforeMount(() => {
             <div class="file-list bg-slate-200 p-4" v-if="fileBrowser">
                 <template v-for="(file, f) in files" :key="f">
                     <el-image
-                        :src="`/storage/${file}`"
+                        :src="file.url"
                         style="margin: 10px; width: 100px; cursor: pointer"
                         width="200px"
                     >
                         <template #error>
-                            {{ file }}
+                            {{ file.name }}
                         </template>
                     </el-image>
                 </template>
