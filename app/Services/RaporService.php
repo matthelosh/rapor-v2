@@ -30,7 +30,7 @@ class RaporService
             $sekolah = Sekolah::whereNpsn($sekolahId)
                 ->with([
                     "ekskuls",
-                    
+
                     "mapels" => function ($m) use ($fase) {
                         $m->where("mapels.fase", "LIKE", "%" . $fase . "%");
                         $m->orderBy("id", "ASC");

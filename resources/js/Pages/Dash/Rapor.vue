@@ -119,6 +119,22 @@ const confirmSimpan = async () => {
         },
     );
 };
+const cetakBlade = (rapor, siswa) => {
+    // console.log("cetakBlade", rapor, siswa, selectedSemester.value, selectedTapel.value);
+    // router.visit('/cetak/rapor/' + rapor + '/' + siswa.nisn, {
+    //     query: {
+    //         nisn: siswa.nisn,
+    //         semester: selectedSemester.value,
+    //         tapel: selectedTapel.value,
+    //     },
+    //     preserveState: true,
+    // });
+    let win = window.open(
+        `/cetak/rapor/${rapor}/${siswa.nisn}?semester=${selectedSemester.value}&tapel=${selectedTapel.value}&rombelId=${rombel.value.kode}`,
+        "_blank",
+        "popup=yes,width=1024,height=1500,scrollbars=no,toolbar=no,menubar=no",
+    );
+}
 onBeforeMount(() => {
     // console.log(page.props);
     rombel.value = page.props.rombels;
@@ -216,6 +232,10 @@ onBeforeMount(() => {
                                         type="primary"
                                         @click="cetak('pas', scope.row)"
                                         >PAS</el-button
+                                    >
+                                    <el-button
+                                        @click="cetakBlade('pas', scope.row)"
+                                        >Rapor</el-button
                                     >
                                     <el-button
                                         v-if="scope.row.tingkat == '6'"

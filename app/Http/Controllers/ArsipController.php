@@ -22,7 +22,7 @@ class ArsipController extends Controller
                     $q->with("siswas", "wali_kelas", "sekolah.ks");
                 },
             ])->get();
-            return Inertia::render("Dash/Arsip", [
+            return Inertia::render("Dash/Arsip/ArsipRapor", [
                 "tapels" => $tapels,
                 "sekolahs" => \sekolahs($request->user()),
             ]);
@@ -35,7 +35,7 @@ class ArsipController extends Controller
     {
         try {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
-            return Inertia::render("Dash/Arsip/Ijazah", [
+            return Inertia::render("Dash/Arsip/ArsipIjazah", [
                 "tapels" => Tapel::whereHas('rombels')->with([
                     'rombels' => function ($q) use ($sekolahId) {
                         $q->where("rombels.sekolah_id", $sekolahId);
@@ -138,7 +138,7 @@ class ArsipController extends Controller
                 ]);
                 return response()->json([
                     'success' => true,
-                    'message' => 'Arsip disimpan' 
+                    'message' => 'Arsip disimpan'
                 ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -246,7 +246,7 @@ class ArsipController extends Controller
             $arsip->keterangan = $request->input('keterangan') ?? null;
             $arsip->save();
             return back()->with('message', 'Arsip Ijazah diupdate');
-            
+
 
         } catch(\Exception $e)
         {

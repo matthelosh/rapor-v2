@@ -125,9 +125,12 @@ class RaporController extends Controller
     }
 
     // Cetak via blade
-    public function cetakRapor(Request $request, $page, $siswaId)
+    public function cetakRapor(Request $request, $page, $siswaId, RaporService $raporService)
     {
         try {
+            $siswa = Siswa::where("nisn", $siswaId)
+                    ->with("sekolah")
+                    ->first();
             switch ($page) {
                 default:
                     $view = "coverrapor";
@@ -137,13 +140,32 @@ class RaporController extends Controller
                     break;
                 case "pas":
                     $view = "rapor.pas";
+                    $query = $request->query();
+                    $query["siswaId"] = $siswaId;
+                    $query["rombelId"] = $request->rombelId;
+                    $query['sekolahId'] = $siswa->sekolah_id;
+                    $nilais = $raporService->nilaiPAS($query);
+                    $absensis = $raporService->absensi($query);
+                    $ekskuls = $raporService->ekskul($query);
+                    $catatan = $raporService->catatan($query);
                     break;
             }
             return view("cetak." . $view, [
                 "page" => $page,
-                "siswa" => Siswa::where("nisn", $siswaId)
-                    ->with("sekolah")
+                "siswa" => $siswa,
+                "nilais" => $nilais ?? [],
+                "tapel" => Tapel::where("is_active", true)->first(),
+                "tanggal" => TanggalRapor::where("semester", $request->query("semester"))
+                    ->where("tapel", $request->query("tapel"))
+                    ->where("tipe", "pas")
                     ->first(),
+                // "sekolah" => \sekolahs($request->user()),
+                "rombel" => Rombel::where('kode', $request->rombelId)->first(),
+                "tapel" => Tapel::where('kode', $request->query('tapel'))->first(),
+                "semester" => $request->query('semester'),
+                "absensi" => $absensis ?? [],
+                "ekskuls" => $ekskuls ?? [],
+                "catatan" => $catatan ?? [],
             ]);
         } catch (\Exception $e) {
             dd($e);
