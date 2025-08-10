@@ -20,6 +20,7 @@ dayjs.locale("id");
 import { siswaHeaders } from "@/helpers/utils";
 
 const page = usePage();
+const props = defineProps({ rombels: Object })
 
 const formImpor = ref({
     show: false,
@@ -120,7 +121,7 @@ const imporOrtu = () => {
     formImpor.value = {
         show: true,
         url: "dashboard.siswa.ortu.impor",
-        query: { rombelId: page.props.rombels[0].kode },
+        query: { rombelId: page.props.rombels.kode },
         title: "Ortu",
         fields: fieldOrtu.value,
     };
@@ -369,7 +370,7 @@ const bulkAccount = () => {
             _query: {
                 sekolah_id: page.props.sekolahs[0].npsn,
                 rombel_id: page.props.auth.roles.includes("guru_kelas")
-                    ? page.props.rombels[0].kode
+                    ? page.props.rombels.kode
                     : null,
             },
         }),
@@ -545,7 +546,7 @@ const param = computed(() => route().params);
                     </el-table-column>
                     <el-table-column label="Angkatan" width="100">
                         <template #default="scope">
-                            {{ scope.row.user }}
+                            {{ scope.row.angkatan }}
                         </template>
                     </el-table-column>
                     <el-table-column label="Orang Tua">
