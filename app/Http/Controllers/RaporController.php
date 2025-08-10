@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Models\Rombel;
-
+use App\Models\Sekolah;
 use App\Helpers\RombelHelper;
 use App\Helpers\SekolahHelper;
 
@@ -129,7 +129,7 @@ class RaporController extends Controller
     {
         try {
             $siswa = Siswa::where("nisn", $siswaId)
-                    ->with("sekolah")
+                    ->with("sekolah.ks")
                     ->first();
             switch ($page) {
                 default:
@@ -159,8 +159,8 @@ class RaporController extends Controller
                     ->where("tapel", $request->query("tapel"))
                     ->where("tipe", "pas")
                     ->first(),
-                // "sekolah" => \sekolahs($request->user()),
-                "rombel" => Rombel::where('kode', $request->rombelId)->first(),
+                // "sekolah" => Sekolah::where('npsn', $siswa->sekolah_id)->with('ks')->first(),
+                "rombel" => Rombel::where('kode', $request->rombelId)->with('wali_kelas')->first(),
                 "tapel" => Tapel::where('kode', $request->query('tapel'))->first(),
                 "semester" => $request->query('semester'),
                 "absensi" => $absensis ?? [],

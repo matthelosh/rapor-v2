@@ -35,7 +35,7 @@
             // }
         </script>
 
-        <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative">
+        <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative text-[0.8em]"">
             {{-- <img src="/img/tutwuri.png" alt="Watermark" class="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-72  opacity-10 z-0"> --}}
             <div class="meta w-full">
                 <h3 class="text-center font-bold text-xl uppercase mb-4">Laporan Hasil Belajar</h3>
@@ -182,15 +182,15 @@
                             <tbody>
                                 <tr>
                                     <td class="border border-black px-4 py-2">Sakit</td>
-                                    <td class="border border-black px-4 py-2">{{$absensi['sakit']}} Hari</td>
+                                    <td class="border border-black px-4 py-2">{{$absensi['sakit'] ?? '-'}} Hari</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-black px-4 py-2">Izin</td>
-                                    <td class="border border-black px-4 py-2">{{$absensi['ijin']}} Hari</td>
+                                    <td class="border border-black px-4 py-2">{{$absensi['ijin'] ?? '-'}} Hari</td>
                                 </tr>
                                 <tr>
                                     <td class="border border-black px-4 py-2">Tanpa Keterangan</td>
-                                    <td class="border border-black px-4 py-2">{{$absensi['alpa']}} Hari</td>
+                                    <td class="border border-black px-4 py-2">{{$absensi['alpa'] ?? '-'}} Hari</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -228,11 +228,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="ttd mt-4 w-full">
+            <div class="ttd mt-4 w-full text-[0.7em]">
                 <div class="grid grid-cols-3 mt-4">
                     <div></div>
                     <div></div>
-                    <p class="text-center">Wagir, {{ date('d F Y') }}</p>
+                    <p class="text-center">Wagir, {{ \Carbon\Carbon::parse($tanggal->tanggal)->translatedFormat('d F Y') }}</p>
                 </div>
                 <div class="grid grid-cols-3">
                     <div class="col-span-1 text-center">
@@ -240,7 +240,7 @@
                         <br>
                         <br>
                         <br>
-                        <p class="font-bold">Nama Orang Tua/Wali</p>
+                        <p class="font-bold">..........................................</p>
                     </div>
 
                     <div class="col-span-1 text-center">
@@ -248,14 +248,16 @@
                         <br>
                         <br>
                         <br>
-                        <p class="font-bold">Nama Kepala Sekolah</p>
+                        <p class="font-bold underline">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
+                        <p class="leading-4">NIP. {{$siswa->sekolah->ks->nip}}</p>
                     </div>
                     <div class="col-span-1 text-center">
                         <p>Wali Kelas</p>
                         <br>
                         <br>
                         <br>
-                        <p class="font-bold">Nama Wali Kelas</p>
+                        <p class="font-bold underline"><span class="uppercase">{{$rombel->wali_kelas->nama}}</span>, {{$rombel->wali_kelas->gelar_belakang}}</p>
+                        <p class="leading-4">NIP. {{$rombel->wali_kelas->status == 'gtt' ? '-' : $rombel->wali_kelas->nip}}</p>
                     </div>
                 </div>
         </div>

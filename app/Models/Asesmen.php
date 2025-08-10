@@ -101,7 +101,7 @@ class Asesmen extends Model
     }
     public function rombel()
     {
-        return $this->belongsTo(ROmbel::class, 'rombel_id', 'kode');
+        return $this->belongsTo(Rombel::class, 'rombel_id', 'kode');
     }
 
     public function  soals()

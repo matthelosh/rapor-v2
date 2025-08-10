@@ -44,8 +44,8 @@ class SiswaService
                     ->with([
                         "rombels" => function ($q) use($tapel) {
                             $q->where('tapel', $tapel);
-                        }, 
-                        "ortus:id,siswa_id,nama,relasi", 
+                        },
+                        "ortus:id,siswa_id,nama,relasi",
                         "user:name,email"
                         ])
                     ->orderBy('nama', 'ASC')
@@ -115,6 +115,10 @@ class SiswaService
                 //         ? $data["sekolah_id"]
                 //         : $request->user()->userable->sekolahs[0]->npsn;
                 // $store = $this->store($data, null);
+                if (!$data['nisn'] ||$data['nisn'] == null) {
+                    // return back()->withErrors("NISN tidak boleh kosong");
+                    continue;
+                }
                 $ortus[] = [
                     // 'siswa_id' => $data['nisn'],
                     [
