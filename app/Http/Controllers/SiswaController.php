@@ -24,7 +24,9 @@ class SiswaController extends Controller
         return Inertia::render("Dash/Siswa", [
             "siswas" => $siswas,
             "sekolahs" => \sekolahs($request->user()),
-            "rombels" => RombelHelper::data($request->user()),
+            "rombels" => !$request->user()->hasRole("admin")
+                ? RombelHelper::data($request->user())
+                : [],
         ]);
     }
 
@@ -35,9 +37,8 @@ class SiswaController extends Controller
     {
         try {
             $lulus = $siswaService->luluskan($request->siswas);
-            return back()->with('message', 'Siswa diluluskan');
-        } catch(\Exception $e)
-        {
+            return back()->with("message", "Siswa diluluskan");
+        } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }
     }
@@ -72,7 +73,7 @@ class SiswaController extends Controller
         try {
             $store = $siswaService->store(
                 $request->all(),
-                $request->file("file") ?? null
+                $request->file("file") ?? null,
             );
 
             return back()->with("data", $store);
@@ -92,7 +93,7 @@ class SiswaController extends Controller
         try {
             if (!$targetRombel) {
                 $siswas = Siswa::whereDoesntHave("rombels", function ($r) use (
-                    $tapel
+                    $tapel,
                 ) {
                     $r->whereTapel($tapel);
                 })
@@ -104,7 +105,7 @@ class SiswaController extends Controller
                     // )
                     ->where(
                         "sekolah_id",
-                        $request->user()->userable->sekolahs[0]->npsn
+                        $request->user()->userable->sekolahs[0]->npsn,
                     )
                     ->with("sekolah")
                     ->whereStatus("aktif")
@@ -130,7 +131,7 @@ class SiswaController extends Controller
         try {
             $res = $siswaService->bulkAccount(
                 $request->sekolah_id,
-                $request->rombel_id
+                $request->rombel_id,
             );
             return back()->with("message", $res["message"]);
         } catch (\Throwable $th) {
@@ -159,7 +160,7 @@ class SiswaController extends Controller
                             : $siswa->nisn . "@e.mail",
                     "userable_id" => $siswa->id,
                     "userable_type" => "App\Models\Siswa",
-                ]
+                ],
             );
             $user->assignRole("siswa");
             return back()->with("message", "Akun Siswa dibuat");
@@ -175,15 +176,16 @@ class SiswaController extends Controller
     {
         $update = $siswaService->store(
             $request->all(),
-            $request->file("file") ?? null
+            $request->file("file") ?? null,
         );
         // dd($store);
         return back()->with("message", "Data Siswa diperbarui");
     }
 
-    public function cariSiswa(Request $request, $nisn) {
+    public function cariSiswa(Request $request, $nisn)
+    {
         return response()->json([
-            'siswa' => Siswa::where('nisn', $nisn)->first(),
+            "siswa" => Siswa::where("nisn", $nisn)->first(),
         ]);
     }
 
