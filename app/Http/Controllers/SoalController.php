@@ -73,7 +73,8 @@ class SoalController extends Controller
             $store = Storage::putFileAs(
                 "public/soal",
                 $image,
-                Str::random(8) . "." . $image->extension()
+                Str::random(8) . "." . $image->extension(),
+                'public'
             );
             return response()->json([
                 "url" => Storage::url($store),
