@@ -221,7 +221,7 @@ onBeforeMount(async () => {
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <div  v-if="soal.tipe == 'pilihan'">
+                        <div  v-if="soal.tipe == 'pilihan_ganda' || soal.tipe == 'pilihan_ganda_kompleks'">
                             <h3 class="text-lg font-bold">Pilihan Jawaban:</h3>
                             <el-row :gutter=20 justify="center">
                                 <el-col>
@@ -255,9 +255,16 @@ onBeforeMount(async () => {
                                 <el-col>
 
                                     <el-form-item label="Kunci Jawaban" justify="center">
-                                        <el-radio-group v-model="soal.kunci">
+                                        <el-radio-group v-model="soal.kunci" v-if="soal.tipe == 'pilihan_ganda'">
                                             <el-radio border v-for="kunci in ['a', 'b', 'c', 'd']" :value="kunci">{{ kunci.toUpperCase() }}</el-radio>
                                         </el-radio-group>
+                                        <el-checkbox-group v-model="soal.kunci" v-if="soal.tipe == 'pilihan_ganda_kompleks'">
+                                            <el-checkbox label="A" value="a" />
+                                            <el-checkbox label="B" value="b" />
+                                            <el-checkbox label="C" value="c" />
+                                            <el-checkbox label="D" value="d" />
+                                        </el-checkbox-group>
+
                                     </el-form-item>
                                 </el-col>
                             </el-row>

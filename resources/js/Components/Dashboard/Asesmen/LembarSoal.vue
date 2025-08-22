@@ -790,7 +790,37 @@ onBeforeMount(() => {
                                         <li
                                             v-for="(soal, s) in allSoals.filter(
                                                 (soal) =>
-                                                    soal.tipe == 'pilihan',
+                                                    soal.tipe == 'pilihan_ganda',
+                                            )"
+                                            class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
+                                            draggable="true"
+                                            @dragstart="drag($event, soal)"
+                                        >
+                                            <span
+                                                class="flex items-start gap-2"
+                                            >
+                                                {{ s + 1 }}.
+                                                <span
+                                                    v-html="soal.pertanyaan"
+                                                ></span>
+                                            </span>
+                                            <Icon
+                                                icon="mdi:plus"
+                                                class="text-lg hidden group-hover:block"
+                                                @click="attachSoal(soal.id)"
+                                            />
+                                        </li>
+                                    </ul>
+                                    <el-divider>
+                                        <h3 class="font-bold text-sky-700">
+                                            Pilihan Ganda Kompleks
+                                        </h3>
+                                    </el-divider>
+                                    <ul class="pl-4">
+                                        <li
+                                            v-for="(soal, s) in allSoals.filter(
+                                                (soal) =>
+                                                    soal.tipe == 'pilihan_ganda_kompleks',
                                             )"
                                             class="flex gap-1 justify-between group mb-2 py-1 cursor-pointer hover:bg-sky-50"
                                             draggable="true"
