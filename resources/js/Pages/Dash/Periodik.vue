@@ -15,6 +15,7 @@ const rombel = page.props.rombels[0]
 const selectedSiswa = ref({})
 const mode = ref('list')
 
+const rombels = computed(() => page.props.rombels)
 const openForm = (formulir, siswa) => {
     selectedSiswa.value = siswa
     mode.value = formulir
@@ -36,11 +37,12 @@ const closeForm = () => {
     <el-card>
         <template #header>
             <div>
-                <h3 class="uppercase font-bold text-slate-600">Data Periodik Siswa {{ rombel.label }} {{ rombel.sekolah.nama }}</h3>
+                <h3 class="uppercase font-bold text-slate-600">Data Periodik Siswa {{ rombels.label }} {{ rombels.sekolah.nama }}</h3>
+                 <!-- {{ page.props.rombels }} -->
             </div>
         </template>
         <div class="card-body">
-            <el-table :data="rombel.siswas" height="80vh" size="small">
+            <el-table :data="rombels.siswas" height="80vh" size="small">
                 <el-table-column label="#" type="index" prop="scope.$index" />
                 <el-table-column label="NISN" prop="nisn" />
                 <el-table-column label="Nama" prop="nama" />

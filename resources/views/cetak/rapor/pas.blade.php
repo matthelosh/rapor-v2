@@ -108,10 +108,12 @@
                                 <td class="border border-black px-4 py-2 text-center">{{ ($nilai['na']) }}</td>
                                 <td class="border border-black px-4 py-2 text-justify">
                                     <ol class="list-disc pl-4">
-                                        <li>
-                                            {{ $nilai['maxu']['tp']['teks'] }}
-                                        </li>
-                                        @if ($nilai['minu'] != null && $nilai['minu']['skor'] < $nilai['maxu']['skor'])
+                                        @if(isset($nilai['maxu']['tp']['teks']))
+                                            <li>
+                                                {{ $nilai['maxu']['tp']['teks'] }}
+                                            </li>
+                                        @endif
+                                        @if (isset($nilai['minu']['tp']['teks']) && $nilai['minu'] != null && isset($nilai['maxu']['skor']) && $nilai['minu']['skor'] < $nilai['maxu']['skor'])
                                             <li>
                                                 {{ $nilai['minu']['tp']['teks'] }}
                                             </li>
@@ -206,7 +208,11 @@
                             <tbody>
                                 <tr>
                                     <td class="border border-black p-1">
-                                        {{$catatan}}
+                                        @if(is_array($catatan))
+                                            {{ implode(', ', $catatan) }}
+                                        @else
+                                            {{ $catatan }}
+                                        @endif
                                     </td>
                                 </tr>
                             </tbody>
@@ -232,7 +238,7 @@
                 <div class="grid grid-cols-3 mt-4">
                     <div></div>
                     <div></div>
-                    <p class="text-center">Wagir, {{ \Carbon\Carbon::parse($tanggal->tanggal)->translatedFormat('d F Y') }}</p>
+                    <p class="text-center">Wagir, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
                 </div>
                 <div class="grid grid-cols-3">
                     <div class="col-span-1 text-center">

@@ -102,11 +102,13 @@ class SoalController extends Controller
                     "agama" =>
                         $request->mapel_id == "pabp" ? $request->agama : null,
                     "pertanyaan" => $request->pertanyaan,
-                    "a" => $request->a,
-                    "b" => $request->b,
-                    "c" => $request->c,
-                    "d" => $request->d ?? null,
-                    "kunci" => $request->kunci,
+                    "jawabans" => implode("|", [
+                        $request->a,
+                        $request->b,
+                        $request->c,
+                        $request->d ?? null,
+                    ]),
+                    "kunci" => $request->tipe == 'pilihan_ganda_kompleks' ? implode("|", $request->kunci) : $request->kunci,
                     "tipe" => $request->tipe,
                     "level" => $request->level,
                 ]

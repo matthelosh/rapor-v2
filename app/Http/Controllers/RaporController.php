@@ -40,6 +40,7 @@ class RaporController extends Controller
 
     public function periodik(Request $request)
     {
+        // dd(RombelHelper::data($request->user()));
         return Inertia::render("Dash/Periodik", [
             "rombels" => RombelHelper::data($request->user()),
             "sekolahs" => \sekolahs($request->user()),
@@ -158,7 +159,7 @@ class RaporController extends Controller
                 "tanggal" => TanggalRapor::where("semester", $request->query("semester"))
                     ->where("tapel", $request->query("tapel"))
                     ->where("tipe", "pas")
-                    ->first(),
+                    ->value('tanggal') ?? date('Y-m-d'),
                 // "sekolah" => Sekolah::where('npsn', $siswa->sekolah_id)->with('ks')->first(),
                 "rombel" => Rombel::where('kode', $request->rombelId)->with('wali_kelas')->first(),
                 "tapel" => Tapel::where('kode', $request->query('tapel'))->first(),
