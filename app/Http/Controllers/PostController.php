@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostCategory;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,7 @@ class PostController extends Controller
             return Inertia::render(
                 'Dash/Post',
                 [
+                    'categories' => PostCategory::all(),
                     'posts' => $posts
                 ]
             );

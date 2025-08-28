@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onBeforeMount } from "vue";
-import { router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 // import { ElementTiptap } from 'element-tiptap-vue3-fixed'
 // import 'element-tiptap-vue3-fixed/lib/style.css'
@@ -43,6 +43,7 @@ import "codemirror/mode/xml/xml.js"; // language
 import "codemirror/addon/selection/active-line.js"; // require active-line.js
 import "codemirror/addon/edit/closetag.js";
 
+const page = usePage();
 const files = ref([]);
 // editor extensions
 // they will be added to menubar and bubble menu by the order you declare.
@@ -238,12 +239,9 @@ onBeforeMount(() => {
                             placeholder="Kategori"
                         >
                             <el-option
-                                v-for="(kat, k) in [
-                                    'Berita',
-                                    'Pengumuman',
-                                    'Tutorial',
-                                ]"
-                                :value="kat"
+                                v-for="(kat, k) in page.props.categories"
+                                :key="k"
+                                :value="kat.name"
                             ></el-option>
                         </el-select>
                         <h3 class="mt-4">Tipe Tulisan</h3>
