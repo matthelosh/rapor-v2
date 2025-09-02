@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__ . "/../routes/api.php",
         commands: __DIR__ . "/../routes/console.php",
         channels: __DIR__ . "/../routes/channels.php",
-        health: "/up"
+        health: "/up",
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware
@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 append: [
                     \App\Http\Middleware\HandleInertiaRequests::class,
                     \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-                ]
+                ],
             )
             ->alias([
                 "role" => \Spatie\Permission\Middleware\RoleMiddleware::class,
@@ -31,17 +31,18 @@ return Application::configure(basePath: dirname(__DIR__))
                 "role_or_permission" =>
                     \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
                 "verify_api_key" => \App\Http\Middleware\ApiKeyVerified::class,
+                "auth.bearer" => \App\Http\Middleware\CheckBearerToken::class,
             ]);
 
         //
         $middleware->api(
-            append: [\App\Http\Middleware\LogApiMiddleware::class]
+            append: [\App\Http\Middleware\LogApiMiddleware::class],
         );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (
             UnauthorizedException $e,
-            Request $request
+            Request $request,
         ) {
             return Inertia::render("Error", [
                 "status" => $e->getStatusCode(),

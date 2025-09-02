@@ -21,23 +21,25 @@ Route::get("/user", function (Request $request) {
 Route::apiResource("/posts", PostController::class);
 
 Route::apiResource("/sekolah", SekolahController::class);
-Route::get('/sekolah/subdomain/{subdomain}', [SekolahController::class, 'showBySubdomain'])
-    ->name('sekolah.showBySubdomain');
+Route::get("/sekolah/subdomain/{subdomain}", [
+    SekolahController::class,
+    "showBySubdomain",
+])->name("sekolah.showBySubdomain");
 
 //Route::get('/rombel', [RombelController::class, 'index'])->middleware(ApiKeyVerified::class);
 //});
 //
 Route::get("/rombel", [ClientController::class, "getRombel"])->middleware(
-    "verify_api_key"
+    "verify_api_key",
 );
 Route::get("/tps", [ClientController::class, "getTp"])->middleware(
-    "verify_api_key"
+    "verify_api_key",
 );
 Route::get("/asesmens", [ClientController::class, "getAsesmen"])->middleware(
-    "verify_api_key"
+    "verify_api_key",
 );
 Route::get("/kaldik", [ClientController::class, "getKaldik"])->middleware(
-    "verify_api_key"
+    "verify_api_key",
 );
 
 // Sync Nilai
@@ -87,10 +89,18 @@ Route::middleware(["auth:api", "role:siswa"])
     ->prefix("kaih")
     ->group(function () {
         Route::get("/", [KaihController::class, "index"])->name(
-            "api.kaih.index"
+            "api.kaih.index",
         );
 
         Route::post("/store", [KaihController::class, "store"])->name(
-            "api.kaih.store"
+            "api.kaih.store",
         );
     });
+
+Route::middleware(["auth.bearer"])->group(function () {
+    Route::prefix("asesmen")->group(function () {
+        Route::get("/", [AsesmenController::class, "index"]);
+        Route::post("/store", [AsesmenController::class, "store"]);
+        Route::get("/syncsekolah", [AsesmenController::class, "syncSekolah"]);
+    });
+});

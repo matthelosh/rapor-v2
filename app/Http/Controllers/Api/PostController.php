@@ -13,9 +13,14 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::latest()->paginate(5);
+        $posts = Post::whereNot('type', 'page')->paginate(5);
 
         return new PostResource(true, 'List Data Posts', $posts);
+    }
+
+    public function pages() {
+        $pages = Post::whereType('page')->get();
+        return new PostResource(true, 'List Data Posts', $pages);
     }
 
     public function store(Request $request)

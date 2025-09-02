@@ -23,13 +23,17 @@ class SekolahService
     public function index($request)
     {
         $user = $request->user();
+        $tapelActive = \App\Models\Tapel::where('is_active','1')->first();
+        $tapel = $tapelActive->kode;
         if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
             $sekolahs = Sekolah::with("ks", "ops")
                 ->with("gurus", function ($q) {
                     $q->where("gurus.jabatan", "!=", "ops");
                 })
-                ->with("siswas", function ($s) {
-                    $s->where("status", "aktif");
+                ->with("siswas", function ($s) use($tapel) {
+                    $s->whereHas('rombels', function($r) use($tapel) {
+                        $r->where('tapel', $tapel);
+                    });
                 })
                 ->get();
         } else {

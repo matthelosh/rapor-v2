@@ -5,6 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
+
+Route::domain('{subdomain}.pkgwagir.test')->group(function () {
+    Route::get('/{any?}', function ($subdomain, $any = '') {
+        // Ganti 5173 dengan port Vite Anda jika perlu
+        $viteUrl = 'http://localhost:5173/' . $any;
+
+        try {
+            // Mengambil konten dari server Vite
+            $response = Http::get($viteUrl);
+
+            // Mengembalikan konten dengan status dan header yang sama
+            return response(
+                $response->body(),
+                $response->status(),
+                $response->headers()
+            );
+
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            $message = "Server pengembangan Vite di http://localhost:5173 tidak dapat dijangkau. Pastikan server sudah berjalan dengan `npm run dev`.";
+            return response($message, 503)
+                   ->header('Content-Type', 'text/plain');
+        }
+
+    })->where('any', '.*');
+});
 
 Route::prefix("")->group(function () {
     Route::get("/", [FrontController::class, "home"])->name("home");
@@ -181,7 +207,7 @@ Route::middleware("auth")->group(function () {
             Route::post("/", [SiswaController::class, "store"])->name(
                 "dashboard.siswa.store"
             );
-            
+
             Route::post("/account/add", [
                 SiswaController::class,
                 "addAccount",

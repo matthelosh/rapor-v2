@@ -20,26 +20,6 @@ import { Link } from "@inertiajs/vue3";
             </h1>
         </div>
 
-        <img
-            src="/img/pgri_pa_a.svg"
-            alt="Pak Guru"
-            class="absolute left-[25%] bottom-40"
-        />
-        <img
-            src="/img/pgri_pa_b.svg"
-            alt="Pak Guru"
-            class="absolute left-[18%] bottom-36"
-        />
-        <img
-            src="/img/pgri_pi_is.svg"
-            alt="Bu Guru"
-            class="absolute right-80 bottom-[26%]"
-        />
-        <img
-            src="/img/pgri_pi.svg"
-            alt="Bu Guru"
-            class="absolute right-[28%] bottom-36"
-        />
 
         <div
             class="w-full sm:max-w-md mt-4 px-6 pt-8 pb-4 bg-white bg-opacity-70 backdrop-blur-sm shadow-md overflow-hidden sm:rounded-lg"
