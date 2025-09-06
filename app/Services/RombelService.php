@@ -35,19 +35,19 @@ class RombelService
         if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
             $rombels = Rombel::with("sekolah", "gurus", "siswas")->get();
         } elseif ($user->hasRole("ops")) {
-            // dd($request->query('tapel'));
+            // dd($request->query('tapel') === null);
             $rombels = Rombel::where(
                 "sekolah_id",
-                $user->userable->sekolahs[0]->npsn
+                $user->name
             )
-                ->where('tapel', $request->query('tapel') !== null ? $request->query('tapel') : Periode::tapel()->kode)
+                ->where('tapel', isset($request->tapel) && $request->tapel !== 'null' ? $request->tapel : Periode::tapel()->kode)
                 ->with("sekolah", "gurus", "siswas", "wali_kelas")
                 ->with("kktps", function ($q) {
                     $q->with("mapel");
                 })
                 ->orderBy("id")
                 ->get();
-                // dd($rombels);
+                // dd($rombels->where('tapel', Periode::tapel()->kode));
         } elseif ($user->hasRole("guru_kelas")) {
             $nip = $user->userable->nip;
             $rombels = Rombel::where(
