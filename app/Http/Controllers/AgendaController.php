@@ -14,11 +14,16 @@ class AgendaController extends Controller
     public function home(Request $request)
     {
         $agendas = Agenda::whereTapel($this->periode()['tapel']->kode)->with('pesertas')->orderBy('mulai', 'ASC')->get();
+        // dd($agendas);
+        $tapel = explode("/",$this->periode()['tapel']->label);
+
         return Inertia::render(
             'Dash/Agenda',
             [
                 'agendas' => $agendas,
-                'orgs' => Org::all()
+                'orgs' => Org::all(),
+                'min_date' => $tapel[0].'-07-01',
+                'max_date' => $tapel[1].'-06-30',
             ]
         );
     }

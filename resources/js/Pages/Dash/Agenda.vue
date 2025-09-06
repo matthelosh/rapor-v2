@@ -8,8 +8,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/id';
 dayjs.locale('id')
 import { ElNotification } from 'element-plus';
+import { min } from 'lodash';
 
-const props = defineProps({ agendas: Array, orgs: Array })
+const props = defineProps({ agendas: Array, orgs: Array, min_date: String, max_date: String })
 const mode = ref('calendar')
 
 const DashLayout = defineAsyncComponent(() => import('@/Layouts/DashLayout.vue'))
@@ -32,8 +33,8 @@ const attributes = computed(() => {
     let attrs = []
     props.agendas.forEach((item, index) => {
         attrs.push({
-            key: item.id, 
-            highlight: item.warna, 
+            key: item.id,
+            highlight: item.warna,
             dates: {start: new Date(item.mulai), end: new Date(item.selesai)},
             startDate: new Date(item.mulai),
             endDate: new Date(item.selesai),
@@ -119,7 +120,7 @@ const simpan = async() => {
         <template #default>
             <el-scrollbar max-height="80vh">
                 <div class="agenda" v-if="mode == 'calendar'">
-                    <Calendar  min-date="2024-07-01" max-date="2025-06-30" :rows="layout.rows" :columns="layout.cols" expanded :attributes="attributes" @dayclick="onDayClicked" />
+                    <Calendar  :min-date="props.min_date" :max-date="props.max_date" :layout="{cols: layout.cols, rows: layout.rows}" :rows="layout.rows" :columns="layout.cols" expanded :attributes="attributes" @dayclick="onDayClicked" />
                     <el-card class="mt-4">
                     <h3 class="mb-4">Detail Agenda</h3>
                         <el-table :data="props.agendas">
