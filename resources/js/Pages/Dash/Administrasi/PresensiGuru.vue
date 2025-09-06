@@ -102,8 +102,18 @@ const cetak = async () => {
     }, 1000);
 };
 onMounted(() => {
-    selectedBulan.value = params.bulan ?? new Date().getMonth();
+    selectedBulan.value = params.bulan ?? (new Date().getMonth());
 });
+
+const isDateInWeek = (date, week) => {
+    const targetDate = dayjs(date);
+    for (const t of week.tanggals) {
+        if (t.tanggal && dayjs(t.tanggal).isSame(targetDate, 'day')) {
+            return true;
+        }
+    }
+    return false;
+};
 </script>
 
 <template>
@@ -297,9 +307,6 @@ onMounted(() => {
                                                     }}
                                                 </p>
                                             </td>
-                                            <!-- <td class="border p-2 border-black">
-                                                <p>{{ guru.jabatan }}</p>
-                                            </td> -->
                                             <template
                                                 v-for="tanggal in week.tanggals"
                                             >
@@ -334,88 +341,15 @@ onMounted(() => {
                                     <ol class="pl-4 list-decimal">
                                         <template v-for="agenda in agendas">
                                             <li
-                                                v-if="
-                                                    dayjs(
-                                                        agenda.mulai,
-                                                    ).month() ===
-                                                        selectedBulan - 1 &&
-                                                    dayjs(
-                                                        agenda.mulai,
-                                                    ).year() == selectedTahun
-                                                "
+                                                v-if="isDateInWeek(agenda.mulai, week)"
                                             >
                                                 {{
                                                     dayjs(agenda.mulai).format(
                                                         "DD MMMM YYYY",
                                                     )
                                                 }}:
-                                                <!-- {{ agenda.mulai }} ||
-                                                {{
-                                                    dayjs(agenda.mulai).month()
-                                                }}
-                                                || {{ selectedBulan - 1 }} ||
-                                                {{ params.bulan - 1 }} || -->
                                                 {{ agenda.deskripsi }}
                                             </li>
-                                            <!-- <li
-                                                v-if="
-                                                    (dayjs(
-                                                        agenda.mulai,
-                                                    ).month() ==
-                                                        selectedBulan ||
-                                                        dayjs(
-                                                            agenda.selesai,
-                                                        ).month() ==
-                                                            selectedBulan) &&
-                                                    dayjs(
-                                                        agenda.mulai,
-                                                    ).year() == selectedTahun &&
-                                                    week.tanggals
-                                                        .map(
-                                                            (tgl) =>
-                                                                tgl.tanggal,
-                                                        )
-                                                        .includes(agenda.mulai)
-                                                "
-                                            >
-                                                <span>
-                                                    <span
-                                                        class="text-red-500 font-bold"
-                                                    >
-                                                        {{
-                                                            dayjs(
-                                                                agenda.mulai,
-                                                            ).format(
-                                                                "D MMM YYYY",
-                                                            )
-                                                        }}
-                                                    </span>
-                                                    <span
-                                                        v-if="
-                                                            dayjs(
-                                                                agenda.mulai,
-                                                            ).diff(
-                                                                dayjs(
-                                                                    agenda.selesai,
-                                                                ),
-                                                                'd',
-                                                            ) !== 0
-                                                        "
-                                                    >
-                                                        -
-                                                        {{
-                                                            dayjs(
-                                                                agenda.selesai,
-                                                            ).format(
-                                                                "D MMM YYYY",
-                                                            )
-                                                        }}</span
-                                                    >
-                                                    <span class="text-black">
-                                                        : {{ agenda.deskripsi }}
-                                                    </span>
-                                                </span>
-                                            </li> -->
                                         </template>
                                     </ol>
                                 </div>
