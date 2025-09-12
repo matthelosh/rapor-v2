@@ -4,6 +4,7 @@ import { Head, router, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { Search } from "@element-plus/icons-vue";
 import axios from "axios";
+import { computed } from "vue";
 const page = usePage();
 const DashLayout = defineAsyncComponent(
     () => import("@/Layouts/DashLayout.vue"),
@@ -91,7 +92,7 @@ const simpanArsip = () => {
         text: "Loading",
         background: "rgba(0, 0, 0, 0.7)",
     });
-    loading.value = true;
+    // loading.value = true;
     const formData = new FormData();
     if (arsip.value.id) {
         formData.append("id", arsip.value.id);
@@ -105,20 +106,17 @@ const simpanArsip = () => {
     formData.append("file_transkrip", fileTranskrip.value);
     formData.append("file_skl", fileSkl.value);
     axios.defaults.headers.common["Content-Type"] = "multipart/form-data";
+    const rute = computed(() =>
+        arsip.value.id
+            ? "dashboard.arsip.ijazah.update"
+            : "dashboard.arsip.ijazah.store",
+    );
     axios
-        .post(
-            route(
-                arsip.value.id
-                    ? "dashboard.arsip.ijazah.update"
-                    : "dashboard.arsip.ijazah.store",
-            ),
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
+        .post(route(rute.value), formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
             },
-        )
+        })
         .then((res) => {
             loading.value = false;
             router.reload({ only: ["tapels"] });
