@@ -53,16 +53,36 @@ class AsesmenController extends Controller
                             },
                         ]);
                 },
-                "gurus" => function ($guru) use($periode) {
-                    $guru->whereHas('rombels', function($rombelQuery) use($periode) {
-                        $rombelQuery->where('tapel', $periode->kode);
-                    })->with([
-                        'rombels' => function($rombel) use($periode) {
-                            $rombel->where('tapel', $periode->kode)
-                                ->select('rombels.id', 'kode', 'label', 'tingkat', 'pararel');
-                        },
-                    ])->select('gurus.id', 'nama', 'nip', 'jabatan', 'pangkat', 'status');
-                }
+                "gurus" => function ($guru) use ($periode) {
+                    $guru
+                        ->whereHas("rombels", function ($rombelQuery) use (
+                            $periode,
+                        ) {
+                            $rombelQuery->where("tapel", $periode->kode);
+                        })
+                        ->with([
+                            "rombels" => function ($rombel) use ($periode) {
+                                $rombel
+                                    ->where("tapel", $periode->kode)
+                                    ->select(
+                                        "rombels.id",
+                                        "kode",
+                                        "label",
+                                        "tingkat",
+                                        "pararel",
+                                    );
+                            },
+                        ])
+                        ->select(
+                            "gurus.id",
+                            "nama",
+                            "gelar_belakang",
+                            "nip",
+                            "jabatan",
+                            "pangkat",
+                            "status",
+                        );
+                },
             ])
                 ->where("kecamatan", "Wagir")
                 ->get();
