@@ -12,6 +12,7 @@ const props = defineProps({
     open: Boolean,
     sekolah: Object,
     mapel: Object,
+    agama: String
 });
 const emit = defineEmits(["close"]);
 const role = page.props.auth.roles[0];
@@ -30,7 +31,7 @@ const simpan = async () => {
                 tingkat: props.rombel.tingkat,
                 mapelId: props.mapel?.kode,
                 agama: page.props.auth.roles.includes("guru_agama")
-                    ? page.props.auth.user.userable.agama
+                    ? page.props.agama
                     : null,
                 semester:
                     route().params.semester ?? page.props.periode.semester.kode,
@@ -167,7 +168,7 @@ const onFileNilaiPicked = async (e) => {
                 Object.keys(data).forEach((k) => {
                     if (!["no", "nisn", "nama", "jk", "agama"].includes(k)) {
                         siswa.nilais[k] = data[k];
-                        // console.log(k)
+                        // console.log(k, data[k])
                     }
                 });
             }

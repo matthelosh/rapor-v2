@@ -45,6 +45,7 @@ const persen = (scope) => {};
 const selectedSemester = ref("");
 
 const onSemesterChanged = (e) => {
+    selectedSemester.value = e;
     router.visit(
         `${window.location.pathname}?semester=${selectedSemester.value}`,
         {
