@@ -27,7 +27,9 @@ class NilaiService
                 $g->where("nip", $nip);
             })
                 ->where('tapel', $tapel)
-                ->with("siswas")
+                ->with(["siswas" => function ($s) {
+                    $s->orderBy("nama", "ASC");
+                }])
                 ->first();
             // dd($rombel);
             $sekolahId = $user->userable->sekolahs[0]->id;
@@ -62,7 +64,6 @@ class NilaiService
                             );
                         });
                         $q->with([
-                            "siswas",
                             "nilais" => function ($n) use ($agama, $semester) {
                                 $n->select(
                                     "rombel_id",
