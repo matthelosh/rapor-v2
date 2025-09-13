@@ -301,7 +301,7 @@ trait NilaiTrait
                                 ->where("mapel_id", "pabp")
                                 ->where(
                                     "semester",
-                                    $this->periode()["semester"]->kode
+                                    Periode::semester()->kode
                                 )
                                 ->count(),
                             "uhs" => Nilai::where("rombel_id", $rombel->kode)
@@ -309,7 +309,7 @@ trait NilaiTrait
                                 ->where("mapel_id", "pabp")
                                 ->where(
                                     "semester",
-                                    $this->periode()["semester"]->kode
+                                    Periode::semester()->kode
                                 )
                                 ->count(),
                             "pas" => Nilai::where("rombel_id", $rombel->kode)
@@ -317,7 +317,7 @@ trait NilaiTrait
                                 ->where("mapel_id", "pabp")
                                 ->where(
                                     "semester",
-                                    $this->periode()["semester"]->kode
+                                    Periode::semester()->kode
                                 )
                                 ->count(),
                         ],
