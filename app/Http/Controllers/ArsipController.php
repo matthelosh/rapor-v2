@@ -81,8 +81,8 @@ class ArsipController extends Controller
                 // );
                 $storeIjazah = $this->storeFile(
                     $arsipPath,
-                    $ijazahName,
                     $fileIjazah,
+                    $ijazahName,
                     "public",
                 );
             }
@@ -164,6 +164,7 @@ class ArsipController extends Controller
 
     private function storeFile($path, $file, $name, $visibility)
     {
+        // dd($path, $file, $name, $visibility);
         try {
             return Storage::disk("s3")->putFileAs(
                 $path,

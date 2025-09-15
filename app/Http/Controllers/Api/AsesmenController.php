@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Periode;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sekolah;
@@ -102,5 +103,12 @@ class AsesmenController extends Controller
                 500,
             );
         }
+    }
+
+    public function periode() {
+        return response()->json([
+            'tapel' => Periode::tapel(),
+            'semester' => Periode::semester()
+        ]);
     }
 }

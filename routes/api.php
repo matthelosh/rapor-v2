@@ -102,5 +102,6 @@ Route::middleware(["auth.bearer"])->group(function () {
         Route::get("/", [AsesmenController::class, "index"]);
         Route::post("/store", [AsesmenController::class, "store"]);
         Route::get("/syncsekolah", [AsesmenController::class, "syncSekolah"]);
+        Route::get("/periode", [AsesmenController::class, "periode"]);
     });
 });
