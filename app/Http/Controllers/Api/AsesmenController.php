@@ -79,6 +79,7 @@ class AsesmenController extends Controller
                             "nama",
                             "gelar_belakang",
                             "nip",
+                            "agama",
                             "jabatan",
                             "pangkat",
                             "status",

@@ -26,11 +26,11 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $role = $user->getRoleNames()->first();
-        if ($role !== "siswa") {
+        if (!in_array($role, ["siswa", "guru_kelas", "guru_agama", "guru_pjok", "guru_inggris"])) {
             return response()->json(
                 [
                     "success" => false,
-                    "message" => "Maaf, Laman ini khusus Siswa/Ortu.",
+                    "message" => "Maaf, Laman ini khusus Siswa/Ortu dan Guru Kelas/PABP/PJOK/Inggris.",
                 ],
                 403
             );
@@ -45,6 +45,7 @@ class AuthController extends Controller
                 "email" => $user->email,
                 "role" => $role,
             ],
+            "guru" => $user->userable,
         ]);
     }
 }

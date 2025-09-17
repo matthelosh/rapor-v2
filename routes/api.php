@@ -97,6 +97,25 @@ Route::middleware(["auth:api", "role:siswa"])
         );
     });
 
+// Presensi
+Route::middleware(["auth:api", "role:guru_kelas|guru_agama|guru_pjok|guru_inggris"])
+    ->prefix("presensi")
+    ->group(function () {
+        Route::get("/", [PresensiController::class, "index"])->name(
+            "api.presensi.index",
+        );
+
+        Route::post("/store", [PresensiController::class, "store"])->name(
+            "api.presensi.store",
+        );
+
+        Route::get("/rombels", [PresensiController::class, "getRombels"])->name(
+            "api.presensi.rombels",
+        );
+
+        Route::get('/harian', [PresensiController::class, 'harian'])->name('api.presensi.harian');
+    });
+
 Route::middleware(["auth.bearer"])->group(function () {
     Route::prefix("asesmen")->group(function () {
         Route::get("/", [AsesmenController::class, "index"]);
