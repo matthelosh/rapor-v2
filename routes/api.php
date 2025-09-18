@@ -35,6 +35,9 @@ Route::get("/rombel", [ClientController::class, "getRombel"])->middleware(
 Route::get("/tps", [ClientController::class, "getTp"])->middleware(
     "verify_api_key",
 );
+Route::get("/mapels", [MapelController::class, "index"])->middleware(
+    "auth:api",
+);
 Route::get("/asesmens", [ClientController::class, "getAsesmen"])->middleware(
     "verify_api_key",
 );
@@ -114,6 +117,31 @@ Route::middleware(["auth:api", "role:guru_kelas|guru_agama|guru_pjok|guru_inggri
         );
 
         Route::get('/harian', [PresensiController::class, 'harian'])->name('api.presensi.harian');
+    });
+
+// Jurnal Mengajar
+Route::middleware(["auth:api", "role:guru_kelas|guru_agama|guru_pjok|guru_inggris"])
+    ->prefix("jurnal-mengajar")
+    ->group(function () {
+        Route::get("/", [JurnalMengajarController::class, "index"])->name(
+            "api.jurnal-mengajar.index",
+        );
+
+        Route::post("/store", [JurnalMengajarController::class, "store"])->name(
+            "api.jurnal-mengajar.store",
+        );
+
+        Route::get("/{id}", [JurnalMengajarController::class, "show"])->name(
+            "api.jurnal-mengajar.show",
+        );
+
+        Route::put("/{id}", [JurnalMengajarController::class, "update"])->name(
+            "api.jurnal-mengajar.update",
+        );
+
+        Route::delete("/{id}", [JurnalMengajarController::class, "destroy"])->name(
+            "api.jurnal-mengajar.destroy",
+        );
     });
 
 Route::middleware(["auth.bearer"])->group(function () {

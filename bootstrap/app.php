@@ -44,6 +44,12 @@ return Application::configure(basePath: dirname(__DIR__))
             UnauthorizedException $e,
             Request $request,
         ) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                ], $e->getStatusCode());
+            }
+
             return Inertia::render("Error", [
                 "status" => $e->getStatusCode(),
                 "message" => $e->getMessage(),
