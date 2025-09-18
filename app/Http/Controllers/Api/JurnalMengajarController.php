@@ -8,6 +8,7 @@ use App\Models\Guru;
 use App\Models\JurnalMengajar;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class JurnalMengajarController extends Controller
 {
@@ -35,9 +36,23 @@ class JurnalMengajarController extends Controller
             'materi' => 'nullable|string',
             'tp' => 'nullable|string',
             'elemen' => 'nullable|string',
-            'foto_kegiatan' => 'nullable|string',
-            'dokumen' => 'nullable|string',
+            'foto_kegiatan' => 'nullable|file|mimetypes:image/*|max:10240',
+            'dokumen' => 'nullable|file|mimetypes:image/*,application/pdf:max:10240',
+            // 'dokumen' => 'nullable|string',
         ]);
+
+        if ($request->file('foto_kegiatan')) {
+
+            $image = $request->file('foto_kegiatan');
+            $storeFoto = Storage::disk('s3')->putFileAs('pkgwagir/jurnal_mengajar/foto_kegiatan', $image, $image->getClientOriginalName() . '.' . $image->extension(), 'public');
+            $foto_url = Storage::url($storeFoto);
+        }
+        if ($request->file('dokumen')) {
+
+            $dokumen = $request->file('dokumen');
+            $storeDokumen = Storage::disk('s3')->putFileAs('pkgwagir/jurnal_mengajar/dokumen', $dokumen, $dokumen->getClientOriginalName() . '.' . $dokumen->extension(), 'public');
+            $dokumen_url = Storage::url($storeDokumen);
+        }
 
         $jurnal = JurnalMengajar::create([
             'guru_id' => $request->guru_id,
@@ -49,8 +64,8 @@ class JurnalMengajarController extends Controller
             'materi' => $request->materi,
             'tp' => $request->tp,
             'elemen' => $request->elemen,
-            'foto_kegiatan' => $request->foto_kegiatan,
-            'dokumen' => $request->dokumen,
+            'foto_kegiatan' => $storeFoto ? $foto_url : null,
+            'dokumen' => $dokumen_url ? $dokumen_url : null,
         ]);
 
         return response()->json([
