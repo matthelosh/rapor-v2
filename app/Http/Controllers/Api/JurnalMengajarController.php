@@ -54,8 +54,9 @@ class JurnalMengajarController extends Controller
             $dokumen_url = Storage::url($storeDokumen);
         }
 
+        $guru = Auth::user()->userable;
         $jurnal = JurnalMengajar::create([
-            'guru_id' => $request->guru_id,
+            'guru_id' => $guru->nip,
             'tapel' => $request->tapel ?? Periode::tapel()->kode,
             'semester' => $request->semester ?? Periode::semester()->kode,
             'rombel_id' => $request->rombel_id,
