@@ -64,8 +64,8 @@ class JurnalMengajarController extends Controller
             'materi' => $request->materi,
             'tp' => $request->tp,
             'elemen' => $request->elemen,
-            'foto_kegiatan' => $storeFoto ? $foto_url : null,
-            'dokumen' => $dokumen_url ? $dokumen_url : null,
+            'foto_kegiatan' => isset($foto_url) && $storeFoto ? $foto_url : null,
+            'dokumen' => isset($dokumen_url) && $dokumen_url ? $dokumen_url : null,
         ]);
 
         return response()->json([
