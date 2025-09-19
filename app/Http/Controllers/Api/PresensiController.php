@@ -113,6 +113,8 @@ class PresensiController extends Controller
 
     private function getRekapGuruKelas($request)
     {
+        $isGuruMapel = !$request->user()->hasRole('guru_kelas');
+
         $rekap = Presensi::selectRaw("
                     DATE(created_at) as tanggal,
                     COUNT(CASE WHEN status = 'h' THEN 1 END) as hadir,
@@ -123,6 +125,7 @@ class PresensiController extends Controller
                 ->where('rombel_id', $request->rombel_id)
                 ->where('tapel', $request->tapel)
                 ->where('semester', $request->semester)
+                ->where('guru_id', $request->user()->userable->nip)
                 ->groupBy('tanggal')
                 ->orderBy('tanggal', 'desc')
                 ->get();
