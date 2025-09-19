@@ -1,39 +1,15 @@
 <script setup>
-import { Link, router, usePage, Head } from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
-import { ElCard } from 'element-plus';
 import Header from "@/Layouts/Front/Header.vue";
 import Footer from "@/Layouts/Front/Footer.vue";
-
-const page = usePage();
-
-// const toggleNav = () => {
-//     const nav = document.querySelector(".nav-wrapper");
-//     nav.classList.toggle("hidden");
-// };
 </script>
 
 <template>
     <Head title="Sugeng Rawuh" />
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-blue-100 to-blue-50">
         <!-- Navigation -->
-        <nav class="relative z-10 px-6 py-4">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <div class="flex items-center space-x-2">
-                    <img src="/img/logo_pkg.png" alt="PKG Wagir" class="h-10 w-10" />
-                    <span class="text-blue-900 font-bold text-xl">PKG Wagir</span>
-                </div>
-                <div class="hidden md:flex space-x-8">
-                    <a href="/" class="text-blue-900 hover:text-blue-600 transition-colors">Beranda</a>
-                    <a href="/profil" class="text-blue-900 hover:text-blue-600 transition-colors">Profil</a>
-                    <a href="/layanan" class="text-blue-900 hover:text-blue-600 transition-colors">Layanan</a>
-                    <a href="/galeri" class="text-blue-900 hover:text-blue-600 transition-colors">Galeri</a>
-                </div>
-                <a href="/login" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition-colors font-medium">
-                    Masuk
-                </a>
-            </div>
-        </nav>
+        <Header />
 
         <!-- Hero Section -->
         <section class="relative px-6 py-20">
@@ -72,7 +48,7 @@ const page = usePage();
             </div>
 
             <!-- Floating Elements -->
-            <div class="absolute top-20 left-10 animate-bounce">
+            <!-- <div class="absolute top-20 left-10 animate-bounce">
                 <Icon icon="mdi:star" class="text-yellow-400 text-3xl opacity-60" />
             </div>
             <div class="absolute top-40 right-20 animate-pulse">
@@ -80,7 +56,12 @@ const page = usePage();
             </div>
             <div class="absolute bottom-20 left-20 animate-bounce" style="animation-delay: 1s">
                 <Icon icon="mdi:school" class="text-pink-400 text-3xl opacity-50" />
-            </div>
+            </div> -->
+
+            <!-- Animated Blobs -->
+            <div class="absolute top-10 right-20 w-32 h-32 bg-orange-400 bg-opacity-70 animate-pulse" style="border-radius: 60% 40% 30% 70%;"></div>
+            <div class="absolute bottom-10 left-32 w-24 h-24 bg-red-400 bg-opacity-65 animate-bounce" style="border-radius: 70% 30% 50% 80%; animation-delay: 0.5s"></div>
+            <!-- <div class="absolute top-1/2 left-1/2 transform -translate-x-1/ -translate-y-1/2 w-40 h-40 bg-orange-500 bg-opacity-80 animate-pulse" style="border-radius: 40% 60% 80% 20%; animation-delay: 1s"></div> -->
         </section>
 
         <!-- Applications Section -->
@@ -98,27 +79,13 @@ const page = usePage();
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Asesmen Card -->
                     <a href="https://asesmen.pkgwagir.or.id" target="_blank" class="group">
-                        <el-card
-                            :body-style="{
-                                background: 'rgba(255, 255, 255, 0.9)',
-                                backdropFilter: 'blur(16px)',
-                                border: '1px solid rgba(59, 130, 246, 0.3)',
-                                borderRadius: '1rem',
-                                padding: '2rem',
-                                transition: 'all 0.3s ease',
-                                transform: 'scale(1)'
-                            }"
-                            shadow="hover"
-                            class="hover:scale-105"
-                        >
-                            <template #header>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                                        <Icon icon="mdi:clipboard-check" class="text-3xl text-white" />
-                                    </div>
-                                    <h3 class="text-xl font-bold text-blue-900 m-0">Asesmen</h3>
+                        <div class="bg-white bg-opacity-90 backdrop-blur-xl border border-blue-300 border-opacity-30 rounded-xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 hover:rotate-1 transition-all duration-300">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <Icon icon="mdi:clipboard-check" class="text-3xl text-white" />
                                 </div>
-                            </template>
+                                <h3 class="text-xl font-bold text-blue-900 m-0">Asesmen</h3>
+                            </div>
                             <div class="text-center">
                                 <p class="text-blue-700 mb-4">Platform penilaian dan asesmen siswa yang komprehensif</p>
                                 <div class="flex items-center justify-center text-blue-600 group-hover:text-blue-500">
@@ -126,32 +93,18 @@ const page = usePage();
                                     <Icon icon="mdi:arrow-right" class="ml-2 text-lg group-hover:translate-x-1 transition-transform" />
                                 </div>
                             </div>
-                        </el-card>
+                        </div>
                     </a>
 
                     <!-- 7 KAIH Card -->
                     <a href="https://siswa.pkgwagir.or.id" target="_blank" class="group">
-                        <el-card
-                            :body-style="{
-                                background: 'rgba(255, 255, 255, 0.9)',
-                                backdropFilter: 'blur(16px)',
-                                border: '1px solid rgba(59, 130, 246, 0.3)',
-                                borderRadius: '1rem',
-                                padding: '2rem',
-                                transition: 'all 0.3s ease',
-                                transform: 'scale(1)'
-                            }"
-                            shadow="hover"
-                            class="hover:scale-105"
-                        >
-                            <template #header>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                                        <Icon icon="mdi:book-open-page-variant" class="text-3xl text-white" />
-                                    </div>
-                                    <h3 class="text-xl font-bold text-blue-900 m-0">7 KAIH</h3>
+                        <div class="bg-white bg-opacity-90 backdrop-blur-xl border border-blue-300 border-opacity-30 rounded-xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 hover:-rotate-1 transition-all duration-300">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <Icon icon="mdi:book-open-page-variant" class="text-3xl text-white" />
                                 </div>
-                            </template>
+                                <h3 class="text-xl font-bold text-blue-900 m-0">7 KAIH</h3>
+                            </div>
                             <div class="text-center">
                                 <p class="text-blue-700 mb-4">Program pengembangan karakter dan akhlak siswa</p>
                                 <div class="flex items-center justify-center text-blue-600 group-hover:text-blue-500">
@@ -159,32 +112,18 @@ const page = usePage();
                                     <Icon icon="mdi:arrow-right" class="ml-2 text-lg group-hover:translate-x-1 transition-transform" />
                                 </div>
                             </div>
-                        </el-card>
+                        </div>
                     </a>
 
                     <!-- Jurnal & Presensi Card -->
                     <a href="https://presensiswa.pkgwagir.or.id" target="_blank" class="group">
-                        <el-card
-                            :body-style="{
-                                background: 'rgba(255, 255, 255, 0.9)',
-                                backdropFilter: 'blur(16px)',
-                                border: '1px solid rgba(59, 130, 246, 0.3)',
-                                borderRadius: '1rem',
-                                padding: '2rem',
-                                transition: 'all 0.3s ease',
-                                transform: 'scale(1)'
-                            }"
-                            shadow="hover"
-                            class="hover:scale-105"
-                        >
-                            <template #header>
-                                <div class="text-center">
-                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                                        <Icon icon="mdi:calendar-check" class="text-3xl text-white" />
-                                    </div>
-                                    <h3 class="text-xl font-bold text-blue-900 m-0">Jurnal & Presensi</h3>
+                        <div class="bg-white bg-opacity-90 backdrop-blur-xl border border-blue-300 border-opacity-30 rounded-xl p-8 shadow-lg hover:shadow-2xl hover:scale-105 hover:-rotate-2 transition-all duration-300">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                                    <Icon icon="mdi:calendar-check" class="text-3xl text-white" />
                                 </div>
-                            </template>
+                                <h3 class="text-xl font-bold text-blue-900 m-0">Jurnal & Presensi</h3>
+                            </div>
                             <div class="text-center">
                                 <p class="text-blue-700 mb-4">Sistem jurnal mengajar dan presensi guru terintegrasi</p>
                                 <div class="flex items-center justify-center text-blue-600 group-hover:text-blue-500">
@@ -192,7 +131,7 @@ const page = usePage();
                                     <Icon icon="mdi:arrow-right" class="ml-2 text-lg group-hover:translate-x-1 transition-transform" />
                                 </div>
                             </div>
-                        </el-card>
+                        </div>
                     </a>
                 </div>
             </div>
@@ -227,12 +166,6 @@ const page = usePage();
         </section>
 
         <!-- Footer -->
-        <footer class="px-6 py-8 bg-blue-100 border-t border-blue-300">
-            <div class="max-w-7xl mx-auto text-center">
-                <p class="text-blue-800">
-                    © 2024 PKG Kecamatan Wagir. Dibuat dengan ❤️ untuk kemajuan pendidikan.
-                </p>
-            </div>
-        </footer>
+        <Footer />
     </div>
 </template>

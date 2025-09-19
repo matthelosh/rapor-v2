@@ -28,6 +28,7 @@ class PresensiController extends Controller
         }
         $presensi = Presensi::updateOrCreate(
             [
+                'id' => $request->id ?? null,
                 'siswa_id' => $request->siswa_id,
                 'tapel' => $request->tapel,
                 'semester' => $request->semester,
