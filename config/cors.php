@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://presensiswa.pkgwagir.or.id', 'https://siswa.pkgwagir.or.id', 'https://asesmen.pkgwagir.or.id', 'https://localhost:5173', 'http://localhost:5173'],
+    'allowed_origins' => ['https://presensiswa.pkgwagir.or.id', 'https://siswa.pkgwagir.or.id', 'https://asesmen.pkgwagir.or.id', 'https://localhost:5173', 'http://localhost:5173', 'http://localhost:5174', 'http://kaih.test'],
 
     'allowed_origins_patterns' => [],
 

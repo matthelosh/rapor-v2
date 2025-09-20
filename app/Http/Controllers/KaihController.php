@@ -156,89 +156,83 @@ class KaihController extends Controller
     public function inputRekap(Request $request)
     {
         try {
-            // dd($request->all());
-            // $tgls = [];
-            // foreach ($request->kegiatans as $k => $tanggals) {
-            //     foreach ($tanggals as $tanggal) {
-            //         $now = Carbon::now("Asia/Jakarta");
-            //         $waktu = Carbon::createFromFormat(
-            //             "Y-m-d H:i:s",
-            //             $tanggal . " " . $now->format("H:i:s"),
-            //             "Asia/Jakarta"
-            //         );
-            //         $splitted_tanggal = explode("-", $tanggal);
-            //         $exists = Kaih::whereYear("waktu", $splitted_tanggal[0])
-            //             ->whereMonth("waktu", $splitted_tanggal[1])
-            //             ->whereDate("waktu", $splitted_tanggal[2])
-            //             ->get();
-            //         if ($exists->count() < 1) {
-            //             Kaih::create([
-            //                 "rombel_id" => $request->rombelId,
-            //                 "siswa_id" => $request->siswaId,
-            //                 "semester" => Periode::semester()->kode,
-            //                 "kebiasaan" => $k,
-            //                 "waktu" => $waktu->toDateTimeString(),
-            //                 "is_done" => true,
-            //                 "keterangan" => $request->keterangan,
-            //             ]);
-            //         }
-            //         // array_push($tgls, $tanggal);
-            //     }
-            // }
-            // dd($tgls);
-            $dataToCreate = [];
-            $existingDates = [];
-            foreach ($request->kegiatans as $k => $tanggals) {
+            DB::beginTransaction();
+
+            $rombelId = $request->rombelId;
+            $siswaId = $request->siswaId;
+            $semester = Periode::semester()->kode;
+
+            // 1. Build a lookup map from the request payload {'YYYY-MM-DD::Kebiasaan' => true}
+            $requestPairs = [];
+            foreach ($request->kegiatans as $kebiasaan => $tanggals) {
                 foreach ($tanggals as $tanggal) {
-                    $existingDates[] = $tanggal;
+                    // Normalize the key
+                    $requestPairs[$tanggal . '::' . $kebiasaan] = true;
                 }
             }
 
-            $existingKaihs = Kaih::whereIn(DB::raw('DATE(waktu)'), $existingDates)
-                ->where("rombel_id", $request->rombelId)
-                ->where("siswa_id", $request->siswaId)
-                ->where("semester", Periode::semester()->kode)
-                ->pluck('waktu')
-                ->map(function($waktu) {
-                    return Carbon::parse($waktu)->format('Y-m-d');
-                })
-                ->toArray();
-            
-            foreach($request->kegiatans as $k => $tanggals)
-            {
-                foreach($tanggals as $tanggal)
-                {
-                    if(!in_array($tanggal, $existingKaihs)) {
-                        $now = Carbon::now("Asia/Jakarta");
-                        $waktu = Carbon::createFromFormat(
-                            "Y-m-d H:i:s",
-                            $tanggal . " " . $now->format("H:i:s"),
-                            "Asia/Jakarta"
-                        );
-                        $dataToCreate[] = [
-                            "rombel_id" => $request->rombelId,
-                            "siswa_id" => $request->siswaId,
-                            "semester" => Periode::semester()->kode,
-                            "kebiasaan" => $k,
-                            "waktu" => $waktu->toDateTimeString(),
-                            "is_done" => true,
-                            "keterangan" => $request->keterangan,
-                        ];
-                    }
+            // 2. Fetch all existing records for the student this semester
+            $dbRecords = Kaih::where('rombel_id', $rombelId)
+                ->where('siswa_id', $siswaId)
+                ->where('semester', $semester)
+                ->get();
+
+            // 3. Determine which records to delete
+            $idsToDelete = [];
+            foreach ($dbRecords as $record) {
+                $key = Carbon::parse($record->waktu)->format('Y-m-d') . '::' . $record->kebiasaan;
+                if (!isset($requestPairs[$key])) {
+                    $idsToDelete[] = $record->id;
+                } else {
+                    // This pair exists in both DB and request, so we don't need to act on it.
+                    // Remove it from requestPairs to find out what's left to insert.
+                    unset($requestPairs[$key]);
                 }
             }
 
-            if(!empty($dataToCreate)) {
+            // 4. Perform deletion
+            if (!empty($idsToDelete)) {
+                Kaih::whereIn('id', $idsToDelete)->delete();
+            }
+
+            // 5. Determine which records to create
+            // $requestPairs now only contains pairs that are NOT in the DB.
+            $dataToCreate = [];
+            $now = Carbon::now("Asia/Jakarta");
+            foreach (array_keys($requestPairs) as $key) {
+                list($tanggal, $kebiasaan) = explode('::', $key, 2);
+                $waktu = Carbon::createFromFormat(
+                    "Y-m-d H:i:s",
+                    $tanggal . " " . $now->format("H:i:s"),
+                    "Asia/Jakarta"
+                );
+                $dataToCreate[] = [
+                    "rombel_id" => $rombelId,
+                    "siswa_id" => $siswaId,
+                    "semester" => $semester,
+                    "kebiasaan" => $kebiasaan,
+                    "waktu" => $waktu->toDateTimeString(),
+                    "is_done" => true,
+                    "keterangan" => $request->keterangan,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ];
+            }
+
+            // 6. Perform insertion
+            if (!empty($dataToCreate)) {
                 Kaih::insert($dataToCreate);
             }
 
+            DB::commit();
 
             return back()->with(
                 "message",
-                "Rekap KAIH " . $request->siswaId . " disimpan."
+                "Rekap KAIH " . $siswaId . " disimpan."
             );
-        } catch (\THrowable $th) {
-            dd($th);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
     }
 }

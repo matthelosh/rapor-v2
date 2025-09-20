@@ -111,19 +111,27 @@ const kirim = async () => {
 };
 
 const onFileSiswaChange = async (e) => {
+    // console.log(e.target.files[0])
     const file = e.target.files[0];
     const ab = await file.arrayBuffer();
     const wb = read(ab);
     const ws = wb.Sheets[wb.SheetNames[0]];
-    utils.sheet_to_json(ws).forEach((siswa) => {
-        nonMembers.value.forEach((nm) => {
-            if (siswa.nisn == nm.nisn) {
-                members.value.push(nm)
-                // selectionNonMember([nm])
-                selectedNonMembers.value.push(nm);
-            }
-        });
+    let test = []
+    await utils.sheet_to_json(ws).forEach((siswa) => {
+        // nonMembers.value.forEach((nm) => {
+        //     if (siswa.nisn == nm.nisn) {
+        //         members.value.push(nm)
+        //         // selectionNonMember([nm])
+        //         tes.push(nm);
+        //     }
+        // });
+        // selectionNonMember
+        selectedNonMembers.value.push(siswa)
+        members.value.push(siswa)
+        selectionNonMember([siswa])
     });
+
+    console.log(members.value, selectedNonMembers.value)
 };
 
 const otherRombels = ref([]);
@@ -301,7 +309,7 @@ onMounted(() => {
                                     :data="filteredNonMembers"
                                     @selection-change="selectionNonMember"
                                     height="65vh"
-                                    
+
                                 >
                                     <el-table-column
                                         type="selection"

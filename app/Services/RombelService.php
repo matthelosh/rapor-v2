@@ -126,7 +126,9 @@ class RombelService
             // dd($siswas);
             $rombel = Rombel::findOrFail($id);
             foreach ($siswas as $siswa) {
-                $rombel->siswas()->attach($siswa["id"]);
+                $sis = \App\Models\Siswa::where('nisn', $siswa["nisn"])->first();
+                // dd($siswa)
+                $rombel->siswas()->attach($sis->id);
             }
             return true;
         } catch (\Exception $e) {
