@@ -63,6 +63,38 @@ const jmlSiswas = computed(() => {
     });
     return jml;
 });
+
+const byGender = computed(() => {
+    let res = {
+        total: { lk: 0, pr: 0 },
+        rombels: [
+            // {label: '', lk: 0, pr: 0, total: 0}
+        ]
+    };
+    data.value.sekolah.rombels.forEach((rombel) => {
+        rombel.siswas.forEach((siswa) => {
+            if (siswa.jk == 'Laki-laki') {
+                res.total.lk++;
+            } else {
+                res.total.pr++;
+            }
+        })
+        res.rombels.push({label: rombel.tingkat + (rombel.pararel != '0' ? rombel.pararel.toUpperCase() : ''), lk: rombel.siswas.filter((siswa) => siswa.jk == 'Laki-laki').length, pr: rombel.siswas.filter((siswa) => siswa.jk == 'Perempuan').length, total: rombel.siswas.length})
+    });
+    return res;
+})
+
+const maxSiswaInRombel = computed(() => {
+    if (!data.value.sekolah.rombels || data.value.sekolah.rombels.length === 0) return 0;
+    return Math.max(...data.value.sekolah.rombels.map(r => r.siswas.length));
+});
+
+const maxSiswaInAgama = computed(() => {
+    if (!agamas.value || agamas.value.length === 0) return 0;
+    const counts = agamas.value.map(a => jmlAgama(a));
+    return Math.max(...counts);
+});
+
 const bgBars = ref([
     "#0cb2af",
     "#a1c65d",
@@ -77,58 +109,106 @@ const bgBars = ref([
     <div>
         <el-row :gutter="24">
             <el-col :span="8" :xs="24">
-                <el-card title="Data Siswa tiap Rombel">
-                    <div
-                        class="bars flex items-end gap-2 sm:gap-4 justify-center"
-                    >
-                        <template
-                            v-for="(rombel, r) in data.sekolah.rombels"
-                            :key="r"
-                        >
-                            <div
-                                class="w-14 p-2 text-center relative flex flex-col rounded"
-                                :style="`background: ${bgBars[r]};min-height: 50px!important; height: ${(rombel.siswas.length / jmlSiswas) * 100 * 8}px;`"
-                            >
-                                <span class="bg-white rounded shadow">{{
-                                    rombel.siswas.length
-                                }}</span>
-                                <span
-                                    class="w-full vertical-lr font-bold text-white drop-shadow"
-                                >
-                                    {{ rombel.label }}
+                <el-card>
+                    <template #header>
+                        <h3 class="font-bold text-slate-700">Siswa per Rombel</h3>
+                    </template>
+                    <div class="h-[220px] flex items-end justify-around gap-2 text-center">
+                        <template v-for="(rombel, r) in data.sekolah.rombels" :key="r">
+                            <div class="w-14">
+                                <span class="text-sm font-bold text-slate-600">{{ rombel.siswas.length }}</span>
+                                <div
+                                    class="w-10 mx-auto rounded-t-md mt-1"
+                                    :style="{
+                                        background: bgBars[r % bgBars.length],
+                                        height: maxSiswaInRombel > 0 ? (rombel.siswas.length / maxSiswaInRombel * 180) + 'px' : '0px'
+                                    }"
+                                ></div>
+                                <span class="text-xs font-medium text-slate-500 mt-1 w-full font-bold truncate">
+                                    {{ rombel.tingkat }} {{ rombel.pararel != '0' ? rombel.pararel.toUpperCase() : '' }}
                                 </span>
                             </div>
                         </template>
                     </div>
-                    <h3 class="text-center font-bold mt-2 text-sky-700">
-                        Data Siswa tiap Rombel
-                    </h3>
                 </el-card>
             </el-col>
-            <el-col :span="10" :xs="24">
-                <el-card title="Data Siswa tiap Rombel">
-                    <div
-                        class="bars flex items-end gap-2 sm:gap-4 justify-center"
-                    >
+            <el-col :span="6" :xs="24">
+                <el-card>
+                    <template #header>
+                        <h3 class="font-bold text-slate-700">Siswa per Agama</h3>
+                    </template>
+                    <div class="h-[220px] flex items-end justify-around gap-2 text-center">
                         <template v-for="(agama, a) in agamas" :key="a">
-                            <div
-                                class="w-12 sm:w-18 p-2 text-center relative flex flex-col rounded"
-                                :style="`min-height: 60px;height: ${jmlAgama(agama)}px; background: ${colorAgama[a]};`"
-                            >
-                                <span class="bg-white rounded shadow">{{
-                                    jmlAgama(agama)
-                                }}</span>
-                                <span
-                                    class="w-full vertical-lr font-bold text-white drop-shadow"
-                                >
+                            <div v-if="jmlAgama(agama) > 0" class="w-14">
+                                <span class="text-sm font-bold text-slate-600">{{ jmlAgama(agama) }}</span>
+                                <div
+                                    class="w-10 mx-auto rounded-t-md mt-1"
+                                    :style="{
+                                        background: colorAgama[a % colorAgama.length],
+                                        height: maxSiswaInAgama > 0 ? (jmlAgama(agama) / maxSiswaInAgama * 180) + 'px' : '0px'
+                                    }"
+                                ></div>
+                                <span class="text-xs font-medium text-slate-500 mt-1 w-full truncate">
                                     {{ agama }}
                                 </span>
                             </div>
                         </template>
                     </div>
-                    <h3 class="text-center font-bold mt-2 text-sky-700">
-                        Data Siswa Berdasarkan Agama
-                    </h3>
+                </el-card>
+            </el-col>
+            <el-col :span="10" :xs="24">
+                <el-card title="Data siswa berdasarkan jenis kelamin">
+                    <h3>Data siswa berdasarkan jenis kelamin</h3>
+                    <div class="grid grid-cols-12 h-[240px] gap-4">
+                        <!-- Bar charts for each class -->
+                        <div class="col-span-8 grid  gap-x-4 gap-y-2 items-end" :class="`grid-cols-${byGender.rombels.length}`">
+                            <template v-for="(rombel, r) in byGender.rombels" :key="r">
+                                <div class="flex flex-col items-center text-center w-full">
+                                    <div v-if="rombel.total > 0" class="w-full h-[180px] bg-slate-200 rounded-md flex flex-col bar-rombel overflow-hidden">
+                                        <div
+                                            class="bg-purple-500 bar-pr flex justify-center items-center text-white  font-bold"
+                                            :style="{ height: (rombel.pr / rombel.total * 100) + '%' }"
+                                        >
+                                            <span v-if="(rombel.pr / rombel.total * 100) > 15">{{ rombel.pr }}</span>
+                                        </div>
+                                        <div
+                                            class="bg-teal-500 bar-lk flex justify-center items-center text-white  font-bold"
+                                            :style="{ height: (rombel.lk / rombel.total * 100) + '%' }"
+                                        >
+                                            <span v-if="(rombel.lk / rombel.total * 100) > 15">{{ rombel.lk }}</span>
+                                        </div>
+                                    </div>
+                                    <!-- Placeholder for empty class -->
+                                    <div v-else class="w-full h-[180px] bg-slate-200 rounded-md flex justify-center items-center">
+                                        <span class="text-slate-400 text-xs">0</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-slate-600 mt-1 w-full truncate">{{ rombel.label }}</span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Total/Summary Box -->
+                        <div class="col-span-4 total-by-gender flex flex-col justify-center p-4 bg-slate-50 rounded-lg">
+                            <h4 class="font-bold text-slate-700 mb-4 text-center">Total Siswa</h4>
+                            <div class="flex justify-around w-full">
+                                <div class="text-center">
+                                    <Icon icon="mdi:gender-male" class="text-teal-500 text-4xl mx-auto" />
+                                    <div class="font-bold text-2xl text-slate-800">{{ byGender.total.lk }}</div>
+                                    <div class="text-sm text-slate-500">Laki-laki</div>
+                                </div>
+                                <div class="text-center">
+                                    <Icon icon="mdi:gender-female" class="text-purple-500 text-4xl mx-auto" />
+                                    <div class="font-bold text-2xl text-slate-800">{{ byGender.total.pr }}</div>
+                                    <div class="text-sm text-slate-500">Perempuan</div>
+                                </div>
+                            </div>
+                            <div v-if="(byGender.total.lk + byGender.total.pr) > 0" class="w-full bg-slate-200 rounded-full h-2.5 mt-4 flex">
+                                <div class="bg-teal-500 h-2.5 rounded-l-full" :style="{ width: (byGender.total.lk / (byGender.total.lk + byGender.total.pr) * 100) + '%' }"></div>
+                                <div class="bg-purple-500 h-2.5 rounded-r-full" :style="{ width: (byGender.total.pr / (byGender.total.lk + byGender.total.pr) * 100) + '%' }"></div>
+                            </div>
+                            <h1 class="font-bold text-4xl text-slate-700 mt-4 text-center">{{ jmlSiswas }}</h1>
+                        </div>
+                    </div>
                 </el-card>
             </el-col>
         </el-row>
