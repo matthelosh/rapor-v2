@@ -117,6 +117,10 @@ Route::middleware(["auth:api", "role:guru_kelas|guru_agama|guru_pjok|guru_inggri
         );
 
         Route::get('/harian', [PresensiController::class, 'harian'])->name('api.presensi.harian');
+
+        Route::post('/rekap-presensi-siswa', [PresensiController::class, 'rekapPresensiSiswa'])->name('api.presensi.rekap-presensi-siswa');
+
+        Route::post('/rekap-bulan', [PresensiController::class, 'rekapBulan'])->name('api.presensi.rekap-bulan');
     });
 
 // Jurnal Mengajar

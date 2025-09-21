@@ -150,4 +150,228 @@ class PresensiController extends Controller
         return $rekaps;
     }
 
+    public function rekapPresensiSiswa(Request $request)
+    {
+        try {
+            $request->validate([
+                'rombel_id' => 'required|string',
+                'tapel' => 'required|string',
+                'semester' => 'required|string',
+                'bulan' => 'nullable|integer|min:1|max:12',
+                'tahun' => 'nullable|integer|min:2020|max:2030',
+            ]);
+
+            $user = $request->user();
+            $guru = $user->userable;
+            $rombel_id = $request->rombel_id;
+            $tapel = $request->tapel;
+            $semester = $request->semester;
+            $bulan = $request->bulan;
+            $tahun = $request->tahun;
+            $userRole = $user->getRoleNames()->first();
+
+            // Get students from the rombel
+            $rombel = \App\Models\Rombel::with(['siswas:id,nisn,nama'])
+                    ->where('kode', $rombel_id)
+                    ->first();
+
+            if (!$rombel) {
+                return response()->json([
+                    'error' => 'Rombel tidak ditemukan',
+                    'debug' => ['rombel_id_searched' => $rombel_id]
+                ], 404);
+            }
+
+            $siswas = $rombel->siswas;
+            $result = [];
+
+            foreach ($siswas as $siswa) {
+                // Start with basic query
+                $query = Presensi::where('siswa_id', $siswa->nisn)
+                    ->where('rombel_id', $rombel_id);
+
+                // Apply tapel and semester filtering
+                if ($tapel) {
+                    // Handle tapel conversion: "2025/2026" -> "2526"
+                    $convertedTapel = $tapel;
+                    if ($tapel === '2025/2026') {
+                        $convertedTapel = '2526';
+                    }
+                    // Add more conversions if needed
+                    // else if ($tapel === '2024/2025') {
+                    //     $convertedTapel = '2425';
+                    // }
+
+                    $query->where(function($q) use ($tapel, $convertedTapel) {
+                        $q->where('tapel', $tapel)
+                          ->orWhere('tapel', $convertedTapel);
+                    });
+                }
+                if ($semester) {
+                    $query->where('semester', $semester);
+                }
+
+                // Filter by role
+                if ($user->hasRole('guru_kelas')) {
+                    $query->where('guru_id', $guru->nip);
+                } else {
+                    $role = $user->getRoleNames()->first();
+                    $mapel_id = ($role === 'guru_agama' ? 'pabp' : ($role === 'guru_pjok' ? 'pjok' : 'inggris'));
+                    $query->where('mapel_id', $mapel_id);
+                }
+
+                // Filter by bulan if provided
+                if ($bulan) {
+                    $query->whereMonth('created_at', $bulan);
+                }
+
+                // Filter by tahun if provided
+                if ($tahun) {
+                    $query->whereYear('created_at', $tahun);
+                }
+
+                $presensis = $query->get();
+
+                $hadir = $presensis->where('status', 'h')->count();
+                $sakit = $presensis->where('status', 's')->count();
+                $izin = $presensis->where('status', 'i')->count();
+                $alpa = $presensis->where('status', 'a')->count();
+
+                $result[] = [
+                    'nisn' => $siswa->nisn,
+                    'nama' => $siswa->nama,
+                    'rombel' => $rombel->label,
+                    'hadir' => $hadir,
+                    'sakit' => $sakit,
+                    'izin' => $izin,
+                    'alpa' => $alpa,
+                ];
+            }
+
+            return response()->json([
+                'data' => $result,
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'trace' => $th->getTraceAsString()
+            ], 500);
+        }
+    }
+
+    public function rekapBulan(Request $request)
+    {
+        try {
+            $request->validate([
+                'rombel_id' => 'required|string',
+                'tapel' => 'required|string',
+                'semester' => 'required|string',
+                'bulan' => 'required|integer|min:1|max:12',
+                'tahun' => 'required|integer|min:2020|max:2030',
+            ]);
+
+            $user = $request->user();
+            $guru = $user->userable;
+            $rombel_id = $request->rombel_id;
+            $tapel = $request->tapel;
+            $semester = $request->semester;
+            $bulan = $request->bulan;
+            $tahun = $request->tahun;
+
+            // Get students from the rombel
+            $rombel = \App\Models\Rombel::with(['siswas:id,nisn,nama'])
+                    ->where('kode', $rombel_id)
+                    ->first();
+
+            if (!$rombel) {
+                return response()->json([
+                    'error' => 'Rombel tidak ditemukan',
+                ], 404);
+            }
+
+            $siswas = $rombel->siswas;
+            $result = [];
+
+            foreach ($siswas as $siswa) {
+                $query = Presensi::where('siswa_id', $siswa->nisn)
+                    ->where('rombel_id', $rombel_id)
+                    ->where('semester', $semester)
+                    ->whereMonth('created_at', $bulan)
+                    ->whereYear('created_at', $tahun);
+
+                // Handle tapel conversion: "2025/2026" -> "2526"
+                if ($tapel) {
+                    $convertedTapel = $tapel;
+                    if ($tapel === '2025/2026') {
+                        $convertedTapel = '2526';
+                    }
+
+                    $query->where(function($q) use ($tapel, $convertedTapel) {
+                        $q->where('tapel', $tapel)
+                          ->orWhere('tapel', $convertedTapel);
+                    });
+                }
+
+                // Filter by role
+                if ($user->hasRole('guru_kelas')) {
+                    $query->where('guru_id', $guru->nip);
+                } else {
+                    $role = $user->getRoleNames()->first();
+                    $mapel_id = ($role === 'guru_agama' ? 'pabp' : ($role === 'guru_pjok' ? 'pjok' : 'inggris'));
+                    $query->where('mapel_id', $mapel_id);
+                }
+
+                $presensis = $query->get();
+
+                // Create daily status array
+                $dailyStatus = [];
+                $jml_h = 0;
+                $jml_s = 0;
+                $jml_i = 0;
+                $jml_a = 0;
+
+                foreach ($presensis as $presensi) {
+                    $tanggal = date('d', strtotime($presensi->created_at));
+                    $dailyStatus[$tanggal] = $presensi->status;
+
+                    switch ($presensi->status) {
+                        case 'h':
+                            $jml_h++;
+                            break;
+                        case 's':
+                            $jml_s++;
+                            break;
+                        case 'i':
+                            $jml_i++;
+                            break;
+                        case 'a':
+                            $jml_a++;
+                            break;
+                    }
+                }
+
+                $result[] = [
+                    'nisn' => $siswa->nisn,
+                    'nama' => $siswa->nama,
+                    'rombel' => $rombel->label,
+                    'daily_status' => $dailyStatus,
+                    'jml_h' => $jml_h,
+                    'jml_s' => $jml_s,
+                    'jml_i' => $jml_i,
+                    'jml_a' => $jml_a,
+                ];
+            }
+
+            return response()->json([
+                'data' => $result,
+            ]);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 500);
+        }
+    }
+
 }
