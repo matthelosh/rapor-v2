@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
-Route::domain('{subdomain}.pkgwagir.test')->group(function () {
-    Route::get('/{any?}', function ($subdomain, $any = '') {
+Route::domain("{subdomain}.pkgwagir.test")->group(function () {
+    Route::get("/{any?}", function ($subdomain, $any = "") {
         // Ganti 5173 dengan port Vite Anda jika perlu
-        $viteUrl = 'http://localhost:5173/' . $any;
+        $viteUrl = "http://localhost:5173/" . $any;
 
         try {
             // Mengambil konten dari server Vite
@@ -20,16 +20,17 @@ Route::domain('{subdomain}.pkgwagir.test')->group(function () {
             return response(
                 $response->body(),
                 $response->status(),
-                $response->headers()
+                $response->headers(),
             );
-
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            $message = "Server pengembangan Vite di http://localhost:5173 tidak dapat dijangkau. Pastikan server sudah berjalan dengan `npm run dev`.";
-            return response($message, 503)
-                   ->header('Content-Type', 'text/plain');
+            $message =
+                "Server pengembangan Vite di http://localhost:5173 tidak dapat dijangkau. Pastikan server sudah berjalan dengan `npm run dev`.";
+            return response($message, 503)->header(
+                "Content-Type",
+                "text/plain",
+            );
         }
-
-    })->where('any', '.*');
+    })->where("any", ".*");
 });
 
 Route::prefix("")->group(function () {
@@ -40,22 +41,22 @@ Route::prefix("")->group(function () {
         dd(Storage::disk("s3")->allFiles());
     });
     Route::get("/baca/{slug}", [PostController::class, "read"])->name(
-        "home.post.read"
+        "home.post.read",
     );
 
     Route::get("/cari", [FrontController::class, "cari"])->name(
-        "front.post.search"
+        "front.post.search",
     );
 
     Route::get("/berita", [FrontController::class, "berita"])->name(
-        "front.berita"
+        "front.berita",
     );
     Route::get("/info", [FrontController::class, "info"])->name("front.info");
     Route::get("/galeri", [FrontController::class, "galeri"])->name(
-        "front.galeri"
+        "front.galeri",
     );
     Route::get("/agenda", [FrontController::class, "agenda"])->name(
-        "front.agenda"
+        "front.agenda",
     );
     Route::get("/agenda/{id}/daftar", [
         AgendaController::class,
@@ -69,10 +70,10 @@ Route::prefix("")->group(function () {
 
     Route::prefix("sertifikat")->group(function () {
         Route::get("/", [SertifikatController::class, "home"])->name(
-            "sertifikat.front"
+            "sertifikat.front",
         );
         Route::get("/cetak", [SertifikatController::class, "cetak"])->name(
-            "sertifikat.cetak"
+            "sertifikat.cetak",
         );
         Route::get("/verifikasi", [
             SertifikatController::class,
@@ -98,20 +99,20 @@ Route::prefix("")->group(function () {
     // Captcha
     Route::prefix("/captcha")->group(function () {
         Route::get("/new", [CaptchaController::class, "new"])->name(
-            "captcha.new"
+            "captcha.new",
         );
     });
 });
 
 Route::middleware("auth")->group(function () {
     Route::get("/profile", [ProfileController::class, "edit"])->name(
-        "profile.edit"
+        "profile.edit",
     );
     Route::patch("/profile", [ProfileController::class, "update"])->name(
-        "profile.update"
+        "profile.update",
     );
     Route::delete("/profile", [ProfileController::class, "destroy"])->name(
-        "profile.destroy"
+        "profile.destroy",
     );
 
     Route::get("/userdetail", function (Request $request) {
@@ -128,8 +129,57 @@ Route::middleware("auth")->group(function () {
             ->prefix("bukuinduk")
             ->group(function () {
                 Route::get("/", [BukuindukController::class, "home"])->name(
-                    "dashboard.bukuinduk.home"
+                    "dashboard.bukuinduk.home",
                 );
+                Route::get("/create", [
+                    BukuindukController::class,
+                    "create",
+                ])->name("dashboard.bukuinduk.create");
+                Route::post("/", [BukuindukController::class, "store"])->name(
+                    "dashboard.bukuinduk.store",
+                );
+
+                // Generate Routes
+                Route::get("/generate", [
+                    BukuindukController::class,
+                    "generateIndex",
+                ])->name("dashboard.bukuinduk.generate");
+                Route::post("/generate/bulk", [
+                    BukuindukController::class,
+                    "generateBulk",
+                ])->name("dashboard.bukuinduk.generate-bulk");
+                Route::post("/generate/single/{siswa_nisn}", [
+                    BukuindukController::class,
+                    "generateSingle",
+                ])->name("dashboard.bukuinduk.generate-single");
+                Route::get("/generate/preview", [
+                    BukuindukController::class,
+                    "getPreview",
+                ])->name("dashboard.bukuinduk.preview");
+
+                Route::get("/{id}", [BukuindukController::class, "show"])->name(
+                    "dashboard.bukuinduk.show",
+                );
+                Route::get("/{id}/edit", [
+                    BukuindukController::class,
+                    "edit",
+                ])->name("dashboard.bukuinduk.edit");
+                Route::put("/{id}", [
+                    BukuindukController::class,
+                    "update",
+                ])->name("dashboard.bukuinduk.update");
+                Route::delete("/{id}", [
+                    BukuindukController::class,
+                    "destroy",
+                ])->name("dashboard.bukuinduk.destroy");
+                Route::get("/print/all", [
+                    BukuindukController::class,
+                    "print",
+                ])->name("dashboard.bukuinduk.print");
+                Route::post("/export", [
+                    BukuindukController::class,
+                    "export",
+                ])->name("dashboard.bukuinduk.export");
             });
         Route::get("/", [DashboardController::class, "index"])
             ->middleware(["auth", "verified"])
@@ -137,13 +187,13 @@ Route::middleware("auth")->group(function () {
         // Gugus
         Route::prefix("gugus")->group(function () {
             Route::get("/", [GugusController::class, "home"])->name(
-                "dashboard.gugus"
+                "dashboard.gugus",
             );
             Route::post("/store", [GugusController::class, "store"])->name(
-                "dashboard.gugus.store"
+                "dashboard.gugus.store",
             );
             Route::delete("/{id}", [GugusController::class, "destroy"])->name(
-                "dashboard.gugus.destroy"
+                "dashboard.gugus.destroy",
             );
         });
 
@@ -157,16 +207,16 @@ Route::middleware("auth")->group(function () {
                 ->middleware(["role:admin|ops|superadmin"])
                 ->name("dashboard.sekolah");
             Route::post("/index", [SekolahController::class, "index"])->name(
-                "dashboard.sekolah.index"
+                "dashboard.sekolah.index",
             );
             Route::post("/", [SekolahController::class, "store"])->name(
-                "dashboard.sekolah.store"
+                "dashboard.sekolah.store",
             );
             Route::put("/", [SekolahController::class, "update"])
                 ->middleware(["role:admin|ops"])
                 ->name("dashboard.sekolah.update");
             Route::post("/impor", [SekolahController::class, "impor"])->name(
-                "dashboard.sekolah.impor"
+                "dashboard.sekolah.impor",
             );
             Route::delete("/{id}", [SekolahController::class, "destroy"])
                 ->middleware(["role:admin"])
@@ -184,13 +234,13 @@ Route::middleware("auth")->group(function () {
                 ->name("dashboard.guru.store")
                 ->middleware(["role:admin|ops"]);
             Route::post("/get", [GuruController::class, "show"])->name(
-                "dashboard.guru.show"
+                "dashboard.guru.show",
             );
             Route::put("/", [GuruController::class, "update"])->name(
-                "dashboard.guru.update"
+                "dashboard.guru.update",
             );
             Route::post("/impor", [GuruController::class, "impor"])->name(
-                "dashboard.guru.impor"
+                "dashboard.guru.impor",
             );
             Route::post("/account/add", [GuruController::class, "addAccount"])
                 ->name("dashboard.guru.account.add")
@@ -205,7 +255,7 @@ Route::middleware("auth")->group(function () {
                 ->name("dashboard.siswa")
                 ->middleware("can:read_siswa");
             Route::post("/", [SiswaController::class, "store"])->name(
-                "dashboard.siswa.store"
+                "dashboard.siswa.store",
             );
 
             Route::post("/account/add", [
@@ -221,22 +271,27 @@ Route::middleware("auth")->group(function () {
                 "nonMember",
             ])->name("dashboard.siswa.nonmember");
             Route::put("/", [SiswaController::class, "update"])->name(
-                "dashboard.siswa.update"
+                "dashboard.siswa.update",
             );
             Route::post("/impor", [SiswaController::class, "impor"])->name(
-                "dashboard.siswa.impor"
+                "dashboard.siswa.impor",
             );
-            Route::post('/lulus', [SiswaController::class, 'luluskan'])->name('dashboard.siswa.lulus');
-            Route::post("/cari/{nisn}", [SiswaController::class, 'cariSiswa'])->name('dashboard.siswa.cari');
+            Route::post("/lulus", [SiswaController::class, "luluskan"])->name(
+                "dashboard.siswa.lulus",
+            );
+            Route::post("/cari/{nisn}", [
+                SiswaController::class,
+                "cariSiswa",
+            ])->name("dashboard.siswa.cari");
             Route::delete("/{id}", [SiswaController::class, "destroy"])->name(
-                "dashboard.siswa.destroy"
+                "dashboard.siswa.destroy",
             );
             Route::prefix("ortu")->group(function () {
                 Route::post("/", [OrtuController::class, "store"])->name(
-                    "dashboard.siswa.ortu.store"
+                    "dashboard.siswa.ortu.store",
                 );
                 Route::post("/impor", [OrtuController::class, "impor"])->name(
-                    "dashboard.siswa.ortu.impor"
+                    "dashboard.siswa.ortu.impor",
                 );
                 Route::get("/pekerjaan", [
                     OrtuController::class,
@@ -255,10 +310,10 @@ Route::middleware("auth")->group(function () {
                 ->name("dashboard.rombel")
                 ->middleware("can:read_rombel");
             Route::get("/index", [RombelController::class, "index"])->name(
-                "dashboard.rombel.index"
+                "dashboard.rombel.index",
             );
             Route::post("/", [RombelController::class, "store"])->name(
-                "dashboard.rombel.store"
+                "dashboard.rombel.store",
             );
             Route::get("/{kode}/{tingkat}", [
                 RombelController::class,
@@ -273,28 +328,31 @@ Route::middleware("auth")->group(function () {
                 "detachMember",
             ])->name("dashboard.rombel.member.detach");
             Route::put("/", [RombelController::class, "update"])->name(
-                "dashboard.rombel.update"
+                "dashboard.rombel.update",
             );
             Route::delete("/{id}", [RombelController::class, "destroy"])->name(
-                "dashboard.rombel.destroy"
+                "dashboard.rombel.destroy",
             );
 
             Route::prefix("kktp")->group(function () {
                 Route::post("/store", [KktpController::class, "store"])->name(
-                    "dashboard.rombel.kktp.store"
+                    "dashboard.rombel.kktp.store",
                 );
             });
         });
 
         Route::prefix("pembelajaran")->group(function () {
             Route::get("/", [PembelajaranController::class, "home"])->name(
-                "dashboard.pembelajaran"
+                "dashboard.pembelajaran",
             );
             Route::post("/elemen/impor", [
                 ElemenController::class,
                 "impor",
             ])->name("dashboard.pembelajaran.elemen.impor");
-            Route::post('/mapel/store', [MapelController::class, 'store'])->name('dashboard.mapel.store');
+            Route::post("/mapel/store", [
+                MapelController::class,
+                "store",
+            ])->name("dashboard.mapel.store");
             Route::post("/mapel/assign", [
                 PembelajaranController::class,
                 "assignMapel",
@@ -303,25 +361,28 @@ Route::middleware("auth")->group(function () {
                 PembelajaranController::class,
                 "imporMapel",
             ])->name("dashboard.pembelajaran.mapel.impor");
-            Route::delete('/mapel/{id}', [MapelController::class, 'destroy'])->name('dashboard.mapel.destroy');
+            Route::delete("/mapel/{id}", [
+                MapelController::class,
+                "destroy",
+            ])->name("dashboard.mapel.destroy");
             Route::prefix("cp")->group(function () {
                 Route::post("/store", [CpController::class, "store"])->name(
-                    "dashboard.cp.store"
+                    "dashboard.cp.store",
                 );
             });
 
             Route::prefix("tp")->group(function () {
                 Route::post("/", [TpController::class, "index"])->name(
-                    "dashboard.pembelajaran.tp.index"
+                    "dashboard.pembelajaran.tp.index",
                 );
                 Route::post("/impor", [TpController::class, "impor"])->name(
-                    "dashboard.pembelajaran.tp.impor"
+                    "dashboard.pembelajaran.tp.impor",
                 );
                 Route::post("/store", [TpController::class, "store"])->name(
-                    "dashboard.pembelajaran.tp.store"
+                    "dashboard.pembelajaran.tp.store",
                 );
                 Route::delete("/{id}", [TpController::class, "destroy"])->name(
-                    "dashboard.pembelajaran.tp.destroy"
+                    "dashboard.pembelajaran.tp.destroy",
                 );
             });
 
@@ -330,8 +391,14 @@ Route::middleware("auth")->group(function () {
                     PembelajaranController::class,
                     "indexEkskul",
                 ])->name("dashboard.pembelajaran.ekskul");
-                Route::post('/store', [PembelajaranController::class, 'storeEkskul'])->name('dashboard.pembelajaran.ekskul.store');
-                Route::delete('/{id}', [PembelajaranController::class, 'destroyEkskul'])->name('dashboard.pembelajaran.ekskul.destroy');
+                Route::post("/store", [
+                    PembelajaranController::class,
+                    "storeEkskul",
+                ])->name("dashboard.pembelajaran.ekskul.store");
+                Route::delete("/{id}", [
+                    PembelajaranController::class,
+                    "destroyEkskul",
+                ])->name("dashboard.pembelajaran.ekskul.destroy");
                 Route::post("/impor", [
                     PembelajaranController::class,
                     "imporEkskul",
@@ -345,16 +412,16 @@ Route::middleware("auth")->group(function () {
 
         Route::prefix("post")->group(function () {
             Route::get("/", [PostController::class, "home"])->name(
-                "dashboard.post.home"
+                "dashboard.post.home",
             );
             Route::post("/store", [PostController::class, "store"])->name(
-                "dashboard.post.store"
+                "dashboard.post.store",
             );
             Route::put("/{id}", [PostController::class, "update"])->name(
-                "dashboard.post.update"
+                "dashboard.post.update",
             );
             Route::delete("/{id}", [PostController::class, "destroy"])->name(
-                "dashboard.post.destroy"
+                "dashboard.post.destroy",
             );
             Route::post("/image/upload", [
                 PostController::class,
@@ -410,7 +477,7 @@ Route::middleware("auth")->group(function () {
         Route::prefix("analisis")
             ->group(function () {
                 Route::get("/", [AnalisisController::class, "home"])->name(
-                    "dashboard.analisis.home"
+                    "dashboard.analisis.home",
                 );
                 Route::post("/store", [
                     AnalisisController::class,
@@ -438,7 +505,7 @@ Route::middleware("auth")->group(function () {
                 ->middleware("can:add_soal")
                 ->name("dashboard.soal.store");
             Route::delete("/{id}", [SoalController::class, "destroy"])->name(
-                "dashboard.soal.destroy"
+                "dashboard.soal.destroy",
             );
         });
 
@@ -461,7 +528,7 @@ Route::middleware("auth")->group(function () {
 
             Route::prefix("ekskul")->group(function () {
                 Route::get("/", [NilaiEkskulController::class, "index"])->name(
-                    "dashboard.nilai.ekskul.index"
+                    "dashboard.nilai.ekskul.index",
                 );
                 Route::post("/store", [
                     NilaiEkskulController::class,
@@ -475,7 +542,7 @@ Route::middleware("auth")->group(function () {
 
             Route::prefix("absen")->group(function () {
                 Route::get("/", [AbsensiController::class, "index"])->name(
-                    "dashboard.nilai.absen.index"
+                    "dashboard.nilai.absen.index",
                 );
                 Route::post("/store", [
                     AbsensiController::class,
@@ -484,7 +551,7 @@ Route::middleware("auth")->group(function () {
             });
             Route::prefix("catatan")->group(function () {
                 Route::get("/", [CatatanController::class, "index"])->name(
-                    "dashboard.nilai.catatan.index"
+                    "dashboard.nilai.catatan.index",
                 );
                 Route::post("/store", [
                     CatatanController::class,
@@ -492,7 +559,7 @@ Route::middleware("auth")->group(function () {
                 ])->name("dashboard.nilai.catatan.store");
             });
 
-            Route::post('/{rombelId}/{mapelId}/{jenis}', [
+            Route::post("/{rombelId}/{mapelId}/{jenis}", [
                 NilaiController::class,
                 "bulkDelete",
             ])->name("dashboard.nilai.hapus.bulk");
@@ -527,7 +594,7 @@ Route::middleware("auth")->group(function () {
                 ->middleware(["role:guru_kelas|ops"]);
             Route::prefix("tanggal")->group(function () {
                 Route::get("/", [RaporController::class, "tanggal"])->name(
-                    "dashboard.rapor.tanggal"
+                    "dashboard.rapor.tanggal",
                 );
                 Route::post("/store", [
                     RaporController::class,
@@ -547,17 +614,25 @@ Route::middleware("auth")->group(function () {
         });
         Route::prefix("arsip")->group(function () {
             Route::get("/rapor", [ArsipController::class, "homeRapor"])
-                    ->name("dashboard.rapor.arsip")
-                    ->middleware(["role:ops"]);
-            Route::prefix('ijazah')->group(function () {
-
+                ->name("dashboard.rapor.arsip")
+                ->middleware(["role:ops"]);
+            Route::prefix("ijazah")->group(function () {
                 Route::get("/", [ArsipController::class, "homeIjazah"])
-                        ->name("dashboard.arsip.ijazah")
-                        ->middleware(["role:ops"]);
+                    ->name("dashboard.arsip.ijazah")
+                    ->middleware(["role:ops"]);
 
-                Route::post('/store', [ArsipController::class, 'storeIjazah'])->name('dashboard.arsip.ijazah.store');
-                Route::put('/{id}', [ArsipController::class, 'updateIjazah'])->name('dashboard.arsip.ijazah.update');
-                Route::delete('/{id}', [ArsipController::class, 'destroyIjazah'])->name('dashboard.arsip.ijazah.destroy');
+                Route::post("/store", [
+                    ArsipController::class,
+                    "storeIjazah",
+                ])->name("dashboard.arsip.ijazah.store");
+                Route::put("/{id}", [
+                    ArsipController::class,
+                    "updateIjazah",
+                ])->name("dashboard.arsip.ijazah.update");
+                Route::delete("/{id}", [
+                    ArsipController::class,
+                    "destroyIjazah",
+                ])->name("dashboard.arsip.ijazah.destroy");
             });
         });
 
@@ -566,10 +641,10 @@ Route::middleware("auth")->group(function () {
             ->prefix("kaih")
             ->group(function () {
                 Route::get("/home", [KaihController::class, "home"])->name(
-                    "dashboard.kaih.home"
+                    "dashboard.kaih.home",
                 );
                 Route::get("/bulan", [KaihController::class, "perBulan"])->name(
-                    "dashboard.kaih.bulan"
+                    "dashboard.kaih.bulan",
                 );
                 Route::post("/rekap/input", [
                     KaihController::class,
@@ -583,7 +658,7 @@ Route::middleware("auth")->group(function () {
 
         Route::prefix("roles")->group(function () {
             Route::get("/", [RoleController::class, "home"])->name(
-                "dashboard.role"
+                "dashboard.role",
             );
             Route::post("/store", [RoleController::class, "store"])
                 ->name("dashboard.role.store")
@@ -598,10 +673,10 @@ Route::middleware("auth")->group(function () {
 
         Route::prefix("permissions")->group(function () {
             Route::get("/", [PermissionController::class, "home"])->name(
-                "dashboard.permission"
+                "dashboard.permission",
             );
             Route::post("/store", [PermissionController::class, "store"])->name(
-                "dashboard.permission.store"
+                "dashboard.permission.store",
             );
         });
 
@@ -621,7 +696,7 @@ Route::middleware("auth")->group(function () {
             ->prefix("periode")
             ->group(function () {
                 Route::get("/", [PeriodeController::class, "home"])->name(
-                    "dashboard.setting.periode"
+                    "dashboard.setting.periode",
                 );
                 Route::put("/tapel/{id}", [
                     PeriodeController::class,
@@ -673,11 +748,11 @@ Route::middleware("auth")->group(function () {
 
         Route::prefix("p5")->group(function () {
             Route::get("/", [P5Controller::class, "home"])->name(
-                "dashboard.p5"
+                "dashboard.p5",
             );
             Route::prefix("nilai")->group(function () {
                 Route::get("/", [P5Controller::class, "nilai"])->name(
-                    "dashboard.p5.nilai"
+                    "dashboard.p5.nilai",
                 );
                 Route::post("/index", [
                     P5Controller::class,
@@ -696,7 +771,7 @@ Route::middleware("auth")->group(function () {
             });
             Route::prefix("proyek")->group(function () {
                 Route::get("/", [P5Controller::class, "proyek"])->name(
-                    "dashboard.p5.proyek"
+                    "dashboard.p5.proyek",
                 );
                 Route::post("/store", [
                     P5Controller::class,
@@ -705,7 +780,7 @@ Route::middleware("auth")->group(function () {
             });
             Route::prefix("apd")->group(function () {
                 Route::post("/impor", [ApdController::class, "impor"])->name(
-                    "dashboard.apd.impor"
+                    "dashboard.apd.impor",
                 );
             });
         });
@@ -739,7 +814,7 @@ Route::middleware("auth")->group(function () {
             ->middleware("role:guru_agama")
             ->group(function () {
                 Route::get("/", [SpnController::class, "home"])->name(
-                    "dashboard.spn.home"
+                    "dashboard.spn.home",
                 );
 
                 Route::prefix("pretes")->group(function () {
@@ -768,10 +843,10 @@ Route::middleware("auth")->group(function () {
         // Organisasi
         Route::prefix("organisasi")->group(function () {
             Route::get("/", [OrgController::class, "home"])->name(
-                "dashboard.org"
+                "dashboard.org",
             );
             Route::get("/nonmember", [OrgController::class, "nonMember"])->name(
-                "dashboard.organisasi.nonmember"
+                "dashboard.organisasi.nonmember",
             );
             Route::post("/member/store", [
                 OrgController::class,
@@ -804,11 +879,11 @@ Route::middleware("auth")->group(function () {
             ]);
         });
 
-        Route::prefix('ledger')->group(function () {
-            Route::get('/piagam', [
+        Route::prefix("ledger")->group(function () {
+            Route::get("/piagam", [
                 CetakController::class,
-                'cetakPiagamRanking',
-            ])->name('cetak.ledger.piagam');
+                "cetakPiagamRanking",
+            ])->name("cetak.ledger.piagam");
         });
     });
 });

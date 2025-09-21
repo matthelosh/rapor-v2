@@ -94,7 +94,7 @@ class Rombel extends Model
             "rombel_id",
             "guru_id",
             "kode",
-            "nip"
+            "nip",
         )
             ->withPivot("status")
             ->wherePivot("status", "pengajar");
@@ -123,5 +123,10 @@ class Rombel extends Model
     public function kaihs()
     {
         return $this->hasMany(Kaih::class, "rombel_id", "kode");
+    }
+
+    public function tapel()
+    {
+        return $this->belongsTo(Tapel::class, "tapel", "kode");
     }
 }

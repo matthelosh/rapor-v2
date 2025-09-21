@@ -171,4 +171,9 @@ class Siswa extends Model
     {
         return $this->hasMany(Presensi::class, "siswa_id", "nisn");
     }
+
+    public function bukuInduk()
+    {
+        return $this->hasOne(BukuInduk::class, "siswa_id", "nisn");
+    }
 }

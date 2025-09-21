@@ -7,6 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [Commands\GenerateBukuIndukCommand::class];
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command("backup:run --only-db")->daily()->at("04:30");
