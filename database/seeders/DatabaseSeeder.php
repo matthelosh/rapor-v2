@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
                 Elemenp5Seeder::class,
                 ApdSeeder::class,
                 GaleriSeeder::class,
+                ApiClientSeeder::class,
                 // NilaiP5Seeder::class,
             ]
         );

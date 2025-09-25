@@ -20,7 +20,10 @@ class ClientController extends Controller
         $npsn = $request->query('npsn');
         try {
             return response()->json([
-                'rombels' => Rombel::where('sekolah_id', $npsn)->with('siswas')->get(),
+                'rombels' => Rombel::where('sekolah_id', $npsn)
+                            ->where('sekolah_id', $npsn)
+                            ->whereTapel(Periode::tapel()->kode)
+                            ->with('siswas', 'wali_kelas')->get(),
             ], 200);
         } catch (\Throwable $th) {
             throw $th;
