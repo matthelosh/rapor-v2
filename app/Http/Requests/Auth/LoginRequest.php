@@ -94,7 +94,7 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(
-            Str::lower($this->string("email")) . "|" . $this->ip()
+            Str::lower($this->string("name")) . "|" . $this->ip()
         );
     }
 

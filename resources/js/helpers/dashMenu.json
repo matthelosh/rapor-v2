@@ -339,6 +339,12 @@
                 "roles": ["superadmin", "admin", "ops"]
             },
             {
+                "label": "API Client",
+                "icon": "api",
+                "url": "/dashboard/api-client",
+                "roles": ["superadmin", "admin"]
+            },
+            {
                 "label": "Hak Akses",
                 "icon": "account-settings",
                 "url": "/dashboard/roles",

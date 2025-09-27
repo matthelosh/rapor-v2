@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
                 Elemenp5Seeder::class,
                 ApdSeeder::class,
                 GaleriSeeder::class,
-                ApiClientSeeder::class,
+                ApiClientSeeder::class, // Restored - Required for API authentication
                 // NilaiP5Seeder::class,
             ]
         );

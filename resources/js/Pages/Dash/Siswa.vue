@@ -394,6 +394,10 @@ const bulkAccount = () => {
 };
 
 const param = computed(() => route().params);
+
+const cetakKartuSiswa = () => {
+    window.open('/dashboard/kartupelajar/'+ page.props.sekolahs[0].npsn+'/cetak', '_blank', 'noopener,noreferrer' );
+}
 </script>
 <template>
     <Head title="Data Siswa" />
@@ -423,13 +427,19 @@ const param = computed(() => route().params);
                         <div
                             class="card-toolbar--items flex-grow flex items-center justify-end px-2"
                         >
+                            <el-button-group size="small" class="hidden-sm-and-down">
+                                <el-button type="primary" @click="cetakKartuSiswa" :native-type="null">
+                                    <Icon icon="mdi:card-account-details" class="mr-1" />
+                                    Cetak Kartu siswa
+                                </el-button>
+                            </el-button-group>
                             <el-button-group
-                                class="hidden-sm-and-down"
+                                class="hidden-sm-and-down ml-2"
                                 size="small"
                             >
                                 <el-button type="success" @click="unduhFormat">
                                     <Icon icon="mdi:file-excel" />
-                                    Unduh Format
+                                    Format Ortu
                                 </el-button>
                                 <el-button type="warning" @click="imporOrtu">
                                     <Icon icon="mdi:human-male-female-child" />
@@ -446,20 +456,12 @@ const param = computed(() => route().params);
                                 </el-button>
 
                                 <el-button
-                                    type="success"
-                                    @click="unduhFormatSiswa"
-                                    class="hidden-sm-and-down"
-                                >
-                                    <Icon icon="mdi:file-excel-box" />
-                                    Unduh Format
-                                </el-button>
-                                <el-button
                                     type="warning"
                                     @click="imporSiswa"
                                     class="hidden-sm-and-down"
                                 >
                                     <Icon icon="mdi-file-excel" />
-                                    Impor
+                                    Impor File Dapodik
                                 </el-button>
                                 <el-button type="danger" @click="bulkAccount">
                                     <Icon icon="mdi:people" />

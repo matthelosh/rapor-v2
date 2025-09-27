@@ -197,6 +197,16 @@ Route::middleware("auth")->group(function () {
             );
         });
 
+        // Kartu Pelajar
+        Route::prefix("kartupelajar")
+            ->middleware(["auth"])
+            ->group(function () {
+                Route::get("/{npsn}/cetak", [KartupelajarController::class, "cetak"])->name(
+                    "dashboard.kartupelajar",
+                );
+
+        });
+
         Route::prefix("operator")->group(function () {
             Route::get("/", [DashboardController::class, "operator"])
                 ->middleware(["role:admin|ops|superadmin"])
@@ -690,6 +700,27 @@ Route::middleware("auth")->group(function () {
             Route::post("/tes", [BackupController::class, "tes"])
                 ->name("dashboard.backup.tes")
                 ->middleware(["role:admin|superadmin"]);
+        });
+
+        Route::prefix("api-client")->group(function () {
+            Route::get("/", [ApiClientController::class, "index"])
+                ->name("dashboard.api-client")
+                ->middleware(["role:superadmin|admin"]);
+            Route::post("/", [ApiClientController::class, "store"])
+                ->name("dashboard.api-client.store")
+                ->middleware(["role:superadmin|admin"]);
+            Route::get("/{apiClient}", [ApiClientController::class, "show"])
+                ->name("dashboard.api-client.show")
+                ->middleware(["role:superadmin|admin"]);
+            Route::put("/{apiClient}", [ApiClientController::class, "update"])
+                ->name("dashboard.api-client.update")
+                ->middleware(["role:superadmin|admin"]);
+            Route::delete("/{apiClient}", [ApiClientController::class, "destroy"])
+                ->name("dashboard.api-client.destroy")
+                ->middleware(["role:superadmin|admin"]);
+            Route::post("/{apiClient}/regenerate-secret", [ApiClientController::class, "regenerateSecret"])
+                ->name("dashboard.api-client.regenerate-secret")
+                ->middleware(["role:superadmin|admin"]);
         });
 
         Route::middleware("role:admin|superadmin")
