@@ -19,7 +19,7 @@ class KartuPelajarController extends Controller
                         'rombels' => function($r) {
                             $r->whereTapel(Periode::tapel()->kode);
                         }
-                    ])->limit(3);
+                    ]);
                 },
             ])->first();
 
