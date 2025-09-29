@@ -286,10 +286,12 @@ class SiswaService
 
     public function luluskan($siswas)
     {
+        $periode = Periode::tapel()['kode'];
+        $tahun = '20'. substr($periode, 2, 2);
         foreach ($siswas as $siswa) {
             $murid = Siswa::findorFail($siswa['id']);
             $murid->user()->delete();
-            $murid->update(['status' => "lulus"]);
+            $murid->update(['status' => "lulus", 'tahun_lulus' => $tahun]);
         }
         return true;
     }
