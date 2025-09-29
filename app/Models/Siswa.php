@@ -176,4 +176,12 @@ class Siswa extends Model
     {
         return $this->hasOne(BukuInduk::class, "siswa_id", "nisn");
     }
+
+    public function scopeAktif($request) {
+        return $request->whereStatus('aktif');
+    }
+
+    public function scopeLulus($request) {
+        return $request->whereStatus('lulus');
+    }
 }
