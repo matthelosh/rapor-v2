@@ -290,8 +290,8 @@ class SiswaService
         $tahun = '20'. substr($periode, 2, 2);
         foreach ($siswas as $siswa) {
             $murid = Siswa::findorFail($siswa['id']);
-            $murid->user()->delete();
             $murid->update(['status' => "lulus", 'tahun_lulus' => $tahun]);
+            $murid->user()->delete();
         }
         return true;
     }

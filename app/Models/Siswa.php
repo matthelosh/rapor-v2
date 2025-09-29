@@ -111,6 +111,7 @@ class Siswa extends Model
         "angkatan",
         "sekolah_id",
         "status",
+        "tahun_lulus"
     ];
 
     public function getActivitylogOptions(): LogOptions
