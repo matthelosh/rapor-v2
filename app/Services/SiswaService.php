@@ -31,7 +31,7 @@ class SiswaService
                 $siswas = Siswa::where("sekolah_id", $user->name)
                     ->where("nama", "LIKE", $q)
                     // ->where('status', 'aktif')
-                    ->whereAktif()
+                    ->aktif()
                     ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email,userable_id,userable_type"])
                     ->with("rombels", fn($r) => $r->where("tapel", $tapel))
                     ->orderBy('nama', 'ASC')
