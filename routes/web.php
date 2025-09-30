@@ -201,7 +201,7 @@ Route::middleware("auth")->group(function () {
         Route::prefix("kartupelajar")
             ->middleware(["auth"])
             ->group(function () {
-                Route::get("/{npsn}/cetak", [KartupelajarController::class, "cetak"])->name(
+                Route::get("/{npsn}/cetak", [KartuPelajarController::class, "cetak"])->name(
                     "dashboard.kartupelajar",
                 );
 
