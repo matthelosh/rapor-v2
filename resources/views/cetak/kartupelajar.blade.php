@@ -20,6 +20,7 @@
                 position: relative;
                 border: 2px dashed gray;
                 border-radius: 20px;
+                page-break-inside: avoid;
 
                 h1 {
                     font-size: .8rem;
@@ -81,6 +82,7 @@
                 background-size: cover;
                 border-radius: 10px;
                 position: relative;
+
 
                 .content {
                     position: absolute;
