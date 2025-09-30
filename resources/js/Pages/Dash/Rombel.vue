@@ -147,6 +147,12 @@ const init = async () => {
         }
     });
 };
+
+// Cetak Kartu
+const cetakKartu = (rombel) => {
+    window.open(`/dashboard/kartupelajar/${page.props.sekolahs[0].npsn}/cetak?rombel=${rombel.kode}`, '_blank', 'noopener,noreferrer' );
+}
+
 onBeforeMount(async () => {
     //init();
 });
@@ -183,7 +189,7 @@ onBeforeMount(async () => {
                         >
                             <el-select v-model="selectedTapel" placeholder="Pilih Tapel" @change="reloadData">
                                 <el-option v-for="(tapel,t) in page.props.tapels" :key="t" :label="tapel.label" :value="tapel.kode" />
-                            
+
                             </el-select>
                             <el-button-group class="flex-grow">
                                 <el-button
@@ -311,9 +317,9 @@ onBeforeMount(async () => {
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Anggota Rombel" width="180">
+                    <el-table-column label="Anggota Rombel" >
                         <template #default="scope">
-                            <div class="text-center">
+                            <div class="text-center flex flex-wrap justify-center gap-1">
                                 <el-tag type="primary"
                                     >Lk:
                                     {{
@@ -333,7 +339,7 @@ onBeforeMount(async () => {
                                 <el-tag type="info"
                                     >Jml: {{ scope.row.siswas?.length }}</el-tag
                                 >
-                                <div class="my-2">
+                                <div class="my-2 flex">
                                     <el-tooltip
                                         size="small"
                                         :content="`Masukkan Siswa ke ${scope.row.label}?`"
@@ -355,11 +361,12 @@ onBeforeMount(async () => {
                                             Anggota
                                         </el-button>
                                     </el-tooltip>
+
                                 </div>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Status" width="200">
+                    <el-table-column label="Status" width="100">
                         <template #default="scope">
                             <span class="flex gap-2">
                                 <Icon
@@ -379,9 +386,13 @@ onBeforeMount(async () => {
                             </span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Opsi" width="150" fixed="right">
+                    <el-table-column label="Opsi" width="250" fixed="right">
                         <template #default="scope">
                             <div class="flex items-center gap-1">
+                                <el-button type="success" @click="cetakKartu(scope.row)" size="small" target="_blank">
+                                    <Icon icon="mdi:card-account-details" class="mr-1" />
+                                    Kartu
+                                </el-button>
                                 <el-popconfirm
                                     size="small"
                                     :title="`Yakin menghapus data ${scope.row.nama}?`"
