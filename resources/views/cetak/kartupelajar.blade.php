@@ -131,9 +131,9 @@
                                 <td>{{ucwords(strtolower($siswa->nama))}}</td>
                             </tr>
                             <tr>
-                                <td>Alamat</td>
+                                <td>TTL</td>
                                 <td>:</td>
-                                <td>{{$siswa->alamat}}, {{$siswa->desa}} </td>
+                                <td>{{$siswa->tempat_lahir}}, {{\Carbon\Carbon::parse($siswa->tanggal_lahir)->translatedFormat('d F Y')}} </td>
                             </tr>
                             <tr>
                                 <td>Lembaga</td>
