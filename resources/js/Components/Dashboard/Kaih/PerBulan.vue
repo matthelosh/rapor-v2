@@ -1,5 +1,5 @@
 <script setup>
-import { defineAsyncComponent, ref } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { cssUrl } from "@/helpers/utils.js";
 import { Icon } from "@iconify/vue";
@@ -21,8 +21,12 @@ const inputRekap = () => {
     formRekap.value = true;
 };
 
+const bulan = computed(() => {
+    const date = new Date(props.bulanTahun);
+    return dayjs(date).locale("id").format("MMMM YYYY");
+});
+
 const printRekap = () => {
-    window.print();
     let html = `<!doctype html>
         <html>
             <head>
@@ -248,7 +252,7 @@ const printBlanko = () => {
     <el-dialog v-model="formRekap" v-if="formRekap">
         <template #header>
             <div class="h3">
-                Formulir Rekap Kegiatan {{ siswa.nama }} Bulan {{ bulanTahun }}
+                Formulir Rekap Kegiatan {{ siswa.nama }} Bulan {{ bulan }}
             </div>
         </template>
         <InputRekap :siswa="siswa" :rombel="rombel" :bulan="bulanTahun" />

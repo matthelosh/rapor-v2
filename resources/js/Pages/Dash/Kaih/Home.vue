@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineAsyncComponent, computed } from "vue";
+import { ref, defineAsyncComponent, computed, watch, onBeforeMount } from "vue";
 import { router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import dayjs from "dayjs";
@@ -107,20 +107,54 @@ const prosentase = (value) => {
 
 const fetchData = () => {
     try {
-        router.get(
-            route("dashboard.kaih.home", {
-                _query: { tahun: tahun.value, bulan: bulan.value },
-            }),
-            {
-                reload: { only: ["rombels"] },
-                preserveState: true,
-            },
-        );
+        router.visit(route('dashboard.kaih.home', {
+            bulan: bulan.value,
+            tahun: tahun.value,
+        }), {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+            method: "get",
+        });
         // return response.data;
     } catch (error) {
         console.error(error);
     }
 };
+
+const bulanList = ref([
+    { value: 1, label: "Januari" },
+    { value: 2, label: "Februari" },
+    { value: 3, label: "Maret" },
+    { value: 4, label: "April" },
+    { value: 5, label: "Mei" },
+    { value: 6, label: "Juni" },
+    { value: 7, label: "Juli" },
+    { value: 8, label: "Agustus" },
+    { value: 9, label: "September" },
+    { value: 10, label: "Oktober" },
+    { value: 11, label: "November" },
+    { value: 12, label: "Desember" },
+])
+
+watch(
+    () => bulan.value,
+    () => {
+        fetchData();
+    },
+);
+watch(
+    () => tahun.value,
+    () => {
+        fetchData();
+    },
+);
+
+onBeforeMount(() => {
+    bulan.value = new Date().getMonth() + 1;
+    tahun.value = new Date().getFullYear();
+})
+
 </script>
 
 <template>
@@ -129,9 +163,7 @@ const fetchData = () => {
             <h3>7 KAIH</h3>
         </template>
         <template #default>
-            <el-card
-                style="background-color: #ffffffab; backdrop-filter: blur(5px)"
-            >
+            <el-card>
                 <template #header>
                     <div class="toolbar flex items-center justify-between">
                         <h3>Monitor Progress 7 KAIH</h3>
@@ -143,39 +175,14 @@ const fetchData = () => {
                                 v-model="bulan"
                                 class="w-40"
                             >
+                                <template v-for="bulan in bulanList" :key="bulan.value">
+
                                 <el-option
-                                    label="Januari"
-                                    value="1"
+                                    :label="bulan.label"
+                                    :value="bulan.value"
+
                                 ></el-option>
-                                <el-option
-                                    label="Februari"
-                                    value="2"
-                                ></el-option>
-                                <el-option label="Maret" value="3"></el-option>
-                                <el-option label="April" value="4"></el-option>
-                                <el-option label="Mei" value="5"></el-option>
-                                <el-option label="Juni" value="6"></el-option>
-                                <el-option label="Juli" value="7"></el-option>
-                                <el-option
-                                    label="Agustus"
-                                    value="8"
-                                ></el-option>
-                                <el-option
-                                    label="September"
-                                    value="9"
-                                ></el-option>
-                                <el-option
-                                    label="Oktober"
-                                    value="10"
-                                ></el-option>
-                                <el-option
-                                    label="November"
-                                    value="11"
-                                ></el-option>
-                                <el-option
-                                    label="Desember"
-                                    value="12"
-                                ></el-option>
+                                </template>
                             </el-select>
 
                             <el-select
@@ -406,9 +413,16 @@ const fetchData = () => {
         @closed="resetForm"
         v-if="formPerBulan"
         style="background: #ffffff78; backdrop-filter: blur(5px)"
+        :show-close="false"
     >
-        <template #header>
-            <h2>Detail Per Bulan {{ selectedSiswa?.nama }}</h2>
+        <template #header="{close}">
+            <div class="flex justify-between">
+                <h2>Detail Per Bulan {{ selectedSiswa?.nama }}</h2>
+
+                <el-button :native-type="null" @click="close" type="danger" circle="true">
+                    <Icon icon="mdi:close" class="text-lg" />
+                </el-button>
+            </div>
         </template>
         <template #default>
             <PerBulan

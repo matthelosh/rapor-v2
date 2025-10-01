@@ -18,28 +18,43 @@ class KaihController extends Controller
         // dd('tes');
         try {
             $guru = $request->user()->userable;
+            $bulan = $request->query("bulan");
+            $tahun = $request->query("tahun") ?? date("Y");
 
-            $kaihsFilter = function ($query) use ($request) {
-                if ($request->query("bulan") && $request->query("tahun")) {
-                    $query
-                        ->whereMonth("waktu", $request->query("bulan"))
-                        ->whereYear("waktu", $request->query("tahun"));
-                } else {
-                    $query
-                        ->whereYear("waktu", date("Y"))
-                        ->whereMonth("waktu", date("m"));
-                }
-                $query->orderBy("kebiasaan");
-            };
+            $bulan = strlen($bulan) == 1 ? "0" . $bulan : $bulan;
+
+
+            // $kaihsFilter = function ($query) use ($request) {
+            //     if ($request->query("bulan") && $request->query("tahun")) {
+            //         $query
+            //             ->whereMonth("waktu", $request->query("bulan"))
+            //             ->whereYear("waktu", $request->query("tahun"));
+            //     } else {
+            //         $query
+            //             ->whereYear("waktu", date("Y"))
+            //             ->whereMonth("waktu", date("m"));
+            //     }
+            //     $query->orderBy("kebiasaan");
+            // };
+
+            // dd(Kaih::whereSiswaId('3141317849')->whereMonth('waktu', $bulan)->get());
             $rombels = Rombel::whereGuruId($guru->id)
                 ->where('tapel', Periode::tapel()->kode)
                 ->with([
                     "wali_kelas",
-                    "siswas" => function($query) use($kaihsFilter) {
-                        $query->with(["kaihs" => $kaihsFilter]);
+                    "siswas" => function($query) use($bulan, $tahun) {
+                        $query->with([
+                            "kaihs" => function($k) use($bulan, $tahun) {
+                                $k->whereMonth("waktu", $bulan)
+                                ->whereYear("waktu", $tahun)
+                                ->orderBy("kebiasaan");
+                            },
+                        ]);
                     }
                     ])
                 ->get();
+
+            // dd($rombels[0]->siswas[0]);
 
             foreach($rombels as $rombel)
             {
