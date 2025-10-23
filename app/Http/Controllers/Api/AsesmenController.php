@@ -106,6 +106,14 @@ class AsesmenController extends Controller
         }
     }
 
+    public function syncSiswa(Request $request)
+    {
+
+    }
+
+
+
+
     public function periode() {
         return response()->json([
             'tapel' => Periode::tapel(),

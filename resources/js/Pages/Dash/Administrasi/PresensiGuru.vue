@@ -3,6 +3,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import dayjs from "dayjs";
 import localeData from "dayjs/plugin/localeData";
 import "dayjs/locale/id";
+import html2pdf from 'html2pdf.js';
 dayjs.extend(localeData);
 dayjs().localeData();
 dayjs.locale("id");
@@ -101,6 +102,18 @@ const cetak = async () => {
         // win.print();
     }, 1000);
 };
+
+const streamPdf = async () => {
+    const element = document.querySelector('.laman');
+    const opt = {
+        margin: 0.5,
+        filename: `Presensi_Guru_${months[selectedBulan]}_${selectedTahun.value}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true },
+        jsPDF: { unit: 'in', format: 'folio', orientation: 'landscape' }
+    };
+    html2pdf().set(opt).from(element).save();
+};
 onMounted(() => {
     selectedBulan.value = params.bulan ?? (new Date().getMonth());
 });
@@ -154,6 +167,12 @@ const isDateInWeek = (date, week) => {
                             type="primary"
                             @click="cetak"
                             >Cetak</el-button
+                        >
+                        <el-button
+                            :native-type="null"
+                            type="primary"
+                            @click="streamPdf"
+                            >Stream PDF</el-button
                         >
                     </div>
                 </el-affix>
