@@ -26,7 +26,6 @@ class GuruRequest extends FormRequest
             "nama" => "required",
             "email" => "required|email|unique:gurus",
             "sekolahs" => "required",
-            "hp" => "required|numeric",
         ];
     }
 
@@ -41,7 +40,6 @@ class GuruRequest extends FormRequest
             "email.unique" => "Email tersebut dudah dipakai. Coba yang lain.",
             "nip.email" => "Format email tidak sesuai.",
             "sekolah" => "Jangan lupa, memilih lembaga",
-            "hp" => "No. HPtidak boleh kosong.",
         ];
     }
 }

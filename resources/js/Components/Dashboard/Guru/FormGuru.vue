@@ -302,11 +302,12 @@ onBeforeMount(() => {
                                     v-model="guru.jabatan"
                                     placeholder="Jabatan"
                                 >
-                                    <el-option value="Kepala Sekolah" />
-                                    <el-option value="Guru Kelas" />
-                                    <el-option value="Guru Agama" />
-                                    <el-option value="Guru PJOK" />
-                                    <el-option value="Guru Inggris" />
+                                    <el-option value="kepala_sekolah" label="Kepala Sekolah" />
+                                    <el-option value="guru_kelas" label="Guru Kelas" />
+                                    <el-option value="guru_agama" label="Guru Agama" />
+                                    <el-option value="guru_pjok" label="Guru PJOK" />
+                                    <el-option value="guru_inggris" label="Guru Inggris" />
+                                    <el-option value="ptk" label="PTK" />
                                 </el-select>
                             </el-form-item>
                         </el-col>
