@@ -23,8 +23,8 @@ Route::prefix('public')->middleware('verify_api_key')->group(function () {
     Route::get('/kaldik', [ClientController::class, 'getKaldik']);
 
     // Data sekolah
-    Route::apiResource('/sekolah', SekolahController::class);
     Route::get('/sekolah/subdomain/{subdomain}', [SekolahController::class, 'showBySubdomain']);
+    Route::apiResource('/sekolah', SekolahController::class);
 
     // Posts
     Route::apiResource('/posts', PostController::class);
