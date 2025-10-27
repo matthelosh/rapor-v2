@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
-Route::domain("{subdomain}.pkgwagir.test")->group(function () {
+Route::domain("{subdomain}.pkgwagir.or.id")->group(function () {
     Route::get("/{any?}", function ($subdomain, $any = "") {
         // Ganti 5173 dengan port Vite Anda jika perlu
         $viteUrl = "http://localhost:5173/" . $any;
