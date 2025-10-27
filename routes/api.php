@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 // ===========================================================
 // PUBLIC API - Untuk aplikasi eksternal (statistik, data dasar)
 // ===========================================================
-Route::prefix('public')->middleware('verify_api_key')->group(function () {
+Route::middleware('verify_api_key')->group(function () {
     // Data dasar untuk statistik halaman depan
     Route::get('/rombel', [ClientController::class, 'getRombel']);
     Route::get('/tps', [ClientController::class, 'getTp']);
@@ -23,6 +23,9 @@ Route::prefix('public')->middleware('verify_api_key')->group(function () {
     Route::get('/kaldik', [ClientController::class, 'getKaldik']);
 
     // Data sekolah
+    // Route::get('/sekolah/{npsn}', function(Request $request, $npsn) {
+    //     return $npsn;
+    // });
     Route::get('/sekolah/subdomain/{subdomain}', [SekolahController::class, 'showBySubdomain']);
     Route::apiResource('/sekolah', SekolahController::class);
 
