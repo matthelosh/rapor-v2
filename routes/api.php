@@ -29,6 +29,9 @@ Route::prefix('public')->middleware('verify_api_key')->group(function () {
     // });
     Route::apiResource('/sekolah', SekolahController::class);
 
+    // Siswas
+    Route::get('/siswas', [SiswaController::class, 'index']);
+
     // Posts
     Route::apiResource('/posts', PostController::class);
 
