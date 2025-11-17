@@ -57,7 +57,9 @@ class SekolahController extends Controller
             'rombels' => function($r) {
                 $r->with([
                     'wali_kelas',
-                    'siswas',
+                    'siswas' => function($s) {
+                        $s->where('is_active', 1);
+                    },
                     'gurus'
                 ]);
             }
@@ -68,6 +70,32 @@ class SekolahController extends Controller
             'data' => $sekolah
         ]);
         // return new SekolahResource(true, 'Data Sekolah '.$sekolah->nama, $sekolah);
+    }
+
+    public function showByNpsn($npsn)
+    {
+        $sekolah = Sekolah::where('npsn', $npsn)->with([
+            'ks',
+            'posts' => function($q) {
+                $q->where('status', 'published')->orderBy('created_at', 'DESC');
+                $q->with('author.userable');
+            },
+            'gurus',
+            'rombels' => function($r) {
+                $r->with([
+                    'wali_kelas',
+                    'siswas' => function($s) {
+                        $s->where('is_active', 1);
+                    },
+                    'gurus'
+                ]);
+            }
+            ])->first();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Sekolah ditemukan',
+            'data' => $sekolah
+        ]);
     }
 
     public function show($id) {

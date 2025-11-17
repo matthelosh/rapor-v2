@@ -31,7 +31,7 @@ class SekolahService
                     $q->where("gurus.jabatan", "!=", "ops");
                 })
                 ->with("siswas", function ($s) use($tapel) {
-                    $s->whereHas('rombels', function($r) use($tapel) {
+                    $s->where('is_active', 1)->whereHas('rombels', function($r) use($tapel) {
                         $r->where('tapel', $tapel);
                     });
                 })
