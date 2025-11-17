@@ -27,12 +27,14 @@ Route::prefix('public')->middleware('verify_api_key')->group(function () {
     // Route::get('/sekolah/{npsn}', function(Request $request, $npsn) {
     //     return $npsn;
     // });
+    Route::get('/sekolah/sync', [SekolahController::class, 'sync']);
     Route::apiResource('/sekolah', SekolahController::class);
 
     // Siswas
     Route::get('/siswas', [SiswaController::class, 'index']);
 
     // Posts
+
     Route::apiResource('/posts', PostController::class);
 
     // Sync data (untuk aplikasi eksternal)

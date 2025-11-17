@@ -9,6 +9,7 @@ use App\Http\Resources\SekolahResource;
 use App\Services\SekolahService;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\Periode;
 
 
 class SekolahController extends Controller
@@ -18,6 +19,40 @@ class SekolahController extends Controller
         $sekolahs = $sekolahService->index($request->user());
 
         return new SekolahResource(true, 'Data Sekolah', $sekolahs);
+    }
+
+    public function sync(Request $request)
+    {
+        if ($request->npsn == 'all') {
+            $sekolahs = Sekolah::with([
+                'siswas' => function($s) {
+                    $s->where('status', 'aktif')->with([
+                        'rombels' => function($r) {
+                            $r->where('tapel', Periode::tapel()->kode)->first();
+                        }
+                    ]);
+                },
+                'ks'
+            ])->get();
+        } else {
+            $sekolahs = Sekolah::where('npsn', $request->npsn)
+                ->with([
+                'siswas' => function($s) {
+                    $s->where('status', 'aktif')->with([
+                        'rombels' => function($r) {
+                            $r->where('tapel', Periode::tapel()->kode)->first();
+                        }
+                    ]);
+                },
+                'ks'
+
+                ])->get();
+        }
+
+        return response()->json([
+            'message' => 'Data Sekolah',
+            'sekolahs' => $sekolahs
+        ]);
     }
 
     public function store(Request $request, SekolahService $sekolahService)
