@@ -139,4 +139,9 @@ class Sekolah extends Model
     {
         return $this->hasMany(Post::class, 'sekolah_id', 'id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'npsn';
+    }
 }

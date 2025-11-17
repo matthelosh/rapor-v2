@@ -98,17 +98,13 @@ class SekolahController extends Controller
         ]);
     }
 
-    public function show($id) {
-        $sekolah = Sekolah::findOrFail($id);
-
+    public function show(Sekolah $sekolah) {
         return new SekolahResource(true, 'Data Sekolah '.$sekolah->nama, $sekolah);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Sekolah $sekolah)
     {
         try {
-        dd($id);
-        $sekolah = Sekolah::findOrFail($id);
         $update = $sekolah->update(['nama' => $request->nama]);
         $resource = new SekolahResource(true, 'Data Sekolah Diperbarui', $update);
         return $resource->response();
@@ -118,10 +114,10 @@ class SekolahController extends Controller
         }
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Sekolah $sekolah)
     {
         try {
-        $delete = Sekolah::destroy($id);
+        $delete = $sekolah->delete();
             return response()->json(['success' => true, 'message' => 'Data Sekolah dihapus', 'data' => $delete]);
         } catch(\Exception $e)
         {
