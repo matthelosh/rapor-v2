@@ -6,6 +6,7 @@ import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 
 export default defineConfig({
+    
     plugins: [
         laravel({
             input: "resources/js/app.js",
@@ -31,7 +32,9 @@ export default defineConfig({
             resolvers: [ElementPlusResolver()],
         }),
     ],
-
+    server: {
+        allowedHosts: ['pkgwagir.or.id','pkgwagir.test']
+    },
     build: {
         rollupOptions: {
             output: {

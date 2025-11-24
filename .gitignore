@@ -21,3 +21,4 @@ yarn-error.log
 /database/seeders/AdminSeeder.php.DS_Store
 .DS_Store
 /storage/debugbar
+yarn.lock
