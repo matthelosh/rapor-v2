@@ -120,11 +120,6 @@ Route::middleware("auth")->group(function () {
     });
 
     Route::prefix("dashboard")->group(function () {
-        Route::post("/tes-reverb", [
-            DashboardController::class,
-            "tesReverb",
-        ])->name("dashboard.home.tes");
-
         Route::middleware("role:ops")
             ->prefix("bukuinduk")
             ->group(function () {
