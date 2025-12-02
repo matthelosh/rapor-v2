@@ -63,20 +63,54 @@ class OrtuController extends Controller
             // dd($request->ortu);
             $ortu = $request->ortu;
             $ayah = $ortu['ayah'];
-            $ayah['siswa_id'] = $ortu['siswa_id'];
-            $newAyah = new Ortu($ayah);
-            $newAyah->save();
-
             $ibu = $ortu['ibu'];
-            $ibu['siswa_id'] = $ortu['siswa_id'];
-            $newIbu = new Ortu($ibu);
-            $newIbu->save();
+            // $ayah['siswa_id'] = $ortu['siswa_id'];
+            // $newAyah = new Ortu($ayah);
+            // $newAyah->save();
+            $simpanAyah = Ortu::updateOrCreate(
+                [
+                    'id' => $ayah['id'] ?? null
+                ],
+                [
+                    'siswa_id' => $ortu['siswa_id'],
+                    'nama' => $ayah['nama'],
+                    'relasi' => $ayah['relasi'],
+                    'alamat' => $ayah['alamat'] ?? '-',
+                    'hp' => $ayah['hp'] ?? '-',
+                    'pekerjaan' => $ayah['pekerjaan'] ?? ''
+                ]
+                );
+            $simpanIbu = Ortu::updateOrCreate(
+                [
+                    'id' => $ibu['id'] ?? null
+                ],
+                [
+                    'siswa_id' => $ortu['siswa_id'],
+                    'nama' => $ibu['nama'],
+                    'relasi' => $ibu['relasi'],
+                    'alamat' => $ibu['alamat'] ?? '-',
+                    'hp' => $ibu['hp'] ?? '-',
+                    'pekerjaan' => $ibu['pekerjaan'] ?? ''
+                ]
+                );
+
 
             if ($ortu['wali']['nama']) {
                 $wali = $ortu['wali'];
-                $wali['siswa_id'] = $ortu['siswa_id'];
-                $newWali = new Ortu($wali);
-                $newWali->save();
+
+                $simpawali = Ortu::updateOrCreate(
+                [
+                    'id' => $wali['id'] ?? null
+                ],
+                [
+                    'siswa_id' => $ortu['siswa_id'],
+                    'nama' => $wali['nama'],
+                    'relasi' => $wali['relasi'],
+                    'alamat' => $wali['alamat'] ?? '-',
+                    'hp' => $wali['hp'] ?? '-',
+                    'pekerjaan' => $wali['pekerjaan'] ?? ''
+                ]
+                );
             }
 
             return \response()->json(['message' => 'Data Ortu disimpan']);

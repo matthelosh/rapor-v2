@@ -93,7 +93,7 @@ onBeforeMount(async () => {
                 </el-button>
             </div>
         </template>
-        <div class="dialog-body">
+        <div class="dialog-body max-h-[650px] overflow-x-hidden overflow-y-auto">
             <el-form v-model="ortu" label-position="top">
                 <!-- Data Ayah -->
                 <el-row :gutter="10">

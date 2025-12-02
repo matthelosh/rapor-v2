@@ -23,7 +23,7 @@ class SiswaService
             $q = $request->query("q") ? "%" . $request->query("q") . "%" : "%";
             if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
                 $siswas = Siswa::where("nama", "LIKE", $q)
-                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email,userable_id,userable_type"])
+                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi,alamat,hp,pekerjaan", "user:id,name,email,userable_id,userable_type"])
                     ->orderBy('sekolah_id', 'ASC')
                     ->orderBy('nama', 'ASC')
                     ->paginate(15);
@@ -32,7 +32,7 @@ class SiswaService
                     ->where("nama", "LIKE", $q)
                     // ->where('status', 'aktif')
                     ->aktif()
-                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi", "user:id,name,email,userable_id,userable_type"])
+                    ->with(["sekolah:id,npsn,nama", "rombels", "ortus:id,siswa_id,nama,relasi,alamat,hp,pekerjaan", "user:id,name,email,userable_id,userable_type"])
                     ->with("rombels", fn($r) => $r->where("tapel", $tapel))
                     ->orderBy('nama', 'ASC')
                     ->paginate(15);
@@ -47,7 +47,7 @@ class SiswaService
                         "rombels" => function ($q) use($tapel) {
                             $q->where('tapel', $tapel);
                         },
-                        "ortus:id,siswa_id,nama,relasi",
+                        "ortus:id,siswa_id,nama,relasi,alamat,hp,pekerjaan",
                         "user"
                         ])
                     ->orderBy('nama', 'ASC')
