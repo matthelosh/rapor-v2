@@ -64,6 +64,8 @@ const simpan = async () => {
         });
 };
 
+const activeNames = ref(['1'])
+// const tes = () => alert('tes');
 onBeforeMount(async () => {
     // ortu.value = props.siswa.or
     getPekerjaan();
@@ -93,30 +95,27 @@ onBeforeMount(async () => {
                 </el-button>
             </div>
         </template>
-        <div class="dialog-body max-h-[650px] overflow-x-hidden overflow-y-auto">
+        <div class="dialog-body max-h-[500px] overflow-x-hidden overflow-y-auto">
             <el-form v-model="ortu" label-position="top">
-                <!-- Data Ayah -->
-                <el-row :gutter="10">
-                    <el-col>
-                        <el-card sizr="small">
-                            <template #header>
-                                <h3
-                                    class="font-bold text-slate-700 flex items-center uppercase"
-                                >
-                                    <Icon
-                                        icon="mdi:human-male"
-                                        class="text-lg"
-                                    />
-                                    Data Ayah
-                                </h3>
-                            </template>
+                <el-collapse v-model="activeNames" accordion>
+                    <el-collapse-item  name="1">
+                        <template #title="{isActive}">
+                            <h3
+                                class="font-bold text-slate-700 flex items-center uppercase"
+                                :class="{'text-blue-400': isActive}"
+                            >
+                                <Icon
+                                    icon="mdi:human-male"
+                                    class="text-lg"
+                                />
+                                Data Ayah
+                            </h3>
+
+                        </template>
+                        <!-- Data Ayah -->
+                        <el-card size="small">
                             <div class="card-bod">
                                 <el-row :gutter="10">
-                                    <!-- <el-col :span="12">
-                                    <el-form-item label="NIK Ayah">
-                                        <el-input placeholder="N.I.K. Ayah" v-model="ortu.ayah.nik"></el-input>
-                                    </el-form-item>
-                                </el-col> -->
                                     <el-col :span="12">
                                         <el-form-item label="Nama Ayah">
                                             <el-input
@@ -181,30 +180,24 @@ onBeforeMount(async () => {
                                 </el-row>
                             </div>
                         </el-card>
-                    </el-col>
-                </el-row>
-                <!-- Data Ibu -->
-                <el-row :gutter="10">
-                    <el-col>
-                        <el-card sizr="small">
-                            <template #header>
-                                <h3
-                                    class="font-bold text-slate-700 flex items-center uppercase"
-                                >
-                                    <Icon
-                                        icon="mdi:human-male"
-                                        class="text-lg"
-                                    />
-                                    Data Ibu
-                                </h3>
-                            </template>
+                    </el-collapse-item>
+                    <el-collapse-item  name="2" >
+                        <template #title="{isActive}"  >
+                            <h3
+                                class="font-bold text-slate-700 flex items-center uppercase"
+                                :class="{'text-blue-400': isActive}"
+                            >
+                                <Icon
+                                    icon="mdi:human-female"
+                                    class="text-lg"
+                                />
+                                Data Ibu
+                            </h3>
+                        </template>
+                         <!-- Data Ibu -->
+                        <el-card size="small">
                             <div class="card-bod">
                                 <el-row :gutter="10">
-                                    <!-- <el-col :span="12">
-                                    <el-form-item label="NIK Ibu">
-                                        <el-input placeholder="N.I.K. Ibu" v-model="ortu.ibu.nik"></el-input>
-                                    </el-form-item>
-                                </el-col> -->
                                     <el-col :span="12">
                                         <el-form-item label="Nama Ibu">
                                             <el-input
@@ -258,7 +251,7 @@ onBeforeMount(async () => {
                                 </el-row>
                                 <el-row :gutter="10">
                                     <el-col>
-                                        <el-form-item label="Alamat Ayah">
+                                        <el-form-item label="Alamat Ibu">
                                             <el-input
                                                 type="textarea"
                                                 placeholder="Alamat"
@@ -269,23 +262,22 @@ onBeforeMount(async () => {
                                 </el-row>
                             </div>
                         </el-card>
-                    </el-col>
-                </el-row>
-                <!-- Data Wali -->
-                <el-row :gutter="10">
-                    <el-col>
-                        <el-card sizr="small">
-                            <template #header>
-                                <h3
-                                    class="font-bold text-slate-700 flex items-center uppercase"
-                                >
-                                    <Icon
-                                        icon="mdi:human-male"
-                                        class="text-lg"
-                                    />
-                                    Data Wali
-                                </h3>
-                            </template>
+                    </el-collapse-item>
+                    <el-collapse-item  name="3">
+                        <template #title="{isActive}">
+                            <h3
+                                class="font-bold text-slate-700 flex items-center uppercase"
+                                :class="{'text-blue-400': isActive}"
+                            >
+                                <Icon
+                                    icon="mdi:human-male"
+                                    class="text-lg"
+                                />
+                                Data Wali
+                            </h3>
+                        </template>
+                        <!-- Data Wali -->
+                        <el-card size="small">
                             <div class="card-bod">
                                 <el-row :gutter="10">
                                     <!-- <el-col :span="12">
@@ -357,8 +349,10 @@ onBeforeMount(async () => {
                                 </el-row>
                             </div>
                         </el-card>
-                    </el-col>
-                </el-row>
+                    </el-collapse-item>
+                </el-collapse>
+                
+               
             </el-form>
             <!-- {{ props.siswa.ortus }} -->
         </div>
