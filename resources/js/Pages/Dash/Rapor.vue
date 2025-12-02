@@ -215,7 +215,7 @@ onBeforeMount(() => {
                                 <el-button-group size="small">
                                     <el-button
                                         type="primary"
-                                        @click="cetak('cover', scope.row)"
+                                        @click="cetakBlade('cover', scope.row)"
                                         >Cover</el-button
                                     >
                                     <el-button

@@ -25,7 +25,7 @@ class RombelHelper
                     "gurus:id,nip,nama,gelar_belakang,status,jk,agama,jabatan",
                     "wali_kelas:id,nip,nama,gelar_belakang,status,jk,agama",
                     "siswas" => function($q) {
-                        $q->select('siswas.id','nama', 'nis', 'nisn', 'jk', 'agama');
+                        $q->select('siswas.id','nama', 'nis', 'nisn', 'jk', 'agama', 'tempat_lahir', 'tanggal_lahir', 'alamat');
                         $q->with("ortus:id,siswa_id,nama,relasi");
                         $q->orderBy('nama', 'ASC');
                     },
@@ -44,7 +44,7 @@ class RombelHelper
                     "gurus:id,nip,nama,gelar_belakang,status,jk,agama,jabatan",
                     "wali_kelas:id,nip,nama,gelar_belakang,status,jk,agama",
                     "siswas" => function($q) {
-                        $q->select('siswas.id','nama', 'nis', 'nisn', 'jk', 'agama');
+                        $q->select('siswas.id','nama', 'nis', 'nisn', 'jk', 'agama', 'tempat_lahir', 'tanggal_lahir', 'alamat');
                         $q->with("ortus:id,siswa_id,nama,relasi");
                         $q->orderBy('nama', 'ASC');
                     },

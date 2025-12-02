@@ -27,12 +27,12 @@
     </head>
     <body class="font-serif p-4 print:p-0" onload="cetak()">
         <script>
-            // function cetak() {
-            //     window.print();
-            //     setTimeout(() => {
-            //         window.close()
-            //     }, 500)
-            // }
+            function cetak() {
+                window.print();
+                setTimeout(() => {
+                    window.close()
+                }, 500)
+            }
         </script>
 
         <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative text-[0.8em]"">

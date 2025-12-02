@@ -128,6 +128,7 @@ class RaporController extends Controller
     // Cetak via blade
     public function cetakRapor(Request $request, $page, $siswaId, RaporService $raporService)
     {
+        // dd($page);
         try {
             $siswa = Siswa::where("nisn", $siswaId)
                     ->with("sekolah.ks")
@@ -140,7 +141,7 @@ class RaporController extends Controller
                     $view = "biodatarapor";
                     break;
                 case "pas":
-                    $view = "rapor.pas";
+                    $view = "pas";
                     $query = $request->query();
                     $query["siswaId"] = $siswaId;
                     $query["rombelId"] = $request->rombelId;
@@ -151,7 +152,7 @@ class RaporController extends Controller
                     $catatan = $raporService->catatan($query);
                     break;
             }
-            return view("cetak." . $view, [
+            return view("cetak.rapor" . $page, [
                 "page" => $page,
                 "siswa" => $siswa,
                 "nilais" => $nilais ?? [],

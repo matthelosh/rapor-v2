@@ -3,6 +3,8 @@ import { ref, computed } from "vue";
 import { Head, usePage } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { cssUrl } from "@/helpers/utils";
+import dayjs from "dayjs";
+dayjs.locale('id')
 const page = usePage();
 const props = defineProps({ siswa: Object, rombel: Object });
 const emit = defineEmits(["close", "nextSiswa", "prevSiswa"]);
@@ -45,7 +47,7 @@ const cetak = async () => {
 
 				</html>
 	`;
-    let win = window.open(host + "/print", "_blank", "height=600,width=1024");
+    let win = window.open(import.meta.env.APP_URL + "/print", "_blank", "height=600,width=1024");
     win.document.write(html);
     setTimeout(() => {
         win.print();
@@ -78,7 +80,7 @@ const cetak = async () => {
         </div>
     </div>
     <div
-        class="page cetak bg-slate-100 print:bg-white w-full bg-cover p-20 font-serif"
+        class="page cetak bg-slate-100 print:bg-white w-full bg-cover p-20 print:p-8 font-serif"
     >
         <h3 class="font-bold print:text-center uppercase text-xl">
             Identitas Peserta Didik
@@ -101,7 +103,7 @@ const cetak = async () => {
                     <td class="text-left w-[200px]">Tempat, Tanggal Lahir</td>
                     <td class="text-left px-2">:</td>
                     <td class="text-left">
-                        {{ siswa.tempat_lahir }}, {{ siswa.tanggal_lahir }}
+                        {{ siswa.tempat_lahir }}, {{ dayjs(siswa.tanggal_lahir).format('DD MMMM YYYY') }}
                     </td>
                 </tr>
                 <tr>
