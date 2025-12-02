@@ -62,7 +62,7 @@ const closeForm = () => {
         </div>
     </el-card>
 </DashLayout>
-<FormEkskul v-if="mode == 'ekskul'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'ekskul'" @close="closeForm" />
-<FormAbsen v-if="mode == 'absen'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'absen'" @close="closeForm" />
-<FormCatatan v-if="mode == 'catatan'" :siswa="selectedSiswa" :rombel="rombel" :open="mode == 'catatan'" @close="closeForm" />
+<FormEkskul v-if="mode == 'ekskul'" :siswa="selectedSiswa" :rombel="rombels" :open="mode == 'ekskul'" @close="closeForm" />
+<FormAbsen v-if="mode == 'absen'" :siswa="selectedSiswa" :rombel="rombels" :open="mode == 'absen'" @close="closeForm" />
+<FormCatatan v-if="mode == 'catatan'" :siswa="selectedSiswa" :rombel="rombels" :open="mode == 'catatan'" @close="closeForm" />
 </template>

@@ -181,7 +181,6 @@ onBeforeMount(async () => {
                     <template #default="scope">
                         <el-input
                             type="textarea"
-                            rows="1"
                             :rows="1"
                             autosize
                             v-model="nilais[scope.$index].deskripsi"

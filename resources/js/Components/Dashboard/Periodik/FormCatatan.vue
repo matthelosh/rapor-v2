@@ -20,13 +20,8 @@ const getCatatan = async() => {
                 semester: page.props.periode.semester.kode,
             }
         })).then(res => {
-            if (res.data.absen !== null) {
-                catatan.value = res.data.catatan.teks
-            } else {
-                absen.value = {
-                    ijin: 0, sakit: 0, alpa: 0
-                }
-            }
+            // console.log(res.data)
+            catatan.value = res.data.catatan?.teks || ''
         }).catch(err => console.log(err))
 }
 
@@ -71,6 +66,7 @@ onBeforeMount(async () => {
                 </div>
             </div>
         </template>
+        <!-- {{ rombel }} -->
         <div class="dialog-body flex justify-center items-center py-4 border-t-2 border-slate-400 border-t">
             <el-input type="textarea" placeholder="Catatan Rapor" v-model="catatan"></el-input>
         </div>
