@@ -86,14 +86,6 @@ const jml = (total) => {
 const tes = () => {
     router.post(route('dashboard.home.tes'))
 }
-onMounted(() => {
-    // console.log(import.meta.env.VITE_REVERB_HOST)
-    window.Echo.channel('tes')
-        .listen('JawabanReceived', (e) => {
-            console.log(e)
-        })
-
-})
 </script>
 
 <template>

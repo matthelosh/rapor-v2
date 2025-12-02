@@ -254,7 +254,7 @@ const Cetak = () => {
                     <el-table-column label="Jumlah Siswa">
                         <template #default="scope">
                             <el-tag class="cursor-pointer">
-                                {{ scope.row.siswas?.length }}
+                                {{ scope.row.jml_siswa }}
                             </el-tag>
                         </template>
                     </el-table-column>

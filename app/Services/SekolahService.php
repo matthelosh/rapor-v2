@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 // use App\Http\Resources\SekolahResource;
+use App\Helpers\Periode;
 
 class SekolahService
 {
@@ -24,17 +25,21 @@ class SekolahService
     {
         $user = $request->user();
         $tapelActive = \App\Models\Tapel::where('is_active','1')->first();
+        
         $tapel = $tapelActive->kode;
         if ($user->hasRole("admin") || $user->hasRole("superadmin")) {
             $sekolahs = Sekolah::with("ks", "ops")
                 ->with("gurus", function ($q) {
                     $q->where("gurus.jabatan", "!=", "ops");
                 })
-                ->with("siswas", function ($s) use($tapel) {
-                    $s->where('status', 'aktif')->whereHas('rombels', function($r) use($tapel) {
-                        $r->where('tapel', $tapel);
-                    });
-                })
+                ->withCount([
+                    "siswas as jml_siswa" => function ($s) {
+                        $s->where('status', 'aktif')
+                        ->whereHas('rombels', function ($r) {
+                            $r->where('tapel', Periode::tapel()->kode);
+                        });
+                    }
+                    ])
                 ->get();
         } else {
             $sekolahs = Sekolah::where(
