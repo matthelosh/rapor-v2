@@ -152,7 +152,7 @@ class RaporController extends Controller
                     $catatan = $raporService->catatan($query);
                     break;
             }
-            return view("cetak.rapor" . $page, [
+            return view("cetak.rapor." . $page, [
                 "page" => $page,
                 "siswa" => $siswa,
                 "nilais" => $nilais ?? [],
