@@ -73,7 +73,7 @@ class SiswaService
                 "nisn" => $data["nisn"],
             ],
             [
-                "nis" => $data["npd"] ?? null,
+                "nis" => $data["nis"] ?? null,
                 "nik" => $data["nik"] ?? null,
                 "nama" => $data["nama"],
                 "jk" => !in_array($data["jk"], $jk)
