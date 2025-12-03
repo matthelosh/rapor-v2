@@ -9,6 +9,7 @@ class Rapor extends Model
 {
     use HasFactory;
     protected $fillable = [
+        "kode",
         "siswa_id",
         "sekolah",
         "fase",
@@ -27,6 +28,10 @@ class Rapor extends Model
         "is_tuntas",
         "status",
     ];
+
+    protected $primaryKey = "kode";
+
+    public $incrementing = false;
 
     public function siswa()
     {

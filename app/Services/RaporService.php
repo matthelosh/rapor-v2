@@ -170,23 +170,17 @@ class RaporService
 
     public function simpanPermanen($rombelId, $tapel, $semester)
     {
+        // dd(Rombel::whereKode($rombelId)->with('wali_kelas')->first());
         try {
             $rombel = Rombel::whereKode($rombelId)
                 ->with("siswas.sekolah")
-                /* ->with('gurus', function($query) { */
-                /*     $query->wherePivot('status', 'wali'); */
-                /* })->whereHas('gurus', function($query) { */
-                /*     $query->wherePivot('status', 'wali'); */
-                /* }) */
-                ->whereHas("gurus", function ($query) {
-                    $query->where("jabatan", "Guru Kelas");
-                })
-                ->with("gurus", function ($query) {
-                    $query->where("jabatan", "Guru Kelas");
-                })
+                ->whereHas('wali_kelas')
+                ->with('wali_kelas')
                 ->first();
-            dd($rombel->label);
-            $results = [];
+
+            if (!$rombel) {
+                throw new \Exception("Rombel tidak ditemukan");
+            }
 
             foreach ($rombel->siswas as $siswa) {
                 $queries = [
@@ -196,41 +190,23 @@ class RaporService
                     "tapel" => $tapel,
                     "semester" => $semester,
                 ];
-                $result = [
-                    "nilais" => $this->nilaiPAS($queries),
-                    "absensi" => $this->absensi($queries),
-                    "ekskuls" => $this->ekskul($queries),
-                    "catatan" => $this->catatan($queries),
-                    "tanggal" => TanggalRapor::where(
-                        "semester",
-                        $queries["semester"]
-                    )
-                        ->where("tapel", $queries["tapel"])
-                        ->where("tipe", "pas")
-                        ->first(),
-                ];
+
+                $nilaiPAS = $this->nilaiPAS($queries);
 
                 $arsip = Rapor::updateOrCreate(
                     [
-                        "kode" =>
-                            $siswa->nisn .
-                            "-" .
-                            $queries["tapel"] .
-                            $queries["semester"],
+                        "kode" => $siswa->nisn . "-" . $queries["tapel"] . $queries["semester"],
                     ],
                     [
                         "siswa_id" => $siswa->nisn,
+                        "sekolah" => $siswa->sekolah->nama,
                         "semester" => $queries["semester"],
                         "tapel" => $queries["tapel"],
                         "tingkat" => $rombel->tingkat,
-                        "guru_id" => $rombel->gurus[0]->nip,
-                        "ks" => Guru::whereId($siswa->sekolah->ks_id)->pluck(
-                            "nip"
-                        ),
-                        "tanggal_rapor" => TanggalRapor::where(
-                            "semester",
-                            $queries["semester"]
-                        )
+                        "kelas" => $rombel->label,
+                        "guru_id" => $rombel->gurus[0]->nip ?? null,
+                        "ks" => Guru::whereId($siswa->sekolah->ks_id)->pluck("nip"),
+                        "tanggal_rapor" => TanggalRapor::where("semester", $queries["semester"])
                             ->where("tapel", $queries["tapel"])
                             ->where("tipe", "pas")
                             ->pluck("tanggal"),
@@ -240,25 +216,23 @@ class RaporService
                         "catatan" => $this->catatan($queries),
                     ]
                 );
-                $checkArsip = RaporDetail::where(
-                    "rapor_id",
-                    $arsip->kode
-                )->first();
-                if ($checkArsip) {
-                    foreach ($this->nilaiPAS($queries) as $nilai) {
+
+                $checkArsip = RaporDetail::where("rapor_id", $arsip->kode)->exists();
+                if (!$checkArsip) {
+                    foreach ($nilaiPAS as $nilai) {
                         RaporDetail::create([
                             "rapor_id" => $arsip->kode,
-                            "mapel_id" => $nilai["mapel"],
-                            "uh" => 0,
+                            "mapel_id" => $nilai["mapel"]["kode"],
+                            "uh" => $nilai["avgUh"] ?? 0,
                             "ts" => 0,
                             "as" => $nilai["na"],
-                            "rerata" => 0,
+                            "rerata" => $nilai["na"],
                         ]);
                     }
                 }
-                array_push($results, $result);
             }
-            return $results;
+
+            return ["message" => "Rapor berhasil disimpan secara permanen untuk rombel {$rombel->label}"];
         } catch (\Throwable $th) {
             throw $th;
         }

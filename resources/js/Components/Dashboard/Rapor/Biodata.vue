@@ -85,6 +85,7 @@ const cetak = async () => {
         <h3 class="font-bold print:text-center uppercase text-xl">
             Identitas Peserta Didik
         </h3>
+        <!-- {{ ortu }} -->
         <table class="mt-16 10">
             <tbody>
                 <tr>
@@ -126,7 +127,7 @@ const cetak = async () => {
         <table class="mt-8">
             <tbody>
                 <tr>
-                    <td class="text-left w-[200px]">Nama Orang Tua</td>
+                    <th class="text-left w-[200px]">Nama Orang Tua</th>
                     <td class="text-left px-2"></td>
                     <td class="text-left"></td>
                 </tr>
@@ -145,7 +146,7 @@ const cetak = async () => {
         <table class="mt-8 10">
             <tbody>
                 <tr>
-                    <td class="text-left w-[200px]">Alamat Orang Tua</td>
+                    <th class="text-left w-[200px]">Alamat Orang Tua</th>
                     <td class="text-left px-2">&nbsp;</td>
                     <td class="text-left">&nbsp;</td>
                 </tr>
@@ -164,7 +165,7 @@ const cetak = async () => {
         <table class="mt-8 10">
             <tbody>
                 <tr>
-                    <td class="text-left w-[200px]">No. Kontak Orang Tua</td>
+                    <th class="text-left w-[200px]">No. Kontak Orang Tua</th>
                     <td class="text-left px-2">&nbsp;</td>
                     <td class="text-left">&nbsp;</td>
                 </tr>
@@ -180,10 +181,29 @@ const cetak = async () => {
                 </tr>
             </tbody>
         </table>
+        <table class="mt-8 10">
+            <tbody>
+                <tr>
+                    <th class="text-left w-[200px]">Pekerjaan Kontak Orang Tua</th>
+                    <td class="text-left px-2">&nbsp;</td>
+                    <td class="text-left">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="text-left">Ayah</td>
+                    <td class="text-left px-2">:</td>
+                    <td class="text-left">{{ ortu.ayah?.pekerjaan }}</td>
+                </tr>
+                <tr>
+                    <td class="text-left">Ibu</td>
+                    <td class="text-left px-2">:</td>
+                    <td class="text-left">{{ ortu.ibu?.pekerjaan }}</td>
+                </tr>
+            </tbody>
+        </table>
         <table class="mt-8">
             <tbody>
                 <tr>
-                    <td class="text-left w-[200px]">Wali Peserta Didik</td>
+                    <th class="text-left w-[200px]">Wali Peserta Didik</th>
                     <td class="text-left px-2">&nbsp;</td>
                     <td class="text-left">&nbsp;</td>
                 </tr>
@@ -201,6 +221,11 @@ const cetak = async () => {
                     <td class="text-left w-[100px]">Kontak</td>
                     <td class="text-left px-2">:</td>
                     <td class="text-left">{{ ortu.wali?.hp ?? "-" }}</td>
+                </tr>
+                <tr>
+                    <td class="text-left w-[100px]">Pekerjaan</td>
+                    <td class="text-left px-2">:</td>
+                    <td class="text-left">{{ ortu.wali?.pekerjaan ?? "-" }}</td>
                 </tr>
             </tbody>
         </table>
