@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
+/*
 Route::domain("{subdomain}.pkgwagir.or.id")->group(function () {
     Route::get("/{any?}", function ($subdomain, $any = "") {
         // Ganti 5173 dengan port Vite Anda jika perlu
@@ -32,6 +33,8 @@ Route::domain("{subdomain}.pkgwagir.or.id")->group(function () {
         }
     })->where("any", ".*");
 });
+*/
+
 
 Route::prefix("")->group(function () {
     Route::get("/", [FrontController::class, "home"])->name("home");
@@ -531,6 +534,12 @@ Route::middleware("auth")->group(function () {
                     "role:guru_kelas|guru_agama|guru_pjok|guru_inggris",
                 ]);
 
+            Route::prefix("kokurikuler")->group(
+                function () {
+                    Route::get("/", [KokurikulerController::class, "home"])->name('dashboard.kokurikuler.home');
+                }
+            );
+
             Route::prefix("ekskul")->group(function () {
                 Route::get("/", [NilaiEkskulController::class, "index"])->name(
                     "dashboard.nilai.ekskul.index",
@@ -568,6 +577,10 @@ Route::middleware("auth")->group(function () {
                 NilaiController::class,
                 "bulkDelete",
             ])->name("dashboard.nilai.hapus.bulk");
+        });
+
+        Route::get('/test', function () {
+            return 'Test route works';
         });
 
         Route::prefix("ledger")->group(function () {

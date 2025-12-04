@@ -207,6 +207,12 @@
                 ]
             },
             {
+                "label": "Kokurikuler",
+                "icon": "clipboard",
+                "url": "/dashboard/nilai/kokurikuler",
+                "roles": ["guru_kelas"]
+            },
+            {
                 "label": "Ledger",
                 "icon": "spreadsheet",
                 "url": "/dashboard/ledger",
