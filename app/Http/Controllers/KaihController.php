@@ -78,6 +78,8 @@ class KaihController extends Controller
                     });
                 });
             }
+
+            // dd($rombels[0]->siswas[0]);
             return Inertia::render("Dash/Kaih/Home", [
                 "rombels" => $rombels,
                 "sekolahs" => \sekolahs($request->user()),
