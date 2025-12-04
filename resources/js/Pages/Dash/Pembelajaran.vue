@@ -413,9 +413,10 @@ const generateKode = (lastTp) => {
 
 const addRow = () => {
     // alert(defaultTp.value.mapel_id)
+    // alert(selectedMapel.value.kode)
     let item = { ...defaultTp.value };
-    item.fase = page.props.rombels[0].fase;
-    item.tingkat = page.props.rombels[0].tingkat;
+    item.fase = page.props.auth.roles[0] !== 'admin' ?  page.props.rombels[0].fase : '';
+    item.tingkat = page.props.auth.roles[0] !== 'admin' ?  page.props.rombels[0].tingkat : '';
     item.mapel_id = selectedMapel.value.kode;
     item.semester = page.props.periode.semester.kode;
     // console.log(item)
@@ -432,18 +433,26 @@ const removeNewTpsItem = (t) => {
 };
 
 const elemens = () => {
-    const results = page.props.elemens.filter((el) => {
-        return (
-            el.mapel_id == selectedMapel.value.kode &&
-            el.agama ==
-                (page.props.auth.roles[0] == "guru_agama" ||
-                (selectedMapel.value.kode == "pabp" &&
-                    page.props.auth.roles[0] != "admin")
-                    ? page.props.auth.user.userable.agama
-                    : null)
-        );
-    });
-    return results;
+    // const results = page.props.elemens.filter((el) => {
+    //     return (
+    //         el.mapel_id == selectedMapel.value.kode &&
+    //         el.agama ==
+    //             (page.props.auth.roles[0] == "guru_agama" ||
+    //             (selectedMapel.value.kode == "pabp" &&
+    //                 page.props.auth.roles[0] != "admin")
+    //                 ? page.props.auth.user.userable.agama
+    //                 : el)
+    //     );
+    // });
+    // return results;
+    if (page.props.auth.roles[0] == 'admin') {
+        return page.props.elemens.filter(el => el.mapel_id == selectedMapel.value.kode)
+
+    } else if (page.props.auth.roles[0] == 'guru_agama') {
+        return page.props.elemens.filter(el => el.mapel_id == selectedMapel.value.kode && el.agama == page.props.auth.user.userable.agama)
+    } else {
+        return page.props.elemens.filter(el => el.mapel_id == selectedMapel.value.kode)
+    }
 };
 
 onBeforeMount(() => {
@@ -471,6 +480,7 @@ onBeforeMount(() => {
                 <span class="title font-bold text-lg">Konten Pembelajaran</span>
             </template>
             <div class="card-body">
+                <!-- {{page.props}} -->
                 <el-row>
                     <el-col>
                         <div class="card border">

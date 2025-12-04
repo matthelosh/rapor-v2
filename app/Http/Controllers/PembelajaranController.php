@@ -42,7 +42,7 @@ class PembelajaranController extends Controller implements HasMiddleware
                     $mapels = Mapel::where("kode", "pabp")
                         ->with([
                             "tps" => function ($t) use ($agama) {
-                                $t->where("agama", $agama);
+                                $t->where("agama", $agama)->where('is_active', 1);
                             },
                         ])
                         ->get();
@@ -54,13 +54,17 @@ class PembelajaranController extends Controller implements HasMiddleware
                 $mapels = Mapel::whereNot("kode", end($permission))
                     ->with([
                         "tps" => function ($t) use ($mapel) {
-                            $t->where("tingkat", $mapel);
+                            $t->where("tingkat", $mapel)->where('is_active', 1);
                         },
                     ])
                     ->get();
             }
         } elseif ($request->user()->hasRole(["admin", "superadmin", "ops"])) {
-            $mapels = Mapel::with("tps")->get();
+            $mapels = Mapel::with([
+                "tps" => function ($t) {
+                    $t->where('is_active', 1);
+                }
+                ])->get();
         } elseif ($request->user()->hasRole("guru_kelas")) {
             $sekolahId = $request->user()->userable->sekolahs[0]->npsn;
             $nip = $request->user()->userable->nip;
@@ -76,7 +80,8 @@ class PembelajaranController extends Controller implements HasMiddleware
             })
                 ->with("tps", function ($t) use ($guruId, $tingkat) {
                     //$t->whereGuruId($guruId);
-                    $t->where("semester", Periode::semester()->kode);
+                    $t->where("semester", Periode::semester()->kode)->where('is_active', 1);
+
                     $t->whereIn("tingkat", $tingkat);
                 })
                 /* ->with('tps') */
@@ -98,7 +103,7 @@ class PembelajaranController extends Controller implements HasMiddleware
                     : ["agama", "=", null];
             $mapels = Mapel::whereKode($mapelId)
                 ->with("tps", function ($t) use ($agamaQuery) {
-                    $t->where("semester", Periode::semester()->kode);
+                    $t->where("semester", Periode::semester()->kode)->where('is_active', 1);
                     $t->where([$agamaQuery]);
                 })
                 ->get();

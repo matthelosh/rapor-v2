@@ -20,6 +20,7 @@ class TpController extends Controller
                 ["tingkat", "=", $request->tingkat],
                 ["semester", "=", $request->semester],
                 ["agama", "=", $request->agama],
+                ['is_active','=', 1]
             ])->get();
             return response()->json(["tps" => $tps]);
         } catch (\Throwable $th) {
@@ -61,6 +62,7 @@ class TpController extends Controller
                         "semester" => $tp["semester"],
                         "agama" => $tp["agama"] ?? null,
                         "guru_id" => $guruId,
+                        "is_active" => 1
                     ]
                 );
             }
@@ -95,6 +97,7 @@ class TpController extends Controller
                     "tingkat" => $request["tingkat"],
                     "semester" => $request["semester"],
                     "agama" => $request["agama"] ?? null,
+                    "is_active" => 1
                 ]
             );
             return back()->with("message", "TP Disimpan");

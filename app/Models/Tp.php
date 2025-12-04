@@ -53,7 +53,8 @@ class Tp extends Model
         'tingkat',
         'semester',
         'agama',
-        'guru_id'
+        'guru_id',
+        'is_active'
     ];
 
     public function guru()
