@@ -112,14 +112,20 @@ class AsesmenController extends Controller
                     ->get();
             }
             return Inertia::render("Dash/Asesmen/Home", [
-                "sekolahs" => Sekolah::whereHas("gurus", function ($q) {
-                    $q->where("gurus.id", auth()->user()->userable->id);
-                })
-                    ->with("mapels")
-                    ->with("rombels", function ($r) {
-                        $r->where("tapel", Periode::tapel()->kode);
-                    })
-                    ->get(),
+                "sekolahs" => $request->user()->hasRole('admin') ?
+                                Sekolah::with('mapels')
+                                    ->with('rombels', function($r) {
+                                        $r->where('tapel', Periode::tapel()->kode);
+                                    })
+                                      ->get() :
+                                Sekolah::whereHas("gurus", function ($q) {
+                                    $q->where("gurus.id", auth()->user()->userable->id);
+                                })
+                                ->with("mapels")
+                                ->with("rombels", function ($r) {
+                                    $r->where("tapel", Periode::tapel()->kode);
+                                })
+                                ->get(),
                 "mapels" => Mapel::all(),
                 "asesmens" => $asesmens,
                 "canAddAsesmen" => $request->user()->can("add_asesmen"),
