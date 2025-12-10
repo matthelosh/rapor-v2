@@ -537,6 +537,7 @@ Route::middleware("auth")->group(function () {
             Route::prefix("kokurikuler")->group(
                 function () {
                     Route::get("/", [KokurikulerController::class, "home"])->name('dashboard.kokurikuler.home');
+                    Route::post("/", [KokurikulerController::class, "store"])->name('dashboard.kokurikuler.store');
                 }
             );
 

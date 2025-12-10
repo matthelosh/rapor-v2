@@ -142,7 +142,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <td class="border border-black px-4 py-2"></td>
+                        <td class="border border-black px-4 py-2">{{$kokurikuler}}</td>
                     </tbody>
                 </table>
             </div>

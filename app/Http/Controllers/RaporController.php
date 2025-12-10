@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Periode;
 use App\Models\TanggalRapor;
 use App\Models\Tapel;
 use App\Models\Siswa;
@@ -13,6 +14,7 @@ use App\Models\Rombel;
 use App\Models\Sekolah;
 use App\Helpers\RombelHelper;
 use App\Helpers\SekolahHelper;
+use App\Models\Kokurikuler;
 
 class RaporController extends Controller
 {
@@ -150,6 +152,7 @@ class RaporController extends Controller
                     $absensis = $raporService->absensi($query);
                     $ekskuls = $raporService->ekskul($query);
                     $catatan = $raporService->catatan($query);
+                    $kokurikuler = Kokurikuler::where('siswa_id', $siswaId)->where('tapel', Periode::tapel()->kode)->where('semester', Periode::semester()->kode)->first();
                     break;
             }
             return view("cetak.rapor." . $page, [
@@ -168,6 +171,7 @@ class RaporController extends Controller
                 "absensi" => $absensis ?? [],
                 "ekskuls" => $ekskuls ?? [],
                 "catatan" => $catatan ?? [],
+                "kokurikuler" => $kokurikuler ? $kokurikuler->deskripsi : '',
             ]);
         } catch (\Exception $e) {
             dd($e);

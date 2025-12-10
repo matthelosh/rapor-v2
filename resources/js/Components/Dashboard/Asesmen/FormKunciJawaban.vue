@@ -96,34 +96,35 @@ const validatePGK = (index, val) => {
 };
 const psRefs = ref([]);
 const validatePS = (index, val) => {
-    const valids = [
-        "1A",
-        "1B",
-        "1C",
-        "1D",
-        "1E",
-        "2A",
-        "2B",
-        "2C",
-        "2D",
-        "2E",
-        "3A",
-        "3B",
-        "3C",
-        "3D",
-        "3E",
-        "4A",
-        "4B",
-        "4C",
-        "4D",
-        "4E",
-        "5A",
-        "5B",
-        "5C",
-        "5D",
-        "5E",
-    ];
-    if (!valids.includes(val.toUpperCase())) {
+    // const valids = [
+    //     "1A",
+    //     "1B",
+    //     "1C",
+    //     "1D",
+    //     "1E",
+    //     "2A",
+    //     "2B",
+    //     "2C",
+    //     "2D",
+    //     "2E",
+    //     "3A",
+    //     "3B",
+    //     "3C",
+    //     "3D",
+    //     "3E",
+    //     "4A",
+    //     "4B",
+    //     "4C",
+    //     "4D",
+    //     "4E",
+    //     "5A",
+    //     "5B",
+    //     "5C",
+    //     "5D",
+    //     "5E",
+    // ];
+    const valids = /^([1-9]|1[0-5])[A-J]$/
+    if (!valids.test(val.toUpperCase())) {
         ElMessage({
             type: "error",
             message: `Jawaban hanya ${valids}`,
