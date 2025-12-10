@@ -242,7 +242,7 @@ const onFileNilaiPicked = async (e) => {
             if (siswa.nisn == data.nisn) {
                 Object.keys(data).forEach((k) => {
                     if (!["no", "nisn", "nama", "jk", "agama"].includes(k)) {
-                        siswa.nilais[k] = data[k];
+                        siswa.nilais[k] = Number(data[k]) || 0;
                         // console.log(k)
                     }
                 });
@@ -347,14 +347,16 @@ const nilaiAkhir = (indexSiswa) => {
     const { ts, as, ...rest } = siswas.value[indexSiswa].nilais;
     let notNull = [];
     Object.values(rest).forEach((v) => {
-        if (v !== 0) {
-            notNull.push(v);
+        const num = Number(v);
+        if (num !== 0 && !isNaN(num)) {
+            notNull.push(num);
         }
     });
+    if (notNull.length === 0) return 0;
     const avgUh = notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length;
-
-    // return Object.values(rest).reduce((acc, cur) => acc + cur, 0);
-    return Math.ceil((avgUh + as) / 2);
+    const asNum = Number(as);
+    if (isNaN(asNum)) return 0;
+    return Math.ceil((avgUh + asNum) / 2);
 };
 
 onBeforeMount(async () => {
