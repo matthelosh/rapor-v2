@@ -353,7 +353,7 @@ const nilaiAkhir = (indexSiswa) => {
         }
     });
     if (notNull.length === 0) return 0;
-    const avgUh = notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length;
+    const avgUh = notNull.length > 0 ? Math.ceil(notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length) : 0;
     const asNum = Number(as);
     if (isNaN(asNum)) return 0;
     return Math.ceil((avgUh + asNum) / 2);

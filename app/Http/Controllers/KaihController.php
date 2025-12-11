@@ -181,17 +181,23 @@ class KaihController extends Controller
 
             // 1. Build a lookup map from the request payload {'YYYY-MM-DD::Kebiasaan' => true}
             $requestPairs = [];
+            $requestDates = [];
             foreach ($request->kegiatans as $kebiasaan => $tanggals) {
                 foreach ($tanggals as $tanggal) {
                     // Normalize the key
                     $requestPairs[$tanggal . '::' . $kebiasaan] = true;
+                    $requestDates[] = $tanggal;
                 }
             }
+            $requestDates = array_unique($requestDates);
+            $months = array_map(function($date) { return date('m', strtotime($date)); }, $requestDates);
+            $months = array_unique($months);
 
-            // 2. Fetch all existing records for the student this semester
+            // 2. Fetch existing records for the student this semester, limited to the months in the request
             $dbRecords = Kaih::where('rombel_id', $rombelId)
                 ->where('siswa_id', $siswaId)
                 ->where('semester', $semester)
+                ->whereIn(DB::raw('MONTH(waktu)'), $months)
                 ->get();
 
             // 3. Determine which records to delete
