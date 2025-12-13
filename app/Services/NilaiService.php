@@ -15,7 +15,7 @@ class NilaiService
 
     public function home($semester, $tapel)
     {
-        $tapel = $tapel ?? Periode::tapel()->kode;
+        $tapel ??= Periode::tapel()->kode;
         /** @var \App\Models\User */
         $user = auth()->user();
         /* $semester = Periode::semester()->kode; */
@@ -111,11 +111,34 @@ class NilaiService
             $datas = Sekolah::all();
         } else {
             $guruId = $user->userable->id;
-            $datas = Sekolah::whereHas("gurus", function ($q) use ($guruId) {
+            $datas = Sekolah::whereHas("gurus", function ($q) use ($guruId, $semester) {
                 $q->where("gurus.id", $guruId);
             })
                 ->with("ks")
-                ->with("rombels.siswas")
+                ->with([
+                    "rombels" => function ($r) use ($semester) {
+                        $r->where('tapel', Periode::tapel()->kode)
+                            ->with('siswas');
+                        $r->with([
+                            "nilais" => function ($n) use ($semester) {
+                                $n->select(
+                                    "rombel_id",
+                                    DB::raw(
+                                        "SUM(CASE WHEN tipe = 'uh' THEN 1 ELSE 0 END) as uh"
+                                    ),
+                                    DB::raw(
+                                        "SUM(CASE WHEN tipe = 'ts' THEN 1 ELSE 0 END) as pts"
+                                    ),
+                                    DB::raw(
+                                        "SUM(CASE WHEN tipe = 'as' THEN 1 ELSE 0 END) as pas"
+                                    )
+                                )
+                                    ->where("semester", $semester)
+                                    ->groupBy("rombel_id");
+                            },
+                        ]);
+                    },
+                ])
                 ->get();
         }
 

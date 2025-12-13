@@ -419,7 +419,7 @@ onBeforeMount(() => {
             <div class="flex justify-between">
                 <h2>Detail Per Bulan {{ selectedSiswa?.nama }}</h2>
 
-                <el-button :native-type="null" @click="close" type="danger" circle="true">
+                <el-button :native-type="null" @click="close" type="danger" :circle="true">
                     <Icon icon="mdi:close" class="text-lg" />
                 </el-button>
             </div>

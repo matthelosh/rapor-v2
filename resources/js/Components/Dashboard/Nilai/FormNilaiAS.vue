@@ -90,7 +90,7 @@ const getNilai = async () => {
                     tingkat: props.rombel.tingkat,
                     mapelId: props.mapel?.kode,
                     agama: page.props.auth.roles.includes("guru_agama")
-                        ? page.props.auth.user.userable.agama
+                        ? page.props.auth.userable.agama
                         : null,
                     semester:
                         route().params.semester ??
@@ -172,7 +172,7 @@ onBeforeMount(async () => {
         props.mapel.kode !== "pabp"
             ? props.rombel.siswas
             : props.rombel.siswas.filter(
-                  (siswa) => siswa.agama == page.props.auth.user.userable.agama,
+                  (siswa) => siswa.agama == page.props.auth.userable.agama,
               );
     filteredSiswas.forEach((siswa) => {
         siswa.nilai = 0;
@@ -204,7 +204,7 @@ onBeforeMount(async () => {
                                     ? props.mapel.label
                                     : !props.mapel.kode.includes("pabp")
                                       ? props.mapel.kode.toUpperCase()
-                                      : `Pendidikan Agama ${page.props.auth.user.userable.agama}`
+                                      : `Pendidikan Agama ${page.props.auth.userable.agama}`
                             }}
                         </p>
                         <p>

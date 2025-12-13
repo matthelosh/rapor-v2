@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tp;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\TpRequest;
@@ -12,15 +13,18 @@ class TpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         try {
-            $tps = Tp::where([
+            $tpQry = Tp::query();
+            if (isset($request->agama)) {
+                $tpQry->where('agama', $request->agama);
+            }
+            $tps = $tpQry->where([
                 ["mapel_id", "=", $request->mapelId],
                 ["tingkat", "=", $request->tingkat],
                 ["semester", "=", $request->semester],
-                ["agama", "=", $request->agama],
-                ['is_active','=', 1]
+                ['is_active','=', 1],
             ])->get();
             return response()->json(["tps" => $tps]);
         } catch (\Throwable $th) {
@@ -36,9 +40,9 @@ class TpController extends Controller
         try {
             /* $mapel_id = $request->tps[0]['mapel_id']; */
             foreach ($request->tps as $tp) {
-                $guruId =
-                    $tp["guru_id"] ??
-                    ($request
+                $guruId
+                    = $tp["guru_id"]
+                    ?? ($request
                         ->user()
                         ->hasRole([
                             "guru_kelas",
@@ -62,7 +66,7 @@ class TpController extends Controller
                         "semester" => $tp["semester"],
                         "agama" => $tp["agama"] ?? null,
                         "guru_id" => $guruId,
-                        "is_active" => 1
+                        "is_active" => 1,
                     ]
                 );
             }
@@ -87,9 +91,9 @@ class TpController extends Controller
                     "kode" => $request["kode"] ?? strtolower(Str::random(8)),
                     "teks" => $request["teks"],
                     "elemen" => $request["elemen"],
-                    "fase" =>
-                        $request["fase"] ??
-                        (in_array($request["tingkat"], ["1", "2"])
+                    "fase"
+                        => $request["fase"]
+                        ?? (in_array($request["tingkat"], ["1", "2"])
                             ? "A"
                             : (in_array($request["tingkat"], ["3", "4"])
                                 ? "B"
@@ -97,7 +101,7 @@ class TpController extends Controller
                     "tingkat" => $request["tingkat"],
                     "semester" => $request["semester"],
                     "agama" => $request["agama"] ?? null,
-                    "is_active" => 1
+                    "is_active" => 1,
                 ]
             );
             return back()->with("message", "TP Disimpan");

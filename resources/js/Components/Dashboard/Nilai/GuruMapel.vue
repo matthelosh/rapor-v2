@@ -13,6 +13,8 @@ const FormNilaiAS = defineAsyncComponent(
     () => import("@/Components/Dashboard/Nilai/FormNilaiAS.vue"),
 );
 
+const FormNilaiMapel = defineAsyncComponent(() => import("@/Components/Dashboard/Nilai/FormNilaiMapel.vue"));
+
 const selectedRombel = ref({});
 const selectedSekolah = ref({});
 
@@ -211,6 +213,20 @@ onBeforeMount(() => {
                                                 "
                                                 >PAS</el-button
                                             >
+                                            <el-button
+                                                :native-type="null"
+                                                type="primary"
+                                                rounded
+                                                size="small"
+                                                @click="
+                                                    open(
+                                                        scope.row,
+                                                        'nilaimapel',
+                                                        sekolah,
+                                                    )
+                                                "
+                                                >Nilai Mapel</el-button
+                                            >
                                         </span>
                                     </template>
                                 </el-table-column>
@@ -239,6 +255,14 @@ onBeforeMount(() => {
         <FormNilaiAS
             v-if="mode == 'sas'"
             :open="mode == 'sas'"
+            :rombel="selectedRombel"
+            :sekolah="selectedSekolah"
+            :mapel="mapel"
+            @close="closeForm"
+        />
+        <FormNilaiMapel
+            v-if="mode == 'nilaimapel'"
+            :open="mode == 'nilaimapel'"
             :rombel="selectedRombel"
             :sekolah="selectedSekolah"
             :mapel="mapel"
