@@ -171,7 +171,7 @@ class RaporController extends Controller
                 "absensi" => $absensis ?? [],
                 "ekskuls" => $ekskuls ?? [],
                 "catatan" => $catatan ?? [],
-                "kokurikuler" => $kokurikuler ? $kokurikuler->deskripsi : '',
+                "kokurikuler" => (isset($kokurikuler) && $kokurikuler && ($page == 'pas')) ? $kokurikuler->deskripsi : '',
             ]);
         } catch (\Exception $e) {
             dd($e);

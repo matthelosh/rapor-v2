@@ -41,7 +41,7 @@ const cetak = async () => {
     let win = window.open("", "_blank", "height=600,width=1024");
     win.document.write(html);
     setTimeout(() => {
-        win.print();
+        // win.print();
         // win.close();
     }, 1500);
 };
