@@ -28,7 +28,7 @@ const simpan = async () => {
                 tingkat: props.rombel.tingkat,
                 mapelId: props.mapel?.kode,
                 agama: page.props.auth.roles.includes("guru_agama")
-                    ? page.props.auth.user.userable.agama
+                    ? page.props.auth.userable.agama
                     : null,
                 semester:
                     route().params.semester ?? page.props.periode.semester.kode,
