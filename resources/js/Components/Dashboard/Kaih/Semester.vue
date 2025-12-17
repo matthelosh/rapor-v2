@@ -118,7 +118,7 @@ onBeforeMount(() => {
                         <tr>
                             <td>Nama Sekolah</td>
                             <td>:</td>
-                            <td>SD Contoh</td>
+                            <td>{{ siswa.sekolah.nama }}</td>
                         </tr>
                         <tr>
                             <td>Kelas</td>

@@ -144,11 +144,13 @@ class RaporService
 
                 $nas = isset($nilaiRaw[$mapel["kode"]]) ? ($nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null) : null;
 
-                $avgUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->avg('skor') : 0;
+                $uhs = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->filter(fn($n) => $n->tp && $n->skor != 0) : collect();
 
-                $maxUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortByDesc('skor')->first() : null;
+                $avgUh = $uhs->avg('skor') ?? 0;
 
-                $minUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->sortBy('skor')->first() : null;
+                $maxUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortByDesc('skor')->first() : null;
+
+                $minUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortBy('skor')->first() : null;
                 // dd($avgUh, $nas->skor, $nuhs);
                 $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 
@@ -156,6 +158,8 @@ class RaporService
                     "nomor" => $nomor,
                     "mapel" => $mapel,
                     "na" => $na,
+                    "avgUh" => $avgUh,
+                    "nas" => $nas !== null ? $nas->skor : 0,
                     "minu" => $minUh,
                     "maxu" => $maxUh,
                     "kktp" => $kktp,
@@ -223,9 +227,9 @@ class RaporService
                         RaporDetail::create([
                             "rapor_id" => $arsip->kode,
                             "mapel_id" => $nilai["mapel"]["kode"],
-                            "uh" => $nilai["avgUh"] ?? 0,
+                            "uh" => $nilai["avgUh"],
                             "ts" => 0,
-                            "as" => $nilai["na"],
+                            "as" => $nilai["nas"],
                             "rerata" => $nilai["na"],
                         ]);
                     }

@@ -28,9 +28,9 @@
     <body class="font-serif p-4 print:p-0" onload="cetak()">
         <script>
             function cetak() {
-                window.print();
                 setTimeout(() => {
-                    window.close()
+                    window.print();
+                    // window.close()
                 }, 500)
             }
         </script>
@@ -107,18 +107,23 @@
                                 <td class="border border-black px-4 py-2">{{ ($nilai['mapel']['label']) }}</td>
                                 <td class="border border-black px-4 py-2 text-center">{{ ($nilai['na']) }}</td>
                                 <td class="border border-black px-4 py-2 text-justify">
-                                    <ol class="list-disc pl-4">
+                                    Ananda <b>{{ ucwords(strtolower($siswa->nama)) }}</b> 
+                                    {{-- <ol class="list-disc pl-4"> --}}
+
                                         @if(isset($nilai['maxu']['tp']['teks']))
-                                            <li>
+                                            {{-- <li> --}}
+                                                Menunjukkan penguasaan dalam:
                                                 {{ $nilai['maxu']['tp']['teks'] }}
-                                            </li>
+                                            {{-- </li> --}}
                                         @endif
+                                        <br />
                                         @if (isset($nilai['minu']['tp']['teks']) && $nilai['minu'] != null && isset($nilai['maxu']['skor']) && $nilai['minu']['skor'] < $nilai['maxu']['skor'])
-                                            <li>
+                                            {{-- <li> --}}
+                                                Namun masih perlu bimbingan dalam: 
                                                 {{ $nilai['minu']['tp']['teks'] }}
-                                            </li>
+                                            {{-- </li> --}}
                                         @endif
-                                    </ol>
+                                    {{-- </ol> --}}
                                     {{-- <p>
                                     {{ $nilai['maxu']['tp']['teks'] }}
                                     </p>
