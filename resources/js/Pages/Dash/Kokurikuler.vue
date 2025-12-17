@@ -12,6 +12,7 @@ const inputNilai = (index, siswa) => {
     formNilai.value = true
     nilaiIndex.value = index
     selectedNilai.value = {
+        id: siswa.kokurikulers[0]?.id ?? null,
         index:index,
         siswa_id: siswa.nisn,
         rombel_id: page.props.rombel.kode,
