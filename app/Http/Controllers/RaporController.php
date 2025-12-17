@@ -33,6 +33,7 @@ class RaporController extends Controller
         $rombels = Rombel::whereHas("wali_kelas", function ($query) use ($nip) {
             $query->where("nip", $nip);
         })
+            ->where('tapel', Periode::tapel()->kode)
             ->with("siswas", fn($s) => $s->select("nama", "nis", "nisn"))
             ->get();
         return Inertia::render("Dash/Rapor/Label", [

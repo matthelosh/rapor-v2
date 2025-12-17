@@ -3,7 +3,7 @@
     <head>
         <title>Rapor PAS</title>
         @if (app()->environment('local'))
-            <link rel="stylesheet" href="{{ config('app.url') }}:5173/resources/css/app.css">
+            <link rel="stylesheet" href="http://localhost:5173/resources/css/app.css">
         @else
             <link rel="stylesheet" href="{{ config('app.url') }}/build/assets/app.css">
         @endif
@@ -254,8 +254,9 @@
                         <p class="font-bold">..........................................</p>
                     </div>
 
-                    <div class="col-span-1 text-center">
+                    <div class="col-span-1 text-center relative">
                         <p>Kepala Sekolah</p>
+                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute h-[75px] left-[20%] rotate-4" />
                         <br>
                         <br>
                         <br>
