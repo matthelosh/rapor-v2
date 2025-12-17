@@ -256,11 +256,11 @@
 
                     <div class="col-span-1 text-center relative">
                         <p>Kepala Sekolah</p>
-                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute h-[75px] left-[20%] rotate-4" />
+                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute h-[75px] left-[50%] -translate-x-[50%] rotate-4 mix-blend-multiply -z-1" />
                         <br>
                         <br>
                         <br>
-                        <p class="font-bold underline">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
+                        <p class="font-bold underline text-red-500">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
                         <p class="leading-4">NIP. {{$siswa->sekolah->ks->nip}}</p>
                     </div>
                     <div class="col-span-1 text-center">
