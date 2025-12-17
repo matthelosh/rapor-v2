@@ -256,7 +256,7 @@
 
                     <div class="col-span-1 text-center relative">
                         <p>Kepala Sekolah</p>
-                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute h-[75px] left-[50%] -translate-x-[50%] rotate-4 mix-blend-multiply -z-1" />
+                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute h-[75px] left-[50%] -translate-x-[50%] rotate-4 -z-1" />
                         <br>
                         <br>
                         <br>
