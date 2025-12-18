@@ -30,13 +30,11 @@
             function cetak() {
                 setTimeout(() => {
                     window.print();
-                    // window.close()
                 }, 500)
             }
         </script>
 
-        <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative text-[0.8em]"">
-            {{-- <img src="/img/tutwuri.png" alt="Watermark" class="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-72  opacity-10 z-0"> --}}
+        <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative text-[0.8em]">
             <div class="meta w-full">
                 <h3 class="text-center font-bold text-xl uppercase mb-4">Laporan Hasil Belajar</h3>
                 <div class="flex justify-between gap-4">
@@ -107,29 +105,16 @@
                                 <td class="border border-black px-4 py-2">{{ ($nilai['mapel']['label']) }}</td>
                                 <td class="border border-black px-4 py-2 text-center">{{ ($nilai['na']) }}</td>
                                 <td class="border border-black px-4 py-2 text-justify">
-                                    Ananda <b>{{ ucwords(strtolower($siswa->nama)) }}</b> 
-                                    {{-- <ol class="list-disc pl-4"> --}}
-
-                                        @if(isset($nilai['maxu']['tp']['teks']))
-                                            {{-- <li> --}}
-                                                Menunjukkan penguasaan dalam:
-                                                {{ $nilai['maxu']['tp']['teks'] }}
-                                            {{-- </li> --}}
-                                        @endif
-                                        <br />
-                                        @if (isset($nilai['minu']['tp']['teks']) && $nilai['minu'] != null && isset($nilai['maxu']['skor']) && $nilai['minu']['skor'] < $nilai['maxu']['skor'])
-                                            {{-- <li> --}}
-                                                Namun masih perlu bimbingan dalam: 
-                                                {{ $nilai['minu']['tp']['teks'] }}
-                                            {{-- </li> --}}
-                                        @endif
-                                    {{-- </ol> --}}
-                                    {{-- <p>
-                                    {{ $nilai['maxu']['tp']['teks'] }}
-                                    </p>
-                                    <p>
-                                    {{ $nilai['minu']['tp']['teks'] }}
-                                    </p> --}}
+                                    Ananda <b>{{ ucwords(strtolower($siswa->nama)) }}</b>
+                                    @if(isset($nilai['maxu']['tp']['teks']))
+                                        Menunjukkan penguasaan dalam:
+                                        {{ $nilai['maxu']['tp']['teks'] }}
+                                    @endif
+                                    <br />
+                                    @if (isset($nilai['minu']['tp']['teks']) && $nilai['minu'] != null && isset($nilai['maxu']['skor']) && $nilai['minu']['skor'] < $nilai['maxu']['skor'])
+                                        Namun masih perlu bimbingan dalam:
+                                        {{ $nilai['minu']['tp']['teks'] }}
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -138,7 +123,6 @@
             </div>
         </div>
         <div class="page ko_ekstrakurikuler w-[60%] py-4 px-8 mx-auto print:w-full  mt-4 print:mt-0 break-inside-avoid relative">
-            {{-- <img src="/img/tutwuri.png" alt="Watermark" class="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] w-72  opacity-10 z-0"> --}}
             <div class="nilai_kokurikuler mt-4 w-full">
                 <table class="w-full">
                     <thead>
@@ -147,7 +131,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <td class="border border-black px-4 py-2">{{$kokurikuler}}</td>
+                        <tr>
+                            <td class="border border-black px-4 py-2">{{$kokurikuler}}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -162,9 +148,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- <td class="border border-black px-4 py-2">1</td>
-                        <td class="border border-black px-4 py-2">Pramuka</td>
-                        <td class="border border-black px-4 py-2">Baik</td> --}}
                         @foreach($ekskuls as $key => $ekskul)
                             <tr>
                                 <td class="border border-black px-4 py-2 text-center">{{ $loop->index + 1 }}</td>
@@ -175,15 +158,13 @@
                     </tbody>
                 </table>
             </div>
-        {{-- </div>
-        <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full bg-white mt-4 print:mt-0 break-inside-avoid"> --}}
             <div class="absen_note mt-4 w-full">
                 <div class="grid grid-cols-12">
                     <div class="col-span-5">
                         <table>
                             <thead>
                                 <tr class="bg-gray-200">
-                                    <th class="border border-black px-2 font-bold center" colspan="2">Ketidakhadiran</th>
+                                    <th class="border border-black px-2 font-bold text-center" colspan="2">Ketidakhadiran</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -202,12 +183,11 @@
                             </tbody>
                         </table>
                     </div>
-                    {{-- <div class="col-span-1"></div> --}}
                     <div class="col-span-7">
                         <table class="w-full">
                             <thead>
                                 <tr class="bg-gray-200">
-                                    <th class="border border-black px-2 font-bold center" >Catatan Wali Kelas</th>
+                                    <th class="border border-black px-2 font-bold text-center" >Catatan Wali Kelas</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -229,7 +209,7 @@
                 <table class="w-full">
                     <thead>
                         <tr class="bg-gray-200">
-                            <th class="border border-black px-2 font-bold center" >Tanggapan Orang Tua/Wali</th>
+                            <th class="border border-black px-2 font-bold text-center" >Tanggapan Orang Tua/Wali</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -274,6 +254,5 @@
                     </div>
                 </div>
         </div>
-        
     </body>
 </html>
