@@ -236,7 +236,7 @@
 
                     <div class="col-span-1 text-center relative">
                         <p>Kepala Sekolah</p>
-                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" />
+                        {{-- <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" /> --}}
                         <br>
                         <br>
                         <br>
@@ -245,7 +245,7 @@
                     </div>
                     <div class="col-span-1 text-center relative">
                         <p>Wali Kelas</p>
-                        <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $rombel->wali_kelas->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" />
+                        {{-- <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $rombel->wali_kelas->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" /> --}}
                         <br>
                         <br>
                         <br>
