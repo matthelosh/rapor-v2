@@ -38,6 +38,7 @@ const simpan = async () => {
         }),
         { siswas: siswas.value },
         {
+            onStart: () => loading.value = true,
             onSuccess: (page) => {
                 router.reload({ only: ["nilais"] });
                 ElNotification({
@@ -58,6 +59,7 @@ const simpan = async () => {
                     }, 500);
                 });
             },
+            onFinish: () => loading.value = false,
         },
     );
 };
@@ -111,6 +113,7 @@ const getNilai = async () => {
                         });
                 });
             }
+            loading.value = false
         });
 };
 
@@ -165,7 +168,7 @@ const unduhFormat = async () => {
 };
 
 onBeforeMount(async () => {
-    // loading.value = true
+    loading.value = true
     // await getTps()
 
     const filteredSiswas =
@@ -239,6 +242,7 @@ onBeforeMount(async () => {
                                 type="primary"
                                 size="small"
                                 @click="simpan"
+                                :loading="loading"
                                 >Simpan</el-button
                             >
                         </el-button-group>
@@ -443,6 +447,7 @@ onBeforeMount(async () => {
                                     min="0"
                                     max="100"
                                     size="small"
+                                    :disabled="loading"
                                 />
                             </template>
                         </el-table-column>
