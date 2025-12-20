@@ -222,7 +222,7 @@ onBeforeMount(() => {
                 </el-table>
             </div>
         </el-card>
-        <FormNilaiHarian
+        <!-- <FormNilaiHarian
             v-if="mode == 'harian'"
             :rombel="selectedRombel"
             :mapel="selectedMapel"
@@ -242,7 +242,7 @@ onBeforeMount(() => {
             :mapel="selectedMapel"
             @close="closeForm"
             :open="mode == 'sas'"
-        />
+        /> -->
         <FormNilaiP5
             v-if="mode == 'p5'"
             :rombel="selectedRombel"
@@ -250,7 +250,7 @@ onBeforeMount(() => {
             @close="closeForm"
             :open="mode == 'p5'"
         />
-        <FormNilaiP5
+        <FormNilaiSPN
             v-if="mode == 'spn'"
             :rombel="selectedRombel"
             :mapel="selectedMapel"

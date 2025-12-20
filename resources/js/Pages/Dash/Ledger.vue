@@ -22,7 +22,7 @@ const unduh = async (target, rombel, tapel) => {
     let wb = utils.table_to_book(table);
     await writeFile(
         wb,
-        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0].nama} ${page.props.periode.tapel.deskripsi}.xlsx`,
+        `Ledger Nilai ${rombel} - ${page.props.sekolahs[0]?.nama} ${page.props.periode.tapel.deskripsi}.xlsx`,
     );
     setTimeout(() => {
         loading.value = false;
