@@ -6,6 +6,7 @@ use App\Helpers\Periode;
 use App\Models\Mapel;
 use App\Models\Rombel;
 use App\Models\Sekolah;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class NilaiService
@@ -17,7 +18,7 @@ class NilaiService
     {
         $tapel ??= Periode::tapel()->kode;
         /** @var \App\Models\User */
-        $user = auth()->user();
+        $user = Auth::user();
         /* $semester = Periode::semester()->kode; */
         $mapels = ["guru_agama", "guru_pjok", "guru_inggris"];
         if ($user->hasRole("guru_kelas")) {
@@ -57,6 +58,7 @@ class NilaiService
                 ->with([
                     "rombels" => function ($q) use ($agama, $semester) {
                         $q->where('tapel', Periode::tapel()->kode);
+                        $q->with('wali_kelas');
                         $q->with("siswas", function ($s) use ($agama) {
                             $s->where("siswas.agama", $agama)->orderBy(
                                 "nama",
