@@ -111,61 +111,18 @@ onBeforeMount(() => {
                                 <el-table-column
                                     label="Rombel"
                                     prop="label"
-                                    width="100"
                                 />
-                                <el-table-column label="Jml Siswa" width="80">
+                                <el-table-column label="Wali Kelas">
                                     <template #default="scope">
-                                        {{ scope.row.siswas?.length }}
+                                        <div>
+                                            {{ scope.row.wali_kelas.nama}} <br />
+                                            NIP. {{ scope.row.wali_kelas.nip}}
+                                        </div>
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="% Penilaian">
+                                <el-table-column label="Jml Siswa">
                                     <template #default="scope">
-                                        <p>
-                                            UH:
-                                            {{
-                                                Math.round(
-                                                    (parseInt(
-                                                        scope.row.nilais
-                                                            ? scope.row
-                                                                  .nilais[0]?.uh
-                                                            : 0,
-                                                    ) /
-                                                        scope.row.siswas
-                                                            ?.length) *
-                                                        100,
-                                                )
-                                            }}
-                                            % | PTS:
-                                            {{
-                                                Math.round(
-                                                    (parseInt(
-                                                        scope.row.nilais
-                                                            ? scope.row
-                                                                  .nilais[0]
-                                                                  ?.pts
-                                                            : 0,
-                                                    ) /
-                                                        scope.row.siswas
-                                                            ?.length) *
-                                                        100,
-                                                )
-                                            }}
-                                            % | PAS:
-                                            {{
-                                                Math.round(
-                                                    (parseInt(
-                                                        scope.row.nilais
-                                                            ? scope.row
-                                                                  .nilais[0]?.as
-                                                            : 0,
-                                                    ) /
-                                                        scope.row.siswas
-                                                            ?.length) *
-                                                        100,
-                                                )
-                                            }}
-                                            %
-                                        </p>
+                                        {{ scope.row.siswas?.length }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="Entri Nilai">
