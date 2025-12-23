@@ -221,7 +221,7 @@ onBeforeMount(() => {
                             {{ rombel.wali_kelas.nama }},
                             {{ rombel.wali_kelas.gelar_belakang }}
                         </p>
-                        <p>NIP. {{ rombel.wali_kelas.nip }}</p>
+                        <p>NIP. {{ rombel.wali_kelas.status == 'gtt' ? '-' : rombel.wali_kelas.nip }}</p>
                     </div>
                     <div class="kosong"></div>
                     <div class="ttd-ortu">

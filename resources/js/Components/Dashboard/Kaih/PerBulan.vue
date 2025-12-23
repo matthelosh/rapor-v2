@@ -193,7 +193,7 @@ const printRekap = () => {
                                 ${props.rombel.wali_kelas.nama},
                                 ${props.rombel.wali_kelas.gelar_belakang}
                             </p>
-                            <p>NIP. ${props.rombel.wali_kelas.nip}</p>
+                            <p>NIP. ${props.rombel.wali_kelas.status == 'gtt' ? '-' : rombel.wali_kelas.nip}</p>
                         </div>
                         <div class="kosong"></div>
                         <div class="ttd-ortu">
