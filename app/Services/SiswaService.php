@@ -44,12 +44,12 @@ class SiswaService
                         $q->where("rombels.tapel", $tapel);
                     })
                     ->with([
-                        "rombels" => function ($q) use($tapel) {
+                        "rombels" => function ($q) use ($tapel) {
                             $q->where('tapel', $tapel);
                         },
                         "ortus:id,siswa_id,nama,relasi,alamat,hp,pekerjaan",
                         "user"
-                        ])
+                    ])
                     ->orderBy('nama', 'ASC')
                     ->paginate(15);
             }
@@ -64,8 +64,16 @@ class SiswaService
         if ($file !== null) {
             $foto_file = $file;
             $foto_name = $data["nisn"] . "." . $foto_file->extension();
-            $store = $foto_file->storeAs("public/images/siswa/", $foto_name);
-            $foto = $store ? /**$foto_name **/ Storage::url($store) : null;
+            $store = $foto_file->storeAs(
+                "public/images/siswa",
+                $foto_name,
+                [
+                    'visibility' => 'public'
+                ]
+            );
+            $foto = $store ?
+                /**$foto_name **/
+                Storage::url($store) : null;
         }
         $jk = ["L", "P"];
         $siswa = Siswa::updateOrCreate(
@@ -117,7 +125,7 @@ class SiswaService
                 //         ? $data["sekolah_id"]
                 //         : $request->user()->userable->sekolahs[0]->npsn;
                 // $store = $this->store($data, null);
-                if (!$data['nisn'] ||$data['nisn'] == null) {
+                if (!$data['nisn'] || $data['nisn'] == null) {
                     // return back()->withErrors("NISN tidak boleh kosong");
                     continue;
                 }
@@ -170,10 +178,10 @@ class SiswaService
                     "agama" => $data["agama"],
                     "angkatan" => $data["angkatan"] ?? null,
                     "sekolah_id" =>
-                        $request->user()->hasRole("admin") &&
+                    $request->user()->hasRole("admin") &&
                         $data["sekolah_id"]
-                            ? $data["sekolah_id"]
-                            : $request->user()->userable->sekolahs[0]->npsn,
+                        ? $data["sekolah_id"]
+                        : $request->user()->userable->sekolahs[0]->npsn,
                     "status" => $data["status"] ?? "aktif",
                 ];
             }
@@ -269,14 +277,14 @@ class SiswaService
             foreach ($siswas as $siswa) {
                 if (!$siswa->user) {
                     CreateOrUpdateUserJob::dispatch($siswa)->delay(
-                    now()->addSEconds(1)
+                        now()->addSEconds(1)
                     );
                     $count++;
                 }
             }
             return [
                 "message" =>
-                    "{$count} siswa aktif yang belum memiliki akun akan diberikan akun dalam beberapa saat. " .
+                "{$count} siswa aktif yang belum memiliki akun akan diberikan akun dalam beberapa saat. " .
                     "Username: NISN siswa, password awal: NISN (disarankan segera mengubah password setelah login).",
             ];
         } catch (\Throwable $th) {
@@ -287,7 +295,7 @@ class SiswaService
     public function luluskan($siswas)
     {
         $periode = Periode::tapel()['kode'];
-        $tahun = '20'. substr($periode, 2, 2);
+        $tahun = '20' . substr($periode, 2, 2);
         foreach ($siswas as $siswa) {
             $murid = Siswa::findorFail($siswa['id']);
             $murid->update(['status' => "lulus", 'tahun_lulus' => $tahun]);

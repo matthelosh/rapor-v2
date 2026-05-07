@@ -11,11 +11,13 @@ This guide provides documentation for consuming the Presensi API endpoints using
 **Description:** Get student attendance recap per month and semester
 
 **Filtering Logic:**
+
 - **Jika parameter `bulan` diisi** → Data presensi per bulan tersebut
 - **Jika parameter `bulan` tidak diisi** → Data presensi per semester (seluruh bulan dalam semester)
 - **Parameter `tahun` opsional** → Jika tidak diisi, menggunakan tahun dari created_at
 
 **Request Parameters:**
+
 ```javascript
 {
   rombel_id: "required|string",     // Rombel kode
@@ -27,6 +29,7 @@ This guide provides documentation for consuming the Presensi API endpoints using
 ```
 
 **Usage Examples:**
+
 ```javascript
 // Data per semester (seluruh bulan)
 {
@@ -47,6 +50,7 @@ This guide provides documentation for consuming the Presensi API endpoints using
 ```
 
 **Response Structure:**
+
 ```json
 {
   "data": [
@@ -70,6 +74,7 @@ This guide provides documentation for consuming the Presensi API endpoints using
 **Description:** Get detailed monthly attendance breakdown
 
 **Request Parameters:**
+
 ```javascript
 {
   rombel_id: "required|string",     // Rombel kode
@@ -81,6 +86,7 @@ This guide provides documentation for consuming the Presensi API endpoints using
 ```
 
 **Response Structure:**
+
 ```json
 {
   "data": [
@@ -293,16 +299,16 @@ export default {
         console.error('Error loading rombels:', error);
       }
     },
-    
+
     async loadRekap() {
       this.loading = true;
       this.error = null;
-      
+
       try {
         // Load rekap presensi siswa
         const rekapResponse = await api.getRekapPresensiSiswa(this.filters);
         this.rekapData = rekapResponse.data.data;
-        
+
         // Load detail if month is selected
         if (this.filters.bulan) {
           const detailResponse = await api.getRekapBulan({
@@ -320,13 +326,13 @@ export default {
         this.loading = false;
       }
     },
-    
+
     getDaysInMonth() {
       if (!this.filters.bulan) return [];
       const days = new Date(this.filters.tahun, this.filters.bulan, 0).getDate();
       return Array.from({length: days}, (_, i) => i + 1);
     },
-    
+
     getStatusClass(status) {
       const classes = {
         'h': 'text-green-600 font-semibold',
@@ -336,7 +342,7 @@ export default {
       };
       return classes[status] || '';
     },
-    
+
     getStatusText(status) {
       const texts = {
         'h': 'H',
@@ -381,7 +387,7 @@ export default {
 async loadRekap() {
   this.loading = true;
   this.error = null;
-  
+
   try {
     const response = await api.getRekapPresensiSiswa(this.filters);
     this.rekapData = response.data.data;

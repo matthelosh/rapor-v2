@@ -29,11 +29,13 @@ Headers:
 #### Base URL: `/api/public`
 
 #### 1.1 Data Rombel
+
 **GET** `/api/public/rombel`
 
 Get data rombel untuk statistik
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -49,11 +51,13 @@ Get data rombel untuk statistik
 ```
 
 #### 1.2 Data TPs (Tujuan Pembelajaran)
+
 **GET** `/api/public/tps`
 
 Get data tujuan pembelajaran
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -67,11 +71,13 @@ Get data tujuan pembelajaran
 ```
 
 #### 1.3 Data Asesmen
+
 **GET** `/api/public/asesmens`
 
 Get data asesmen
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -86,11 +92,13 @@ Get data asesmen
 ```
 
 #### 1.4 Data Kalender Pendidikan
+
 **GET** `/api/public/kaldik`
 
 Get data kalender pendidikan
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -105,11 +113,13 @@ Get data kalender pendidikan
 ```
 
 #### 1.5 Data Sekolah
+
 **GET** `/api/public/sekolah`
 
 Get data sekolah
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -128,11 +138,13 @@ Get data sekolah
 Get data sekolah by subdomain
 
 #### 1.6 Data Posts
+
 **GET** `/api/public/posts`
 
 Get data posts/berita
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -149,11 +161,13 @@ Get data posts/berita
 #### 1.7 Sync Data
 
 ##### 1.7.1 Sync Nilai PTS
+
 **POST** `/api/public/sync/nilai/pts/store`
 
 Sync data nilai PTS
 
 **Request:**
+
 ```json
 {
   "siswa_id": 1,
@@ -165,6 +179,7 @@ Sync data nilai PTS
 ```
 
 ##### 1.7.2 Sync Data Dapodik
+
 **POST** `/api/public/sync/dapo/sekolah/sync`
 **POST** `/api/public/sync/dapo/guru/sync`
 **POST** `/api/public/sync/dapo/rombel/sync`
@@ -195,6 +210,7 @@ Body:
 ```
 
 **Response:**
+
 ```json
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
@@ -213,23 +229,27 @@ Headers:
 ### Available Endpoints
 
 #### 2.1 User Info
+
 **GET** `/api/user`
 **GET** `/api/me`
 
 Get informasi user yang sedang login
 
 #### 2.2 Data Mapel
+
 **GET** `/api/mapels`
 
 Get data mata pelajaran
 
 #### 2.3 Kaih (Siswa Only)
+
 **GET** `/api/kaih`
 **POST** `/api/kaih/store`
 
 Endpoint untuk manajemen Kaih (hanya role:siswa)
 
 #### 2.4 Presensi (Guru Only)
+
 **GET** `/api/presensi`
 **POST** `/api/presensi/store`
 **GET** `/api/presensi/rombels`
@@ -240,6 +260,7 @@ Endpoint untuk manajemen Kaih (hanya role:siswa)
 Endpoint untuk manajemen presensi (hanya role:guru_kelas|guru_agama|guru_pjok|guru_inggris)
 
 #### 2.5 Jurnal Mengajar (Guru Only)
+
 **GET** `/api/jurnal-mengajar`
 **POST** `/api/jurnal-mengajar/store`
 **GET** `/api/jurnal-mengajar/{id}`
@@ -266,6 +287,7 @@ Bearer token disetting di environment variable `API_BEARER_TOKEN`.
 ### Available Endpoints
 
 #### 3.1 Asesmen
+
 **GET** `/api/asesmen`
 **POST** `/api/asesmen/store`
 **GET** `/api/asesmen/syncsekolah`
@@ -292,6 +314,7 @@ php artisan db:seed
 ```
 
 Seeder akan membuat 3 client:
+
 - `sekolah_test_app` - untuk aplikasi sekolah.test
 - `presensi_siswa_app` - untuk aplikasi presensi siswa
 - `asesmen_app` - untuk aplikasi asesmen
@@ -299,6 +322,7 @@ Seeder akan membuat 3 client:
 ### 2. Menggunakan API di JavaScript
 
 #### Public API Example
+
 ```javascript
 // Setup axios
 const api = axios.create({
@@ -322,6 +346,7 @@ async function getRombel() {
 ```
 
 #### Protected API Example
+
 ```javascript
 // Login
 async function login(email, password) {
@@ -361,6 +386,7 @@ async function getUserData() {
 ### Common Error Responses
 
 #### 401 Unauthorized
+
 ```json
 {
   "error": "Unauthorized",
@@ -369,6 +395,7 @@ async function getUserData() {
 ```
 
 #### 403 Forbidden
+
 ```json
 {
   "message": "User does not have the right roles"
@@ -376,6 +403,7 @@ async function getUserData() {
 ```
 
 #### 404 Not Found
+
 ```json
 {
   "error": "Resource not found"
@@ -383,6 +411,7 @@ async function getUserData() {
 ```
 
 #### 422 Validation Error
+
 ```json
 {
   "message": "The given data was invalid.",
@@ -393,6 +422,7 @@ async function getUserData() {
 ```
 
 #### 500 Server Error
+
 ```json
 {
   "error": "Internal server error"
@@ -429,6 +459,7 @@ CORS_ALLOWED_ORIGINS='https://sekolah.test,https://your-app-domain.com'
 Gunakan tools seperti Postman atau curl untuk testing API:
 
 ### Testing Public API
+
 ```bash
 curl -X GET "http://localhost:8000/api/public/rombel" \
   -H "X-CLIENT-ID: sekolah_test_app" \
@@ -437,6 +468,7 @@ curl -X GET "http://localhost:8000/api/public/rombel" \
 ```
 
 ### Testing Protected API
+
 ```bash
 # Login dulu
 curl -X POST "http://localhost:8000/api/login" \
@@ -456,24 +488,29 @@ curl -X GET "http://localhost:8000/api/user" \
 ### Common Issues
 
 1. **401 Unauthorized on Public API**
+   
    - Check X-CLIENT-ID and X-CLIENT-SECRET headers
    - Verify client credentials in database
    - Run ApiClientSeeder if no clients exist
 
 2. **401 Unauthorized on Protected API**
+   
    - Check JWT token in Authorization header
    - Verify token is not expired
    - Login again to get fresh token
 
 3. **403 Forbidden**
+   
    - Check user roles and permissions
    - Verify endpoint requires specific roles
 
 4. **CORS Issues**
+   
    - Check CORS_ALLOWED_ORIGINS in .env
    - Verify domain is properly whitelisted
 
 5. **404 Not Found**
+   
    - Check endpoint URL
    - Verify HTTP method (GET/POST/PUT/DELETE)
 
@@ -497,6 +534,7 @@ php artisan route:clear
 ## Changelog
 
 ### v2.0.0 (Current)
+
 - Restructured API into Public, Protected, and Bearer Token categories
 - Implemented Client Credentials authentication for Public API
 - Added ApiClient model and seeder
@@ -504,6 +542,7 @@ php artisan route:clear
 - Updated route organization with clear prefixes
 
 ### v1.0.0 (Previous)
+
 - Basic API structure
 - Mixed authentication methods
 - Inconsistent route organization
