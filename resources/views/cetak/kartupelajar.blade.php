@@ -85,7 +85,7 @@
                 height: 100%;
                 object-fit: cover;
                 /* transform: translateY(8%); */
-                object-position: 50% 100%;
+                object-position: 50% 50%;
             }
         }
 
@@ -172,7 +172,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 window.print();
-                window.close();
+                // window.close();
             }, 1000);
         })
     </script>
