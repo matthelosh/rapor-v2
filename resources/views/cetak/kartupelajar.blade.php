@@ -84,7 +84,8 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                transform: translateY(8%);
+                /* transform: translateY(8%); */
+                object-position: 50% 100%;
             }
         }
 
