@@ -83,8 +83,8 @@
             img {
                 width: 100%;
                 height: 100%;
-                /* object-fit: cover; */
-                transform: translateY(20%);
+                object-fit: cover;
+                transform: translateY(8%);
             }
         }
 
