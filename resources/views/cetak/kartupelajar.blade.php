@@ -58,7 +58,7 @@
 
         .foto {
             position: absolute;
-            top: 35.5%;
+            top: 29.5%;
             left: 5.5%;
             width: 220px;
             height: 189px;
@@ -84,6 +84,7 @@
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                transform: translateY(15%);
             }
         }
 
@@ -132,7 +133,7 @@
         @foreach($sekolah->siswas as $siswa)
         <div class="card">
             <div class="foto">
-                <img src="{{$siswa->foto}}" alt="Foto Siswa" onerror="this.error = false; this.src='/img/kartu_pelajar/siswa.png'">
+                <img src="{{$siswa->foto}}" alt="Foto Siswa" onerror="this.error = false; this.src='/img/kartu_pelajar/siswa.png'" class="foto-img">
             </div>
             <div class="content">
                 <h1>KARTU PELAJAR</h1>
