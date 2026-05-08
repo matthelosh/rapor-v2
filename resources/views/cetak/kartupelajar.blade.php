@@ -84,7 +84,7 @@
                 width: 100%;
                 height: 100%;
                 /* object-fit: cover; */
-                transform: translateY(15%);
+                transform: translateY(20%);
             }
         }
 
