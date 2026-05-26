@@ -14,11 +14,12 @@ class BukuindukController extends Controller
 {
     public function home(Request $request)
     {
-        $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
-            $o->where("nip", $ops->nip);
+        $guru = $request->user()->userable;
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($guru) {
+            $o->where("nip", $guru->nip);
         })->first();
 
+        // dd($ops);
         $query = BukuInduk::with(["siswa"])->whereHas("siswa", function (
             $q,
         ) use ($sekolah) {
