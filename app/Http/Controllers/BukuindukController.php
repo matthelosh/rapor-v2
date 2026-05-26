@@ -53,7 +53,7 @@ class BukuindukController extends Controller
     public function create(Request $request)
     {
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
@@ -157,7 +157,7 @@ class BukuindukController extends Controller
     public function print(Request $request)
     {
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
@@ -214,7 +214,7 @@ class BukuindukController extends Controller
     public function export(Request $request)
     {
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
@@ -243,7 +243,7 @@ class BukuindukController extends Controller
     public function generateIndex(Request $request)
     {
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
@@ -276,7 +276,7 @@ class BukuindukController extends Controller
         ]);
 
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
@@ -340,7 +340,7 @@ class BukuindukController extends Controller
     public function getPreview(Request $request)
     {
         $ops = $request->user()->userable;
-        $sekolah = Sekolah::whereHas("ops", function ($o) use ($ops) {
+        $sekolah = Sekolah::whereHas("gurus", function ($o) use ($ops) {
             $o->where("nip", $ops->nip);
         })->first();
 
