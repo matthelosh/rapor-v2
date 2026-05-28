@@ -133,7 +133,7 @@ class KaihController extends Controller
             $kaihs = Kaih::where([
                 ["rombel_id", "=", $request->query("rombelId")],
                 ["siswa_id", "=", $request->query("siswaId")],
-                ["semester", "=", $request->query("semester")],
+                // ["semester", "=", $request->query("semester")],
             ])
                 ->whereBetween("waktu", [$startDate, $endDate])
                 ->get();
@@ -148,6 +148,7 @@ class KaihController extends Controller
                 "Berolahraga",
             ];
 
+            // dd($kaihs->count());
             $grouped = $kaihs->groupBy("kebiasaan")->map->count();
             // $rekap = [];
             $rekap = collect($daftar_kebiasaan)->mapWithKeys(function (
