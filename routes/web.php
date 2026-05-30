@@ -237,7 +237,7 @@ Route::middleware("auth")->group(function () {
         Route::prefix("guru")->group(function () {
             Route::get("/", [GuruController::class, "index"])
                 ->name("dashboard.guru")
-                ->name("can:read_guru");
+                ->middleware("can:read_guru");
             Route::post("/", [GuruController::class, "store"])
                 ->name("dashboard.guru.store")
                 ->middleware(["role:admin|ops"]);
