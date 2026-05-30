@@ -7,32 +7,8 @@
         @else
             <link rel="stylesheet" href="{{ config('app.url') }}/build/assets/app.css">
         @endif
-        <style>
-            @media print {
-                body::before {
-                    content: "";
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    width: 300px;
-                    height: 300px;
-                    background: url('/img/tutwuri.png') no-repeat center center;
-                    background-size: contain;
-                    opacity: 0.1;
-                    transform: translate(-50%, -50%);
-                    z-index: -1;
-                }
-            }
-        </style>
     </head>
-    <body class="font-serif p-4 print:p-0" onload="cetak()">
-        <script>
-            function cetak() {
-                setTimeout(() => {
-                    window.print();
-                }, 500)
-            }
-        </script>
+    <body class="font-serif p-4 print:p-0">
 
         <div class="page akademik w-[60%] py-4 px-8 mx-auto print:w-full break-inside-avoid relative text-[0.8em]">
             <div class="meta w-full">
@@ -214,19 +190,43 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="border border-black p-1 p-8"></td>
+                            <td class="border border-black p-8"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="ttd mt-4 w-full text-[0.7em]">
+            @php
+                $kelases = ["1" => "I", "2" => "II", "3" => "III", "4" => "IV", "5" => "V", "6" => "VI"];
+            @endphp
+            <div class="w-full mt-4">
+                @if($semester == '2')
+                <div class="sem-2">
+                    <p class="font-bold">
+                        Keputusan:
+                    </p>
+                    <p class="text-justify">Berdasarkan hasil belajar yang telah dicapai,
+                    @if($rombel->tingkat == '6')
+                        
+                            Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Lulus</span><span class="is_lulus font-bold"> Lulus</span> dan <span class="is_not_lulus font-bold hidden">Tidak</span> <span class="font-bold">Dapat</span> melanjutkan ke jenjang pendidikan selanjutnya.
+                        </p>
+                    @else
+                        Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Naik</span><span class="is_lulus font-bold"> Naik</span> ke kelas {{$kelases[$rombel->tingkat]}}.
+                        </p>
+                    @endif
+                </div>
+                @else
+                <div class="sem-1"></div>
+                @endif
+            </div>
+
+            <div class="ttd mt-8 w-full ">
                 <div class="grid grid-cols-3 mt-4">
                     <div></div>
                     <div></div>
                     <p class="text-center">Wagir, {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('d F Y') }}</p>
                 </div>
-                <div class="grid grid-cols-3">
-                    <div class="col-span-1 text-center">
+                <div class="grid grid-cols-7">
+                    <div class="col-span-3 text-center">
                         <p>Orang Tua/Wali</p>
                         <br>
                         <br>
@@ -235,17 +235,10 @@
                     </div>
 
                     <div class="col-span-1 text-center relative">
-                        <p>Kepala Sekolah</p>
-                        {{-- <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $siswa->sekolah->ks->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" /> --}}
-                        <br>
-                        <br>
-                        <br>
-                        <p class="font-bold underline">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
-                        <p class="leading-4">NIP. {{$siswa->sekolah->ks->nip}}</p>
                     </div>
-                    <div class="col-span-1 text-center relative">
+                    <div class="col-span-3 text-center relative">
                         <p>Wali Kelas</p>
-                        {{-- <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $rombel->wali_kelas->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" /> --}}
+                        <!-- <img src="https://is3.cloudhost.id/alsya/public/images/ttd/{{ $rombel->wali_kelas->nip }}.png" class="absolute max-h-[55px] left-[50%] -translate-x-[50%] rotate-4 z-0" onerror="this.onerror = null;this.style.display = 'none'; this.src='{{ asset('img/no_ttd.png') }}'" />  -->
                         <br>
                         <br>
                         <br>
@@ -253,6 +246,92 @@
                         <p class="leading-4">NIP. {{$rombel->wali_kelas->status == 'gtt' ? '-' : $rombel->wali_kelas->nip}}</p>
                     </div>
                 </div>
+                <div class="grid grid-cols-5 mt-4">
+                    <div class="col-span-1 text-center">
+                    </div>
+
+                    <div class="col-span-3 text-center relative">
+                        <p>Mengetahui,</p>
+                        <p>Kepala Sekolah</p>
+                        <br>
+                        <br>
+                        <br>
+                        <p class="font-bold underline">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
+                        <p class="leading-4">NIP. {{$siswa->sekolah->ks->nip}}</p>
+                    </div>
+                    <div class="col-span-1 text-center relative">
+                    </div>
+                </div>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                // Create watermark element for print
+                const createWatermark = () => {
+                    const watermark = document.createElement('div');
+                    watermark.className = 'print-watermark';
+                    watermark.innerHTML = '<span></span>';
+                    document.body.appendChild(watermark);
+                    return watermark;
+                };
+                
+                const removeWatermark = (watermark) => {
+                    if (watermark && watermark.parentNode) {
+                        watermark.parentNode.removeChild(watermark);
+                    }
+                };
+                
+                // Handle print events for better reliability
+                let watermarkElement = null;
+                
+                const handleBeforePrint = () => {
+                    // Ensure body has proper styling for print
+                    document.body.style.position = 'relative';
+                    // Create watermark element
+                    watermarkElement = createWatermark();
+                };
+                
+                const handleAfterPrint = () => {
+                    // Clean up
+                    document.body.style.position = '';
+                    removeWatermark(watermarkElement);
+                    watermarkElement = null;
+                };
+                
+                // Add event listeners for print dialog
+                if ('onbeforeprint' in window) {
+                    window.onbeforeprint = handleBeforePrint;
+                    window.onafterprint = handleAfterPrint;
+                } else {
+                    // Fallback for browsers that don't support print events
+                    window.matchMedia('print').addEventListener('change', e => {
+                        if (e.matches) {
+                            handleBeforePrint();
+                        } else {
+                            handleAfterPrint();
+                        }
+                    });
+                }
+                
+                // Trigger print after a short delay to ensure DOM is ready
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+            })
+        </script>
+        <style>
+            .print-watermark {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                width: 300px;
+                height: 300px;
+                background: url('/img/tutwuri.png') no-repeat center center;
+                background-size: contain;
+                opacity: 0.1;
+                transform: translate(-50%, -50%);
+                z-index: -1;
+                pointer-events: none;
+            }
+        </style>
     </body>
 </html>

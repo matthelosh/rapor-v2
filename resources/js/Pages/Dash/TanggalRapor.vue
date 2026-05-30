@@ -25,7 +25,7 @@ const simpan = async () => {
     router.post(
         route("dashboard.rapor.tanggal.store", {
             _query: {
-                sekolahId: page.props.sekolahs[0].npsn,
+                sekolahId: page.props.sekolahs?.[0]?.npsn ?? null,
             },
         }),
         { data: tanggal.value },
