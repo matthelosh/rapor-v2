@@ -227,36 +227,35 @@ class RaporService
             $tanggalRapor = TanggalRapor::where("semester", $semester)
                 ->where("tapel", $tapel)
                 ->where("tipe", "pas")
-                ->pluck("tanggal");
-
-            $guruNip = $rombel->gurus[0]->nip ?? null;
-            $ksNip = Guru::whereId($rombel->siswas->first()->sekolah->ks_id)->pluck("nip");
+                ->value("tanggal");
 
             foreach ($rombel->siswas as $siswa) {
                 $nilaiPAS = $this->nilaiPASForSiswa($siswa, $rombel, $tapel, $semester, $nilaiAll);
 
+                $absensiModel = $absensiAll->get($siswa->nisn);
                 $arsip = Rapor::updateOrCreate(
                     [
                         "kode" => $siswa->nisn . "-" . $tapel . $semester,
                     ],
                     [
                         "siswa_id" => $siswa->nisn,
-                        "sekolah" => $siswa->sekolah->nama,
+                        "sekolah" => json_encode(["nama" => $siswa->sekolah->nama]),
                         "semester" => $semester,
                         "tapel" => $tapel,
                         "tingkat" => $rombel->tingkat,
                         "kelas" => $rombel->label,
-                        "guru_id" => $guruNip,
-                        "ks" => $ksNip,
-                        "tanggal_rapor" => $tanggalRapor,
-                        "rombel_id" => $rombelId,
-                        "ekskuls" => $ekskulAll->get($siswa->nisn, collect()),
-                        "absensi" => $absensiAll->get($siswa->nisn),
+                        "tanggal_rapor" => $tanggalRapor ?? now()->format("Y-m-d"),
+                        "ekskuls" => json_encode($ekskulAll->get($siswa->nisn, collect())->toArray()),
+                        "absensi" => json_encode([
+                            "ijin" => $absensiModel?->ijin ?? 0,
+                            "sakit" => $absensiModel?->sakit ?? 0,
+                            "alpa" => $absensiModel?->alpa ?? 0,
+                        ]),
                         "catatan" => $catatanAll->get($siswa->nisn)?->teks ?? null,
-                        "nilai_akademik" => $nilaiPAS,
+                        "nilai_akademik" => json_encode($nilaiPAS),
                         "nilai_akhir" => collect($nilaiPAS)->avg("na") ?? 0,
                         "fase" => $rombel->fase,
-                        "ttd" => [],
+                        "ttd" => json_encode([]),
                         "status" => "permanen",
                     ]
                 );

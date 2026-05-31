@@ -11,25 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('rapor_details')) {
-            Schema::create('rapor_details', function (Blueprint $table) {
-                $table->id();
-                $table->string('rapor_id', 191);
-                $table->string('mapel_id', 191);
-                $table->decimal('uh', 5, 2)->default(0);
-                $table->decimal('ts', 5, 2)->default(0);
-                $table->decimal('as', 5, 2)->default(0);
-                $table->decimal('rerata', 5, 2)->default(0);
-                $table->timestamps();
+        Schema::create('rapor_details', function (Blueprint $table) {
+            $table->id();
+            $table->string('rapor_id');
+            $table->string('mapel_id');
+            $table->decimal('uh', 5, 2)->default(0);
+            $table->decimal('ts', 5, 2)->default(0);
+            $table->decimal('as', 5, 2)->default(0);
+            $table->decimal('rerata', 5, 2)->default(0);
+            $table->timestamps();
 
-                $table->foreign('rapor_id')->references('kode')->on('rapors')->onDelete('cascade');
-            });
-        } else {
-            // Tambah foreign key jika belum ada
-            Schema::table('rapor_details', function (Blueprint $table) {
-                $table->foreign('rapor_id')->references('kode')->on('rapors')->onDelete('cascade');
-            });
-        }
+            $table->foreign('rapor_id')->references('kode')->on('rapors')->onDelete('cascade');
+        });
     }
 
     /**
