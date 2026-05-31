@@ -40,11 +40,20 @@ export default defineConfig({
             output: {
                 manualChunks(id) {
                     if (id.includes("node_modules")) {
-                        return id
-                            .toString()
-                            .split("node_modules/")[1]
-                            .split("/")[0]
-                            .toString();
+                        const module = id.toString().split("node_modules/")[1].split("/")[0];
+                        
+                        // Pisahkan library berat ke chunk terpisah
+                        if (["xlsx", "codemirror"].includes(module)) {
+                            return "vendor-heavy";
+                        }
+                        if (["html2canvas", "jspdf"].includes(module)) {
+                            return "vendor-pdf";
+                        }
+                        if (["element-plus"].includes(module)) {
+                            return "vendor-element";
+                        }
+                        
+                        return module;
                     }
                 },
                 assetFileNames: (assetInfo) => {
@@ -54,7 +63,5 @@ export default defineConfig({
                 },
             },
         },
-        // minify: process.env.APP_ENV !== 'local' ? true : false,
-        // cssCodeSplit: process.env.APP_ENV === 'local' ? false : undefined
     },
 });

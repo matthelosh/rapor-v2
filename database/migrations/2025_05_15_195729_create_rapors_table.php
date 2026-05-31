@@ -15,11 +15,11 @@ return new class extends Migration {
             $table->json("sekolah");
             $table->enum("fase", ["A", "B", "C"]);
             $table->enum("tingkat", ["1", "2", "3", "4", "5", "6"]);
-            $table->string("kelas");
-            $table->string("semester");
-            $table->string("tapel");
+            $table->string("kelas", 191);
+            $table->string("semester", 191);
+            $table->string("tapel", 191);
             $table->json("nilai_akademik");
-            $table->string("nilai_akhir");
+            $table->string("nilai_akhir", 191);
             $table->json("ekskul")->nullable();
             $table->text("catatan")->nullable();
             $table->text("keputusan")->nullable();

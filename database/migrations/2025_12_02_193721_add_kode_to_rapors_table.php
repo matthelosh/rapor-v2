@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rapors', function (Blueprint $table) {
-            $table->string('kode')->primary()->first();
+            $table->string('kode', 191)->primary()->first();
+        });
+        
+        // Tambah index untuk kompatibilitas foreign key
+        Schema::table('rapors', function (Blueprint $table) {
+            $table->index(['kode']);
         });
     }
 

@@ -196,7 +196,7 @@
                 </table>
             </div>
             @php
-                $kelases = ["1" => "I", "2" => "II", "3" => "III", "4" => "IV", "5" => "V", "6" => "VI"];
+                $kelases = ["1" => "I (SATU)", "2" => "II (DUA)", "3" => "III (TIGA)", "4" => "IV (EMPAT)", "5" => "V (LIMA)", "6" => "VI (ENAM)"];
             @endphp
             <div class="w-full mt-4">
                 @if($semester == '2')
@@ -210,7 +210,7 @@
                             Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Lulus</span><span class="is_lulus font-bold"> Lulus</span> dan <span class="is_not_lulus font-bold hidden">Tidak</span> <span class="font-bold">Dapat</span> melanjutkan ke jenjang pendidikan selanjutnya.
                         </p>
                     @else
-                        Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Naik</span><span class="is_lulus font-bold"> Naik</span> ke kelas {{$kelases[$rombel->tingkat]}}.
+                        Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Naik</span><span class="is_lulus font-bold"> Naik</span> ke kelas {{$kelases[$rombel->tingkat + 1]}}.
                         </p>
                     @endif
                 </div>
@@ -263,55 +263,9 @@
                     </div>
                 </div>
         </div>
+        <div class="print-watermark"></div>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                // Create watermark element for print
-                const createWatermark = () => {
-                    const watermark = document.createElement('div');
-                    watermark.className = 'print-watermark';
-                    watermark.innerHTML = '<span></span>';
-                    document.body.appendChild(watermark);
-                    return watermark;
-                };
-                
-                const removeWatermark = (watermark) => {
-                    if (watermark && watermark.parentNode) {
-                        watermark.parentNode.removeChild(watermark);
-                    }
-                };
-                
-                // Handle print events for better reliability
-                let watermarkElement = null;
-                
-                const handleBeforePrint = () => {
-                    // Ensure body has proper styling for print
-                    document.body.style.position = 'relative';
-                    // Create watermark element
-                    watermarkElement = createWatermark();
-                };
-                
-                const handleAfterPrint = () => {
-                    // Clean up
-                    document.body.style.position = '';
-                    removeWatermark(watermarkElement);
-                    watermarkElement = null;
-                };
-                
-                // Add event listeners for print dialog
-                if ('onbeforeprint' in window) {
-                    window.onbeforeprint = handleBeforePrint;
-                    window.onafterprint = handleAfterPrint;
-                } else {
-                    // Fallback for browsers that don't support print events
-                    window.matchMedia('print').addEventListener('change', e => {
-                        if (e.matches) {
-                            handleBeforePrint();
-                        } else {
-                            handleAfterPrint();
-                        }
-                    });
-                }
-                
                 // Trigger print after a short delay to ensure DOM is ready
                 setTimeout(() => {
                     window.print();
@@ -323,11 +277,11 @@
                 position: fixed;
                 top: 50%;
                 left: 50%;
-                width: 300px;
-                height: 300px;
+                width: 400px;
+                height: 400px;
                 background: url('/img/tutwuri.png') no-repeat center center;
                 background-size: contain;
-                opacity: 0.1;
+                opacity: 0.08;
                 transform: translate(-50%, -50%);
                 z-index: -1;
                 pointer-events: none;

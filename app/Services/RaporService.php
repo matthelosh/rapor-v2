@@ -35,23 +35,26 @@ class RaporService
                         $m->where("mapels.fase", "LIKE", "%" . $fase . "%");
                         $m->orderBy("id", "ASC");
                     },
-                    // fn($m, $fase) => $m->where('fase', $fase)->orderBy('id', 'ASC'),
                 ])
                 ->first();
             $mapels = $sekolah->mapels;
             $siswa = Siswa::whereNisn($queries["siswaId"])->first();
+
+            // Eager load semua nilai PTS sekaligus untuk menghindari N+1 query
+            $nilaiPtsRaw = Nilai::where([
+                ["siswa_id", "=", $queries["siswaId"]],
+                ["rombel_id", "=", $queries["rombelId"]],
+                ["tapel", "=", $queries["tapel"]],
+                ["semester", "=", $queries["semester"]],
+                ["tipe", "=", "ts"],
+            ])
+                ->with("mapel")
+                ->get()
+                ->keyBy("mapel_id");
+
             $nilais = ["pts" => []];
             foreach ($mapels as $mapel) {
-                $npts = Nilai::where([
-                    ["siswa_id", "=", $queries["siswaId"]],
-                    ["rombel_id", "=", $queries["rombelId"]],
-                    ["tapel", "=", $queries["tapel"]],
-                    ["semester", "=", $queries["semester"]],
-                    ["mapel_id", "=", $mapel["kode"]],
-                    ["tipe", "=", "ts"],
-                ])
-                    ->with("mapel")
-                    ->first();
+                $npts = $nilaiPtsRaw->get($mapel["kode"]);
 
                 \array_push(
                     $nilais["pts"],
@@ -73,18 +76,6 @@ class RaporService
                 );
             }
 
-            // $nilais = [
-            //     'pts' => Nilai::where([
-            //         ['siswa_id', '=', $queries['siswaId']],
-            //         ['rombel_id', '=', $queries['rombelId']],
-            //         ['semester', '=', $queries['semester']],
-            //         ['tipe', '=', 'ts']
-            //     ])->select('nilais.*')
-            //         ->with('mapel')
-            //         ->join('mapels', 'mapels.kode', '=', 'nilais.mapel_id')
-            //         ->orderBy('mapels.id')
-            //         ->get(),
-            // ];
             $nilais["tapel"] = $queries["tapel"]
                 ? Tapel::where("kode", $queries["tapel"])->first()
                 : Periode::tapel();
@@ -123,24 +114,33 @@ class RaporService
                 ->where("fase", "LIKE", "%" . $rombel->fase . "%")
                 ->orderBy("id", "ASC")
                 ->get();
+
+            // Eager load semua nilai sekaligus untuk menghindari N+1 query
             $nilaiRaw = Nilai::where('siswa_id', $queries['siswaId'])
                 ->where('rombel_id', $queries['rombelId'])
                 ->where('tapel', $queries['tapel'])
                 ->where('semester', $queries['semester'])
-                ->whereIn('tipe',['as','uh'])
+                ->whereIn('tipe', ['as', 'uh'])
                 ->with('tp')
                 ->get()
                 ->groupBy('mapel_id');
+
+            // Eager load semua Kktp sekaligus untuk menghindari N+1 query
+            $kktps = Kktp::where("rombel_id", $rombel->kode)
+                ->where("sekolah_id", $sekolah->npsn)
+                ->where("tapel", $queries["tapel"])
+                ->where("semester", $queries["semester"])
+                ->whereIn("mapel_id", $mapels->pluck("kode"))
+                ->get()
+                ->keyBy("mapel_id");
+
             $nilais = [];
             $nomor = 0;
             foreach ($mapels as $mapel) {
                 $nomor++;
-                $kktp = Kktp::where("rombel_id", $rombel->kode)
-                    ->where("mapel_id", $mapel->kode)
-                    ->where("sekolah_id", $sekolah->npsn)
-                    ->where("tapel", $queries["tapel"])
-                    ->where("semester", $queries["semester"])
-                    ->first();
+
+                // Ambil kktp dari collection yang sudah di-load (bukan query baru)
+                $kktp = $kktps->get($mapel->kode);
 
                 $nas = isset($nilaiRaw[$mapel["kode"]]) ? ($nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null) : null;
 
@@ -151,7 +151,7 @@ class RaporService
                 $maxUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortByDesc('skor')->first() : null;
 
                 $minUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortBy('skor')->first() : null;
-                // dd($avgUh, $nas->skor, $nuhs);
+
                 $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
 
                 $nilais[$mapel["kode"]] = [
@@ -174,65 +174,109 @@ class RaporService
 
     public function simpanPermanen($rombelId, $tapel, $semester)
     {
-        // dd(Rombel::whereKode($rombelId)->with('wali_kelas')->first());
         try {
             $rombel = Rombel::whereKode($rombelId)
-                ->with("siswas.sekolah")
+                ->with([
+                    "siswas.sekolah",
+                    "wali_kelas",
+                    "gurus:id,nip"
+                ])
                 ->whereHas('wali_kelas')
-                ->with('wali_kelas')
                 ->first();
 
             if (!$rombel) {
                 throw new \Exception("Rombel tidak ditemukan");
             }
 
-            foreach ($rombel->siswas as $siswa) {
-                $queries = [
-                    "sekolahId" => $siswa->sekolah->npsn,
-                    "siswaId" => $siswa->nisn,
-                    "rombelId" => $rombelId,
-                    "tapel" => $tapel,
-                    "semester" => $semester,
-                ];
+            // Batch load semua data yang diperlukan untuk semua siswa sekaligus
+            $siswaIds = $rombel->siswas->pluck("nisn")->toArray();
 
-                $nilaiPAS = $this->nilaiPAS($queries);
+            // Pre-load nilai untuk semua siswa
+            $nilaiAll = Nilai::whereIn('siswa_id', $siswaIds)
+                ->where('rombel_id', $rombelId)
+                ->where('tapel', $tapel)
+                ->where('semester', $semester)
+                ->whereIn('tipe', ['as', 'uh'])
+                ->with('tp')
+                ->get()
+                ->groupBy('siswa_id');
+
+            // Pre-load absensi untuk semua siswa
+            $absensiAll = Absensi::whereIn('siswa_id', $siswaIds)
+                ->where('rombel_id', $rombelId)
+                ->where('semester', $semester)
+                ->get()
+                ->keyBy('siswa_id');
+
+            // Pre-load catatan untuk semua siswa
+            $catatanAll = Catatan::whereIn('siswa_id', $siswaIds)
+                ->where('rombel_id', $rombelId)
+                ->where('semester', $semester)
+                ->get()
+                ->keyBy('siswa_id');
+
+            // Pre-load ekskul untuk semua siswa
+            $ekskulAll = NilaiEkskul::whereIn('siswa_id', $siswaIds)
+                ->where('tapel', $tapel)
+                ->where('semester', $semester)
+                ->with('ekskul')
+                ->get()
+                ->groupBy('siswa_id');
+
+            // Pre-load tanggal rapor
+            $tanggalRapor = TanggalRapor::where("semester", $semester)
+                ->where("tapel", $tapel)
+                ->where("tipe", "pas")
+                ->pluck("tanggal");
+
+            $guruNip = $rombel->gurus[0]->nip ?? null;
+            $ksNip = Guru::whereId($rombel->siswas->first()->sekolah->ks_id)->pluck("nip");
+
+            foreach ($rombel->siswas as $siswa) {
+                $nilaiPAS = $this->nilaiPASForSiswa($siswa, $rombel, $tapel, $semester, $nilaiAll);
 
                 $arsip = Rapor::updateOrCreate(
                     [
-                        "kode" => $siswa->nisn . "-" . $queries["tapel"] . $queries["semester"],
+                        "kode" => $siswa->nisn . "-" . $tapel . $semester,
                     ],
                     [
                         "siswa_id" => $siswa->nisn,
                         "sekolah" => $siswa->sekolah->nama,
-                        "semester" => $queries["semester"],
-                        "tapel" => $queries["tapel"],
+                        "semester" => $semester,
+                        "tapel" => $tapel,
                         "tingkat" => $rombel->tingkat,
                         "kelas" => $rombel->label,
-                        "guru_id" => $rombel->gurus[0]->nip ?? null,
-                        "ks" => Guru::whereId($siswa->sekolah->ks_id)->pluck("nip"),
-                        "tanggal_rapor" => TanggalRapor::where("semester", $queries["semester"])
-                            ->where("tapel", $queries["tapel"])
-                            ->where("tipe", "pas")
-                            ->pluck("tanggal"),
+                        "guru_id" => $guruNip,
+                        "ks" => $ksNip,
+                        "tanggal_rapor" => $tanggalRapor,
                         "rombel_id" => $rombelId,
-                        "ekskuls" => $this->ekskul($queries),
-                        "absensi" => $this->absensi($queries),
-                        "catatan" => $this->catatan($queries),
+                        "ekskuls" => $ekskulAll->get($siswa->nisn, collect()),
+                        "absensi" => $absensiAll->get($siswa->nisn),
+                        "catatan" => $catatanAll->get($siswa->nisn)?->teks ?? null,
+                        "nilai_akademik" => $nilaiPAS,
+                        "nilai_akhir" => collect($nilaiPAS)->avg("na") ?? 0,
+                        "fase" => $rombel->fase,
+                        "ttd" => [],
+                        "status" => "permanen",
                     ]
                 );
 
                 $checkArsip = RaporDetail::where("rapor_id", $arsip->kode)->exists();
                 if (!$checkArsip) {
+                    $raporDetails = [];
                     foreach ($nilaiPAS as $nilai) {
-                        RaporDetail::create([
+                        $raporDetails[] = [
                             "rapor_id" => $arsip->kode,
                             "mapel_id" => $nilai["mapel"]["kode"],
                             "uh" => $nilai["avgUh"],
                             "ts" => 0,
                             "as" => $nilai["nas"],
                             "rerata" => $nilai["na"],
-                        ]);
+                            "created_at" => now(),
+                            "updated_at" => now(),
+                        ];
                     }
+                    RaporDetail::insert($raporDetails);
                 }
             }
 
@@ -240,6 +284,60 @@ class RaporService
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    private function nilaiPASForSiswa($siswa, $rombel, $tapel, $semester, $nilaiAll)
+    {
+        $sekolah = $siswa->sekolah;
+        $mapels = Mapel::whereHas("sekolah", function ($q) use ($sekolah) {
+            $q->where("npsn", $sekolah->npsn);
+        })
+            ->where("fase", "LIKE", "%" . $rombel->fase . "%")
+            ->orderBy("id", "ASC")
+            ->get();
+
+        $nilaiRaw = $nilaiAll->get($siswa->nisn, collect())->groupBy('mapel_id');
+
+        // Eager load Kktp
+        $kktps = Kktp::where("rombel_id", $rombel->kode)
+            ->where("sekolah_id", $sekolah->npsn)
+            ->where("tapel", $tapel)
+            ->where("semester", $semester)
+            ->whereIn("mapel_id", $mapels->pluck("kode"))
+            ->get()
+            ->keyBy("mapel_id");
+
+        $nilais = [];
+        $nomor = 0;
+        foreach ($mapels as $mapel) {
+            $nomor++;
+
+            $kktp = $kktps->get($mapel->kode);
+            $nas = isset($nilaiRaw[$mapel["kode"]]) ? ($nilaiRaw[$mapel["kode"]]->where('tipe', 'as')->first() ?? null) : null;
+
+            $uhs = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->filter(fn($n) => $n->tp && $n->skor != 0) : collect();
+
+            $avgUh = $uhs->avg('skor') ?? 0;
+
+            $maxUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortByDesc('skor')->first() : null;
+
+            $minUh = isset($nilaiRaw[$mapel["kode"]]) ? $nilaiRaw[$mapel['kode']]->where('tipe', 'uh')->where('agama', $mapel['kode'] == 'pabp' ? $siswa->agama : null)->filter(fn($n) => $n->tp && $n->skor != 0)->sortBy('skor')->first() : null;
+
+            $na = ceil(($avgUh + ($nas !== null ? $nas->skor : 0)) / 2);
+
+            $nilais[$mapel["kode"]] = [
+                "nomor" => $nomor,
+                "mapel" => $mapel,
+                "na" => $na,
+                "avgUh" => $avgUh,
+                "nas" => $nas !== null ? $nas->skor : 0,
+                "minu" => $minUh,
+                "maxu" => $maxUh,
+                "kktp" => $kktp,
+            ];
+        }
+
+        return $nilais;
     }
 
     private function deskripsi($nilai) {}
