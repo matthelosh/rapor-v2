@@ -256,7 +256,7 @@
                         <br>
                         <br>
                         <br>
-                        <p class="font-bold underline">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
+                        <p class="font-bold underline uppercase">{{$siswa->sekolah->ks->nama}}, {{$siswa->sekolah->ks->gelar_belakang}}</p>
                         <p class="leading-4">NIP. {{$siswa->sekolah->ks->nip}}</p>
                     </div>
                     <div class="col-span-1 text-center relative">
