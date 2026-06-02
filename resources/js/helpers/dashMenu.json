@@ -129,7 +129,15 @@
         "label": "Berita",
         "icon": "typewriter",
         "url": "/dashboard/post",
-        "roles": ["superadmin", "admin", "ops", "guru_agama", "guru_inggris", "guru_kelas", "guru_pjok"],
+        "roles": [
+            "superadmin",
+            "admin",
+            "ops",
+            "guru_agama",
+            "guru_inggris",
+            "guru_kelas",
+            "guru_pjok"
+        ],
         "children": []
     },
     {
@@ -188,12 +196,7 @@
         "label": "Data Nilai",
         "icon": "numeric",
         "url": "#",
-        "roles": [
-            "guru_kelas",
-            "guru_agama",
-            "guru_pjok",
-            "guru_inggris"
-        ],
+        "roles": ["guru_kelas", "guru_agama", "guru_pjok", "guru_inggris"],
         "children": [
             {
                 "label": "Input Nilai",
@@ -248,7 +251,7 @@
                 "label": "Tanggal Rapor",
                 "icon": "calendar",
                 "url": "/dashboard/rapor/tanggal",
-                "roles": ["superadmin", "admin"]
+                "roles": ["superadmin", "admin", "guru_kelas"]
             },
             {
                 "label": "Arsip",

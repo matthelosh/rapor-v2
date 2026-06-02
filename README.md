@@ -1,66 +1,246 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Sekolah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi manajemen sekolah berbasis web untuk mengelola data akademik, nilai, rapor, buku induk, dan administrasi sekolah secara terpusat.
 
-## About Laravel
+## 📋 Tentang Proyek
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sistem Informasi Sekolah (SIS) adalah platform terintegrasi yang dirancang untuk memudahkan proses administrasi dan akademik di sekolah. Sistem ini mendukung pengelolaan data siswa, guru, nilai, rapor, serta fitur-fitur pendukung lainnya dengan antarmuka yang modern dan user-friendly.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🎓 Modul Akademik
 
-## Learning Laravel
+- **Rapor Nilai Siswa**
+  - Manajemen nilai PTS (Penilaian Tengah Semester)
+  - Manajemen nilai PAS (Penilaian Akhir Semester)
+  - Cetak rapor PDF (cover, biodata, nilai akademik, ekstrakurikuler)
+  - Penyimpanan permanen data rapor
+  - Manajemen tanggal penetapan rapor
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Buku Induk Siswa**
+  - Generate buku induk otomatis untuk semua siswa aktif
+  - Generate buku induk individual
+  - Export data ke format Excel
+  - Kelola status siswa (aktif, lulus, pindah, keluar)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- **Nilai & Penilaian**
+  - Input nilai per rombel dan mata pelajaran
+  - Nilai kokurikuler (nilai karakter)
+  - Nilai ekstrakurikuler
+  - Data absensi siswa
+  - Catatan akademik
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Mata Pelajaran & Pembelajaran**
+  - Manajemen elemen, CP (Capaian Pembelajaran), TP (Target Pembelajaran)
+  - Import data dari sistem Dapodik
+  - Manajemen ekstrakurikuler
 
-## Laravel Sponsors
+### 👥 Modul Pengguna
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Data Sekolah**
+  - Manajemen informasi sekolah
+  - Kelola kepala sekolah
+  - Manajemen operator sekolah
 
-### Premium Partners
+- **Data Guru**
+  - Manajemen profil guru
+  - Penuguan guru ke rombel (wali kelas)
+  - Import data guru dari Dapodik
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- **Data Siswa**
+  - Manajemen biodata siswa
+  - Registrasi akun siswa
+  - Keluar masuk antar rombel
+  - Data orang tua/wali siswa
 
-## Contributing
+### 📊 Modul Asesmen
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Manajemen Asesmen**
+  - Buat dan kelola ujian
+  - Upload soal dengan gambar
+  - Manajemen kunci jawaban
+  - Analisis hasil asesmen
 
-## Code of Conduct
+- **Soal & Jawaban**
+  - Manajemen bank soal
+  - Import soal dari berkas
+  - Editor teks rich text untuk soal
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🏫 Modul Administrasi
 
-## Security Vulnerabilities
+- **Presensi Guru**
+  - Rekap presensi mengajar
+  - Export data presensi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **Administrasi Akhir Jenjang**
+  - Keluar masuk siswa
+  - Verifikasi ijazah
 
-## License
+- **Workshop & Sertifikat**
+  - Manajemen kegiatan workshop
+  - Generate dan verifikasi sertifikat dengan QR Code
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🔧 Fitur Tambahan
+
+- **Backup Database** - Backup otomatis dengan Spatie Laravel Backup
+- **API Client** - REST API untuk integrasi eksternal
+- **Verifikasi Rapor/Ijazah** - Verifikasi dokumen melalui QR Code
+- **Ledger Nilai** - Rekap dan peringkat nilai siswa
+- **P5 (Projek Penguatan Profil Pelajar Pancasila)**
+  - Manajemen proyek P5
+  - Input nilai P5
+
+## 💻 Persyaratan Sistem
+
+- **PHP** >= 8.2
+- **Composer** >= 2.0
+- **Node.js** >= 18.x
+- **NPM** >= 9.x
+- **Database**: MySQL 8.x / MariaDB / SQLite
+
+## 🚀 Instalasi
+
+### 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd pkg
+```
+
+### 2. Install Dependensi PHP
+
+```bash
+composer install
+```
+
+### 3. Install Dependensi JavaScript
+
+```bash
+npm install
+npm run dev
+```
+
+### 4. Konfigurasi Environment
+
+Salin file `.env.example` ke `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Edit file `.env` dan sesuaikan konfigurasi database:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_database
+DB_USERNAME=user_database
+DB_PASSWORD=password_database
+```
+
+### 5. Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+### 6. Migrasi Database
+
+```bash
+php artisan migrate
+```
+
+### 7. Seeder Data Awal (Opsional)
+
+```bash
+php artisan db:seed
+```
+
+### 8. Jalankan Server Development
+
+```bash
+php artisan serve
+```
+
+Akses aplikasi di `http://localhost:8000`
+
+## 🔧 Konfigurasi Tambahan
+
+### Queue (Untuk Proses Background)
+
+Untuk proses yang memerlukan queue (backup, import data):
+
+```bash
+php artisan queue:work
+```
+
+### Pusher (Notifikasi Real-time)
+
+Edit konfigurasi di `.env`:
+
+```env
+BROADCAST_DRIVER=pusher
+PUSHER_APP_ID=your_app_id
+PUSHER_APP_KEY=your_app_key
+PUSHER_APP_SECRET=your_app_secret
+PUSHER_APP_CLUSTER=mt1
+```
+
+### Storage (S3 untuk Backup)
+
+```env
+AWS_ACCESS_KEY_ID=your_key
+AWS_SECRET_ACCESS_KEY=your_secret
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=your_bucket
+AWS_USE_PATH_STYLE_ENDPOINT=false
+```
+
+## 📁 Struktur Proyek
+
+```
+├── app/
+│   ├── Http/Controllers/     # Controller aplikasi
+│   ├── Models/               # Model Eloquent
+│   ├── Services/             # Service class
+│   └── Helpers/              # Helper functions
+├── resources/
+│   ├── js/                   # Frontend Vue 3
+│   └── views/                # Blade templates
+├── routes/
+│   ├── web.php               # Web routes
+│   └── auth.php              # Auth routes
+└── database/
+    ├── migrations/           # Database migrations
+    └── seeders/              # Database seeders
+```
+
+## 🔐 Hak Akses
+
+Sistem menggunakan role-based access control:
+
+- **superadmin** - Akses penuh sistem
+- **admin** - Manajemen sekolah dan pengguna
+- **ops** (Operator Sekolah) - Administrasi sekolah
+- **guru_kelas** - Wali kelas, mengelola nilai dan rapor
+- **guru_agama/guru_pjok/guru_inggris** - Guru mata pelajaran
+- **org** - Pengguna eksternal (organisasi)
+
+## 📦 Paket Utama
+
+- `laravel/fortify` - Autentikasi dan manajemen pengguna
+- `laravel/sanctum` - API authentication
+- `spatie/laravel-permission` - Role dan permission management
+- `spatie/laravel-backup` - Backup database
+- `inertiajs/inertia-laravel` - Frontend Vue dengan Inertia.js
+- `barryvdh/laravel-dompdf` - Generate PDF
+- `tymon/jwt-auth` - JWT authentication
+
+## 🤝 Kontribusi
+
+Silakan ajukan *pull request* atau laporkan *issue* di halaman repository ini.
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan under [MIT License](LICENSE).

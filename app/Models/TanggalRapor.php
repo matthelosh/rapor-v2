@@ -40,6 +40,7 @@ class TanggalRapor extends Model
         'tapel',
         'semester',
         'sekolah_id',
+        'rombel_id',
         'tipe',
         'tanggal'
     ];
@@ -57,5 +58,9 @@ class TanggalRapor extends Model
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class, 'sekolah_id', 'npsn');
+    }
+
+    public function rombel() {
+        return $this->belongsTo(Rombel::class, 'rombel_id', 'kode');
     }
 }
