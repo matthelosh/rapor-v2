@@ -123,7 +123,9 @@ class RaporController extends Controller
                 $guru = $user->userable;
                 $rombel = Rombel::where('guru_id', $guru->id)->first();
                 $rombelId=$rombel->kode;
-                $tangalQuery->where('rombel_id', $rombelId);
+                if ($rombel->tingkat === '6') {
+                    $tangalQuery->where('rombel_id', $rombelId);
+                }
             }
             if ($semester) {
                 $tangalQuery->where('semester', $semester);
