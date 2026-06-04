@@ -128,7 +128,7 @@ class RaporController extends Controller
                     $tangalQuery->where('rombel_id', $rombelId);
                 }
             }
-            dd($tangalQuery->get());
+            // dd($tangalQuery->get());
             if ($semester) {
                 $tangalQuery->where('semester', $semester);
             }
@@ -139,7 +139,7 @@ class RaporController extends Controller
                 $tangalQuery->where("tipe", $tipe);
             }
             $tanggals = $tangalQuery->get();
-            dd($user->hasRole('guru_kelas'));
+            // dd($user->hasRole('guru_kelas'));
             return $tanggals->toArray();
         } catch (\Throwable $th) {
             throw $th;
