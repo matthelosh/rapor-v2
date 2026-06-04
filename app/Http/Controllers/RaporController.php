@@ -101,7 +101,7 @@ class RaporController extends Controller
             $tangalQuery = TanggalRapor::query();
             if ($request->user()->hasRole('guru_kelas')) {
                 $guru = $request->user()->userable;
-                $rombel = Rombel::where('guru_id', $guru->id)->first();
+                $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
                 $rombelId=$rombel->kode;
                 $tangalQuery->where('rombel_id', $rombelId);
             }
@@ -123,10 +123,12 @@ class RaporController extends Controller
                 $guru = $user->userable;
                 $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
                 $rombelId=$rombel->kode;
-                if ($rombel->tingkat == '6') {
+                
+                if ($rombel->tingkat === '6') {
                     $tangalQuery->where('rombel_id', $rombelId);
                 }
             }
+            dd($tangalQuery->get());
             if ($semester) {
                 $tangalQuery->where('semester', $semester);
             }
@@ -137,7 +139,7 @@ class RaporController extends Controller
                 $tangalQuery->where("tipe", $tipe);
             }
             $tanggals = $tangalQuery->get();
-            // dd($tanggals);
+            dd($user->hasRole('guru_kelas'));
             return $tanggals->toArray();
         } catch (\Throwable $th) {
             throw $th;
@@ -152,7 +154,7 @@ class RaporController extends Controller
             $rombelId = null;
             if ($request->user()->hasRole('guru_kelas')) {
                 $guru = $request->user()->userable;
-                $rombel = Rombel::where('guru_id', $guru->id)->first();
+                $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
                 $rombelId=$rombel->kode;
             }
             TanggalRapor::updateOrCreate(
