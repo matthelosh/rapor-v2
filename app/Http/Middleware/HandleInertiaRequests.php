@@ -3,16 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\Periode;
-use App\Models\Gugus;
-use App\Models\Guru;
-use App\Models\Mapel;
 use App\Models\Pejabat;
-use App\Models\Rombel;
-use App\Models\Sekolah;
-use App\Models\Semester;
-use App\Models\Siswa;
-use App\Models\Tapel;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 

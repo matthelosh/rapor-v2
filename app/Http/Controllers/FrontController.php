@@ -6,57 +6,23 @@ use App\Helpers\DapodikHelper;
 use App\Models\Agenda;
 use App\Models\Galeri;
 use App\Models\Post;
-use App\Models\Sekolah;
-use App\Models\Tapel;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Helpers\Periode;
 
 class FrontController extends Controller
 {
     public function home(Request $request)
     {
-        try {
-            $tapel = $this->tapel()->kode;
-            return Inertia::render(
-                'Welcome',
-                [
-                    'posts' => Post::where('category', 'Berita')->orderBy('updated_at', 'DESC')->limit(5)->get(),
-                    'infos' => Post::where('category', 'Info')->get(),
-                    'canLogin' => Route::has('login'),
-                    'canRegister' => Route::has('register'),
-                    'sekolahs' => Sekolah::with(
-                        [
-                            'gurus' => function ($g) {
-                                $g->whereNot('jabatan', 'ops');
-                            },
-                            'rombels' => function ($q) use ($tapel) {
-                                $q->where('tapel', $tapel);
-                                $q->with('siswas');
-                            },
-                            'siswas' => fn($s) => $s->whereStatus('aktif')
-                        ]
-                    )->get(),
-                    'agendas' => Agenda::whereTapel($this->tapel()->kode)->orderBy('mulai', 'ASC')->get(),
-                    'galeris' => Galeri::all(),
-                    'appName' => \env('APP_NAME'),
-                    'laravelVersion' => Application::VERSION,
-                    'phpVersion' => PHP_VERSION,
-                ]
-            )->withViewData(
-                [
-                    'meta' => [
-                        'title' => 'PKG Kecamatan Wagir',
-                        'description' => 'Website Resmi PKG Kecamatan Wagir',
-                        'image' => '/img/tutwuri.png',
-                    ]
-                ]
-            );
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return Inertia::render('Welcome')->withViewData([
+            'meta' => [
+                'title' => 'PKG Kecamatan Wagir',
+                'description' => 'Website Resmi PKG Kecamatan Wagir',
+                'image' => '/img/tutwuri.png',
+            ]
+        ]);
     }
 
     public function cari(Request $request)
@@ -178,7 +144,7 @@ class FrontController extends Controller
                 [
                     'canLogin' => Route::has('login'),
                     'appName' => \env('APP_NAME'),
-                    'agendas' => Agenda::whereTapel($this->tapel()->kode)->orderBy('mulai', 'ASC')->get(),
+                    'agendas' => Agenda::whereTapel(Periode::tapel()->kode)->orderBy('mulai', 'ASC')->get(),
                 ]
             )->withViewData(
                 [
@@ -205,8 +171,8 @@ class FrontController extends Controller
         }
     }
 
-    private function tapel()
-    {
-        return Tapel::whereIsActive(1)->first();
-    }
+    // private function tapel()
+    // {
+    //     return Tapel::whereIsActive(1)->first();
+    // }
 }
