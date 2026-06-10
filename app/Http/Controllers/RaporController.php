@@ -15,6 +15,7 @@ use App\Models\Sekolah;
 use App\Helpers\RombelHelper;
 use App\Helpers\SekolahHelper;
 use App\Models\Kokurikuler;
+use Carbon\Carbon;
 
 class RaporController extends Controller
 {
@@ -98,36 +99,47 @@ class RaporController extends Controller
     {
         try {
             $rombelId = null;
+            $guru = $request->user()->userable;
+            $dataRombels = Rombel::where('guru_id', $guru->id)
+                ->where('tapel', Periode::tapel()->kode)
+                ->select("id","kode","label","tingkat","fase")
+                ->orderBy("rombels.tingkat", "ASC")
+                ->get();
             $tangalQuery = TanggalRapor::query();
             if ($request->user()->hasRole('guru_kelas')) {
-                $guru = $request->user()->userable;
-                $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
-                $rombelId=$rombel->kode;
-                $tangalQuery->where('rombel_id', $rombelId);
+                $rombelIds=$dataRombels->map(fn($rombel) => $rombel->kode);
+                $tangalQuery->whereIn('rombel_id', $rombelIds);
             }
             $tanggals = $tangalQuery->with("tahun", "sem")->get();
             return Inertia::render("Dash/TanggalRapor", [
                 "tanggals" => $tanggals,
                 "tapels" => Tapel::all(),
+                "rombels" => $dataRombels
             ]);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function getTanggalRapor($user, $semester=null, $tapel=null, $tipe=null) {
+    public function getTanggalRapor($user, $semester=null, $tapel=null, $tipe=null, $rombelId) {
         try {
             $tangalQuery = TanggalRapor::query();
             // $tangalQuery = TanggalRapor::query();
-            if ($user->hasRole('guru_kelas')) {
-                $guru = $user->userable;
-                $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
-                $rombelId=$rombel->kode;
+            // if ($user->hasRole('guru_kelas')) {
+            //     $guru = $user->userable;
+            //     $rombel = Rombel::where("kode", $rombelId)->first();
+            //     // $rombelId=$rombel->kode;
                 
-                if ($rombel->tingkat === '6') {
-                    $tangalQuery->where('rombel_id', $rombelId);
-                }
-            }
+            //     if ($rombel->tingkat === '6') {
+            //         $tangalQuery->where('rombel_id', $rombelId);
+            //     } else {
+            //         $tangalQuery->where('rombel_id', null);
+            //     }
+            // }
+            $rombel = Rombel::whereKode($rombelId)->first();
+            if ($rombel->tingkat == '6') {
+                $tangalQuery->where('rombel_id', $rombelId);
+            } 
             // dd($tangalQuery->get());
             if ($semester) {
                 $tangalQuery->where('semester', $semester);
@@ -138,9 +150,9 @@ class RaporController extends Controller
             if($tipe) {
                 $tangalQuery->where("tipe", $tipe);
             }
-            $tanggals = $tangalQuery->get();
+            $tanggal = $tangalQuery->first();
             // dd($user->hasRole('guru_kelas'));
-            return $tanggals->toArray();
+            return $tanggal;
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -151,16 +163,15 @@ class RaporController extends Controller
         try {
             $sekolahId = $request->query("sekolahId");
             $data = $request->data;
-            $rombelId = null;
-            if ($request->user()->hasRole('guru_kelas')) {
-                $guru = $request->user()->userable;
-                $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
-                $rombelId=$rombel->kode;
-            }
-            TanggalRapor::updateOrCreate(
+            // $rombelId = $request->rombelId ?? null;
+            // $guru = $request->user()->userable;
+            // if ($request->user()->hasRole('guru_kelas')) {
+            //     $rombel = Rombel::where('guru_id', $guru->id)->where('tapel', Periode::tapel()->kode)->first();
+            //     $rombelId=$rombel->tingkat === '6' ? $rombel->kode : null;
+            // }
+            $tanggal = TanggalRapor::updateOrCreate(
                 [
-                    "sekolah_id" => null,
-                    "rombel_id" => $rombelId,
+                    "rombel_id" => $data['rombel_id'] ?? null,
                     "tapel" => $data["tapel"],
                     "semester" => $data["semester"],
                     "tipe" => $data["tipe"],
@@ -169,9 +180,10 @@ class RaporController extends Controller
                     "tanggal" => $data["tanggal"],
                 ]
             );
+            // dd($tanggal);
             return back()->with("message", "Tanggal Rapor Disimpan");
         } catch (\Throwable $th) {
-            throw $th;
+            dd($th);
         }
     }
 
@@ -203,6 +215,8 @@ class RaporController extends Controller
                     $kokurikuler = Kokurikuler::where('siswa_id', $siswaId)->where('tapel', Periode::tapel()->kode)->where('semester', Periode::semester()->kode)->first();
                     break;
             }
+
+            $tanggalRapor = $this->getTanggalRapor($request->user(), $request->query("semester"), $request->query("tapel"), "pas", $request->rombelId);
             return view("cetak.rapor." . $page, [
                 "page" => $page,
                 "siswa" => $siswa,
@@ -212,7 +226,7 @@ class RaporController extends Controller
                 //     ->where("tapel", $request->query("tapel"))
                 //     ->where("tipe", "pas")
                 //     ->value('tanggal') ?? date('Y-m-d'),
-                "tanggal" => $this->getTanggalRapor($request->user(), $request->query("semester"), $request->query("tapel"), "pas")[0]['tanggal'],
+                "tanggal" => $tanggalRapor ? $tanggalRapor->tanggal : Carbon::now("Asia/Jakarta")->format('d-M-Y'),
                 // "sekolah" => Sekolah::where('npsn', $siswa->sekolah_id)->with('ks')->first(),
                 "rombel" => Rombel::where('kode', $request->rombelId)->with('wali_kelas')->first(),
                 // "tapel" => Tapel::where('kode', $request->query('tapel'))->first(),

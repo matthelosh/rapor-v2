@@ -49,7 +49,8 @@ class RombelHelper
                         $q->orderBy('nama', 'ASC');
                     },
                 ])
-                ->first();
+                ->orderBy('rombels.tingkat', 'ASC')
+                ->get();
         }
     }
 }

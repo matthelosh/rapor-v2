@@ -110,6 +110,7 @@ const edit = (item) => {
                 </div>
             </template>
             <div class="card-body p-2">
+                <!-- {{ page.props }} -->
                 <el-table :data="page.props.tanggals">
                     <el-table-column label="Tipe Rapor">
                         <template #default="scope">
@@ -178,6 +179,19 @@ const edit = (item) => {
         </template>
         <div class="dialog-body">
             <el-form v-model="tanggal" label-position="top">
+                <el-form-item label="Rombongan Belajar">
+                    <el-select
+                        v-model="tanggal.rombel_id"
+                        placeholder="Pilih Rombel"
+                    >
+                        <el-option
+                            v-for="rombel in page.props.rombels"
+                            :key="rombel.id"
+                            :value="rombel.kode"
+                            :label="rombel.label"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="Tahun Pelajaran">
                     <el-select
                         v-model="tanggal.tapel"

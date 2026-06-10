@@ -53,15 +53,6 @@ class NilaiService
             $datas = [
                 "sekolah" => \sekolahs($user),
                 "rombels" => $mapRombels,
-                // "mapels" => Mapel::where(
-                //     "fase",
-                //     "LIKE",
-                //     "%" . $rombel->fase . "%"
-                // )
-                //     ->whereHas("sekolah", function ($q) use ($sekolahId) {
-                //         $q->where("sekolahs.id", $sekolahId);
-                //     })
-                //     ->get(),
             ];
             // dd($datas);
         } elseif ($user->hasRole("guru_agama")) {

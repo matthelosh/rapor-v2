@@ -119,25 +119,18 @@ const confirmSimpan = async () => {
         },
     );
 };
-const cetakBlade = (rapor, siswa) => {
-    // console.log("cetakBlade", rapor, siswa, selectedSemester.value, selectedTapel.value);
-    // router.visit('/cetak/rapor/' + rapor + '/' + siswa.nisn, {
-    //     query: {
-    //         nisn: siswa.nisn,
-    //         semester: selectedSemester.value,
-    //         tapel: selectedTapel.value,
-    //     },
-    //     preserveState: true,
-    // });
+const cetakBlade = (rapor, siswa, thisRombel) => {
+    rombel.value = thisRombel;
+    // console.log(thisRombel);
     let win = window.open(
-        `/cetak/rapor/${rapor}/${siswa.nisn}?semester=${selectedSemester.value}&tapel=${selectedTapel.value}&rombelId=${rombel.value.kode}`,
+        `/cetak/rapor/${rapor}/${siswa.nisn}?semester=${selectedSemester.value}&tapel=${selectedTapel.value}&rombelId=${thisRombel.kode}`,
         "_blank",
         "popup=yes,width=1024,height=1500,scrollbars=no,toolbar=no,menubar=no",
     );
-}
+};
 onBeforeMount(() => {
     // console.log(page.props);
-    rombel.value = page.props.rombels;
+    // rombel.value = page.props.rombels;
     selectedSemester.value =
         route().params.semester ?? page.props.periode.semester.kode;
     selectedTapel.value = route().params.tapel ?? page.props.periode.tapel.kode;
@@ -151,105 +144,173 @@ onBeforeMount(() => {
         <template #header>
             <h3 class="uppercase">Rapor Siswa {{ selectedSiswa?.nama }}</h3>
         </template>
-        <el-card v-if="mode == 'list'">
-            <template #header>
-                <div class="flex items-center justify-between w-full">
-                    <h3 class="uppercase font-bold text-slate-600">
-                        Rapor Siswa {{ rombel?.label }}
-                    </h3>
-                    <div
-                        class="header-items flex-grow flex items-center gap-2 justify-end"
-                    >
-                        <p>Semester:</p>
-                        <el-select
-                            v-model="selectedSemester"
-                            placeholder="Pilih Semester"
-                            style="width: 100px"
-                            @change="onSemesterChanged"
-                        >
-                            <el-option
-                                v-for="sem in ['1', '2']"
-                                :key="`sem${sem}`"
-                                :value="sem"
-                                :label="`Sem ${sem}`"
-                            />
-                        </el-select>
-                        <p>Tapel:</p>
-                        <el-select
-                            v-model="selectedTapel"
-                            placeholder="Pilih Tapel"
-                            style="width: 130px"
-                            @change="onTapelChanged"
-                        >
-                            <el-option
-                                v-for="tapel in page.props.tapels"
-                                :key="`tapel-${tapel.kode}`"
-                                :value="tapel.kode"
-                                :label="tapel.label"
-                            />
-                        </el-select>
-                        <el-button
-                            @click="simpanPermanen"
-                            :native-type="null"
-                            type="danger"
-                        >
-                            Simpan Permanen
-                        </el-button>
-                    </div>
-                </div>
-            </template>
-            <div class="card-body">
-                <!-- {{ JSON.stringify(page.props) }} -->
-                <el-table :data="rombel.siswas" height="80vh" size="small">
-                    <el-table-column
-                        label="#"
-                        type="index"
-                        prop="scope.$index"
-                    />
-                    <el-table-column label="NISN" prop="nisn" width="150" />
-                    <el-table-column label="Nama" prop="nama" />
-                    <el-table-column label="JK" prop="jk" width="100" />
-                    <el-table-column label="Opsi Cetak" fixed="right">
-                        <template #default="scope">
-                            <div>
-                                <el-button-group size="small">
-                                    <el-button
-                                        type="primary"
-                                        @click="cetakBlade('cover', scope.row)"
-                                        >Cover</el-button
+        <el-collapse accordion v-if="mode == 'list'">
+            <template v-for="(thisRombel, r) in page.props.rombels">
+                <el-collapse-item>
+                    <template #title>
+                        <div class="px-4">{{ thisRombel.label }}</div>
+                    </template>
+                    <div>
+                        <el-card>
+                            <template #header>
+                                <div
+                                    class="flex items-center justify-between w-full"
+                                >
+                                    <h3
+                                        class="uppercase font-bold text-slate-600"
                                     >
-                                    <el-button
-                                        type="primary"
-                                        @click="cetak('biodata', scope.row)"
-                                        >Biodata</el-button
+                                        Rapor Siswa {{ rombel?.label }}
+                                    </h3>
+                                    <div
+                                        class="header-items flex-grow flex items-center gap-2 justify-end"
                                     >
-                                    <el-button
-                                        type="primary"
-                                        @click="cetak('pts', scope.row)"
-                                        >PTS</el-button
+                                        <p>Semester:</p>
+                                        <el-select
+                                            v-model="selectedSemester"
+                                            placeholder="Pilih Semester"
+                                            style="width: 100px"
+                                            @change="onSemesterChanged"
+                                        >
+                                            <el-option
+                                                v-for="sem in ['1', '2']"
+                                                :key="`sem${sem}`"
+                                                :value="sem"
+                                                :label="`Sem ${sem}`"
+                                            />
+                                        </el-select>
+                                        <p>Tapel:</p>
+                                        <el-select
+                                            v-model="selectedTapel"
+                                            placeholder="Pilih Tapel"
+                                            style="width: 130px"
+                                            @change="onTapelChanged"
+                                        >
+                                            <el-option
+                                                v-for="tapel in page.props
+                                                    .tapels"
+                                                :key="`tapel-${tapel.kode}`"
+                                                :value="tapel.kode"
+                                                :label="tapel.label"
+                                            />
+                                        </el-select>
+                                        <el-button
+                                            @click="simpanPermanen"
+                                            :native-type="null"
+                                            type="danger"
+                                        >
+                                            Simpan Permanen
+                                        </el-button>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="card-body">
+                                <!-- {{ JSON.stringify(page.props) }} -->
+                                <el-table
+                                    :data="thisRombel.siswas"
+                                    height="80vh"
+                                    size="small"
+                                >
+                                    <el-table-column
+                                        label="#"
+                                        type="index"
+                                        prop="scope.$index"
+                                    />
+                                    <el-table-column
+                                        label="NISN"
+                                        prop="nisn"
+                                        width="150"
+                                    />
+                                    <el-table-column label="Nama" prop="nama" />
+                                    <el-table-column
+                                        label="JK"
+                                        prop="jk"
+                                        width="100"
+                                    />
+                                    <el-table-column
+                                        label="Opsi Cetak"
+                                        fixed="right"
                                     >
-                                    <el-button
-                                        type="primary"
-                                        @click="cetak('pas', scope.row)"
-                                        >PAS</el-button
-                                    >
-                                    <el-button
-                                        @click="cetakBlade('pas', scope.row)"
-                                        >Rapor</el-button
-                                    >
-                                    <el-button
-                                        v-if="scope.row.tingkat == '6'"
-                                        type="primary"
-                                        @click="cetakTranskrip(scope.row)"
-                                        >Transkrip</el-button
-                                    >
-                                </el-button-group>
+                                        <template #default="scope">
+                                            <div>
+                                                <el-button-group size="small">
+                                                    <el-button
+                                                        type="primary"
+                                                        @click="
+                                                            cetakBlade(
+                                                                'cover',
+                                                                scope.row,
+                                                                thisRombel,
+                                                            )
+                                                        "
+                                                        >Cover</el-button
+                                                    >
+                                                    <el-button
+                                                        type="primary"
+                                                        @click="
+                                                            cetak(
+                                                                'biodata',
+                                                                scope.row,
+                                                                thisRombel,
+                                                            )
+                                                        "
+                                                        >Biodata</el-button
+                                                    >
+                                                    <!-- <el-button
+                                                        type="primary"
+                                                        @click="
+                                                            cetak(
+                                                                'pts',
+                                                                scope.row,
+                                                            )
+                                                        "
+                                                        >PTS</el-button
+                                                    > -->
+                                                    <!-- <el-button
+                                                        type="primary"
+                                                        @click="
+                                                            cetak(
+                                                                'pas',
+                                                                scope.row,
+                                                            )
+                                                        "
+                                                        >PAS</el-button
+                                                    > -->
+                                                    <el-button
+                                                        :native-type="null"
+                                                        type="primary"
+                                                        @click="
+                                                            cetakBlade(
+                                                                'pas',
+                                                                scope.row,
+                                                                thisRombel,
+                                                            )
+                                                        "
+                                                        >Rapor</el-button
+                                                    >
+                                                    <el-button
+                                                        v-if="
+                                                            scope.row.tingkat ==
+                                                            '6'
+                                                        "
+                                                        type="primary"
+                                                        @click="
+                                                            cetakTranskrip(
+                                                                scope.row,
+                                                            )
+                                                        "
+                                                        >Transkrip</el-button
+                                                    >
+                                                </el-button-group>
+                                            </div>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
                             </div>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </div>
-        </el-card>
+                        </el-card>
+                    </div>
+                </el-collapse-item>
+            </template>
+        </el-collapse>
         <Cover
             v-if="mode == 'cover'"
             :siswa="selectedSiswa"
