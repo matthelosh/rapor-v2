@@ -29,7 +29,7 @@
                         <tr>
                             <td class="font-bold">Sekolah</td>
                             <td class="font-bold">:</td>
-                            <td>{{ucwords(strtolower($siswa->sekolah->nama))}}</td>
+                            <td>{{strtoupper($siswa->sekolah->nama)}}</td>
                         </tr>
                         <tr>
                             <td class="font-bold">Alamat</td>
