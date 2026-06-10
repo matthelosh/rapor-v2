@@ -14,7 +14,7 @@ const loading = ref(false);
 const mapels = (tingkat) => {
     return mapelsRaw.filter((mapel) => mapel.tingkat == tingkat);
 };
-const selectedTapel = ref(null)
+const selectedTapel = ref(null);
 const unduh = async (target, rombel, tapel) => {
     loading.value = true;
     const el = document.querySelector(`.${target}`);
@@ -62,6 +62,7 @@ const mapelsRaw = ref([]);
 const lists = ref([]);
 const nilais = ref([]);
 const rombel = ref({});
+const rombels = ref([]);
 const getLedger = async () => {
     const loading = ElLoading.service({
         lock: true,
@@ -69,11 +70,20 @@ const getLedger = async () => {
         background: "rgba(0, 0, 0, 0.7)",
     });
     axios
-        .post(route("dashboard.ledger.index", {_query: {tapel: selectedTapel.value ? selectedTapel.value : page.props.periode.tapel.kode}}))
+        .post(
+            route("dashboard.ledger.index", {
+                _query: {
+                    tapel: selectedTapel.value
+                        ? selectedTapel.value
+                        : page.props.periode.tapel.kode,
+                },
+            }),
+        )
         .then((res) => {
             nilais.value = res.data.nilais;
             mapelsRaw.value = res.data.mapels;
-            rombel.value = res.data.rombels;
+            rombels.value = res.data.rombels;
+            // console.log(res.data.rombels);
         })
         .catch((err) => {
             console.log(err);
@@ -83,9 +93,13 @@ const getLedger = async () => {
 
 const cetakPiagam = (nisn, rank, nilai, semester) => {
     const queries = `nisn=${nisn}&rank=${rank}&nilai=${nilai}&semester=${semester}&rombel=${rombel.value.kode}&tapel=${selectedTapel.value ?? page.props.periode.tapel.kode}`;
-    
-    let win = window.open("/cetak/ledger/piagam?"+queries, "_blank", "height=900,width=1000");
-}
+
+    let win = window.open(
+        "/cetak/ledger/piagam?" + queries,
+        "_blank",
+        "height=900,width=1000",
+    );
+};
 onBeforeMount(async () => {
     await getLedger();
 });
@@ -104,19 +118,17 @@ onBeforeMount(async () => {
             </template>
             <div class="card-body">
                 <!-- {{ rombel }} -->
-                <!-- <el-collapse v-model="activeCollapse"> -->
-                    <!-- <template v-for="(rombel, r) in rombels" :key="rombel.kode"> -->
-                        <!-- <el-collapse-item :name="r"> -->
-                            <div>
-                                <div class="collapse-title">
-                                    <h3 class="uppercase">
-                                        {{ rombel.label }}
-                                        {{ rombel.sekolah?.nama }}
-                                    </h3>
-                                </div>
-                            </div>
+                <el-collapse v-model="activeCollapse" accordion>
+                    <template v-for="(rombel, r) in rombels" :key="rombel.kode">
+                        <el-collapse-item :name="r">
+                            <template #title class="collapse-title">
+                                <h3 class="uppercase px-4">
+                                    {{ rombel.label }}
+                                    {{ rombel.sekolah?.nama }}
+                                </h3>
+                            </template>
                             <div
-                                class="collapse-body relative border-t border-black print:border-none pt-4"
+                                class="collapse-body relative border-t border-black print:border-none p-4"
                                 :class="`cetak-${rombel.kode}`"
                             >
                                 <div
@@ -130,8 +142,22 @@ onBeforeMount(async () => {
                                         {{ page.props.periode.tapel.deskripsi }}
                                     </h3>
                                     <div class="flex items-center">
-                                        <el-select placeholder="Tapel" style="width: 100px;margin-right: 12px;" v-model="selectedTapel" @change="getLedger">
-                                            <el-option v-for="(tapel, t) in page.props.tapels" :key="t" :label="tapel.label" :value="tapel.kode"></el-option>
+                                        <el-select
+                                            placeholder="Tapel"
+                                            style="
+                                                width: 100px;
+                                                margin-right: 12px;
+                                            "
+                                            v-model="selectedTapel"
+                                            @change="getLedger"
+                                        >
+                                            <el-option
+                                                v-for="(tapel, t) in page.props
+                                                    .tapels"
+                                                :key="t"
+                                                :label="tapel.label"
+                                                :value="tapel.kode"
+                                            ></el-option>
                                         </el-select>
                                         <el-button
                                             type="primary"
@@ -196,8 +222,16 @@ onBeforeMount(async () => {
                                                 <th
                                                     class="border border-black p-1 text-xs"
                                                     colspan="2"
+                                                    :title="mapel.label"
                                                 >
-                                                    {{ mapel.label }}
+                                                    <el-tooltip
+                                                        class="box-item"
+                                                        effect="dark"
+                                                        :content="mapel.label"
+                                                        placement="bottom"
+                                                    >
+                                                        {{ mapel.kode }}
+                                                    </el-tooltip>
                                                 </th>
                                             </template>
                                             <th
@@ -274,7 +308,11 @@ onBeforeMount(async () => {
                                     </thead>
                                     <tbody>
                                         <template
-                                            v-for="(nilai, n) in nilais.datas?.sort((a,b) => a.nama.localeCompare(b.nama))"
+                                            v-for="(
+                                                nilai, n
+                                            ) in nilais.datas?.sort((a, b) =>
+                                                a.nama.localeCompare(b.nama),
+                                            )"
                                             :key="n"
                                         >
                                             <tr>
@@ -329,30 +367,86 @@ onBeforeMount(async () => {
                                                 <td
                                                     class="bg-slate-300 border border-black text-center w-[50px]"
                                                 >
-                                                    <el-button v-if="rankMe(nilai['sum1'], 1) <= 5 " circle :native-type="null" type="success" @click="cetakPiagam(nilai.nisn, rankMe(nilai['sum1'], 1), nilai['sum1'], '1')">
+                                                    <el-button
+                                                        v-if="
+                                                            rankMe(
+                                                                nilai['sum1'],
+                                                                1,
+                                                            ) <= 5
+                                                        "
+                                                        circle
+                                                        :native-type="null"
+                                                        type="success"
+                                                        @click="
+                                                            cetakPiagam(
+                                                                nilai.nisn,
+                                                                rankMe(
+                                                                    nilai[
+                                                                        'sum1'
+                                                                    ],
+                                                                    1,
+                                                                ),
+                                                                nilai['sum1'],
+                                                                '1',
+                                                            )
+                                                        "
+                                                    >
                                                         {{
-                                                            rankMe(nilai["sum1"], 1)
+                                                            rankMe(
+                                                                nilai["sum1"],
+                                                                1,
+                                                            )
                                                         }}
-                                                    
                                                     </el-button>
                                                     <span v-else>
                                                         {{
-                                                            rankMe(nilai["sum1"], 1)
+                                                            rankMe(
+                                                                nilai["sum1"],
+                                                                1,
+                                                            )
                                                         }}
                                                     </span>
                                                 </td>
                                                 <td
                                                     class="bg-slate-300 border border-black text-center w-[50px]"
                                                 >
-                                                    <el-button v-if="rankMe(nilai['sum2'], 2) <= 5 " circle :native-type="null" type="success" @click="cetakPiagam(nilai.nisn, rankMe(nilai['sum2'], 2), nilai['sum2'], '2')">
+                                                    <el-button
+                                                        v-if="
+                                                            rankMe(
+                                                                nilai['sum2'],
+                                                                2,
+                                                            ) <= 5
+                                                        "
+                                                        circle
+                                                        :native-type="null"
+                                                        type="success"
+                                                        @click="
+                                                            cetakPiagam(
+                                                                nilai.nisn,
+                                                                rankMe(
+                                                                    nilai[
+                                                                        'sum2'
+                                                                    ],
+                                                                    2,
+                                                                ),
+                                                                nilai['sum2'],
+                                                                '2',
+                                                            )
+                                                        "
+                                                    >
                                                         {{
-                                                            rankMe(nilai["sum2"], 2)
+                                                            rankMe(
+                                                                nilai["sum2"],
+                                                                2,
+                                                            )
                                                         }}
-                                                    
                                                     </el-button>
                                                     <span v-else>
                                                         {{
-                                                            rankMe(nilai["sum2"], 2)
+                                                            rankMe(
+                                                                nilai["sum2"],
+                                                                2,
+                                                            )
                                                         }}
                                                     </span>
                                                 </td>
@@ -361,9 +455,9 @@ onBeforeMount(async () => {
                                     </tbody>
                                 </table>
                             </div>
-                        <!-- </el-collapse-item> -->
-                    <!-- </template> -->
-                <!-- </el-collapse> -->
+                        </el-collapse-item>
+                    </template>
+                </el-collapse>
             </div>
 
             <!-- <div>{{ page.props.nilais }}</div> -->

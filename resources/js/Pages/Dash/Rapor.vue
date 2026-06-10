@@ -84,9 +84,11 @@ const onTapelChanged = (e) => {
     );
 };
 
+const selectedRombel = ref(null);
 const dialogPermanen = ref(false);
 const confirmPermanen = ref(false);
-const simpanPermanen = () => {
+const simpanPermanen = (thisRombel) => {
+    selectedRombel.value = thisRombel;
     dialogPermanen.value = true;
 };
 const setujuPermanen = ref(false);
@@ -94,7 +96,7 @@ const confirmSimpan = async () => {
     router.post(
         route("dashboard.rapor.permanen"),
         {
-            rombelId: rombel.value.kode,
+            rombelId: selectedRombel.value.kode,
             tapel: selectedTapel.value,
             semester: selectedSemester.value,
         },
@@ -159,7 +161,7 @@ onBeforeMount(() => {
                                     <h3
                                         class="uppercase font-bold text-slate-600"
                                     >
-                                        Rapor Siswa {{ rombel?.label }}
+                                        Rapor Siswa {{ thisRombel?.label }}
                                     </h3>
                                     <div
                                         class="header-items flex-grow flex items-center gap-2 justify-end"
@@ -194,7 +196,7 @@ onBeforeMount(() => {
                                             />
                                         </el-select>
                                         <el-button
-                                            @click="simpanPermanen"
+                                            @click="simpanPermanen(thisRombel)"
                                             :native-type="null"
                                             type="danger"
                                         >
