@@ -130,4 +130,8 @@ class Rombel extends Model
         return $this->belongsTo(Tapel::class, "tapel", "kode");
     }
 
+    // public function mapels() {
+    //     return $this->hasMany(Mapel::class, 'fase','fase');
+    // }
+
 }

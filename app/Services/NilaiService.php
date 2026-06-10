@@ -23,21 +23,21 @@ class NilaiService
         $mapels = ["guru_agama", "guru_pjok", "guru_inggris"];
         if ($user->hasRole("guru_kelas")) {
             $nip = $user->userable->nip;
-
-            $rombel = Rombel::whereHas("wali_kelas", function ($g) use ($nip) {
-                $g->where("nip", $nip);
-            })
-                ->where('tapel', $tapel)
-                ->with(["siswas" => function ($s) {
-                    $s->orderBy("nama", "ASC");
-                }])
-                ->first();
-            // dd($rombel);
             $sekolahId = $user->userable->sekolahs[0]->id;
-            $datas = [
-                "sekolah" => \sekolahs($user),
-                "rombel" => $rombel,
-                "mapels" => Mapel::where(
+            $rombels = Rombel::whereHas("wali_kelas", function ($g) use ($nip) {
+                $g->where("nip", $nip);
+                })
+                ->where('tapel', $tapel)
+                ->with([
+                    "siswas" => function ($s) {
+                        $s->orderBy("nama", "ASC");
+                    },
+                ])
+                ->orderBy('rombels.tingkat', 'ASC')
+                ->get();
+            // dd($rombel);
+            $mapRombels = $rombels->map(function($rombel) use($sekolahId) {
+                $mapels = Mapel::where(
                     "fase",
                     "LIKE",
                     "%" . $rombel->fase . "%"
@@ -45,7 +45,23 @@ class NilaiService
                     ->whereHas("sekolah", function ($q) use ($sekolahId) {
                         $q->where("sekolahs.id", $sekolahId);
                     })
-                    ->get(),
+                    ->select("id","kode","label", "kategori")
+                    ->get();
+                $rombel->mapels = $mapels;
+                return $rombel;
+            });
+            $datas = [
+                "sekolah" => \sekolahs($user),
+                "rombels" => $mapRombels,
+                // "mapels" => Mapel::where(
+                //     "fase",
+                //     "LIKE",
+                //     "%" . $rombel->fase . "%"
+                // )
+                //     ->whereHas("sekolah", function ($q) use ($sekolahId) {
+                //         $q->where("sekolahs.id", $sekolahId);
+                //     })
+                //     ->get(),
             ];
             // dd($datas);
         } elseif ($user->hasRole("guru_agama")) {
