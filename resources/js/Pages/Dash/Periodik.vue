@@ -10,17 +10,19 @@ import FormCatatan from "@/Components/Dashboard/Periodik/FormCatatan.vue";
 
 const page = usePage();
 
-const rombel = page.props.rombels[0];
 const selectedSiswa = ref({});
 const mode = ref("list");
 
 const rombels = computed(() => page.props.rombels);
-const openForm = (formulir, siswa) => {
+const selectedRombel = ref(null);
+const openForm = (formulir, siswa, thisRombel) => {
+    selectedRombel.value = thisRombel;
     selectedSiswa.value = siswa;
     mode.value = formulir;
 };
 
 const closeForm = () => {
+    selectedRombel.value = null;
     selectedSiswa.value = false;
     mode.value = "list";
 };
@@ -68,6 +70,7 @@ const closeForm = () => {
                                                             openForm(
                                                                 'ekskul',
                                                                 scope.row,
+                                                                rombel,
                                                             )
                                                         "
                                                         >Ekskul</el-button
@@ -78,6 +81,7 @@ const closeForm = () => {
                                                             openForm(
                                                                 'absen',
                                                                 scope.row,
+                                                                rombel,
                                                             )
                                                         "
                                                         >Absensi</el-button
@@ -88,6 +92,7 @@ const closeForm = () => {
                                                             openForm(
                                                                 'catatan',
                                                                 scope.row,
+                                                                rombel,
                                                             )
                                                         "
                                                         >Catatan</el-button
@@ -107,21 +112,21 @@ const closeForm = () => {
     <FormEkskul
         v-if="mode == 'ekskul'"
         :siswa="selectedSiswa"
-        :rombel="rombels"
+        :rombel="selectedRombel"
         :open="mode == 'ekskul'"
         @close="closeForm"
     />
     <FormAbsen
         v-if="mode == 'absen'"
         :siswa="selectedSiswa"
-        :rombel="rombels"
+        :rombel="selectedRombel"
         :open="mode == 'absen'"
         @close="closeForm"
     />
     <FormCatatan
         v-if="mode == 'catatan'"
         :siswa="selectedSiswa"
-        :rombel="rombels"
+        :rombel="selectedRombel"
         :open="mode == 'catatan'"
         @close="closeForm"
     />
