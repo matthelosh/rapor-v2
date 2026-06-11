@@ -13,8 +13,9 @@ class KokurikulerController extends Controller
 {
     public function home(Request $request)
     {
-        $koderombel = RombelHelper::data($request->user())->kode;
-        $rombel = Rombel::where('kode', $koderombel)
+        // $koderombel = RombelHelper::data($request->user())[0]->kode;
+        $rombels = Rombel::where('guru_id', $request->user()->userable->id)
+                    ->where("tapel", Periode::tapel()->kode)
                     ->with([
                         'siswas' => function ($s) {
                             $s->with([
@@ -25,10 +26,10 @@ class KokurikulerController extends Controller
                             ]);
                         }
                         ])
-                    ->first();
+                    ->get();
         return Inertia::render("Dash/Kokurikuler", 
     [
-        'rombel' => $rombel,
+        'rombels' => $rombels,
     ]);
     }
 
