@@ -399,30 +399,9 @@ const isDateInWeek = (date, week) => {
                                     <table class="w-full">
                                         <tbody>
                                             <tr>
-                                                <td
-                                                    colspan="2"
-                                                    class="text-center"
-                                                >
-                                                    Mengetahui,
-                                                </td>
+                                                <td class="w-[33%]"></td>
                                                 <td class="px-8">
-                                                    <p>
-                                                        Wagir, ....
-                                                        {{
-                                                            months[
-                                                                params.bulan
-                                                                    ? params.bulan -
-                                                                      1
-                                                                    : selectedBulan
-                                                            ]
-                                                        }}
-                                                        {{ selectedTahun }}
-                                                    </p>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="px-8">
-                                                    <p>&nbsp;</p>
+                                                    <p>Mengetahui,</p>
                                                     <p>Pendamping Sekolah,</p>
                                                     <br /><br /><br /><br />
                                                     <p
@@ -442,6 +421,18 @@ const isDateInWeek = (date, week) => {
                                                     </p>
                                                 </td>
                                                 <td class="px-8">
+                                                    <p>
+                                                        Wagir, ....
+                                                        {{
+                                                            months[
+                                                                params.bulan
+                                                                    ? params.bulan -
+                                                                      1
+                                                                    : selectedBulan
+                                                            ]
+                                                        }}
+                                                        {{ selectedTahun }}
+                                                    </p>
                                                     <p>Kepala Sekolah,</p>
                                                     <br /><br /><br /><br />
                                                     <p
