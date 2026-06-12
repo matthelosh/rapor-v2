@@ -319,14 +319,21 @@ const isDateInWeek = (date, week) => {
                                             <td class="border p-2 border-black">
                                                 <p class="leading-4">
                                                     {{ guru.gelar_depan ?? "" }}
-                                                    {{ guru.nama }},
+                                                    <span class="uppercase">
+                                                        {{ guru.nama }},
+                                                    </span>
                                                     {{
                                                         guru.gelar_belakang ??
                                                         ""
                                                     }}
                                                 </p>
-                                                <p class="leading-4">
-                                                    {{ guru.jabatan }}
+                                                <p class="leading-4 uppercase">
+                                                    {{
+                                                        guru.jabatan.replace(
+                                                            "_",
+                                                            " ",
+                                                        )
+                                                    }}
                                                 </p>
                                                 <p class="leading-4">
                                                     NIP.
