@@ -3,7 +3,7 @@ import { router, usePage } from "@inertiajs/vue3";
 import dayjs from "dayjs";
 import localeData from "dayjs/plugin/localeData";
 import "dayjs/locale/id";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
 dayjs.extend(localeData);
 dayjs().localeData();
 dayjs.locale("id");
@@ -57,8 +57,12 @@ const tahuns = computed(() => {
 
 const sortedGurus = computed(() => {
     return [...props.gurus].sort((a, b) => {
-        const aIsKepsek = a.jabatan?.toLowerCase().includes("kepala sekolah") ? 0 : 1;
-        const bIsKepsek = b.jabatan?.toLowerCase().includes("kepala sekolah") ? 0 : 1;
+        const aIsKepsek = a.jabatan?.toLowerCase().includes("kepala_sekolah")
+            ? 0
+            : 1;
+        const bIsKepsek = b.jabatan?.toLowerCase().includes("kepala_sekolah")
+            ? 0
+            : 1;
         return aIsKepsek - bIsKepsek;
     });
 });
@@ -111,24 +115,24 @@ const cetak = async () => {
 };
 
 const streamPdf = async () => {
-    const element = document.querySelector('.laman');
+    const element = document.querySelector(".laman");
     const opt = {
         margin: 0.5,
         filename: `Presensi_Guru_${months[selectedBulan]}_${selectedTahun.value}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, allowTaint: true },
-        jsPDF: { unit: 'in', format: 'folio', orientation: 'landscape' }
+        jsPDF: { unit: "in", format: "folio", orientation: "landscape" },
     };
     html2pdf().set(opt).from(element).save();
 };
 onMounted(() => {
-    selectedBulan.value = params.bulan ?? (new Date().getMonth());
+    selectedBulan.value = params.bulan ?? new Date().getMonth();
 });
 
 const isDateInWeek = (date, week) => {
     const targetDate = dayjs(date);
     for (const t of week.tanggals) {
-        if (t.tanggal && dayjs(t.tanggal).isSame(targetDate, 'day')) {
+        if (t.tanggal && dayjs(t.tanggal).isSame(targetDate, "day")) {
             return true;
         }
     }
@@ -367,7 +371,12 @@ const isDateInWeek = (date, week) => {
                                     <ol class="pl-4 list-decimal">
                                         <template v-for="agenda in agendas">
                                             <li
-                                                v-if="isDateInWeek(agenda.mulai, week)"
+                                                v-if="
+                                                    isDateInWeek(
+                                                        agenda.mulai,
+                                                        week,
+                                                    )
+                                                "
                                             >
                                                 {{
                                                     dayjs(agenda.mulai).format(
@@ -405,26 +414,6 @@ const isDateInWeek = (date, week) => {
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td class="px-8">
-                                                    <p>&nbsp;</p>
-                                                    <p>Korwil,</p>
-                                                    <br /><br /><br /><br />
-                                                    <p
-                                                        class="font-bold underline leading-4 tracking-wider"
-                                                    >
-                                                        {{
-                                                            page.props.pejabat
-                                                                ?.korwil
-                                                        }}
-                                                    </p>
-                                                    <p class="leading-4">
-                                                        NIP.
-                                                        {{
-                                                            page.props.pejabat
-                                                                ?.nip_korwil
-                                                        }}
-                                                    </p>
-                                                </td>
                                                 <td class="px-8">
                                                     <p>&nbsp;</p>
                                                     <p>Pendamping Sekolah,</p>
