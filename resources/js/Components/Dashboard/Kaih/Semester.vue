@@ -133,9 +133,9 @@ onBeforeMount(() => {
                         </tr> -->
                     </tbody>
                 </table>
-                <div>
+                <!-- <div>
                     {{ rekap }}
-                </div>
+                </div> -->
                 <table class="w-full" v-if="rekap">
                     <thead>
                         <tr>
@@ -200,8 +200,7 @@ onBeforeMount(() => {
                                     <Icon
                                         v-if="
                                             rekap[key] &&
-                                            prosentase(rekap[key]) > 66 &&
-                                            prosentase(rekap[key]) <= 100
+                                            prosentase(rekap[key]) > 66
                                         "
                                         icon="mdi:check"
                                         class="mx-auto text-2xl text-blue-500"
