@@ -172,7 +172,7 @@
                                         @if(is_array($catatan))
                                             {{ implode(', ', $catatan) }}
                                         @else
-                                            {{ $catatan }}
+                                            {{ $catatan->teks }}
                                         @endif
                                     </td>
                                 </tr>
@@ -207,10 +207,22 @@
                     <p class="text-justify">Berdasarkan hasil belajar yang telah dicapai,
                     @if($rombel->tingkat == '6')
                         
-                            Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Lulus</span><span class="is_lulus font-bold"> Lulus</span> dan <span class="is_not_lulus font-bold hidden">Tidak</span> <span class="font-bold">Dapat</span> melanjutkan ke jenjang pendidikan selanjutnya.
+                            Ananda <span class="font-bold">{{ucwords(strtolower($siswa->nama))}}</span> dinyatakan 
+                            @if($catatan->is_tuntas)
+                                <span class="font-bold">Lulus dan dapat</span> 
+                            @else
+                                <span class="font-bold">Tidak Lulus dan tidak dapat</span> 
+                            @endif
+                            melanjutkan ke jenjang pendidikan selanjutnya.
                         </p>
                     @else
-                        Ananda {{ucwords(strtolower($siswa->nama))}}, dinyatakan <span class="is_not_lulus hidden font-bold">Tidak Naik</span><span class="is_lulus font-bold"> Naik</span> ke kelas {{$kelases[$rombel->tingkat + 1]}}.
+                        Ananda <span class="font-bold"> {{ucwords(strtolower($siswa->nama))}}</span> dinyatakan
+                        @if($catatan->is_tuntas)
+                            <span class="font-bold">Naik</span> 
+                        @else
+                            <span class="font-bold">Tidak Naik</span> 
+                        @endif
+                        ke kelas {{$kelases[$rombel->tingkat + 1]}}.
                         </p>
                     @endif
                 </div>

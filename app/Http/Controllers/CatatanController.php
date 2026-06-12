@@ -36,6 +36,7 @@ class CatatanController extends Controller
                 ],
                 [
                     'teks' => $catatan,
+                    'is_tuntas' => $request->is_tuntas
                 ]
             );
             return back()->with('message', 'Catatan siswa disimpan');

@@ -362,7 +362,7 @@ class RaporService
             ["rombel_id", "=", $queries["rombelId"]],
         ])->first();
 
-        return $catatan ? $catatan->teks : null;
+        return $catatan ?? null;
     }
 
     public function ekskul($queries)

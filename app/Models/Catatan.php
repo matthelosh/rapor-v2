@@ -38,6 +38,7 @@ class Catatan extends Model
         'tapel',
         'semester',
         'siswa_id',
-        'teks'
+        'teks',
+        'is_tuntas'
     ];
 }
