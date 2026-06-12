@@ -55,6 +55,13 @@ const tahuns = computed(() => {
     return res;
 });
 
+const sortedGurus = computed(() => {
+    return [...props.gurus].sort((a, b) => {
+        const aIsKepsek = a.jabatan?.toLowerCase().includes("kepala sekolah") ? 0 : 1;
+        const bIsKepsek = b.jabatan?.toLowerCase().includes("kepala sekolah") ? 0 : 1;
+        return aIsKepsek - bIsKepsek;
+    });
+});
 const params = route().params;
 const bulanIni = computed(() => new Date().getMonth());
 const selectedBulan = ref("0");
@@ -298,7 +305,7 @@ const isDateInWeek = (date, week) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <template v-for="(guru, g) in props.gurus">
+                                    <template v-for="(guru, g) in sortedGurus">
                                         <tr>
                                             <td
                                                 class="border p-2 border-black text-center"
