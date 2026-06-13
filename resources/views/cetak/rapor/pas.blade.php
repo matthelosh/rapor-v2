@@ -208,7 +208,7 @@
                     @if($rombel->tingkat == '6')
                         
                             Ananda <span class="font-bold">{{ucwords(strtolower($siswa->nama))}}</span> dinyatakan 
-                            @if($catatan->is_tuntas)
+                            @if($catatan['is_tuntas'])
                                 <span class="font-bold">Lulus dan dapat</span> 
                             @else
                                 <span class="font-bold">Tidak Lulus dan tidak dapat</span> 
@@ -217,7 +217,7 @@
                         </p>
                     @else
                         Ananda <span class="font-bold"> {{ucwords(strtolower($siswa->nama))}}</span> dinyatakan
-                        @if($catatan->is_tuntas)
+                        @if($catatan['is_tuntas'])
                             <span class="font-bold">Naik</span> 
                         @else
                             <span class="font-bold">Tidak Naik</span> 
