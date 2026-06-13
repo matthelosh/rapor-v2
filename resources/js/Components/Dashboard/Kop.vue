@@ -18,7 +18,7 @@ const defaultLogo = (e) => {
         class="grid grid-cols-12 py-4 border-double border-b-8 print:border-b-4 border-black"
     >
         <div
-            class="logo-kab col-span-3 print:col-span-2 flex items-center justify-center"
+            class="logo-kab col-span-2 print:col-span-2 flex items-center justify-center"
         >
             <img
                 src="/img/malangkab.png"
@@ -27,31 +27,34 @@ const defaultLogo = (e) => {
                 class="h-32 print:h-20"
             />
         </div>
-        <div class="teks text-center font-serif col-span-6 print:col-span-8">
+        <div class="teks text-center font-serif col-span-8 print:col-span-8">
             <h3 class="uppercase font-bold text-lg print:text-[12pt] leading-5">
                 Pemerintah Kabupaten Malang
             </h3>
             <h3 class="uppercase font-bold text-lg print:text[10pt] leading-5">
                 Dinas Pendidikan dan Kebudayaan
             </h3>
-            <h3 class="uppercase font-bold text print:text-[10pt] leading-5">
-                Korwil Dinas Pendidikan Kecamatan
-                {{ capitalize(sekolah.kecamatan) }}
-            </h3>
-            <h1 class="uppercase font-bold text-2xl print:text-[14pt] leading-5">
+            <h1
+                class="uppercase font-bold text-2xl print:text-[14pt] leading-5"
+            >
                 {{ sekolah.nama }}
             </h1>
             <p class="font-light print:text-[10pt] leading-5">
-                Alamat: {{ capitalize(sekolah.alamat) }}, {{ capitalize(sekolah.desa) }}, Kode Pos
-                {{ sekolah.kode_pos }}
+                Alamat: {{ capitalize(sekolah.alamat) }},
+                {{ capitalize(sekolah.desa) }}, Kec. {{ sekolah.kecamatan }},
+                Kabupaten {{ sekolah.kabupaten }} Jawa Timur
             </p>
             <p class="font-light print:text-[10pt] leading-5">
-                Telp: {{ capitalize(sekolah.telp) }}, Email:
-                {{ sekolah.email }}, Website: {{ sekolah.website }}
+                NPSN: {{ capitalize(sekolah.npsn) }}
+            </p>
+            <p class="font-light print:text-[10pt] leading-5">
+                Pos-el:
+                {{ sekolah.email }}, Kode Pos
+                {{ sekolah.kode_pos }}
             </p>
         </div>
         <div
-            class="logo-sekolah col-span-3 print:col-span-2 flex items-center justify-center"
+            class="logo-sekolah col-span-2 print:col-span-2 flex items-center justify-center"
         >
             <img
                 :src="sekolah.logo"
