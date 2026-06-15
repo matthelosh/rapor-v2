@@ -92,6 +92,7 @@ class CetakController extends Controller
             // "nilai" => "824"
             // "semester" => "1"
             $kodeRombel = $request->query('rombel');
+            // dd($kodeRombel);
             // "tapel" => "2425"
             return view("cetak.ledger.piagam_ranking", [
                 'siswa' => Siswa::where('nisn', $request->query('nisn'))->with([

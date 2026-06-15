@@ -91,8 +91,9 @@ const getLedger = async () => {
         .finally(() => loading.close());
 };
 
-const cetakPiagam = (nisn, rank, nilai, semester) => {
-    const queries = `nisn=${nisn}&rank=${rank}&nilai=${nilai}&semester=${semester}&rombel=${rombel.value.kode}&tapel=${selectedTapel.value ?? page.props.periode.tapel.kode}`;
+const cetakPiagam = (nisn, rank, nilai, semester, thisRombel) => {
+    // console.log(thisRombel);
+    const queries = `nisn=${nisn}&rank=${rank}&nilai=${nilai}&semester=${semester}&rombel=${thisRombel.kode}&tapel=${selectedTapel.value ?? page.props.periode.tapel.kode}`;
 
     let win = window.open(
         "/cetak/ledger/piagam?" + queries,
@@ -388,6 +389,7 @@ onBeforeMount(async () => {
                                                                 ),
                                                                 nilai['sum1'],
                                                                 '1',
+                                                                rombel,
                                                             )
                                                         "
                                                     >
@@ -431,6 +433,7 @@ onBeforeMount(async () => {
                                                                 ),
                                                                 nilai['sum2'],
                                                                 '2',
+                                                                rombel,
                                                             )
                                                         "
                                                     >
