@@ -189,7 +189,7 @@ trait NilaiTrait
         }
     }
 
-    public function ledger($request)
+    public function ledger($request, $rombel)
     {
         $user = $request->user();
         $datas = [];
@@ -201,10 +201,10 @@ trait NilaiTrait
             $semesterList = [1, 2];
 
             // Ambil rombel dan siswa
-            $rombel = Rombel::where("guru_id", $user->userable->id)
-                ->where("tapel", $tapel)
-                ->with("siswas")
-                ->first();
+            // $rombel = Rombel::where("guru_id", $user->userable->id)
+            //     ->where("tapel", $tapel)
+            //     ->with("siswas")
+            //     ->first();
 
             $siswas = $rombel->siswas;
             $mapels = $this->mapels($user, $rombel);

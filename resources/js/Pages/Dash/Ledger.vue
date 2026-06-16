@@ -311,8 +311,11 @@ onBeforeMount(async () => {
                                         <template
                                             v-for="(
                                                 nilai, n
-                                            ) in nilais.datas?.sort((a, b) =>
-                                                a.nama.localeCompare(b.nama),
+                                            ) in rombel.nilais.datas?.sort(
+                                                (a, b) =>
+                                                    a.nama.localeCompare(
+                                                        b.nama,
+                                                    ),
                                             )"
                                             :key="n"
                                         >

@@ -37,19 +37,26 @@ class LedgerController extends Controller
 
     public function index(Request $request)
     {
-        $sekolah = Sekolah::whereId(
-            $request->user()->userable->sekolahs[0]->id
-        )->first();
-        return response()->json([
-            "mapels" => Mapel::whereHas("sekolah", function ($s) use (
-                $sekolah
-            ) {
-                $s->where("sekolahs.id", $sekolah->id);
-            })->get(),
-            "nilais" => $this->ledger($request),
+        // $sekolah = Sekolah::whereId(
+        //     $request->user()->userable->sekolahs[0]->id
+        // )->first();
 
-            "mapels" => Mapel::all(),
-            "rombels" => RombelHelper::data($request->user(), $request->query('tapel') ?? null),
+        $rombels = RombelHelper::data($request->user(), $request->query('tapel') ?? null);
+        $rombelWithNilais = $rombels->map(function($rombel) use($request) {
+            $rombel->nilais = $this->ledger($request, $rombel);
+            return $rombel;
+        });
+
+        return response()->json([
+            // "mapels" => Mapel::whereHas("sekolah", function ($s) use (
+            //     $sekolah
+            // ) {
+            //     $s->where("sekolahs.id", $sekolah->id);
+            // })->get(),
+            // "nilais" => $this->ledger($request, $rombels->first()),
+
+            "mapels" => Mapel::select('id','kode','label')->get(),
+            "rombels" => $rombelWithNilais,
 
         ]);
     }
