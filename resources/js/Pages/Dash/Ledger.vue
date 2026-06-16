@@ -391,7 +391,8 @@ onBeforeMount(async () => {
                                                                         'sum1'
                                                                     ],
                                                                     1,
-                                                                    nilai
+                                                                    rombel
+                                                                        .nilais
                                                                         .lists[0],
                                                                 ),
                                                                 nilai['sum1'],
@@ -443,7 +444,8 @@ onBeforeMount(async () => {
                                                                         'sum2'
                                                                     ],
                                                                     2,
-                                                                    nilai
+                                                                    rombel
+                                                                        .nilais
                                                                         .lists[1],
                                                                 ),
                                                                 nilai['sum2'],
