@@ -52,11 +52,11 @@ const cetak = async (target) => {
     }, 1500);
 };
 
-const rankMe = (nilai, sem) => {
-    const list = nilais.value.lists[sem - 1];
-    let sorted = list.sort((a, b) => b - a);
+const rankMe = (nilai, sem, lists) => {
+    // const list = nilais.value.lists[sem - 1];
+    let sorted = lists.sort((a, b) => b - a);
     let index = sorted.findIndex((n) => n == parseInt(nilai));
-    return [...list].reduce((a, c) => a + c, 0) > 0 ? index + 1 : index;
+    return [...lists].reduce((a, c) => a + c, 0) > 0 ? index + 1 : index;
 };
 const mapelsRaw = ref([]);
 const lists = ref([]);
@@ -376,6 +376,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai['sum1'],
                                                                 1,
+                                                                rombel.nilais
+                                                                    .lists[0],
                                                             ) <= 5
                                                         "
                                                         circle
@@ -389,6 +391,8 @@ onBeforeMount(async () => {
                                                                         'sum1'
                                                                     ],
                                                                     1,
+                                                                    nilai
+                                                                        .lists[0],
                                                                 ),
                                                                 nilai['sum1'],
                                                                 '1',
@@ -400,6 +404,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai["sum1"],
                                                                 1,
+                                                                rombel.nilais
+                                                                    .lists[0],
                                                             )
                                                         }}
                                                     </el-button>
@@ -408,6 +414,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai["sum1"],
                                                                 1,
+                                                                rombel.nilais
+                                                                    .lists[0],
                                                             )
                                                         }}
                                                     </span>
@@ -420,6 +428,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai['sum2'],
                                                                 2,
+                                                                rombel.nilais
+                                                                    .lists[1],
                                                             ) <= 5
                                                         "
                                                         circle
@@ -433,6 +443,8 @@ onBeforeMount(async () => {
                                                                         'sum2'
                                                                     ],
                                                                     2,
+                                                                    nilai
+                                                                        .lists[1],
                                                                 ),
                                                                 nilai['sum2'],
                                                                 '2',
@@ -444,6 +456,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai["sum2"],
                                                                 2,
+                                                                rombel.nilais
+                                                                    .lists[1],
                                                             )
                                                         }}
                                                     </el-button>
@@ -452,6 +466,8 @@ onBeforeMount(async () => {
                                                             rankMe(
                                                                 nilai["sum2"],
                                                                 2,
+                                                                rombel.nilais
+                                                                    .lists[1],
                                                             )
                                                         }}
                                                     </span>
