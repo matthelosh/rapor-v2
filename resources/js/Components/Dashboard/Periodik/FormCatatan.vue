@@ -33,6 +33,10 @@ const getCatatan = async () => {
 };
 
 const simpan = async () => {
+    if (!catatan.value || catatan.value === "" || catatan.value === null) {
+        ElNotification({ title: "Error", message: "Isi catatan dulu" });
+        return;
+    }
     router.post(
         route("dashboard.nilai.catatan.store", {
             _query: {
@@ -104,6 +108,7 @@ onBeforeMount(async () => {
                 type="textarea"
                 placeholder="Catatan Rapor"
                 v-model="catatan"
+                required
             ></el-input>
             <br />
             <el-checkbox v-model="isTuntas">Tuntas / Lulus</el-checkbox>
