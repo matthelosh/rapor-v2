@@ -177,7 +177,7 @@ trait NilaiTrait
                 [
                     "agama",
                     "=",
-                    $query["mapelId"] == "pabp" ? $query["agama"] : null,
+                    $query["agama"] ?? null,
                 ],
                 ["tipe", "=", $query["tipe"]],
                 ["mapel_id", "=", $query["mapelId"]],
@@ -336,14 +336,17 @@ trait NilaiTrait
 
     public function hapusNilai($tpId, $rombelId, $mapelId, $jenis) {
         try {
-            // dd($tpId);
+            $query = request()->query();
+            $agama = $query["agama"] ?? null;
+
             $delete = Nilai::where([
                 ['tp_id','=', $tpId],
                 ['rombel_id','=', $rombelId],
                 ['mapel_id','=', $mapelId],
                 ['tipe','=', $jenis],
                 ['tapel','=', Periode::tapel()->kode],
-                ['semester','=', Periode::semester()->kode]
+                ['semester','=', Periode::semester()->kode],
+                ['agama','=', $agama],
             ])->delete();
             return $delete;
         } catch (\Throwable $th) {

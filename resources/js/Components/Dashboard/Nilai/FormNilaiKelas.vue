@@ -331,22 +331,22 @@ const hapusNilai = (jenis, tpId = null) => {
                         // elloading.start();
                     },
                     onSuccess: async () => {
-                        siswas.value.forEach(async (siswa) => {
+                        siswas.value.forEach((siswa) => {
                             if (jenis === "uh") {
                                 tps.value.forEach((tp) => {
                                     siswa.nilais[tp.kode] = 0;
                                 });
-                                await getNilaiUh();
                             }
                             if (jenis === "ts") {
                                 siswa.nilais["ts"] = 0;
-                                await getNilaiTs();
                             }
                             if (jenis === "as") {
                                 siswa.nilais["as"] = 0;
-                                await getNilaiAs();
                             }
                         });
+                        if (jenis === "uh") await getNilaiUh();
+                        if (jenis === "ts") await getNilaiTs();
+                        if (jenis === "as") await getNilaiAs();
                         ElMessage({
                             type: "success",
                             message: "Nilai berhasil dihapus",

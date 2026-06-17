@@ -195,7 +195,7 @@ const unduhFormat = async () => {
     writeFile(
         wb,
         "Impor Nilai Harian " +
-            props.mapel.label +
+            props.mapel +
             " Kelas " +
             props.rombel.label +
             " Semester " +

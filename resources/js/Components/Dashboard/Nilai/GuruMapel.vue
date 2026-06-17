@@ -13,7 +13,9 @@ const FormNilaiAS = defineAsyncComponent(
     () => import("@/Components/Dashboard/Nilai/FormNilaiAS.vue"),
 );
 
-const FormNilaiMapel = defineAsyncComponent(() => import("@/Components/Dashboard/Nilai/FormNilaiMapel.vue"));
+const FormNilaiMapel = defineAsyncComponent(
+    () => import("@/Components/Dashboard/Nilai/FormNilaiMapel.vue"),
+);
 
 const selectedRombel = ref({});
 const selectedSekolah = ref({});
@@ -37,6 +39,7 @@ const closeForm = () => {
 };
 
 const open = (rombel, komponen, sekolah) => {
+    console.log(rombel, komponen, sekolah);
     selectedRombel.value = rombel;
     selectedSekolah.value = sekolah;
 
@@ -108,15 +111,13 @@ onBeforeMount(() => {
                                 >
                             </template>
                             <el-table :data="sekolah.rombels">
-                                <el-table-column
-                                    label="Rombel"
-                                    prop="label"
-                                />
+                                <el-table-column label="Rombel" prop="label" />
                                 <el-table-column label="Wali Kelas">
                                     <template #default="scope">
                                         <div>
-                                            {{ scope.row.wali_kelas.nama}} <br />
-                                            NIP. {{ scope.row.wali_kelas.nip}}
+                                            {{ scope.row.wali_kelas.nama }}
+                                            <br />
+                                            NIP. {{ scope.row.wali_kelas.nip }}
                                         </div>
                                     </template>
                                 </el-table-column>
@@ -128,7 +129,7 @@ onBeforeMount(() => {
                                 <el-table-column label="Entri Nilai">
                                     <template #default="scope">
                                         <span class="flex items-center">
-                                            <el-button
+                                            <!-- <el-button
                                                 :native-type="null"
                                                 type="primary"
                                                 rounded
@@ -169,7 +170,7 @@ onBeforeMount(() => {
                                                     )
                                                 "
                                                 >PAS</el-button
-                                            >
+                                            > -->
                                             <el-button
                                                 :native-type="null"
                                                 type="primary"
