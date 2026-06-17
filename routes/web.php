@@ -534,6 +534,7 @@ Route::middleware("auth")->group(function () {
                     "role:guru_kelas|guru_agama|guru_pjok|guru_inggris",
                 ]);
 
+            // Route::delete("/{rombelId}/{mapelId}/{tipe}", [NilaiController::class, 'bulkDelete'])->name('dashboard.nilai.hapus.bulk');
             Route::prefix("kokurikuler")->group(
                 function () {
                     Route::get("/", [KokurikulerController::class, "home"])->name('dashboard.kokurikuler.home');
@@ -574,7 +575,7 @@ Route::middleware("auth")->group(function () {
                 ])->name("dashboard.nilai.catatan.store");
             });
 
-            Route::post("/{rombelId}/{mapelId}/{jenis}", [
+            Route::delete("/{rombelId}/{mapelId}/{jenis}", [
                 NilaiController::class,
                 "bulkDelete",
             ])->name("dashboard.nilai.hapus.bulk");

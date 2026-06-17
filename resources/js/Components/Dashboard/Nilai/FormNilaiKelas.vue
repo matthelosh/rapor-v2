@@ -131,6 +131,7 @@ const getTps = async () => {
 const params = route().params;
 
 const getNilaiUh = async () => {
+    loading.value = true;
     await axios
         .post(
             route("dashboard.nilai.index", {
@@ -157,10 +158,12 @@ const getNilaiUh = async () => {
                         });
                 });
             }
-        });
+        })
+        .finally(() => (loading.value = false));
 };
 
 const getNilaiAs = async () => {
+    loading.value = true;
     await axios
         .post(
             route("dashboard.nilai.index", {
@@ -187,10 +190,12 @@ const getNilaiAs = async () => {
                         });
                 });
             }
-        });
+        })
+        .finally(() => (loading.value = false));
 };
 
 const getNilaiTs = async () => {
+    loading.value = true;
     await axios
         .post(
             route("dashboard.nilai.index", {
@@ -217,7 +222,8 @@ const getNilaiTs = async () => {
                         });
                 });
             }
-        });
+        })
+        .finally(() => (loading.value = false));
 };
 
 const onFileNilaiPicked = async (e) => {
@@ -292,6 +298,7 @@ const unduhFormat = async () => {
 //     )
 // })
 const hapusNilai = (jenis, tpId = null) => {
+    // alert(tpId);
     const elloading1 = ElLoading.service({
         text: "Loading...",
         fullscreen: true,
@@ -318,12 +325,28 @@ const hapusNilai = (jenis, tpId = null) => {
                     mapelId: props.mapel.kode,
                     jenis: jenis,
                 }),
-                { tpIp: tpId },
+                { tpId: tpId, _method: "DELETE" },
                 {
                     onStart: () => {
                         // elloading.start();
                     },
-                    onSuccess: () => {
+                    onSuccess: async () => {
+                        siswas.value.forEach(async (siswa) => {
+                            if (jenis === "uh") {
+                                tps.value.forEach((tp) => {
+                                    siswa.nilais[tp.kode] = 0;
+                                });
+                                await getNilaiUh();
+                            }
+                            if (jenis === "ts") {
+                                siswa.nilais["ts"] = 0;
+                                await getNilaiTs();
+                            }
+                            if (jenis === "as") {
+                                siswa.nilais["as"] = 0;
+                                await getNilaiAs();
+                            }
+                        });
                         ElMessage({
                             type: "success",
                             message: "Nilai berhasil dihapus",

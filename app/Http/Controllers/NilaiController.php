@@ -96,7 +96,7 @@ class NilaiController extends Controller
         try {
             $delete = $this->hapusNilai($request->tpId, $rombelId, $mapelId, $jenis);
 
-            return back()->with("message", $delete);
+            return back()->with("message", "Nilai dengan kode TP: {$request->tpId} dihapus.");
         } catch (\Throwable $th) {
             throw $th;
         }

@@ -336,11 +336,14 @@ trait NilaiTrait
 
     public function hapusNilai($tpId, $rombelId, $mapelId, $jenis) {
         try {
+            // dd($tpId);
             $delete = Nilai::where([
                 ['tp_id','=', $tpId],
                 ['rombel_id','=', $rombelId],
                 ['mapel_id','=', $mapelId],
                 ['tipe','=', $jenis],
+                ['tapel','=', Periode::tapel()->kode],
+                ['semester','=', Periode::semester()->kode]
             ])->delete();
             return $delete;
         } catch (\Throwable $th) {
