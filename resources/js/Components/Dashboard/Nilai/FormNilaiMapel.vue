@@ -31,7 +31,10 @@ const simpan = async () => {
                 rombelId: props.rombel.kode,
                 tingkat: props.rombel.tingkat,
                 mapelId: props.mapel?.kode,
-                agama: props.agama,
+                agama:
+                    props.mapel.kode === "pabp"
+                        ? page.props.auth.userable.agama
+                        : null,
                 semester:
                     route().params.semester ?? page.props.periode.semester.kode,
                 tapel: page.props.periode.tapel.kode,
@@ -415,9 +418,9 @@ onBeforeMount(async () => {
                         <p>
                             Nilai Harian
                             {{
-                                props.mapel != "pabp" && !props.agama
+                                props.mapel.kode != "pabp" && !props.agama
                                     ? props.mapel.label
-                                    : `PENDIDIKAN AGAMA ${props.agama}`
+                                    : `PENDIDIKAN AGAMA ${page.props.auth.userable.agama}`
                             }}
                         </p>
                         <p>

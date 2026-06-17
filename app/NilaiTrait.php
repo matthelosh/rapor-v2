@@ -169,6 +169,7 @@ trait NilaiTrait
     public function indexNilai($request)
     {
         try {
+            // dd($request->all());
             $query = $request->query();
             $nilais = Nilai::where([
                 ["tapel", "=", $query["tapel"]],
@@ -182,7 +183,7 @@ trait NilaiTrait
                 ["tipe", "=", $query["tipe"]],
                 ["mapel_id", "=", $query["mapelId"]],
             ])->get();
-
+            // dd($nilais);
             return $nilais;
         } catch (\Throwable $th) {
             //throw $th;

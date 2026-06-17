@@ -291,12 +291,6 @@ const unduhFormat = async () => {
     );
 };
 
-// onMounted(() => {
-//     if (tps.value.length < 1) ElMessageBox.alert(
-//         `Isi dulu TP untuk mapel ${props.mapel.label} semester ${page.props.periode.semester.label}`,
-//         'Peringatan'
-//     )
-// })
 const hapusNilai = (jenis, tpId = null) => {
     // alert(tpId);
     const elloading1 = ElLoading.service({
