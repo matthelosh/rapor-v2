@@ -293,10 +293,10 @@ const unduhFormat = async () => {
 // })
 const hapusNilai = (jenis, tpId = null) => {
     const elloading1 = ElLoading.service({
-                text: "Loading...",
-                fullscreen: true,
-                background: "rgba(0, 0, 0, 0.7)",
-            });
+        text: "Loading...",
+        fullscreen: true,
+        background: "rgba(0, 0, 0, 0.7)",
+    });
     ElMessageBox.confirm(
         `Yakin hapus nilai ${jenis} untuk mapel ${props.mapel.label} kelas ${props.rombel.label} semester ${page.props.periode.semester.label}`,
         "Peringatan",
@@ -312,29 +312,31 @@ const hapusNilai = (jenis, tpId = null) => {
                 fullscreen: true,
                 background: "rgba(0, 0, 0, 0.7)",
             });
-            router.post(route('dashboard.nilai.hapus.bulk', {
-                rombelId: props.rombel.kode,
-                mapelId: props.mapel.kode,
-                jenis: jenis,
-            }), 
-            { tpIp: tpId }, 
-            {
-                 onStart: () => {
-                            // elloading.start();
-                        },
-                        onSuccess: () => {
-                            ElMessage({
-                                type: "success",
-                                message: "Nilai berhasil dihapus",
-                            });
-                        },
-                        onFinish: () => {
-                            elloading.close();
-                        },
-            })
+            router.post(
+                route("dashboard.nilai.hapus.bulk", {
+                    rombelId: props.rombel.kode,
+                    mapelId: props.mapel.kode,
+                    jenis: jenis,
+                }),
+                { tpIp: tpId },
+                {
+                    onStart: () => {
+                        // elloading.start();
+                    },
+                    onSuccess: () => {
+                        ElMessage({
+                            type: "success",
+                            message: "Nilai berhasil dihapus",
+                        });
+                    },
+                    onFinish: () => {
+                        elloading.close();
+                    },
+                },
+            );
         })
         .catch((err) => {
-            console.log(err)
+            console.log(err);
             ElMessage({
                 type: "info",
                 message: "Hapus nilai dibatalkan",
@@ -353,7 +355,12 @@ const nilaiAkhir = (indexSiswa) => {
         }
     });
     if (notNull.length === 0) return 0;
-    const avgUh = notNull.length > 0 ? Math.ceil(notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length) : 0;
+    const avgUh =
+        notNull.length > 0
+            ? Math.ceil(
+                  notNull.reduce((acc, cur) => acc + cur, 0) / notNull.length,
+              )
+            : 0;
     const asNum = Number(as);
     if (isNaN(asNum)) return 0;
     return Math.ceil((avgUh + asNum) / 2);
@@ -427,6 +434,7 @@ onBeforeMount(async () => {
                                 type="primary"
                                 size="small"
                                 :disabled="loading"
+                                :loading="loading"
                                 @click="simpan"
                                 >Simpan</el-button
                             >

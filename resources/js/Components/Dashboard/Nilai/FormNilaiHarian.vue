@@ -12,7 +12,7 @@ const props = defineProps({
     open: Boolean,
     sekolah: Object,
     mapel: Object,
-    agama: String
+    agama: String,
 });
 const emit = defineEmits(["close"]);
 const role = page.props.auth.roles[0];
@@ -93,9 +93,7 @@ const getTps = async () => {
                 props.mapel.kode !== "pabp"
                     ? props.rombel.siswas
                     : props.rombel.siswas.filter(
-                          (siswa) =>
-                              siswa.agama ==
-                              page.props.agama,
+                          (siswa) => siswa.agama == page.props.agama,
                       );
             filteredSiswas.forEach((siswa, s) => {
                 let ns = {};
@@ -274,6 +272,7 @@ onBeforeMount(async () => {
                                 type="primary"
                                 size="small"
                                 :disabled="loading"
+                                :loading="loading"
                                 @click="simpan"
                                 >Simpan</el-button
                             >
