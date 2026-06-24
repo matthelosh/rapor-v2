@@ -85,6 +85,26 @@ class CetakController extends Controller
         ]);
     }
 
+    public function cetakRombel(Request $request, $rombelKode)
+    {
+        try {
+            $tapelKode = $request->query('tapel') ?? Periode::tapel()->kode;
+            $rombel = Rombel::where('kode', $rombelKode)
+                ->where('tapel', $tapelKode)
+                ->with(['sekolah', 'wali_kelas', 'gurus', 'siswas' => function ($s) {
+                    $s->where('status', 'aktif')->with('ortus')->orderBy('nama', 'ASC');
+                }])
+                ->firstOrFail();
+
+            return view('cetak.rombel', [
+                'rombel' => $rombel,
+                'tapel' => Tapel::where('kode', $tapelKode)->first(),
+            ]);
+        } catch (\Throwable $th) {
+            abort(404, 'Data rombel tidak ditemukan');
+        }
+    }
+
     public function cetakPiagamRanking(Request $request) {
         try {
             // "nisn" => "3137260700"

@@ -47,10 +47,10 @@ const closeMgmSiswa = () => {
 const reloadData = () => {
     // router.reload({ only: ["rombels"] });
     router.visit(`${window.location.pathname}?tapel=${selectedTapel.value}`, {
-        only: ['rombels'],
+        only: ["rombels"],
         replace: true,
         preserveState: true,
-    })
+    });
 };
 
 const hapus = async (id) => {
@@ -124,10 +124,9 @@ const fotoGuru = (guru) => {
             : "/img/user_p.png";
 };
 const params = computed(() => {
-    return route().params
-}
-)
-const selectedTapel = ref(null);
+    return route().params;
+});
+const selectedTapel = ref(params.tapel ?? page.props.periode.tapel.kode);
 // const reloadData = async() => {
 //     router.visit(route("dashboard.rombel.index", {_query: {tapel: selectedTapel.value}}))
 // }
@@ -150,8 +149,20 @@ const init = async () => {
 
 // Cetak Kartu
 const cetakKartu = (rombel) => {
-    window.open(`/dashboard/kartupelajar/${page.props.sekolahs[0].npsn}/cetak?rombel=${rombel.kode}`, '_blank', 'noopener,noreferrer' );
-}
+    window.open(
+        `/dashboard/kartupelajar/${page.props.sekolahs[0].npsn}/cetak?rombel=${rombel.kode}`,
+        "_blank",
+        "noopener,noreferrer",
+    );
+};
+const cetakRombel = (rombel) => {
+    const tapel = selectedTapel.value ?? page.props.periode.tapel.kode;
+    window.open(
+        `/cetak/rombel/${rombel.kode}?tapel=${tapel}`,
+        "_blank",
+        "noopener,noreferrer",
+    );
+};
 
 onBeforeMount(async () => {
     //init();
@@ -180,16 +191,29 @@ onBeforeMount(async () => {
                                     page.props.auth.roles[0] !== "admin"
                                         ? ""
                                         : "Semua Sekolah"
-                                }} Tahun Pelajaran {{ params.tapel ?? page.props.periode.tapel.label }}</span
+                                }}
+                                Tahun Pelajaran
+                                {{
+                                    params.tapel ??
+                                    page.props.periode.tapel.label
+                                }}</span
                             >
                         </div>
                         <div
                             class="card-toolbar--items flex items-center gap-1"
                             v-if="page.props.auth.roles[0] == 'ops'"
                         >
-                            <el-select v-model="selectedTapel" placeholder="Pilih Tapel" @change="reloadData">
-                                <el-option v-for="(tapel,t) in page.props.tapels" :key="t" :label="tapel.label" :value="tapel.kode" />
-
+                            <el-select
+                                v-model="selectedTapel"
+                                placeholder="Pilih Tapel"
+                                @change="reloadData"
+                            >
+                                <el-option
+                                    v-for="(tapel, t) in page.props.tapels"
+                                    :key="t"
+                                    :label="tapel.label"
+                                    :value="tapel.kode"
+                                />
                             </el-select>
                             <el-button-group class="flex-grow">
                                 <el-button
@@ -236,7 +260,7 @@ onBeforeMount(async () => {
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Kode" width="200">
+                    <el-table-column label="Kode" width="160">
                         <template #default="scope">
                             <el-button
                                 type="primary"
@@ -317,9 +341,11 @@ onBeforeMount(async () => {
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column label="Anggota Rombel" >
+                    <el-table-column label="Anggota Rombel">
                         <template #default="scope">
-                            <div class="text-center flex flex-wrap justify-center gap-1">
+                            <div
+                                class="text-center flex flex-wrap justify-center gap-1"
+                            >
                                 <el-tag type="primary"
                                     >Lk:
                                     {{
@@ -361,7 +387,6 @@ onBeforeMount(async () => {
                                             Anggota
                                         </el-button>
                                     </el-tooltip>
-
                                 </div>
                             </div>
                         </template>
@@ -388,10 +413,27 @@ onBeforeMount(async () => {
                     </el-table-column>
                     <el-table-column label="Opsi" width="250" fixed="right">
                         <template #default="scope">
-                            <div class="flex items-center gap-1">
-                                <el-button type="success" @click="cetakKartu(scope.row)" size="small" target="_blank">
-                                    <Icon icon="mdi:card-account-details" class="mr-1" />
+                            <el-button-group class="flex items-center gap-1">
+                                <el-button
+                                    type="success"
+                                    @click="cetakKartu(scope.row)"
+                                    size="small"
+                                    target="_blank"
+                                >
+                                    <Icon
+                                        icon="mdi:card-account-details"
+                                        class="mr-1"
+                                    />
                                     Kartu
+                                </el-button>
+                                <el-button
+                                    type="warning"
+                                    @click="cetakRombel(scope.row)"
+                                    size="small"
+                                    target="_blank"
+                                >
+                                    <Icon icon="mdi:printer" class="mr-1" />
+                                    Cetak
                                 </el-button>
                                 <el-popconfirm
                                     size="small"
@@ -409,7 +451,7 @@ onBeforeMount(async () => {
                                         </el-button>
                                     </template>
                                 </el-popconfirm>
-                            </div>
+                            </el-button-group>
                         </template>
                     </el-table-column>
                 </el-table>

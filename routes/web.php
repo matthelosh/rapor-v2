@@ -920,6 +920,11 @@ Route::middleware("auth")->group(function () {
             ]);
         });
 
+        Route::get("/rombel/{rombelKode}", [
+            CetakController::class,
+            "cetakRombel",
+        ]);
+
         Route::prefix("ledger")->group(function () {
             Route::get("/piagam", [
                 CetakController::class,
