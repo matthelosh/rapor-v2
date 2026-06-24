@@ -92,7 +92,7 @@ class CetakController extends Controller
             $rombel = Rombel::where('kode', $rombelKode)
                 ->where('tapel', $tapelKode)
                 ->with(['sekolah', 'wali_kelas', 'gurus', 'siswas' => function ($s) {
-                    $s->where('status', 'aktif')->with('ortus')->orderBy('nama', 'ASC');
+                    $s->with('ortus')->orderBy('nama', 'ASC');
                 }])
                 ->firstOrFail();
 
