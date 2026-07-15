@@ -110,7 +110,7 @@ const cetak = async () => {
     win.document.write(html);
 
     setTimeout(() => {
-        // win.print();
+        win.print();
     }, 1000);
 };
 
@@ -400,25 +400,25 @@ const isDateInWeek = (date, week) => {
                                         <tbody>
                                             <tr>
                                                 <td class="w-[33%]"></td>
-                                                <td class="px-8">
-                                                    <p>Mengetahui,</p>
-                                                    <p>Pendamping Sekolah,</p>
-                                                    <br /><br /><br /><br />
-                                                    <p
-                                                        class="font-bold underline leading-4 tracking-wider"
-                                                    >
-                                                        {{
-                                                            page.props.pejabat
-                                                                ?.pengawas
-                                                        }}
-                                                    </p>
-                                                    <p class="leading-4">
-                                                        NIP.
-                                                        {{
-                                                            page.props.pejabat
-                                                                ?.nip_pengawas
-                                                        }}
-                                                    </p>
+                                                <td class="px-8 w-[33%]">
+                                                    <!-- <p>Mengetahui,</p> -->
+                                                    <!-- <p>Pendamping Sekolah,</p> -->
+                                                    <!-- <br /><br /><br /><br /> -->
+                                                    <!-- <p -->
+                                                    <!--     class="font-bold underline leading-4 tracking-wider" -->
+                                                    <!-- > -->
+                                                    <!--     {{ -->
+                                                    <!--         page.props.pejabat -->
+                                                    <!--             ?.pengawas -->
+                                                    <!--     }} -->
+                                                    <!-- </p> -->
+                                                    <!-- <p class="leading-4"> -->
+                                                    <!--     NIP. -->
+                                                    <!--     {{ -->
+                                                    <!--         page.props.pejabat -->
+                                                    <!--             ?.nip_pengawas -->
+                                                    <!--     }} -->
+                                                    <!-- </p> -->
                                                 </td>
                                                 <td class="px-8">
                                                     <p>
